@@ -1,0 +1,261 @@
+{
+  "id": "d69a02fa-c01c-4125-909f-cd68d1253764",
+  "slug": "legitimate-dfir-tool-velociraptor-weaponized-in-ransomware-attacks",
+  "headline": "Living Off the Land: Hackers Abuse Velociraptor DFIR Tool to Deploy Ransomware",
+  "title": "China-Linked Group Storm-2603 Abuses Velociraptor DFIR Tool to Deploy LockBit, Babuk Ransomware",
+  "summary": "A suspected China-based threat group, Storm-2603, is weaponizing the legitimate open-source digital forensics and incident response (DFIR) tool, Velociraptor. According to Cisco Talos, the attackers are using an outdated and vulnerable version of the tool (exploiting CVE-2025-6264) to gain persistence, escalate privileges, and deploy multiple ransomware families, including Warlock, LockBit, and Babuk. The campaign highlights the growing trend of attackers abusing trusted security tools to evade detection while compromising VMware ESXi and Windows environments.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Cisco Talos](https://blog.talosintelligence.com/)** have identified a sophisticated campaign where threat actors are abusing the legitimate open-source Digital Forensics and Incident Response (DFIR) tool, **Velociraptor**, to facilitate ransomware attacks. The activity is attributed with moderate confidence to **Storm-2603**, a group suspected to have links to China. The attackers install an outdated version of Velociraptor vulnerable to **CVE-2025-6264**, a privilege escalation flaw, to gain persistent access and execute ransomware payloads. This \"living-off-the-land\" (LotL) technique allows them to remain undetected while deploying multiple ransomware variants, including Warlock, **[LockBit](https://attack.mitre.org/software/S0615/)**, and **[Babuk](https://attack.mitre.org/software/S0638/)**, primarily targeting VMware ESXi and Windows Server environments.\n\n## Threat Overview\nThe campaign, which began in mid-August 2025, involves the threat actor gaining initial access to a target network and then deploying Velociraptor version 0.73.4.0. This specific version is vulnerable to **CVE-2025-6264**, which the attackers exploit to escalate privileges and achieve complete control over the compromised endpoint. By leveraging a trusted DFIR tool, the attackers' activities blend in with legitimate administrative tasks, making detection extremely difficult. The ultimate goal of the campaign is to deploy ransomware across the victim's virtualized and physical server infrastructure, causing significant disruption and data encryption.\n\n## Technical Analysis\nThe attack chain demonstrates a high level of operational security and technical skill. After exploiting **CVE-2025-6264** for privilege escalation, the actors perform several post-exploitation activities:\n1.  **Persistence and Credential Access**: They create new administrator accounts and sync them to Entra ID (formerly Azure AD), ensuring persistent access to the cloud environment.\n2.  **Lateral Movement**: The attackers access the VMware vSphere console to gain control over the entire virtual infrastructure.\n3.  **Defense Evasion**: They modify Active Directory Group Policy Objects (GPOs) to disable Microsoft Defender's real-time protection and other security controls across the domain.\n4.  **Command and Control**: The legitimate functionality of **Velociraptor** is used for command and control and to exfiltrate data under the guise of forensic collection. The attackers also use tools like **[Impacket](https://attack.mitre.org/software/S0357/)** for remote command execution.\n\n### MITRE ATT&CK Techniques\n- [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/): The primary technique, abusing the legitimate Velociraptor tool for malicious purposes.\n- [`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/): Leveraging **CVE-2025-6264** to gain higher privileges on the endpoint.\n- [`T1087.002 - Domain Account`](https://attack.mitre.org/techniques/T1087/002/): Creating new admin accounts in Active Directory for persistence.\n- [`T1484.001 - Group Policy Modification`](https://attack.mitre.org/techniques/T1484/001/): Disabling security software like Microsoft Defender via GPO changes.\n- [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/): The final stage, deploying Warlock, LockBit, and Babuk ransomware to encrypt files.\n\n## Impact Assessment\nThe impact of this campaign is severe. By targeting VMware ESXi servers, the attackers can encrypt dozens or hundreds of virtual machines simultaneously, leading to catastrophic business disruption. The use of a legitimate DFIR tool makes attribution and incident response more complex, as security teams may initially overlook its activity. Victims face not only the cost of recovery and downtime but also the potential for data exfiltration and double extortion, as is common with the LockBit and Babuk ransomware families.\n\n## Cyber Observables for Detection\nSecurity teams should hunt for these indicators:\n\n| Type | Value | Description |\n|---|---|---|\n| file_name | `velociraptor-v0.73.4.0-windows-amd64.exe` | The specific outdated and vulnerable version of the tool being deployed. |\n| process_name | `velociraptor.exe` | Monitor for executions of the Velociraptor client, especially if not deployed by the internal security team. |\n| command_line_pattern | `velociraptor.exe --config <config_file> client` | Look for command-line arguments used to run Velociraptor as a client connecting to an external server. |\n| log_source | `Windows Event ID 4673` | Monitor for privileged service execution related to newly installed services, potentially Velociraptor. |\n| log_source | `Active Directory Replication Logs` | Look for the creation of new high-privilege user accounts, especially those with suspicious naming conventions. |\n\n## Detection & Response\n1.  **Asset Inventory and Version Control**: Maintain a strict inventory of all software, especially security tools. Use D3FEND's [`Software Update (D3-SU)`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate) process to ensure all tools, including Velociraptor, are up-to-date and patched against known vulnerabilities like **CVE-2025-6264**.\n2.  **Behavioral Monitoring**: Since the tool is legitimate, signature-based detection will fail. Use EDR and SIEM solutions to monitor for anomalous behavior associated with the tool. For example, alert when `velociraptor.exe` is executed from a non-standard directory or connects to an unknown external IP address. This aligns with D3FEND's [`Process Analysis (D3-PA)`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n3.  **GPO Auditing**: Regularly audit changes to Group Policy Objects. An alert should be triggered for any modification that disables or weakens security controls like Microsoft Defender. Use D3FEND's [`System Configuration Permissions (D3-SCP)`](https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions) to harden GPOs.\n4.  **Account Monitoring**: Closely monitor the creation of new administrative accounts in Active Directory and Entra ID. Use D3FEND's [`Domain Account Monitoring (D3-DAM)`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring) to detect suspicious account creation.\n\n## Mitigation\n1.  **Application Allowlisting**: Implement application allowlisting to prevent the execution of unauthorized or outdated versions of tools like Velociraptor. This is a key part of D3FEND's [`Executable Allowlisting (D3-EAL)`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n2.  **Principle of Least Privilege**: Ensure that user and service accounts have only the minimum permissions necessary. This can limit an attacker's ability to escalate privileges or modify GPOs.\n3.  **Harden VMware Environment**: Secure the vSphere/vCenter management console with multi-factor authentication and restrict access to authorized personnel from dedicated management workstations.\n4.  **Network Egress Filtering**: Block outbound connections from servers to the internet on non-essential ports. Monitor and filter traffic to known malicious or suspicious domains and IP ranges.",
+  "twitter_post": "⚠️ Hackers weaponize the Velociraptor DFIR tool to deploy LockBit & Babuk ransomware. A China-linked group (Storm-2603) is abusing CVE-2025-6264 to hit VMware & Windows systems. #Ransomware #CyberSecurity #DFIR #LivingOffTheLand",
+  "meta_description": "Analysis of a ransomware campaign by Storm-2603 using a vulnerable version of the Velociraptor DFIR tool to deploy LockBit and Babuk. Learn how to detect and mitigate this threat.",
+  "category": [
+    "Threat Actor",
+    "Ransomware",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Storm-2603",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://blog.talosintelligence.com/"
+    },
+    {
+      "name": "Velociraptor",
+      "type": "product"
+    },
+    {
+      "name": "Warlock",
+      "type": "malware"
+    },
+    {
+      "name": "LockBit",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0615/"
+    },
+    {
+      "name": "Babuk",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0638/"
+    },
+    {
+      "name": "Impacket",
+      "type": "product",
+      "url": "https://attack.mitre.org/software/S0357/"
+    },
+    {
+      "name": "VMware ESXi",
+      "type": "product"
+    },
+    {
+      "name": "Windows Server",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/"
+    },
+    {
+      "name": "Entra ID",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-6264",
+      "kev": true,
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://blog.talosintelligence.com/velociraptor-leveraged-in-ransomware-attacks/",
+      "title": "Velociraptor leveraged in ransomware attacks",
+      "date": "2025-10-09",
+      "friendly_name": "Cisco Talos",
+      "website": "blog.talosintelligence.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-now-use-velociraptor-dfir-tool-in-ransomware-attacks/",
+      "title": "Hackers now use Velociraptor DFIR tool in ransomware attacks",
+      "date": "2025-10-09",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-08-15T00:00:00Z",
+      "summary": "Storm-2603 begins its campaign, gaining initial access and deploying the vulnerable Velociraptor tool."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1484.001",
+      "name": "Group Policy Modification",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1021.004",
+      "name": "SSH",
+      "tactic": "Lateral Movement"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application control to restrict the execution of unauthorized or outdated software versions.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [],
+      "description": "Use an EDR to detect malicious behaviors, such as a DFIR tool disabling security products.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Ensure all legitimate tools are kept up-to-date to patch known vulnerabilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UAP",
+          "name": "User Account Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions"
+        }
+      ],
+      "description": "Harden Active Directory and GPO permissions to prevent unauthorized modifications.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Implement a strict executable allowlisting policy on critical servers, particularly domain controllers and VMware vCenter servers. This countermeasure would prevent the execution of the unauthorized, outdated version of Velociraptor (v0.73.4.0) used in this attack. The policy should only permit known, approved, and up-to-date versions of legitimate security and administrative tools. By defining a 'known good' state, any attempt by Storm-2603 to drop and run their chosen tool would be blocked at the source. This can be enforced using technologies like Windows AppLocker or third-party application control solutions. While this requires an initial investment in baselining the environment, it is one of the most effective ways to defeat 'living-off-the-land' attacks that rely on dropping unauthorized executables.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an Endpoint Detection and Response (EDR) solution capable of advanced process analysis and behavioral monitoring. Since the attackers are using a legitimate tool, signature-based detection is ineffective. A behavioral approach is needed to identify malicious use. Configure the EDR to alert on suspicious process chains, such as `velociraptor.exe` being launched by an unusual parent process (e.g., a web server) or `velociraptor.exe` spawning shells (`cmd.exe`, `powershell.exe`) to execute commands. Furthermore, create detection rules for when a process associated with a security tool (like Velociraptor) attempts to read credentials from memory (LSASS) or modify Group Policy Objects. This context-aware monitoring can distinguish malicious activity from benign administrative use.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "Implement robust monitoring of Active Directory and Entra ID for suspicious account activity. The attackers in this campaign created new administrator accounts for persistence. Configure your SIEM to generate high-priority alerts for the creation of any new account that is added to privileged groups (e.g., Domain Admins, Enterprise Admins, vSphere Admins). Alerts should also be triggered if an existing account's privileges are escalated. Correlate this activity with source IP and host information; for example, a new domain admin account being created from a standard user workstation or a server that does not typically perform identity management is highly suspicious. This provides a critical detection opportunity during the persistence and privilege escalation phases of the attack.",
+      "mitre_mitigation_id": "M1026"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "velociraptor-v0.73.4.0-windows-amd64.exe",
+      "description": "The specific outdated and vulnerable executable file used by attackers. Finding this binary is a strong indicator of compromise.",
+      "context": "File integrity monitoring, EDR file system scans.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "GPO-Modify -DisableRealtimeMonitoring",
+      "description": "A hypothetical command pattern representing the modification of GPOs to disable Microsoft Defender. Monitor for any scripts or commands that alter security policies.",
+      "context": "PowerShell script block logging (Event ID 4104), command line logging (Event ID 4688).",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "VMware vSphere Logs",
+      "description": "Monitor for anomalous logins to the vSphere console, especially from internal servers rather than dedicated admin workstations.",
+      "context": "vCenter server logs, SIEM correlation rules.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Living off the Land",
+    "DFIR",
+    "Velociraptor",
+    "Storm-2603",
+    "LockBit",
+    "Babuk",
+    "VMware"
+  ],
+  "extract_datetime": "2025-10-09T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Critical Infrastructure"
+    ],
+    "other_affected": [
+      "Users of VMware ESXi and Windows Server"
+    ]
+  },
+  "pub_date": "2025-10-09",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-09T15:00:00.000Z",
+  "updatedAt": "2025-10-09T15:00:00.000Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "title": "Update 1",
+      "summary": "CISA adds Velociraptor vulnerability (CVE-2025-6264) to KEV catalog, confirming active exploitation by ransomware gangs and mandating federal agency remediation.",
+      "sources": [
+        {
+          "title": "CISA Alerts on Active Exploitation of Rapid7 Velociraptor Vulnerability in Ransomware Attacks",
+          "url": "https://cyberpress.org/cisa-alerts-on-active-exploitation-of-rapid7-velociraptor-vulnerability-in-ransomware-attacks/"
+        }
+      ]
+    }
+  ]
+}

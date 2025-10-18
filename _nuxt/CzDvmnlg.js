@@ -1,0 +1,1 @@
+import{_ as r}from"./DlAUqK2U.js";import{c as s,a as t,o}from"#entry";const n={};function a(c,e){return o(),s("div",null,[...e[0]||(e[0]=[t("h1",null,"Test Page",-1),t("p",null,"If you can see this, the server is working!",-1)])])}const i=r(n,[["render",a]]);export{i as default};
