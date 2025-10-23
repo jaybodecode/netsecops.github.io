@@ -1,0 +1,1 @@
+import{h as t,c as o,o as r,a2 as s}from"#entry";import{_ as a}from"./DlAUqK2U.js";const c={class:"min-h-screen bg-gray-950 text-gray-100"},n=t({__name:"cyber",setup(_){return(e,p)=>(r(),o("div",c,[s(e.$slots,"default",{},void 0,!0)]))}}),i=a(n,[["__scopeId","data-v-0e6b9b95"]]);export{i as default};

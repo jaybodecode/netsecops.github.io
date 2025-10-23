@@ -1,0 +1,1 @@
+import{J as i,u as a}from"#entry";function c(e){const s=i().public.siteUrl,r={"@context":"https://schema.org","@type":"BreadcrumbList",itemListElement:e.map((t,n)=>({"@type":"ListItem",position:n+1,name:t.name,item:t.url.startsWith("http")?t.url:`${s}${t.url}`}))};a({script:[{type:"application/ld+json",innerHTML:JSON.stringify(r)}]})}export{c as u};
