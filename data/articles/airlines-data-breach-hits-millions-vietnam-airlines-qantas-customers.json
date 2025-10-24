@@ -14,20 +14,23 @@
   "severity": "high",
   "entities": [
     {
-      "name": "Qantas",
-      "type": "company"
+      "name": "Vietnam Airlines",
+      "type": "company",
+      "url": "https://www.vietnamairlines.com/"
     },
     {
-      "name": "Salesforce",
-      "type": "vendor"
+      "name": "Qantas",
+      "type": "company",
+      "url": "https://www.qantas.com"
     },
     {
       "name": "Scattered LAPSUS$ Hunters",
       "type": "threat_actor"
     },
     {
-      "name": "Vietnam Airlines",
-      "type": "company"
+      "name": "Salesforce",
+      "type": "vendor",
+      "url": "https://www.salesforce.com/"
     }
   ],
   "cves": [],
@@ -36,6 +39,7 @@
       "url": "https://www.travelnews.ch/artikel/major-data-breach-at-vietnam-airlines-and-qantas-millions-of-customers-affected-106516",
       "title": "Major data breach at Vietnam Airlines and Qantas: millions of customers affected",
       "date": "2025-10-16",
+      "friendly_name": "TravelNews",
       "website": "travelnews.ch"
     }
   ],
@@ -51,11 +55,6 @@
   ],
   "mitre_techniques": [
     {
-      "id": "T0885",
-      "name": "Supply Chain Compromise",
-      "tactic": null
-    },
-    {
       "id": "T1078.004",
       "name": "Cloud Accounts",
       "tactic": "Initial Access"
@@ -69,69 +68,150 @@
       "id": "T1537",
       "name": "Transfer Data to Cloud Account",
       "tactic": "Exfiltration"
+    },
+    {
+      "id": "T0885",
+      "name": "Supply Chain Compromise"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforcing MFA on all cloud service accounts is the single most effective control to prevent account takeovers, even if credentials are stolen.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Ingesting and monitoring cloud audit logs is critical for detecting suspicious activity within SaaS platforms like Salesforce.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1016",
+      "name": "Vulnerability Scanning",
+      "description": "While this was a third-party breach, robust vendor risk management programs should include validating the security posture of critical suppliers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Training end-users (the affected customers) to recognize and report phishing attempts is crucial to mitigate the follow-on impact of the PII leak.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The most effective countermeasure to prevent this type of breach is the mandatory enforcement of phishing-resistant Multi-Factor Authentication (MFA) for all accounts with access to sensitive data, both internally and for third-party partners. In the context of the Salesforce platform, this means enabling MFA for all users, especially those with administrative or data export privileges. This should be a contractual requirement for any technology partner handling customer PII. Had the partner's Salesforce accounts been protected by MFA, the 'Scattered LAPSUS$ Hunters' would not have been able to gain access even if they had stolen valid usernames and passwords. This single control directly disrupts the most common initial access vector for cloud service compromises.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-UDTA",
+      "technique_name": "User Data Transfer Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserDataTransferAnalysis",
+      "recommendation": "Implement a data loss prevention (DLP) or cloud access security broker (CASB) solution to monitor and control data movement out of your Salesforce environment. Specifically, configure policies to detect and alert on anomalous data transfers. For this incident, a relevant policy would be to alert when a user account initiates an export of more than a certain number of customer records (e.g., >1000) within a short time frame. Baselining is key; understand what normal data export activity looks like for your organization and its partners. An alert on a massive export of 13 million records would have provided immediate notification of the breach in progress, allowing for a rapid response to terminate the session and lock the account, potentially before the exfiltration was complete.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "Apply the principle of least privilege to all third-party accounts within your SaaS platforms. The technology partner in this scenario should only have had access to the specific data and functions necessary for their customer service role. Review permissions regularly to ensure that partners do not have broad data export capabilities or access to data fields they do not need. For example, if a partner's role is to view and update individual customer records, they should not have the permission to run a report that exports the entire customer database. By tightly scoping permissions, you can contain the potential damage of a partner account compromise, limiting an attacker's access to only a small subset of data rather than the entire dataset.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "api_endpoint",
+      "value": "salesforce.com/services/data/vXX.X/query",
+      "description": "Salesforce REST API endpoint for running SOQL queries. A high volume of queries from a single account could indicate data enumeration and collection.",
+      "context": "Cloud application security broker (CASB) logs, Salesforce Event Monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "Salesforce LoginHistory",
+      "description": "Salesforce object that logs user login attempts. Monitor for logins from unusual IP addresses, countries, or user agents, which could indicate account takeover.",
+      "context": "Salesforce Event Monitoring, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Salesforce ReportExport",
+      "description": "Salesforce event type that logs when a user exports data via a report. A large number of exports or exports by an unusual user is a strong indicator of data exfiltration.",
+      "context": "Salesforce Event Monitoring, SIEM",
+      "confidence": "high"
     }
   ],
   "tags": [
     "Data Breach",
-    "PII",
+    "Vietnam Airlines",
     "Qantas",
     "Salesforce",
     "Scattered LAPSUS$ Hunters",
-    "Supply Chain",
     "Third-Party Risk",
-    "Vietnam Airlines"
+    "Supply Chain",
+    "PII"
   ],
-  "extract_datetime": "2025-10-16",
+  "extract_datetime": "2025-10-16T15:00:00.000Z",
   "article_type": "NewsArticle",
   "impact_scope": {
     "geographic_scope": "global",
-    "industries_affected": [
-      "Transportation"
-    ],
     "companies_affected": [
       "Vietnam Airlines",
       "Qantas"
     ],
-    "governments_affected": [],
     "countries_affected": [
       "Vietnam",
       "Australia"
     ],
-    "other_affected": [],
+    "industries_affected": [
+      "Transportation"
+    ],
     "people_affected_estimate": "13.02 million customers"
   },
-  "keywords": [
-    "Data Breach",
-    "PII",
-    "Qantas",
-    "Salesforce",
-    "Scattered LAPSUS$ Hunters",
-    "Supply Chain",
-    "Third-Party Risk",
-    "Vietnam Airlines"
-  ],
   "pub_date": "2025-10-16",
   "reading_time_minutes": 5,
   "createdAt": "2025-10-16T15:00:00.000Z",
   "updatedAt": "2025-10-20T00:00:00Z",
   "updates": [
     {
+      "update_id": "update-1",
+      "update_date": "2025-10-20T00:00:00Z",
       "datetime": "2025-10-20T00:00:00Z",
-      "summary": "Qantas breach details emerge: 'Scattered Lapsus$ Hunters' leaked 5.7M customer records after ransom deadline of Oct 11 passed, confirming extortion tactics.",
-      "content": "New details confirm that 'Scattered Lapsus$ Hunters' leaked 5.7 million Qantas customer records after a ransom demand was not met by an October 11 deadline. This reveals the group's use of double-extortion tactics, targeting a third-party platform integrated with Qantas's Salesforce environment. The incident highlights the exploitation of trusted relationships (T1199) and potential MFA fatigue attacks (T1621) in supply-chain compromises. Qantas customers remain at high risk of phishing and identity theft.",
-      "severity_change": "increased",
+      "title": "Update 1",
+      "summary": "Qantas data breach update: 'Scattered Lapsus$ Hunters' leaked 5.7M customer records after ransom non-payment.",
       "sources": [
         {
-          "url": "https://www.checkpoint.com/research/2025/20th-october-threat-intelligence-report/",
           "title": "20th October – Threat Intelligence Report",
-          "website": "",
-          "date": "2025-10-20T00:00:00Z"
+          "url": "https://www.checkpoint.com/research/2025/20th-october-threat-intelligence-report/"
         },
         {
-          "url": "https://brightdefense.com/data-breaches/recent-data-breaches-2025/",
           "title": "List of Recent Data Breaches in 2025",
-          "website": "",
-          "date": "2025-10-20T00:00:00Z"
+          "url": "https://brightdefense.com/data-breaches/recent-data-breaches-2025/"
         }
       ]
     }
