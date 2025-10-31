@@ -1,0 +1,294 @@
+{
+  "id": "a945f024-4cb6-4bb5-ab90-46ada6d371bd",
+  "slug": "qilin-ransomware-surges-to-become-most-prolific-threat-of-2025",
+  "headline": "Qilin Ransomware Claims 700 Victims in 2025, Becoming Top Global Threat",
+  "title": "Qilin Ransomware Becomes Most Prolific RaaS Operation of 2025, Surpassing 700 Attacks on Critical Sectors",
+  "summary": "The Qilin ransomware group has dramatically escalated its activities in 2025, claiming over 700 attacks to become the year's most prolific ransomware operation. Operating a Ransomware-as-a-Service (RaaS) model, the Russia-based group has far surpassed the activity of 2024's leader, RansomHub. A significant surge in Qilin's attacks followed the shutdown of the RansomHub operation in April 2025, suggesting a migration of affiliates. Qilin aggressively targets critical infrastructure sectors worldwide, including healthcare, finance, and government, using double-extortion tactics.",
+  "full_report": "## Executive Summary\nThe **[Qilin](https://malpedia.caad.fkie.fraunhofer.de/actor/qilin)** ransomware group, also known as Agenda, has emerged as the most dominant ransomware threat of 2025, with its victim count surging past 700 in the first ten months of the year. This represents a more than 280% increase since April 2025, coinciding with the disappearance of the formerly prolific RansomHub group. Operating a highly successful **[Ransomware-as-a-Service (RaaS)](https://en.wikipedia.org/wiki/Ransomware_as_a_service)** model, Qilin and its affiliates are aggressively targeting critical infrastructure sectors globally, including manufacturing, finance, healthcare, and government. The group employs a double-extortion strategy, encrypting victim data while also exfiltrating it for public leakage to maximize pressure. Their recent tactics include deploying Linux ransomware variants on Windows systems and abusing legitimate remote management tools for command and control.\n\n---\n\n## Threat Overview\nActive since at least July 2022, Qilin is a Russia-based cybercriminal group that has rapidly scaled its operations. Research from Comparitech shows the group's victim count has quadrupled from 179 in all of 2024 to 701 by October 2025. This explosion in activity is largely attributed to its RaaS model, which offers affiliates a generous 80-85% share of ransom payments, attracting a large and motivated pool of attackers. \n\nThe group's growth accelerated dramatically following the shutdown of the RansomHub operation in April 2025, strongly suggesting that many of RansomHub's skilled affiliates have migrated to the Qilin platform. The group has maintained a relentless pace, averaging over 40 victims per month and peaking at 100 in June 2025.\n\n## Technical Analysis\nQilin's affiliates employ a variety of tactics, techniques, and procedures (TTPs) to compromise victim networks. Recent analysis from **[Cisco Talos](https://blog.talosintelligence.com/)** and Trend Micro has highlighted several key methods:\n- **Initial Access:** While not detailed in these reports, initial access is likely achieved through common vectors such as phishing, exploitation of unpatched vulnerabilities, and compromised credentials.\n- **Command and Control:** Affiliates heavily rely on legitimate Remote Monitoring and Management (RMM) software, such as [`AnyDesk`](https://anydesk.com/), [`ScreenConnect`](https://www.connectwise.com/platform/control), and `Splashtop`. This Living-off-the-Land (LotL) technique helps them blend in with normal administrative activity and evade detection.\n- **Execution & Defense Evasion:** In some attacks, the group has been observed deploying a Linux ransomware variant on Windows systems, likely using Windows Subsystem for Linux (WSL) or a virtual machine to execute the payload. This hybrid approach can bypass security tools focused on traditional Windows executables.\n- **Impact:** The core of the attack is the deployment of the Qilin ransomware payload ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)) and the exfiltration of sensitive data ([`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/)) for double extortion.\n\n## Impact Assessment\nQilin's targeting strategy focuses on organizations where operational disruption has the most severe consequences, maximizing their leverage for ransom negotiations. In 2025 alone, the group has claimed responsibility for attacks on:\n- 45 healthcare providers\n- 40 government entities\n- 26 educational institutions\n\nThe United States is the most heavily impacted nation, with 375 attacks, followed by France, Canada, South Korea, and Spain. The group boasts of having stolen over 116 terabytes of data, posing a significant risk of data breach notifications, regulatory fines, and reputational damage for victims, even if they recover from the encryption.\n\n## IOCs\nNo specific Indicators of Compromise (IOCs) were provided in the source articles.\n\n## Cyber Observables for Detection\n\n| Type                 | Value                                  | Description                                                                                              |\n|:---------------------|:---------------------------------------|:---------------------------------------------------------------------------------------------------------|\n| process_name         | `anydesk.exe`                          | Monitor for execution of AnyDesk, especially if it is not a sanctioned RMM tool in the environment.      |\n| process_name         | `screenconnect.exe`                    | Monitor for execution of ScreenConnect/ConnectWise Control if it is not an approved tool.                |\n| network_traffic_pattern | Outbound connections to RMM C2 domains | Traffic to `*.anydesk.com` or `*.screenconnect.com` from servers or non-admin workstations is suspicious. |\n| file_name            | `*.elf`                                | The presence of ELF (Linux executable) files on Windows systems is highly anomalous and warrants investigation. |\n\n## Detection & Response\nDefenders should focus on detecting the abuse of legitimate tools and anomalous system behavior.\n\n1.  **Monitor RMM Tool Usage:**\n    -   Establish a baseline of legitimate RMM software used in your environment. Create strict EDR or application control policies to block or alert on the execution of any unauthorized RMM tools like `AnyDesk` or `ScreenConnect`.\n    -   Monitor network logs for connections to the command and control infrastructure of these RMM tools, especially from critical servers.\n\n2.  **Hunt for Hybrid Attacks:**\n    -   Use EDR to hunt for the presence of Linux binaries (`.elf` files) on Windows systems. \n    -   Monitor for the installation or execution of Windows Subsystem for Linux (`wsl.exe`) on servers or endpoints where it has no legitimate business purpose.\n\n3.  **Behavioral Analysis:**\n    -   Implement behavioral detection rules that look for common ransomware pre-cursor activities, such as the disabling of security services, deletion of volume shadow copies (`vssadmin`), and mass file modification.\n    -   Employ [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) to identify suspicious parent-child process relationships, such as an Office application spawning an RMM tool.\n\n## Mitigation\n\nA multi-layered defense is crucial to protect against RaaS threats like Qilin.\n\n1.  **Restrict Remote Access Tools:** Implement strict application control policies to prevent the use of unauthorized RMM software. For sanctioned tools, enforce **[Multi-factor Authentication (MFA)](https://www.cisa.gov/mfa)** and limit access to authorized personnel from specific IP addresses.\n\n2.  **Phishing and User Training:** Since phishing is a common entry vector for ransomware, conduct regular user awareness training to help employees recognize and report suspicious emails.\n\n3.  **Backup and Recovery:** Maintain immutable, offline backups of critical data and systems. Regularly test your disaster recovery and business continuity plans to ensure you can restore operations without paying a ransom.\n\n4.  **Network Segmentation:** Segment your network to prevent attackers from moving laterally from a compromised workstation to critical servers. This can contain the blast radius of an infection.\n\n5.  **D3FEND Countermeasures:**\n    -   Utilize [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting) to control which applications, including RMM tools, can run.\n    -   Implement [`D3-OTF: Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) to block connections to known malicious or unauthorized C2 domains.",
+  "twitter_post": "Qilin ransomware becomes 2025's most prolific threat with 700+ attacks! 📈 The RaaS group targets critical sectors worldwide, using double extortion and abusing RMM tools like AnyDesk. #Qilin #Ransomware #CyberThreat #RaaS",
+  "meta_description": "Analysis of the Qilin ransomware group, which has become the most active RaaS operation in 2025 with over 700 victims, targeting critical infrastructure globally.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Qilin",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/qilin"
+    },
+    {
+      "name": "Agenda",
+      "type": "threat_actor"
+    },
+    {
+      "name": "RansomHub",
+      "type": "malware"
+    },
+    {
+      "name": "Comparitech",
+      "type": "company"
+    },
+    {
+      "name": "Trend Micro",
+      "type": "vendor",
+      "url": "https://www.trendmicro.com"
+    },
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://talosintelligence.com/"
+    },
+    {
+      "name": "AnyDesk",
+      "type": "product"
+    },
+    {
+      "name": "ScreenConnect",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://industrialcyber.com/ransomware/qilin-ransomware-escalates-rapidly-in-2025-targeting-critical-sectors-with-700-attacks-amid-ransomhub-shutdown/",
+      "title": "Qilin ransomware escalates rapidly in 2025, targeting critical sectors with 700 attacks amid RansomHub shutdown",
+      "date": "2025-10-27",
+      "friendly_name": "Industrial Cyber",
+      "website": "industrialcyber.com"
+    },
+    {
+      "url": "https://thehackernews.com/2025/10/qilin-ransomware-combines-linux.html",
+      "title": "Qilin Ransomware Combines Linux Payload With BYOVD Exploit in Hybrid Attack",
+      "date": "2025-10-27",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://blog.talosintelligence.com/uncovering-qilin-attack-methods/",
+      "title": "Uncovering Qilin attack methods exposed through multiple cases",
+      "date": "2025-10-27",
+      "friendly_name": "Cisco Talos",
+      "website": "talosintelligence.com"
+    },
+    {
+      "url": "https://www.cisecurity.org/insights/blog/qilin-top-ransomware-threat-to-sltts-in-q2-2025",
+      "title": "Qilin: Top Ransomware Threat to SLTTs in Q2 2025",
+      "date": "2025-09-11",
+      "friendly_name": "Center for Internet Security (CIS)",
+      "website": "cisecurity.org"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2022-07-01T00:00:00Z",
+      "summary": "Qilin ransomware operations first observed."
+    },
+    {
+      "datetime": "2025-04-01T00:00:00Z",
+      "summary": "RansomHub group disappears, followed by a surge in Qilin attacks."
+    },
+    {
+      "datetime": "2025-06-01T00:00:00Z",
+      "summary": "Qilin attacks peak at 100 claimed victims in a single month."
+    },
+    {
+      "datetime": "2025-10-27T00:00:00Z",
+      "summary": "Qilin's victim count for 2025 surpasses 700."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1657",
+      "name": "Financial Theft",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application control to block unauthorized remote access software like AnyDesk and ScreenConnect.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to recognize and report phishing attempts, a common initial access vector for ransomware.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Segment networks to limit lateral movement and contain the blast radius of a ransomware infection.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Enable comprehensive logging to detect anomalous activities like unauthorized RMM tool usage and large-scale file access.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "To counter Qilin's abuse of legitimate RMM tools like AnyDesk and ScreenConnect, organizations must implement strict application control. The most effective approach is Executable Denylisting (or allowlisting if maturity allows). Create a policy that explicitly blocks the execution of any RMM tool that is not officially sanctioned and managed by the IT department. This policy should be enforced via an EDR or a tool like AppLocker. The denylist should include hashes and file names for `anydesk.exe`, `screenconnect.exe`, `splashtop.exe`, and other commonly abused remote access utilities. This directly disrupts the attackers' ability to establish persistent command and control, forcing them to use noisier, more easily detectable methods. This control should be applied most stringently to servers and privileged user workstations.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To combat the double-extortion tactics used by Qilin, which involve exfiltrating large volumes of data, organizations should implement egress traffic filtering. Configure perimeter firewalls and web proxies to block outbound connections to known malicious domains, anonymous file-sharing sites, and cloud storage providers not used for legitimate business. For RMM tool abuse, specifically block outbound traffic to the known C2 domains associated with AnyDesk, ScreenConnect, etc., from all systems except designated administrative jump hosts. Furthermore, deploy network traffic analysis tools to monitor for unusually large data transfers leaving the network, especially from servers or endpoints that do not typically send large volumes of data externally. Alerting on these anomalies can provide an early warning of a data exfiltration attempt in progress.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-FR",
+      "technique_name": "File Restoration",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileRestoration",
+      "recommendation": "The ultimate defense against the 'impact' phase of a Qilin attack is a robust and tested backup strategy. This goes beyond simply having backups. Organizations must ensure they have immutable or air-gapped backups that cannot be encrypted or deleted by the attackers. Follow the 3-2-1 rule: three copies of your data, on two different media, with one copy off-site. Critically, the restoration process must be tested regularly through disaster recovery drills. This ensures that in the event of an attack, the business can confidently restore operations from a known-good state, removing the primary leverage for ransom payment (operational disruption) and significantly strengthening the organization's position to refuse payment.",
+      "mitre_mitigation_id": "M1053"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "anydesk.exe",
+      "description": "Execution of the AnyDesk remote access tool, often abused by threat actors for command and control.",
+      "context": "EDR logs, Windows Event ID 4688",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "screenconnect.exe",
+      "description": "Execution of the ScreenConnect (ConnectWise Control) remote access tool, another utility frequently leveraged by ransomware affiliates.",
+      "context": "EDR logs, Windows Event ID 4688",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "*.anydesk.com",
+      "description": "Network connections to AnyDesk's C2 infrastructure from servers or non-administrative workstations can indicate malicious use.",
+      "context": "DNS logs, Firewall logs, Netflow",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "*.elf",
+      "description": "The presence of ELF (Linux executable) files on Windows systems is highly anomalous and could indicate a hybrid attack as described by researchers.",
+      "context": "File integrity monitoring, EDR file inventories",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Qilin",
+    "Ransomware",
+    "RaaS",
+    "Double Extortion",
+    "Threat Actor",
+    "AnyDesk",
+    "Agenda"
+  ],
+  "extract_datetime": "2025-10-28T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "United States",
+      "France",
+      "Canada",
+      "South Korea",
+      "Spain"
+    ],
+    "industries_affected": [
+      "Manufacturing",
+      "Finance",
+      "Retail",
+      "Healthcare",
+      "Government",
+      "Education",
+      "Critical Infrastructure"
+    ],
+    "people_affected_estimate": "Over 700 organizations attacked"
+  },
+  "pub_date": "2025-10-28",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-28T15:00:00.000Z",
+  "updatedAt": "2025-10-31T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2025-10-31T00:00:00Z",
+      "datetime": "2025-10-31T00:00:00Z",
+      "title": "Update 1",
+      "summary": "New Cisco Talos report details Qilin's use of Cyberduck for exfil, PsExec for lateral movement, and notepad.exe for evasion, with manufacturing as top target.",
+      "sources": [
+        {
+          "title": "Cisco Talos identifies surge in Qilin ransomware attacks, with manufacturing sector hit hardest in 2025",
+          "url": "https://industrialcyber.co/ransomware-2/cisco-talos-identifies-surge-in-qilin-ransomware-attacks-with-manufacturing-sector-hit-hardest-in-2025/"
+        },
+        {
+          "title": "Qilin ransomware hits manufacturing hardest in 2025 surge",
+          "url": "https://www.theregister.com/2025/10/30/cisco_talos_qilin_ransomware_report/"
+        }
+      ]
+    }
+  ]
+}
