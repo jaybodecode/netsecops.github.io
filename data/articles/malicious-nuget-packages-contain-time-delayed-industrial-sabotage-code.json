@@ -1,0 +1,207 @@
+{
+  "id": "bad0bc44-53fd-4bdf-8c3f-e90d2d88b6b4",
+  "slug": "malicious-nuget-packages-contain-time-delayed-industrial-sabotage-code",
+  "headline": "Patient Sabotage: Malicious NuGet Packages with Time-Delayed ICS Payloads Discovered",
+  "title": "Malicious NuGet Packages with Time-Delayed Industrial Sabotage Code Found on Official Repository",
+  "summary": "Security researchers have discovered nine malicious packages on the NuGet repository, downloaded over 9,400 times, containing hidden, time-delayed sabotage code. One package, 'Sharp7Extend,' was specifically designed to corrupt write operations in industrial control systems (ICS) by silently causing them to fail after a grace period. This could lead to physical damage or production failures. The code was set to trigger on specific dates, some as far in the future as 2028, demonstrating a patient and highly destructive approach to supply chain attacks.",
+  "full_report": "## Executive Summary\nResearchers at Socket have uncovered a highly sophisticated and patient supply-chain attack targeting developers via the official **[NuGet](https://www.nuget.org/)** package repository. Nine malicious packages, published by an actor using the alias \"shanhai666\" and downloaded nearly 9,500 times, were found to contain dormant sabotage code. The packages provided legitimate functionality to avoid suspicion, but included hidden logic set to activate on specific future dates, some as late as 2027 and 2028. The most alarming of these, **Sharp7Extend**, contained a payload specifically designed to disrupt **[Industrial Control Systems (ICS)](https://www.cisa.gov/ics)**. After a delay, this code would cause write operations to Programmable Logic Controllers (PLCs) to fail silently, potentially leading to catastrophic physical process failures. This attack represents a dangerous evolution in supply chain threats, blending stealth, patience, and the potential for physical-world impact.\n\n---\n\n## Threat Overview\nThe attack was carried out by publishing nine seemingly useful packages to the NuGet repository. The threat actor, \"shanhai666,\" leveraged C# extension methods to weaponize the code. This technique is particularly insidious because the malicious logic is implicitly executed whenever a developer uses a standard function, such as writing to a database or a PLC, without any explicit call to the malicious code visible in their own source.\n\nThe payload had two main components:\n1.  **Time-Delayed Activation:** The malicious functions were programmed with hardcoded or encrypted trigger dates. This ensures the code remains dormant for months or years, evading detection during development and testing phases.\n2.  **Probabilistic Sabotage:** Once activated, the code would perform one of two actions:\n    *   **Process Termination:** A function would calculate a random number and, if a condition was met, call `Process.GetCurrentProcess().Kill()`, causing the application to crash intermittently and making debugging extremely difficult.\n    *   **ICS Write Failure (Sharp7Extend):** This more targeted function included a 30-90 minute grace period after application startup. Following this, it would cause up to 80% of PLC write operations to fail *silently*. The function would not return an error, making the application believe the operation was successful. This is designed to mimic intermittent hardware failure and could lead to severe consequences in an industrial environment.\n\n## Technical Analysis\n- **Attack Vector:** This is a classic software supply chain attack. The actor poisoned a public software repository with malicious libraries, knowing developers would unwittingly incorporate them into their applications. [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/).\n- **Malicious Logic:** The use of C# extension methods is a clever defense evasion and obfuscation technique. It hides the malicious call stack, making it hard for developers to trace the source of the failure.\n- **Payload:** The dual-purpose payload demonstrates intent. The generic process-killing function causes disruption, while the PLC-specific function in `Sharp7Extend` points to a clear intent to sabotage industrial processes. This is a form of [`T1499 - Endpoint Denial of Service`](https://attack.mitre.org/techniques/T1499/) at the application level and, more critically, [`T0886 - Impair Process Control`](https://attack.mitre.org/techniques/ICS/T0886/) in the ICS context.\n- **Dormancy:** The use of future trigger dates is a key element of [`T1484 - Domain Policy Modification`](https://attack.mitre.org/techniques/T1484/) (in a broader sense of time-based triggers) and is a powerful method to bypass security checks that analyze package behavior at install time.\n\n## Impact Assessment\nThe potential impact of this attack is critical, especially for the industrial sector. The `Sharp7Extend` package could cause:\n- **Physical Damage:** Failure of safety systems, leading to equipment damage or personnel injury.\n- **Production Loss:** Silent failure of write commands could lead to incorrect manufacturing processes, resulting in defective products and massive financial loss.\n- **Diagnostic Hell:** By mimicking intermittent hardware failure, the malware sends maintenance and engineering teams on a wild goose chase, wasting time and resources trying to fix non-existent physical problems while the software root cause remains hidden.\nFor non-ICS applications, the random process termination would lead to instability, data corruption, and a poor user experience, causing significant reputational damage to the software provider.\n\n## Detection & Response\n- **Dependency Scanning:** Organizations must use Software Composition Analysis (SCA) tools to scan their dependencies for known malicious packages. Socket, the discovering company, and others maintain databases of such threats. **D3FEND Technique:** [`D3-FA: File Analysis`](https://d3fend.mitre.org/technique/d3f:FileAnalysis).\n- **Behavioral Analysis:** In sandboxed environments, monitor applications for unexpected process terminations (`Process.GetCurrentProcess().Kill()`) or discrepancies between command execution and expected outcomes (e.g., a PLC write command that doesn't result in a state change).\n- **Source Code Review:** For critical applications, perform manual or automated source code review of third-party libraries. Look for suspicious code patterns like hardcoded dates, use of randomness for logic forks, or calls to process termination functions. **D3FEND Technique:** [`D3-SCA: Static Code Analysis`](https://d3fend.mitre.org/technique/d3f:StaticCodeAnalysis).\n\n## Mitigation and Recommendations\n1.  **Vet Third-Party Packages:** Do not blindly trust packages from public repositories. Use trusted, well-vetted libraries. Establish an internal policy for approving and managing third-party dependencies. **D3FEND Technique:** [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting) (applied to software libraries).\n2.  **Use Scoped Dependencies:** Whenever possible, use private, internal package repositories that only contain approved and scanned versions of external libraries. This prevents developers from accidentally pulling a malicious package from the public internet.\n3.  **Implement Runtime Protection:** For critical ICS applications, deploy runtime application self-protection (RASP) or similar tools that can monitor application behavior and detect/block anomalous actions like silent error suppression or unexpected process termination.\n4.  **Principle of Least Privilege:** Run applications with the minimum privileges necessary. While this wouldn't stop the sabotage, it could limit the blast radius if the malicious code attempted other actions.",
+  "twitter_post": "🚨 ICS ALERT: Malicious NuGet packages discovered with time-delayed sabotage code. One package, 'Sharp7Extend', silently corrupts industrial PLC operations, posing a risk of physical damage. Over 9,400 downloads. #SupplyChainAttack #ICS #OTsecurity",
+  "meta_description": "Researchers uncover a sophisticated supply chain attack on NuGet involving packages with time-delayed sabotage code designed to disrupt industrial control systems (ICS).",
+  "category": [
+    "Supply Chain Attack",
+    "Industrial Control Systems",
+    "Malware"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "NuGet",
+      "type": "product"
+    },
+    {
+      "name": "Socket",
+      "type": "security_organization"
+    },
+    {
+      "name": "shanhai666",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Sharp7Extend",
+      "type": "malware"
+    },
+    {
+      "name": "Industrial Control Systems (ICS)",
+      "type": "technology",
+      "url": "https://www.cisa.gov/ics"
+    },
+    {
+      "name": "Programmable Logic Controller (PLC)",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.esecurityplanet.com/dev-sec-ops/malicious-nuget-packages-hide-time-delayed-sabotage-code/",
+      "title": "Malicious NuGet Packages Hide Time-Delayed Sabotage Code",
+      "date": "2025-11-07",
+      "friendly_name": "eSecurityPlanet",
+      "website": "esecurityplanet.com"
+    },
+    {
+      "url": "https://thehackernews.com/2025/11/vibe-coded-malicious-vs-code-extension.html",
+      "title": "Vibe-Coded Malicious VS Code Extension Found with Built-In Ransomware Capabilities",
+      "date": "2025-11-07",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2023",
+      "summary": "The threat actor 'shanhai666' begins publishing malicious packages to NuGet."
+    },
+    {
+      "datetime": "2028-06-06",
+      "summary": "The probabilistic process-kill mechanism in the Sharp7Extend package is set to remain active until this date."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T0886",
+      "name": "Impair Process Control",
+      "tactic": "Impair Process Control"
+    },
+    {
+      "id": "T1499",
+      "name": "Endpoint Denial of Service",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1112",
+      "name": "Modify Registry",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3 EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Enforce policies that only allow dependencies signed by trusted publishers, though this can be bypassed if a legitimate publisher is compromised.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Run applications in a sandboxed environment to observe their behavior and detect malicious actions like process killing.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Use Software Composition Analysis (SCA) tools to audit all dependencies for known vulnerabilities and malicious packages.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SCA",
+      "technique_name": "Static Code Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:StaticCodeAnalysis",
+      "recommendation": "Implement a mandatory Static Code Analysis (SCA) or Software Composition Analysis (SCA) step in your CI/CD pipeline. This process should automatically scan all third-party dependencies, like the malicious NuGet packages, before they are compiled into production software. Configure the scanner to specifically look for high-risk indicators such as calls to `Process.GetCurrentProcess().Kill()`, the use of hardcoded future dates as logic triggers, or obfuscated code within extension methods. A tool like Socket (which found this threat) or others can identify packages with these characteristics, as well as those published by known malicious actors like 'shanhai666'. This automated check acts as a critical gate, preventing such time bombs from ever entering the software supply chain.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Establish a policy of dependency allowlisting, moving away from pulling packages directly from public repositories like NuGet. Instead, create a private, internal artifact repository (e.g., JFrog Artifactory, Sonatype Nexus). This repository should only contain a curated list of third-party packages that have been vetted and approved by a security team. Developers would then configure their environments to pull dependencies exclusively from this internal source. This prevents a developer from accidentally downloading a malicious or typosquatted package like 'Sharp7Extend' and ensures that only known-good components are used in the development of critical applications, especially those controlling ICS environments.",
+      "mitre_mitigation_id": "M1033"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "For critical ICS environments, deploy runtime monitoring and process analysis on the host machines running the control software. This defense-in-depth layer is designed to catch malicious behavior that slips past static checks. Configure monitoring to alert on any self-termination of the main application process, as seen with the `Process.GetCurrentProcess().Kill()` call. Additionally, for the PLC write-failure scenario, the monitoring system should correlate the software's write commands with the actual state feedback from the PLC. If the software logs a successful write but the PLC state does not change, it should trigger a high-severity alert for silent failure, allowing operators to intervene before physical processes are dangerously corrupted.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "string_pattern",
+      "value": "shanhai666",
+      "description": "The alias of the threat actor who published the malicious NuGet packages. Can be used to search code repositories and package manifests.",
+      "context": "Software Composition Analysis (SCA) tools, source code review.",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "Sharp7Extend",
+      "description": "The name of the most dangerous malicious package. Search for this dependency in .csproj files.",
+      "context": "File system scanning, dependency manifests.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "Process.GetCurrentProcess().Kill()",
+      "description": "The C# code used to terminate the application process. Static analysis can find this.",
+      "context": "Static code analysis of .NET assemblies.",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "Hardcoded future dates",
+      "description": "The malware contains hardcoded dates (e.g., 2027, 2028) as triggers. Searching for future-dated constants in decompiled code is a strong indicator.",
+      "context": "Decompilation and static analysis of third-party libraries.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Supply Chain Attack",
+    "ICS",
+    "OT",
+    "NuGet",
+    "Sabotage",
+    "Malware"
+  ],
+  "extract_datetime": "2025-11-07T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Manufacturing",
+      "Critical Infrastructure",
+      "Technology",
+      "Energy"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Users of .NET applications"
+    ]
+  },
+  "pub_date": "2025-11-07",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-11-07T15:00:00.000Z",
+  "updatedAt": "2025-11-07T15:00:00.000Z"
+}
