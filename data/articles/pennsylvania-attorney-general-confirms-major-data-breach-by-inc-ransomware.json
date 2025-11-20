@@ -1,0 +1,263 @@
+{
+  "id": "ae3095a7-234a-43d1-9a93-4a8a375dc1d0",
+  "slug": "pennsylvania-attorney-general-confirms-major-data-breach-by-inc-ransomware",
+  "headline": "Inc Ransom Cripples PA Attorney General's Office, Exfiltrates 5.7 TB of Data",
+  "title": "Pennsylvania Attorney General Confirms Massive Data Breach Following Inc Ransomware Attack",
+  "summary": "The Pennsylvania Office of the Attorney General (OAG) has confirmed it suffered a severe data breach orchestrated by the Inc Ransom ransomware group. The attackers exploited the 'CitrixBleed2' vulnerability (CVE-2025-5777) to gain initial access and subsequently exfiltrated 5.7 terabytes of highly sensitive data. The stolen information includes Social Security numbers, medical details, and confidential investigative files. The attack, which occurred in August 2025, caused a three-week operational disruption for the agency's 1,200 staff members. The OAG has refused to pay the ransom and is working with the FBI on the investigation.",
+  "full_report": "## Executive Summary\nThe **[Pennsylvania Office of the Attorney General (OAG)](https://www.attorneygeneral.gov/)** has officially confirmed a significant data breach resulting from a ransomware attack by the **[Inc Ransom](https://malpedia.caad.fkie.fraunhofer.de/actor/inc_ransom)** group. The threat actors exploited the **CitrixBleed2** vulnerability (**CVE-2025-5777**) to infiltrate the agency's network in August 2025. The attack led to a three-week disruption of the OAG's IT systems and the exfiltration of approximately 5.7 terabytes of data. The compromised information is highly sensitive, containing Social Security numbers, medical information, and internal investigative files. The OAG has stated it will not pay the ransom and is currently notifying affected individuals while collaborating with the **[FBI](https://www.fbi.gov)**.\n\n---\n\n## Threat Overview\n- **Threat Actor:** **[Inc Ransom](https://malpedia.caad.fkie.fraunhofer.de/actor/inc_ransom)**, a Ransomware-as-a-Service (RaaS) operation that emerged in July 2023.\n- **Victim:** **[Pennsylvania Office of the Attorney General (OAG)](https://www.attorneygeneral.gov/)**, a state law enforcement agency.\n- **Initial Access Vector:** Exploitation of **CVE-2025-5777** (**CitrixBleed2**) on the agency's public-facing **[Citrix](https://www.citrix.com/)** NetScaler appliances.\n- **Actions on Objectives:** The group engaged in double extortion, first exfiltrating a massive volume of data ([`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/)) and then likely deploying ransomware to encrypt systems ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)).\n\n## Technical Analysis\nThe attack chain began with the exploitation of **CVE-2025-5777**, a critical vulnerability in Citrix NetScaler ADC and Gateway appliances. This flaw allows for unauthenticated remote code execution, giving attackers a direct entry point into the network. This is a classic example of [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/).\n\nOnce inside, Inc Ransom operators likely performed the following actions:\n1.  **Reconnaissance:** Mapped the internal network to identify high-value targets like domain controllers and file servers.\n2.  **Credential Access:** Used tools like **[Mimikatz](https://attack.mitre.org/software/S0002/)** to dump credentials and escalate privileges.\n3.  **Lateral Movement:** Moved across the network using protocols like RDP or SMB to access critical data repositories.\n4.  **Data Exfiltration:** Staged and compressed 5.7 TB of data before exfiltrating it to actor-controlled cloud storage. The sheer volume suggests a prolonged period of undetected access.\n5.  **Impact:** Deployed the Inc Ransom payload to encrypt files across the network, causing widespread operational disruption.\n\n## Impact Assessment\nThe impact on the OAG is severe and multi-faceted:\n- **Operational Disruption:** A three-week outage of email, phone, and website services for 1,200 staff members severely hampered law enforcement and administrative functions.\n- **Data Breach:** The exfiltration of 5.7 TB of data containing PII (names, SSNs) and PHI (medical information) creates a massive privacy crisis and long-term risk of identity theft and fraud for an unknown number of Pennsylvania residents.\n- **Compromise of Investigations:** The theft of investigative files, including information related to the use of **Cellebrite** forensic software, could jeopardize ongoing criminal cases, expose confidential informants, and reveal law enforcement methodologies to other criminals.\n- **Reputational Damage:** This incident undermines public trust in the OAG's ability to protect sensitive citizen data.\n- **Financial Cost:** The costs for incident response, system restoration, identity protection services for victims, and potential legal fees will be substantial.\n\n## Cyber Observables for Detection\nOrganizations using Citrix appliances should hunt for signs of compromise related to **CVE-2025-5777**:\n\n| Type | Value | Description |\n|---|---|---|\n| log_source | `Citrix ADC / Gateway logs` | Review logs for anomalous requests or patterns indicative of exploitation attempts against CVE-2025-5777. |\n| network_traffic_pattern | `Unusual outbound data transfers` | Monitor for large, sustained data flows from the internal network to unknown external IP addresses or cloud storage services. |\n| process_name | `powershell.exe` | Look for PowerShell processes executing obfuscated commands, often used for reconnaissance and lateral movement post-exploitation. |\n| event_id | `4769` (Windows) | A high volume of Kerberos service ticket requests (Kerberoasting) can indicate an attacker attempting to crack service account credentials. |\n\n## Detection & Response\n- **Vulnerability Scanning:** Continuously scan external-facing infrastructure for vulnerabilities like **CVE-2025-5777**. Prioritize patching based on KEV status and exploitability.\n- **Network Segmentation:** Implement and monitor network segmentation to prevent attackers from moving laterally from a compromised web appliance to critical internal servers. D3FEND's [`D3-NI - Network Isolation`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation) is a core principle.\n- **Egress Filtering:** Implement strict outbound traffic filtering to block connections to known malicious IPs and to detect/block large, anomalous data transfers. This aligns with D3FEND's [`D3-OTF - Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering).\n- **Behavioral Monitoring:** Use an EDR to detect post-exploitation techniques, such as credential dumping, lateral movement using PsExec or WMI, and the execution of ransomware payloads.\n\n## Mitigation\n1.  **Patch Vulnerabilities:** Immediately patch all internet-facing systems, especially network appliances like Citrix ADCs, per vendor advisories. This is the most effective way to prevent initial access via this vector ([`D3-SU - Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)).\n2.  **Multi-Factor Authentication (MFA):** Enforce MFA on all external access points and for all privileged accounts to mitigate the risk of compromised credentials being used for lateral movement.\n3.  **Network Segmentation:** Isolate critical systems and data repositories from the general network. Prevent direct communication from internet-facing appliances to internal domain controllers or sensitive file shares.\n4.  **Backup and Recovery:** Maintain offline, immutable backups of critical data and systems. Regularly test restoration procedures to ensure a swift recovery from a destructive ransomware attack.",
+  "twitter_post": "The PA Attorney General's Office confirms a devastating data breach by Inc Ransom. ⚠️ Attackers exploited a Citrix flaw (CVE-2025-5777) to steal 5.7 TB of data, including SSNs & medical info. #Ransomware #DataBreach #IncRansom #Government",
+  "meta_description": "Learn about the major data breach at the Pennsylvania Office of the Attorney General, where the Inc Ransom group exploited CVE-2025-5777 to steal 5.7 TB of sensitive data, including SSNs and medical information.",
+  "category": [
+    "Ransomware",
+    "Data Breach",
+    "Vulnerability"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Pennsylvania Office of the Attorney General",
+      "type": "government_agency"
+    },
+    {
+      "name": "Inc Ransom",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/inc_ransom"
+    },
+    {
+      "name": "Citrix",
+      "type": "vendor",
+      "url": "https://www.citrix.com/"
+    },
+    {
+      "name": "Citrix NetScaler",
+      "type": "product"
+    },
+    {
+      "name": "Cellebrite",
+      "type": "company"
+    },
+    {
+      "name": "FBI",
+      "type": "government_agency",
+      "url": "https://www.fbi.gov"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-5777",
+      "kev": true,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/pennsylvania-attorney-general-confirms-data-breach-after-ransomware-attack/",
+      "title": "Pennsylvania Attorney General Confirms Data Breach After Ransomware Attack",
+      "date": "2025-11-18",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFiNQ085O1OZR_Uszr8tVIlg749rGlZWVvUWkZU1l9zRbymFMpjwdRXx-Gxy24ntRTZCrcZhmUtEWvoMMbvedGEISkbu6iaajBSH-lCrM_fASskvhhlWMHa-v1-F3B3NbKSAsH0nzPgKVMinSLBSqBWYZQPqIY9N8TfpDMWbXXo1wOfQ3r4mCCwjqdifaahoE4Mzn9heqAoHfY_9FZHG5d4i5571cfHeGkDl0CEkqwobZLnCkQycGJWlg==",
+      "title": "19th November 2025 Cyber Update: State AG Office Confirms Major Data Breach by Ransomware Group",
+      "date": "2025-11-19",
+      "friendly_name": "Google",
+      "website": "vertexaisearch.cloud.google.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-08",
+      "summary": "Inc Ransom group conducts ransomware attack against the PA OAG, exfiltrating data."
+    },
+    {
+      "datetime": "2025-11-18T00:00:00Z",
+      "summary": "The Pennsylvania Office of the Attorney General officially confirms the data breach."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Timely patching of the CitrixBleed2 vulnerability would have prevented the initial intrusion.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        },
+        {
+          "id": "D3-ET",
+          "name": "Encrypted Tunnels",
+          "url": "https://d3fend.mitre.org/technique/d3f:EncryptedTunnels"
+        },
+        {
+          "id": "D3-ISVA",
+          "name": "Inbound Session Volume Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundSessionVolumeAnalysis"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Proper network segmentation could have contained the breach and prevented the attackers from accessing sensitive internal data from the compromised edge appliance.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implementing strict egress filtering rules could have detected or blocked the exfiltration of 5.7 TB of data.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Comprehensive logging and auditing of network traffic and endpoint activity could have provided early warning of the intrusion.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To prevent catastrophic data exfiltration like the 5.7 TB theft from the OAG, organizations must implement robust outbound traffic filtering. This is not just about blocking known bad IPs. Configure perimeter firewalls and web proxies to deny all outbound traffic by default, only allowing connections on specific ports and protocols to approved destinations. For server segments, this policy should be extremely strict. Critically, deploy a solution that can analyze traffic volume and patterns. A rule should be created to trigger a high-severity alert if any internal system begins uploading terabytes, or even gigabytes, of data to an external location, especially cloud storage providers not explicitly whitelisted for business use. This technique would have turned the data exfiltration phase of the Inc Ransom attack into a massive, unmissable detection event, allowing for intervention before the full damage was done.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-ITF",
+      "technique_name": "Inbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
+      "recommendation": "While patching is the ultimate fix for CVE-2025-5777, Inbound Traffic Filtering via a Web Application Firewall (WAF) can serve as a powerful virtual patch. Security teams should deploy a WAF in front of critical web-facing applications like Citrix NetScaler. Configure the WAF with rules specifically designed to detect and block the command injection patterns associated with CitrixBleed2 and similar vulnerabilities. These rules inspect incoming HTTP/HTTPS requests for malicious signatures before they reach the vulnerable appliance. This provides a crucial layer of defense, especially when a patch cannot be immediately deployed. It effectively hardens the application from the outside, mitigating the initial access vector used by Inc Ransom in this attack.",
+      "mitre_mitigation_id": "M1031"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Citrix NetScaler System Logs",
+      "description": "Log source containing evidence of exploitation attempts against CVE-2025-5777 and subsequent unauthorized access.",
+      "context": "Review logs on Citrix appliances for unusual patterns, errors, or access from unexpected IP addresses.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Large outbound data transfer",
+      "description": "Exfiltration of 5.7 TB of data would create a significant and detectable network anomaly.",
+      "context": "Monitor NetFlow or firewall logs for sustained, high-volume data transfers from internal servers to external destinations, especially cloud storage providers.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.inc",
+      "description": "Inc Ransomware was known to use the .inc file extension for encrypted files, though this can change.",
+      "context": "Use file integrity monitoring (FIM) or endpoint scanning to search for files with extensions associated with Inc Ransom.",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "7z.exe",
+      "description": "Threat actors often use legitimate archiving tools like 7-Zip to stage and compress data before exfiltration.",
+      "context": "Monitor for the execution of `7z.exe`, `rar.exe`, or similar tools on servers, especially when initiated by system accounts or web services.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Inc Ransom",
+    "Ransomware",
+    "Data Breach",
+    "CVE-2025-5777",
+    "CitrixBleed2",
+    "Government",
+    "Pennsylvania"
+  ],
+  "extract_datetime": "2025-11-19T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "governments_affected": [
+      "Pennsylvania Office of the Attorney General"
+    ],
+    "industries_affected": [
+      "Government"
+    ],
+    "people_affected_estimate": "Unknown number of individuals, includes 1,200 staff members"
+  },
+  "keywords": [
+    "Inc Ransom",
+    "Pennsylvania Attorney General data breach",
+    "CVE-2025-5777",
+    "CitrixBleed2 exploit",
+    "ransomware attack",
+    "government data breach",
+    "double extortion"
+  ],
+  "pub_date": "2025-11-19",
+  "reading_time_minutes": 7,
+  "createdAt": "2025-11-19T15:00:00.000Z",
+  "updatedAt": "2025-11-19T15:00:00.000Z"
+}
