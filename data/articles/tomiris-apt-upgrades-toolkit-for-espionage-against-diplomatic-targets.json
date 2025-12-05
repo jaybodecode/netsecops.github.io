@@ -1,0 +1,203 @@
+{
+  "id": "e5ab69b4-d9a0-4bd0-b563-f13bcad46411",
+  "slug": "tomiris-apt-upgrades-toolkit-for-espionage-against-diplomatic-targets",
+  "headline": "Tomiris APT Refines Toolkit, Using Discord and Telegram for C2 in Diplomatic Attacks",
+  "title": "Tomiris APT Enhances Espionage Campaign Against Diplomatic Targets in Russia and Central Asia with New Tools",
+  "summary": "The cyber-espionage group 'Tomiris' has upgraded its tactical arsenal in a new wave of attacks targeting diplomatic and government organizations in Russia and Commonwealth of Independent States (CIS) countries. According to a new report from Kaspersky, the APT group is now using public services like Discord and Telegram for command-and-control (C2) communications to better evade detection. The group uses tailored spear-phishing emails to deliver a variety of payloads, including reverse shells and custom backdoors, and deploys specialized 'FileGrabber' malware to steal documents, demonstrating a focus on long-term intelligence gathering.",
+  "full_report": "## Executive Summary\nThe Advanced Persistent Threat (APT) group known as **Tomiris** has launched a new series of highly targeted cyber-espionage campaigns in 2025, refining its tools and techniques to enhance stealth. According to a report by **[Kaspersky](https://www.kaspersky.com)**, the group is targeting foreign ministries and government bodies in Russia and several Commonwealth of Independent States (CIS) countries, including Turkmenistan, Kyrgyzstan, Tajikistan, and Uzbekistan. A key evolution in their tactics is the use of legitimate public services, specifically **[Discord](https://discord.com/)** and **[Telegram](https://telegram.org/)**, for command-and-control (C2) communications. This allows the group to blend its malicious traffic with legitimate network activity, complicating detection efforts. The campaign's goal remains long-term intelligence gathering from high-value diplomatic targets.\n\n---\n\n## Threat Overview\nTomiris continues to rely on spear-phishing as its initial access vector, using emails with content carefully crafted in Russian and other national languages to appear legitimate to its targets. These emails deliver a diverse range of malware payloads.\n\nThe group's updated toolkit includes:\n- **Reverse Shells:** Written in multiple languages (C/C++, Go, Rust, Python) for flexibility across different target environments.\n- **Custom Backdoors:** Provides persistent access and control over compromised systems.\n- **Open-Source C2 Frameworks:** The group has been observed using the **Havoc** framework.\n- **FileGrabber Malware:** Specialized tools designed to search for and exfiltrate specific file types, such as PDFs and Word documents.\n\nThe most notable tactical shift is the adoption of Discord and Telegram for C2. By using the APIs of these popular services, the malware can send and receive commands and exfiltrate data over standard, encrypted HTTPS connections, making it difficult for network security tools to distinguish from benign user activity.\n\n---\n\n## Technical Analysis\nTomiris's TTPs demonstrate a focus on stealth, persistence, and adaptability.\n\n- **[`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/):** The use of tailored emails with malicious attachments to gain initial access.\n- **[`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/):** The core of their new C2 strategy. Using Discord and Telegram APIs for C2 communication over HTTPS.\n- **[`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/):** After initial access, the first-stage payload downloads further tools like backdoors and file grabbers.\n- **[`T1059 - Command and Scripting Interpreter`](https://attack.mitre.org/techniques/T1059/):** The use of reverse shells in various scripting languages (Python, Go) for execution.\n- **[`T1005 - Data from Local System`](https://attack.mitre.org/techniques/T1005/):** The 'FileGrabber' malware is used to collect documents from the compromised host.\n- **[`T1573.001 - Symmetric Cryptography`](https://attack.mitre.org/techniques/T1573/001/):** Traffic to Discord/Telegram is encrypted by default (TLS), which is a form of encrypted C2 channel.\n\n> The use of legitimate public services for C2 is a growing trend among APTs. It offloads infrastructure management to reputable providers and makes blocking C2 traffic challenging, as blocking all of Discord or Telegram is not feasible for most organizations.\n\n---\n\n## Impact Assessment\nThe impact of this campaign is focused on espionage and intelligence theft. By targeting diplomatic and government entities, Tomiris aims to steal sensitive state secrets, including political strategies, negotiation positions, and classified documents. A successful breach can provide the group's sponsors with a significant strategic advantage in international relations. The long-term persistence achieved through stealthy C2 channels means that the targeted organizations could be compromised for extended periods, leading to a continuous drain of sensitive information.\n\n---\n\n## Cyber Observables for Detection\nDetecting C2 over legitimate services requires looking for subtle anomalies.\n\n| Type | Value | Description |\n|---|---|---|\n| network_traffic_pattern | `discord.com/api` or `api.telegram.org` | Monitor for connections to these API endpoints from unusual processes (e.g., a standalone executable in `TEMP` folder) or from servers that should not be running chat clients. |\n| network_traffic_pattern | High-frequency, small data packets | Look for beaconing behavior to these services, characterized by regular, small data transfers, which is indicative of C2 heartbeats. |\n| process_name | Unusual process names making web requests | An unknown or strangely named process (`doc_viewer.exe`) making API calls to Discord is highly suspicious. |\n| command_line_pattern | `curl` or `wget` to Discord/Telegram | Command-line execution of tools to download payloads from or exfiltrate data to these services. |\n\n---\n\n## Detection & Response\n1.  **TLS/SSL Inspection:** Implementing TLS inspection (also known as SSL decryption) on outbound network traffic is essential to gain visibility into the content of encrypted C2 channels like Discord and Telegram. This allows for the detection of malicious commands or exfiltrated data within the HTTPS traffic. This is **D3FEND's** [`Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n2.  **Restrict Web-Based Content:** For servers and sensitive workstations, create strict allowlists for outbound web traffic. If there is no business reason for a server to connect to `discord.com` or `telegram.org`, block it. This is **D3FEND's** [`Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering).\n3.  **Endpoint Behavioral Analysis:** Use an EDR to detect the malware's behavior on the endpoint. For example, a process that opens, reads, and then sends multiple PDF and DOCX files to a Discord API endpoint is a strong indicator of the FileGrabber malware.\n\n**Response:** If a compromise is detected, the C2 channel must be blocked at the firewall. The infected host should be isolated, and a forensic analysis should be performed to identify all malware components. All credentials on the host must be considered compromised and rotated.\n\n---\n\n## Mitigation\n1.  **Email Security and User Training:** Strengthen email security gateways to block sophisticated phishing attempts. Train employees in diplomatic and government roles to be extremely cautious of unsolicited emails and attachments, as they are high-value targets.\n2.  **Application Control:** Use application control policies to block the use of Discord, Telegram, and other similar applications on corporate devices where they are not required for business purposes. This is a form of **D3FEND's** [`Executable Denylisting`](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting).\n3.  **Egress Traffic Filtering:** As mentioned in detection, creating and enforcing a strict egress filtering policy is a powerful mitigation. The default policy should be to deny all outbound traffic, with explicit rules created for what is allowed.\n4.  **Endpoint Hardening:** Reduce the attack surface on endpoints by removing unnecessary interpreters like Python if they are not required for the user's role.",
+  "twitter_post": "APT group Tomiris is upgrading its toolkit, now using Discord and Telegram for C2 communications in attacks on diplomatic targets in Russia & Central Asia. The group uses spear-phishing to deploy backdoors and file-stealing malware. #APT #Tomiris",
+  "meta_description": "The cyber-espionage group Tomiris has enhanced its attacks on diplomatic targets by using public services like Discord and Telegram for command-and-control, making their campaigns stealthier and harder to detect.",
+  "category": [
+    "Threat Actor",
+    "Cyberattack",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Tomiris",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "vendor",
+      "url": "https://www.kaspersky.com"
+    },
+    {
+      "name": "Discord",
+      "type": "product",
+      "url": "https://discord.com/"
+    },
+    {
+      "name": "Telegram",
+      "type": "product",
+      "url": "https://telegram.org/"
+    },
+    {
+      "name": "Havoc",
+      "type": "malware"
+    },
+    {
+      "name": "Russia",
+      "type": "other"
+    },
+    {
+      "name": "Commonwealth of Independent States (CIS)",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cybersecurity-review.com/news/tomiris-wreaks-havoc-new-tools-and-techniques-of-the-apt-group",
+      "title": "Tomiris wreaks Havoc: New tools and techniques of the APT group",
+      "date": "2025-11-28",
+      "friendly_name": "Cybersecurity Review",
+      "website": "cybersecurity-review.com"
+    },
+    {
+      "url": "https://gbhackers.com/tomiris-hacker-group/",
+      "title": "Tomiris Hacker Group Unveils New Tools and Techniques for Global Attacks",
+      "date": "2025-11-29",
+      "friendly_name": "GBHackers on Security",
+      "website": "gbhackers.com"
+    },
+    {
+      "url": "https://thehackernews.com/2025/12/tomiris-shifts-to-public-service.html",
+      "title": "Tomiris Shifts to Public-Service Implants for Stealthier C2 in Attacks on Government Targets",
+      "date": "2025-12-01",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1005",
+      "name": "Data from Local System",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Blocking access to non-essential web services like Discord and Telegram from sensitive government networks can prevent this C2 technique from working.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1020",
+      "name": "SSL/TLS Inspection",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NTA",
+          "name": "Network Traffic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis"
+        }
+      ],
+      "description": "Decrypting outbound TLS traffic allows for the inspection of C2 communications, even when they are hidden within legitimate services.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Training high-value diplomatic targets to recognize and report sophisticated spear-phishing emails is a critical defense against the initial access vector.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Implement a default-deny egress filtering policy on firewalls protecting sensitive government networks. Explicitly block connections to the domains and APIs of public services like Discord and Telegram (`discord.com`, `api.telegram.org`) from all servers and workstations that do not have a specific business requirement for them. This is the most effective way to neutralize the Tomiris group's updated C2 strategy. While the APT can pivot to other services, this forces them to retool and disrupts ongoing operations. For organizations where these services are used, filtering should be more granular, allowing access only from specific user groups or devices.",
+      "mitre_mitigation_id": "M1021"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Deploy TLS/SSL inspection on network egress points to gain visibility into the encrypted C2 traffic. While this can be resource-intensive, it is essential for detecting threats that abuse legitimate services. Once traffic is decrypted, look for indicators of C2 behavior, such as non-browser user agents connecting to Discord's API, periodic beaconing with small payloads, or large, unexplained data uploads to these services. Correlating network data with endpoint process information (e.g., a custom backdoor process initiating the connection) will provide high-confidence alerts.",
+      "mitre_mitigation_id": "M1020"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "api_endpoint",
+      "value": "discord.com/api/v9/channels/{channel.id}/messages",
+      "description": "Discord API endpoint used for sending messages. Malware may use this to exfiltrate data or receive commands. Monitor for non-browser processes accessing this.",
+      "context": "Proxy logs, EDR network events",
+      "confidence": "medium"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "api.telegram.org/bot{token}/sendMessage",
+      "description": "Telegram Bot API endpoint for sending messages. Connections to this endpoint from server environments or non-Telegram processes are highly suspicious.",
+      "context": "Proxy logs, Firewall logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "havoc.exe",
+      "description": "Default executable name for the Havoc C2 framework client. Its presence is a strong indicator of compromise.",
+      "context": "EDR, process monitoring",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Tomiris",
+    "APT",
+    "Cyber Espionage",
+    "Discord",
+    "Telegram",
+    "C2",
+    "Kaspersky",
+    "Havoc"
+  ],
+  "extract_datetime": "2025-11-28T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Russia",
+      "Turkmenistan",
+      "Kyrgyzstan",
+      "Tajikistan",
+      "Uzbekistan"
+    ],
+    "industries_affected": [
+      "Government"
+    ],
+    "other_affected": [
+      "Diplomatic organizations",
+      "Intergovernmental organizations"
+    ]
+  },
+  "pub_date": "2025-11-28",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-11-28T15:00:00.000Z",
+  "updatedAt": "2025-11-28T15:00:00.000Z"
+}
