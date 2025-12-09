@@ -1,0 +1,183 @@
+{
+  "id": "86a3044a-3ba3-4d07-99dc-d240fc82e5a4",
+  "slug": "vishing-campaign-abuses-microsoft-teams-and-quickassist",
+  "headline": "Vishing Attackers Impersonate IT on Teams, Trick Users into Running Fileless Malware",
+  "title": "Vishing Campaign Abuses Microsoft Teams and QuickAssist to Deploy Fileless .NET Malware",
+  "summary": "A sophisticated vishing (voice phishing) campaign is abusing trusted enterprise tools to deploy stealthy malware. Attackers impersonate IT support staff on Microsoft Teams, convincing users to initiate a Windows Quick Assist session. Once they have remote access, the attackers direct the user to a malicious site to download a loader. This loader then fetches an encrypted payload and executes it directly in memory using .NET reflection, a fileless technique designed to evade traditional antivirus and endpoint detection solutions. The campaign highlights the increasing trend of blending social engineering with the abuse of legitimate software.",
+  "full_report": "## Executive Summary\nA cunning vishing (voice phishing) campaign is exploiting the trust users place in corporate communication and support tools. Threat actors are impersonating IT support personnel on **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** and socially engineering employees into granting them remote access via the legitimate **Windows Quick Assist** tool. Once connected, the attackers guide the victim to download a malicious loader, which then deploys a multi-stage, fileless .NET payload. This payload is decrypted and executed entirely in memory, making it invisible to traditional file-based security scanners. This attack, analyzed by **[Trustwave SpiderLabs](https://www.trustwave.com/en-us/resources/spiderlabs/)**, demonstrates how attackers can chain together legitimate tools to bypass technical defenses, making user awareness and behavioral detection more critical than ever.\n\n---\n\n## Threat Overview\nThe attack is a textbook example of blending social engineering with living-off-the-land techniques. The stages are as follows:\n1.  **Impersonation & Lure**: The attacker, using a spoofed display name of a senior IT employee, initiates a call or chat with the target via Microsoft Teams.\n2.  **Social Engineering**: The attacker uses a pretext (e.g., \"We need to perform a security update\") to convince the user to launch the built-in Windows Quick Assist application and share the access code.\n3.  **Remote Access**: With the code, the attacker gains full remote control of the user's desktop.\n4.  **Malicious Download**: The attacker, now controlling the machine, opens a web browser and navigates to a malicious domain (`ciscocyber[.]com`) to download a file named `updater.exe`.\n5.  **Fileless Execution**: The `updater.exe` is a .NET Core 8.0 loader. It connects to a second domain (`jysync[.]info`) to fetch an encryption key and an encrypted payload. The payload is then decrypted (using AES-CBC and XOR) and executed directly in memory using .NET reflection, never touching the disk in its final, malicious form.\n\n## Technical Analysis\nThis campaign leverages several MITRE ATT&CK techniques:\n- **Initial Access**: [`T1566.004 - Spearphishing Voice`](https://attack.mitre.org/techniques/T1566/004/) (Vishing).\n- **Execution**: [`T1204.002 - User Execution: Malicious File`](https://attack.mitre.org/techniques/T1204/002/), as the user is guided to download and run the initial loader.\n- **Defense Evasion**: The core of the attack. It uses [`T1027.002 - Software Packing`](https://attack.mitre.org/techniques/T1027/002/) (the .NET wrapper) and [`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/) (encrypted payload). The primary technique is [`T1620 - Reflective Code Loading`](https://attack.mitre.org/techniques/T1620/), where the malware is executed from memory.\n- **Command and Control**: [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/) is used to download the initial loader and the second-stage payload.\n- **Remote Access Software**: [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/) is used by abusing the legitimate Quick Assist tool.\n\n## Impact Assessment\nWhile the final payload was not detailed, a successful intrusion of this type can lead to significant consequences. The fileless nature of the malware allows it to operate undetected for longer periods. Potential impacts include:\n- **Credential Theft**: The malware could be an infostealer designed to harvest browser passwords, application credentials, and session cookies.\n- **Ransomware Deployment**: The initial access could be sold or used to deploy ransomware across the network.\n- **Data Exfiltration**: The attacker has control of an endpoint inside the network, which can be used to access and exfiltrate sensitive data from network shares or internal applications.\n- **Business Email Compromise (BEC)**: The compromised user account could be used to launch BEC attacks against other employees or business partners.\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| `domain` | `ciscocyber[.]com` | Malicious domain used to host the initial loader (`updater.exe`). |\n| `domain` | `jysync[.]info` | Malicious domain used to host the encrypted payload and decryption key. |\n| `file_name` | `updater.exe` | The name of the .NET loader downloaded by the victim. |\n\n## Detection & Response\n- **Monitor Quick Assist Usage**: Log and alert on all executions of `QuickAssist.exe`. While it is a legitimate tool, its usage may be rare in some organizations. Correlate its execution with subsequent suspicious activity, such as downloads of new executables or PowerShell activity. This is an application of D3FEND's [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n- **Network Monitoring**: Block and alert on any network connections to the known malicious domains (`ciscocyber[.]com`, `jysync[.]info`). Monitor for .NET processes making external network connections, which can be anomalous.\n- **.NET Logging**: Enable and monitor .NET runtime logging. This can provide visibility into reflectively loaded assemblies, even if they are not written to disk.\n- **User Education & Reporting**: Train users to be highly skeptical of unsolicited requests for remote access, even if they appear to come from internal IT. Establish a clear and simple process for users to verify such requests and report suspicious activity.\n\n## Mitigation\n1.  **Restrict or Block Quick Assist**: If your organization does not use Windows Quick Assist for legitimate support, consider blocking its execution entirely using application control policies like AppLocker or WDAC. This removes the abused tool from the equation. This maps to [`D3-EDL: Executable Denylisting`](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting).\n2.  **User Awareness Training**: Conduct targeted training on vishing and social engineering. Specifically, instruct users to never grant remote access or install software based on an unsolicited Teams, email, or phone call. All support requests should be verified through a separate, trusted channel.\n3.  **Endpoint Hardening**: Use Attack Surface Reduction (ASR) rules to block executable files from running unless they meet specific age, prevalence, or trusted list criteria. This can prevent the initial `updater.exe` from running.\n4.  **Multi-Factor Authentication (MFA)**: Enforce MFA on all accounts. While it would not stop this specific attack flow (which compromises a session, not credentials), it is a foundational defense against account takeover.",
+  "twitter_post": "Vishing attackers are now using Microsoft Teams and Quick Assist to gain remote access. 📞 They impersonate IT support, trick users into running a fileless .NET malware that executes in memory to evade detection. #Vishing #Phishing #SocialEngineering",
+  "meta_description": "A new vishing campaign uses Microsoft Teams and Windows Quick Assist for social engineering, leading to the deployment of fileless .NET malware that executes in memory.",
+  "category": [
+    "Phishing",
+    "Malware",
+    "Security Operations"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "Microsoft Teams",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+    },
+    {
+      "name": "Windows Quick Assist",
+      "type": "product"
+    },
+    {
+      "name": ".NET",
+      "type": "technology"
+    },
+    {
+      "name": "Trustwave",
+      "type": "vendor",
+      "url": "https://www.trustwave.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://gbhackers.on-security/2025/12/new-vishing-attack-exploits-microsoft.html",
+      "title": "New Vishing Attack Exploits Microsoft Teams and QuickAssist to Deploy .NET Malware",
+      "date": "2025-12-09",
+      "friendly_name": "GBHackers",
+      "website": "gbhackers.on-security"
+    },
+    {
+      "url": "https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/microsoft-teams-and-quickassist-exploited-in-vishing-attack/",
+      "title": "Microsoft Teams and QuickAssist Exploited in New Vishing Attack to Spread .NET Malware",
+      "date": "2025-12-09",
+      "friendly_name": "Trustwave",
+      "website": "trustwave.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.004",
+      "name": "Spearphishing Voice",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1620",
+      "name": "Reflective Code Loading",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "The most critical defense is training users to recognize and report social engineering attempts and to never grant remote access from unsolicited requests.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Block the execution of `QuickAssist.exe` if it is not a sanctioned IT support tool in your organization.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [],
+      "description": "Use EDR to detect the suspicious chain of events: `QuickAssist.exe` runs, followed by a browser downloading an executable, followed by that executable making new network connections.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "The most direct technical countermeasure to this specific vishing campaign is to block the tool being abused for remote access. Use an application control technology like Windows Defender Application Control (WDAC) or AppLocker to create a rule that explicitly denies the execution of `QuickAssist.exe` for all users, or at least for all non-IT support staff. If your organization has a standardized tool for remote support (e.g., SCCM Remote Control, TeamViewer, BeyondTrust), there is no business reason for Quick Assist to be available. By denylisting this executable, you break the attack chain at the remote access stage, rendering the attacker's social engineering efforts ineffective even if the user is successfully tricked.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "To detect this activity post-compromise, focus on the behavioral anomalies. Configure your SIEM to correlate events and alert on the following pattern: 1) A `QuickAssist.exe` process is started. 2) Within 10 minutes on the same host, a web browser process (`chrome.exe`, `msedge.exe`) downloads a new executable file. 3) That new executable (e.g., `updater.exe`) is then observed making an outbound network connection to a low-reputation domain. This sequence of events is highly indicative of this attack TTP. By analyzing the pattern of resource access—from remote control software to browser to network—you can create a high-fidelity detection that identifies the attack even though it uses legitimate tools and fileless techniques.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "ciscocyber[.]com",
+      "description": "Domain hosting the initial malware loader"
+    },
+    {
+      "type": "domain",
+      "value": "jysync[.]info",
+      "description": "Domain hosting the encrypted second-stage payload"
+    },
+    {
+      "type": "file_name",
+      "value": "updater.exe",
+      "description": "Malicious .NET loader"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "QuickAssist.exe",
+      "description": "Execution of the legitimate Windows Quick Assist tool, which is abused for initial remote access.",
+      "context": "EDR logs, process execution logs (Event ID 4688).",
+      "confidence": "low"
+    },
+    {
+      "type": "other",
+      "value": "A .NET process making an outbound connection to an unknown domain.",
+      "description": "The loader (`updater.exe`) connects to `jysync[.]info` to download the payload. This behavior can be anomalous.",
+      "context": "EDR with network connection monitoring, firewall logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Reflective loading of a .NET assembly.",
+      "description": "The final payload is executed directly from memory using .NET reflection. Advanced EDRs or memory analysis tools can detect this.",
+      "context": "Advanced EDR telemetry, memory forensics.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Vishing",
+    "Social Engineering",
+    "Microsoft Teams",
+    "QuickAssist",
+    "Fileless Malware",
+    ".NET"
+  ],
+  "extract_datetime": "2025-12-09T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Any enterprise using Microsoft Teams"
+    ]
+  },
+  "pub_date": "2025-12-09",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-12-09T15:00:00.000Z",
+  "updatedAt": "2025-12-09T15:00:00.000Z"
+}
