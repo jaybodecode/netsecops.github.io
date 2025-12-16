@@ -1,0 +1,198 @@
+{
+  "id": "1cd79e4d-0735-45ae-8777-3e5a700b517a",
+  "slug": "critical-authentication-bypass-and-rce-flaws-patched-in-freepbx",
+  "headline": "FreePBX Patches Critical Auth Bypass and RCE Flaws; Update VoIP Platforms Immediately",
+  "title": "Multiple Critical Vulnerabilities Patched in FreePBX VoIP Platform, Including Authentication Bypass and Remote Code Execution",
+  "summary": "The popular open-source VoIP platform FreePBX has been updated to fix several serious security vulnerabilities, including a critical authentication bypass (CVE-2025-66039) with a 9.3 CVSS score. This flaw, present in a non-default configuration, allows an attacker to bypass the admin login and potentially achieve remote code execution. Other patched high-severity issues include multiple authenticated SQL injection flaws (CVE-2025-61675) and an arbitrary file upload bug (CVE-2025-61678). These could be chained to upload a web shell and take full control of the server. Administrators are urged to update their FreePBX instances to the latest versions to mitigate these risks.",
+  "full_report": "## Executive Summary\nThe maintainers of **FreePBX**, a widely deployed open-source VoIP PBX platform, have released patches for multiple security vulnerabilities, including one critical flaw that could lead to complete system takeover. The most severe issue, **[CVE-2025-66039](https://nvd.nist.gov/vuln/detail/CVE-2025-66039)**, is a 9.3 CVSS authentication bypass that allows an unauthenticated attacker to gain administrative access in certain configurations. This can be chained with other patched vulnerabilities, including authenticated SQL injection (**[CVE-2025-61675](https://nvd.nist.gov/vuln/detail/CVE-2025-61675)**) and arbitrary file upload (**[CVE-2025-61678](https://nvd.nist.gov/vuln/detail/CVE-2025-61678)**), to achieve remote code execution (RCE). Given FreePBX's role in enterprise communication, these vulnerabilities pose a significant threat, and administrators should apply the updates immediately.\n\n## Vulnerability Details\nResearchers at Horizon3.ai discovered a series of flaws that could be combined to compromise a FreePBX server.\n\n*   **[CVE-2025-66039](https://nvd.nist.gov/vuln/detail/CVE-2025-66039)** (CVSS 9.3, Critical): **Authentication Bypass**\n    This flaw exists when the 'Authorization Type' (`AUTHTYPE`) is set to `webserver`, which is not the default setting. In this configuration, FreePBX improperly trusts the `Authorization` HTTP header. An attacker can forge this header to impersonate an administrator and bypass the login for the Administrator Control Panel.\n\n*   **[CVE-2025-61675](https://nvd.nist.gov/vuln/detail/CVE-2025-61675)** (CVSS 8.6, High): **Authenticated SQL Injection**\n    Multiple endpoints within the FreePBX administrative interface are vulnerable to SQL injection. An attacker with a valid session (which could be obtained via CVE-2025-66039) can inject malicious SQL queries to read or write to the database, including adding a new administrative user.\n\n*   **[CVE-2025-61678](https://nvd.nist.gov/vuln/detail/CVE-2025-61678)** (CVSS 8.6, High): **Authenticated Arbitrary File Upload**\n    This vulnerability allows an authenticated administrator to upload arbitrary files to the server. An attacker could exploit this to upload a PHP web shell, granting them a persistent backdoor and the ability to execute commands on the underlying server.\n\n## Attack Chain\nAn attacker could chain these vulnerabilities for a full system compromise:\n1.  Exploit **[CVE-2025-66039](https://nvd.nist.gov/vuln/detail/CVE-2025-66039)** to bypass authentication and gain an administrative session.\n2.  Use the administrative session to exploit **[CVE-2025-61678](https://nvd.nist.gov/vuln/detail/CVE-2025-61678)** to upload a PHP web shell.\n3.  Access the web shell to gain RCE on the FreePBX server.\n\n*   **MITRE ATT&CK Mapping:**\n    *   [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/): Exploiting CVE-2025-66039 for initial access.\n    *   [`T1133 - External Remote Services`](https://attack.mitre.org/techniques/T1133/): Gaining access via the web-based admin panel.\n    *   [`T1505.003 - Web Shell`](https://attack.mitre.org/techniques/T1505/003/): Uploading a PHP shell for persistence and execution.\n    *   [`T1059 - Command and Scripting Interpreter`](https://attack.mitre.org/techniques/T1059/): Using the web shell to execute commands on the server.\n\n## Affected Systems\nThe vulnerabilities have been patched in the following FreePBX versions:\n*   16.0.92\n*   17.0.6\n*   16.0.44\n*   17.0.23\n\nAdministrators running versions prior to these are vulnerable.\n\n## Impact Assessment\nA compromised FreePBX server poses a severe risk to an organization. Attackers can eavesdrop on phone calls, commit toll fraud by making unauthorized international calls at the victim's expense, pivot to the internal data network, and use the server as a launchpad for further attacks. The RCE capability gives the attacker full control over the server, allowing for the installation of ransomware, crypto miners, or other malware. The reputational damage from having sensitive business communications compromised is also significant.\n\n## Cyber Observables for Detection\n| Type | Value | Description |\n|---|---|---|\n| `configuration_setting` | `AUTHTYPE = webserver` | This non-default setting is a prerequisite for the critical auth bypass. Systems with this configuration are at high risk. |\n| `log_source` | `Apache/HTTPd Access Logs` | Look for requests to admin panel endpoints from unknown IPs, especially if they result in a 200 OK status without a preceding failed login attempt. |\n| `file_path` | `/var/www/html/` | Monitor this directory and its subdirectories for the creation of new or suspicious `.php` files, which could indicate a web shell upload. |\n| `process_name` | `httpd`, `apache2` | Monitor the web server process for suspicious child processes, such as `sh`, `bash`, `curl`, or `wget`, which could be executed by a web shell. |\n\n## Detection Methods\n*   **Configuration Review:** Audit all FreePBX instances to check if `AUTHTYPE` is set to `webserver`. This can be done by checking the `freepbx.conf` file. This is a direct application of **[D3FEND System Configuration Permissions (D3-SCP)](https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions)**.\n*   **File Integrity Monitoring (FIM):** Deploy FIM on FreePBX web directories to alert on the creation or modification of files, especially PHP files. This helps detect web shell implantation.\n*   **Log Analysis:** Analyze web server logs for unusual access patterns to the admin interface. Use **[D3FEND Web Session Activity Analysis (D3-WSAA)](https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis)** to baseline normal admin activity and alert on deviations.\n\n## Remediation Steps\n1.  **Update FreePBX:** The primary remediation is to update all FreePBX modules and system components to the latest patched versions. This is an application of **[D3FEND Software Update (D3-SU)](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.\n2.  **Revert to Default Auth Type:** Ensure the `AUTHTYPE` is set to its default value (`database` or `usermanager`), not `webserver`, unless there is a compelling and fully understood reason. The developers have now removed the option to change this from the GUI to discourage insecure configurations.\n3.  **Restrict Admin Access:** The FreePBX administrative interface should not be exposed to the public internet. Restrict access to a trusted management LAN or specific trusted IP addresses using firewall rules. This is a key principle of **[D3FEND Network Isolation (D3-NI)](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**.\n4.  **Web Application Firewall (WAF):** Place a WAF in front of the FreePBX server to provide a virtual patch against SQL injection and other web-based attacks.",
+  "twitter_post": "⚠️ Critical vulnerabilities patched in FreePBX! Flaws including auth bypass (CVE-2025-66039) & SQLi can lead to full RCE on VoIP servers. Update your systems immediately to prevent takeover. 📞 #FreePBX #VoIP #CyberSecurity #Vulnerability",
+  "meta_description": "Critical vulnerabilities, including authentication bypass (CVE-2025-66039) and RCE, have been patched in the FreePBX VoIP platform. Administrators should update immediately to prevent system compromise.",
+  "category": [
+    "Vulnerability",
+    "Patch Management",
+    "Industrial Control Systems"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "FreePBX",
+      "type": "product"
+    },
+    {
+      "name": "Horizon3.ai",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-66039",
+      "cvss_score": 9.3,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2025-61675",
+      "cvss_score": 8.6,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2025-61678",
+      "cvss_score": 8.6,
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.secnews.gr/165510/security/freepbx-fixes-critical-vulnerabilities-that-allow-rce-attack/",
+      "title": "FreePBX fixes critical vulnerabilities that allow RCE attack",
+      "date": "2025-12-15",
+      "friendly_name": "SecNews.gr",
+      "website": "secnews.gr"
+    },
+    {
+      "url": "https://webpronews.com/freepbx-vulnerabilities-enable-rce-via-sql-injection-patched-in-2025/",
+      "title": "FreePBX Vulnerabilities Enable RCE via SQL Injection, Patched in 2025",
+      "date": "2025-12-15",
+      "friendly_name": "WebProNews",
+      "website": "webpronews.com"
+    },
+    {
+      "url": "https://www.thehackerwire.com/2025/12/15/cve-2025-66039-critical-authentication-bypass-in-freepbx-endpoint-managers-webserver-mode/",
+      "title": "CVE-2025-66039: Critical Authentication Bypass in FreePBX Endpoint Manager’s ‘Webserver’ Mode",
+      "date": "2025-12-15",
+      "friendly_name": "The Hacker Wire",
+      "website": "thehackerwire.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-09-15",
+      "summary": "Horizon3.ai reports the vulnerabilities to the FreePBX team."
+    },
+    {
+      "datetime": "2025-12",
+      "summary": "FreePBX releases the final set of patches for the discovered vulnerabilities."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.006",
+      "name": "PHP",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Updating FreePBX to a patched version is the most effective remediation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restricting access to the admin panel to trusted IPs significantly reduces the attack surface.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Ensuring the authentication type is set to the secure default is a critical configuration hardening step.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Auditing web server and application logs can help detect exploitation attempts.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The most critical action for all FreePBX administrators is to apply the latest security updates. The vulnerabilities, especially the authentication bypass (CVE-2025-66039), provide a direct path for attackers to gain control of the system. Organizations should use their patch management processes to roll out the updates for all FreePBX modules and system components to the specified patched versions (e.g., 16.0.92, 17.0.6, etc.). Because FreePBX is often a critical communication system, these updates should be tested in a staging environment if possible, but deployed to production with high urgency. Verifying the patch by checking the version numbers in the admin GUI is a crucial final step.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "As a fundamental security best practice, the FreePBX administrative web interface should never be exposed directly to the public internet. This single measure would have mitigated the risk of unauthenticated remote exploitation of CVE-2025-66039. Implement Network Isolation by placing the FreePBX server in a secure management zone. Use firewall rules to restrict access to the web admin portal (typically on TCP ports 80 and 443) to only a limited set of internal IP addresses, such as a dedicated administrative LAN or specific jump hosts. For remote administration, require users to connect to a VPN first before they can access the admin portal. This drastically reduces the attack surface and protects against scanners and opportunistic attackers looking for vulnerable instances.",
+      "mitre_mitigation_id": "M1035"
+    },
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "To detect a successful compromise via the arbitrary file upload vulnerability (CVE-2025-61678), organizations should implement System File Analysis, commonly through a File Integrity Monitoring (FIM) solution. A FIM agent should be deployed on the FreePBX server to monitor critical directories, most importantly the web root (`/var/www/html/` and its subdirectories). Configure the FIM to create a baseline of known good files and then alert on any unauthorized changes, creations, or deletions. Specifically, create a high-severity alert for the creation of any new `.php` files in these directories, as this is the most common indicator of a web shell being uploaded. Upon receiving such an alert, security teams should immediately invoke their incident response plan to isolate the server and analyze the suspicious file.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "string_pattern",
+      "value": "AUTHTYPE=webserver",
+      "description": "This configuration setting in freepbx.conf makes the system vulnerable to the critical authentication bypass flaw.",
+      "context": "File integrity monitoring, Configuration audit scripts",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "/admin/config.php",
+      "description": "The main admin panel URL. Monitor for POST requests to this and other admin endpoints from untrusted IP addresses.",
+      "context": "Web server access logs, WAF logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "*.php",
+      "description": "Monitor for newly created PHP files in the web root (`/var/www/html/`), as this is a primary indicator of a web shell upload.",
+      "context": "File Integrity Monitoring (FIM) alerts",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "FreePBX",
+    "VoIP",
+    "Vulnerability",
+    "CVE-2025-66039",
+    "RCE",
+    "Authentication Bypass",
+    "SQL Injection"
+  ],
+  "extract_datetime": "2025-12-16T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Telecommunications",
+      "Healthcare",
+      "Finance"
+    ],
+    "other_affected": [
+      "Organizations using FreePBX for VoIP services"
+    ]
+  },
+  "pub_date": "2025-12-16",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-12-16T15:00:00.000Z",
+  "updatedAt": "2025-12-16T15:00:00.000Z"
+}

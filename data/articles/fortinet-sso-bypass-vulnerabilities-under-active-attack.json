@@ -1,0 +1,217 @@
+{
+  "id": "bc2fc193-f34b-412a-8566-70308c4db0cd",
+  "slug": "fortinet-sso-bypass-vulnerabilities-under-active-attack",
+  "headline": "Active Attacks Exploit Critical Fortinet SSO Bypass Flaws to Gain Admin Access",
+  "title": "Threat Actors Actively Exploiting Critical Fortinet Authentication Bypass Vulnerabilities (CVE-2025-59718, CVE-2025-59719)",
+  "summary": "Security firm Arctic Wolf has observed active exploitation of two critical authentication bypass vulnerabilities in Fortinet products, CVE-2025-59718 and CVE-2025-59719. Both flaws, rated 9.1 in severity, allow an unauthenticated attacker to bypass FortiCloud single sign-on (SSO) by forging a SAML message, granting them administrative access to affected devices. The attacks, observed since December 12, 2025, target the default 'admin' account. The vulnerability is present if the FortiCloud SSO feature is enabled, which can be activated automatically when registering a device. Patches are available, and administrators are urged to upgrade immediately or disable the vulnerable SSO feature.",
+  "full_report": "## Executive Summary\nThreat actors are actively exploiting two critical authentication bypass vulnerabilities, **[CVE-2025-59718](https://nvd.nist.gov/vuln/detail/CVE-2025-59718)** and **[CVE-2025-59719](https://nvd.nist.gov/vuln/detail/CVE-2025-59719)**, affecting a range of **[Fortinet](https://www.fortinet.com/)** products. The flaws, both with a CVSS score of 9.1, allow a remote, unauthenticated attacker to gain administrative access by forging a SAML message to bypass FortiCloud single sign-on (SSO). Security firm Arctic Wolf confirmed observing malicious SSO logins targeting customer FortiGate appliances, primarily aimed at the default 'admin' account. The vulnerability is particularly dangerous because the FortiCloud SSO feature, while disabled by default, is automatically enabled during device registration via the GUI. Fortinet has released patches, and immediate action is required to prevent compromise.\n\n## Vulnerability Details\n*   **CVE-2025-59718 & CVE-2025-59719:** Improper Signature Verification for SAML Authentication\n*   **CVSS Score:** 9.1 (Critical)\n*   **Attack Vector:** Remote / Unauthenticated\n\nThe core of the vulnerability lies in an improper verification of the cryptographic signature on Security Assertion Markup Language (SAML) messages. When FortiCloud SSO is enabled for administrative logins, an attacker can craft a malicious SAML assertion and send it to the device. The vulnerable device fails to properly validate the signature, trusts the malicious assertion, and grants the attacker an administrative session. This effectively allows a complete bypass of the authentication mechanism.\n\n## Affected Systems\nThe vulnerabilities affect multiple Fortinet products when the FortiCloud SSO feature is enabled:\n*   FortiOS\n*   FortiWeb\n*   FortiProxy\n*   FortiSwitchManager\n\n> **Critical Warning:** The FortiCloud SSO feature (`forticloud-sso-login`) is automatically enabled when an administrator registers the device with FortiCare through the web GUI. Many administrators may be unaware this feature is active, leaving their internet-facing devices exposed.\n\n## Exploitation Status\nThe vulnerabilities are being actively exploited in the wild. Arctic Wolf began observing malicious SSO logins on December 12, 2025, just three days after Fortinet's disclosure. The observed attacks have targeted the default 'admin' account and originated from IP addresses associated with hosting providers The Constant Company LLC and Kaopu Cloud HK Limited.\n\n*   **MITRE ATT&CK Mapping:**\n    *   [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/): The attacker targets the web-based management interface of the Fortinet appliance.\n    *   [`T1606.002 - SAML Tokens`](https://attack.mitre.org/techniques/T1606/002/): The core of the attack involves forging SAML tokens to impersonate a legitimate administrator.\n    *   [`T1078.001 - Default Accounts`](https://attack.mitre.org/techniques/T1078/001/): Attackers are specifically targeting the built-in 'admin' account.\n\n## Impact Assessment\nA successful exploit grants the attacker full administrative access to the Fortinet appliance. This is a worst-case scenario, as these devices are often at the network perimeter. A compromised firewall or web application firewall allows an attacker to:\n*   Disable security policies and allow malicious traffic into the network.\n*   Create VPN tunnels to establish a persistent foothold.\n*   Monitor all network traffic passing through the device.\n*   Launch further attacks against the internal network.\n*   Deploy malware or ransomware.\n\nEssentially, a compromise of the primary network security appliance renders all other perimeter defenses moot.\n\n## IOCs\nArctic Wolf has observed malicious login attempts from the following IP ranges:\n\n| Type | Value | Description |\n|---|---|---|\n| `ip_address_v4` | `104.223.89.0/24` | Associated with The Constant Company LLC |\n| `ip_address_v4` | `103.189.172.0/24` | Associated with Kaopu Cloud HK Limited |\n\n## Cyber Observables for Detection\n| Type | Value | Description |\n|---|---|---|\n| `log_source` | `FortiGate System Event Logs` | Look for successful administrative logins from unexpected IP addresses or geographic locations, especially with the message `msg=\"Admin [admin] login successfully from [IP_ADDRESS] via FortiCloud SSO\"`. |\n| `command_line_pattern` | `diagnose debug authd -1` | On the FortiGate CLI, this command can be used to debug authentication attempts and may show details of a malicious SAML assertion. |\n| `configuration_setting` | `config system global -> set forticloud-sso-login` | Check if this setting is enabled. If it is, the device is potentially vulnerable if not patched. |\n\n## Detection & Response\n1.  **Review Logs:** Immediately review system event logs on all Fortinet appliances for successful administrative logins via FortiCloud SSO from unknown or suspicious IP addresses. Pay close attention to logins for the 'admin' account.\n2.  **Threat Hunting:** Hunt for any connections to or from the IOC IP addresses provided by Arctic Wolf. This aligns with **[D3FEND Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)**.\n3.  **Assume Compromise:** If any suspicious SSO login is found, assume the device is fully compromised. Trigger the incident response plan, isolate the device if possible, and prepare to reset it to factory defaults and restore from a clean backup after patching.\n\n## Mitigation\n1.  **Patch Immediately:** Upgrade to a patched version of the relevant Fortinet software as soon as possible. This is the most effective mitigation and is a direct application of **[D3FEND Software Update (D3-SU)](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.\n2.  **Disable FortiCloud SSO (Workaround):** If patching is not immediately possible, disable the FortiCloud SSO feature. This can be done via the CLI with the following commands:\n    ```\n    config system global\n        set forticloud-sso-login disable\n    end\n    ```\n    This removes the vulnerable attack surface. This is an example of **[D3FEND Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**.\n3.  **Credential Reset:** If any suspicious activity is detected, immediately reset the passwords for all administrative accounts on the device.\n4.  **Restrict Admin Access:** As a general best practice, restrict administrative access to Fortinet devices to a trusted set of internal IP addresses or a dedicated management network.",
+  "twitter_post": "🚨 CRITICAL: Fortinet devices under active attack via two SSO bypass flaws (CVE-2025-59718 & CVE-2025-59719). Attackers are forging SAML messages to gain admin access. Patch NOW or disable FortiCloud SSO! 🔥 #Fortinet #CyberAttack #Vulnerability",
+  "meta_description": "Active attacks are exploiting critical Fortinet SSO authentication bypass vulnerabilities (CVE-2025-59718, CVE-2025-59719). Learn how to detect and mitigate these flaws to prevent administrative takeover.",
+  "category": [
+    "Vulnerability",
+    "Cyberattack",
+    "Patch Management"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    },
+    {
+      "name": "Arctic Wolf",
+      "type": "security_organization",
+      "url": "https://arcticwolf.com/"
+    },
+    {
+      "name": "FortiOS",
+      "type": "product"
+    },
+    {
+      "name": "FortiWeb",
+      "type": "product"
+    },
+    {
+      "name": "FortiProxy",
+      "type": "product"
+    },
+    {
+      "name": "FortiSwitchManager",
+      "type": "product"
+    },
+    {
+      "name": "SAML",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-59718",
+      "cvss_score": 9.1,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2025-59719",
+      "cvss_score": 9.1,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.gbhackers.com/critical-fortigate-devices-sso-vulnerabilities/",
+      "title": "Critical FortiGate Devices SSO Vulnerabilities Actively Exploited in the Wild",
+      "date": "2025-12-16",
+      "friendly_name": "GBHackers",
+      "website": "gbhackers.com"
+    },
+    {
+      "url": "https://arcticwolf.com/resources/blog/arctic-wolf-observes-malicious-sso-logins-on-fortigate-devices-following-disclosure-of-cve-2025-59718-and-cve-2025-59719/",
+      "title": "Arctic Wolf Observes Malicious SSO Logins on FortiGate Devices Following Disclosure of CVE-2025-59718 and CVE-2025-59719",
+      "date": "2025-12-15",
+      "friendly_name": "Arctic Wolf",
+      "website": "arcticwolf.com"
+    },
+    {
+      "url": "https://securityaffairs.co/165389/security/fortinet-authentication-bypass-flaws.html",
+      "title": "Fortinet fixed two critical authentication-bypass vulnerabilities",
+      "date": "2025-12-15",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.co"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-12-09",
+      "summary": "Fortinet discloses CVE-2025-59718 and CVE-2025-59719."
+    },
+    {
+      "datetime": "2025-12-12",
+      "summary": "Arctic Wolf begins observing active exploitation of the vulnerabilities in the wild."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1606.002",
+      "name": "SAML Tokens",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1078.001",
+      "name": "Default Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1098.005",
+      "name": "Device Registration",
+      "tactic": "Persistence"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Applying the patches from Fortinet is the primary and most effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "description": "Disabling the FortiCloud SSO login feature serves as a direct workaround to remove the attack surface.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restricting administrative access to the Fortinet device to a trusted management network reduces exposure to external attackers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly auditing administrative logins is crucial for detecting unauthorized access.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The definitive countermeasure for CVE-2025-59718 and CVE-2025-59719 is to immediately apply the security patches provided by Fortinet. Given that these are critical, unauthenticated bypass vulnerabilities under active exploitation, patching should be considered an emergency action. Organizations must use their asset inventory and patch management systems to identify all vulnerable Fortinet products (FortiOS, FortiWeb, etc.) and deploy the appropriate firmware updates. Prioritize internet-facing devices, as they are the most exposed. Failure to patch leaves a direct path for attackers to gain full administrative control of the network perimeter. After patching, verify the update was successful and that the device is running a fixed software version.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "As an immediate workaround or a defense-in-depth measure, Application Configuration Hardening should be applied by disabling the vulnerable feature. Administrators must explicitly disable the FortiCloud SSO login feature if it is not essential for their operations. This can be done via the device's command-line interface. Since the feature can be enabled automatically during device registration, it's crucial to audit all Fortinet devices to confirm the status of the `forticloud-sso-login` setting. Disabling this feature entirely removes the vulnerable code path from being accessible to an attacker, providing a highly effective mitigation until a patch can be deployed. This action directly hardens the device's configuration to reduce its attack surface.",
+      "mitre_mitigation_id": "M1042"
+    },
+    {
+      "technique_id": "D3-LAM",
+      "technique_name": "Local Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
+      "recommendation": "To detect potential exploitation of these vulnerabilities, organizations must implement rigorous Local Account Monitoring on their Fortinet devices. All administrative login events must be forwarded to a central SIEM for analysis. Create high-priority alerts for any successful login using the FortiCloud SSO method, especially for the default 'admin' account. Correlate these logins with geolocation data and IP reputation feeds to quickly identify suspicious activity, such as a login from an unexpected country or a known malicious IP address. The log message `Admin [admin] login successfully... via FortiCloud SSO` is a key indicator. By actively monitoring these specific events, security teams can rapidly detect a successful compromise and initiate their incident response process to contain the threat.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Fortinet System Event Logs",
+      "description": "Log message `msg=\"Admin [admin] login successfully from [IP_ADDRESS] via FortiCloud SSO\"` is a key indicator of a potentially malicious login.",
+      "context": "SIEM, Log Management Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "set forticloud-sso-login enable",
+      "description": "Searching device configurations for this string can identify systems where the vulnerable feature is enabled.",
+      "context": "Configuration Management Database (CMDB), Manual device review",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Inbound HTTPS to management interface from known malicious IPs",
+      "description": "Monitor for connections to the firewall's management port from IPs associated with malicious activity, such as those identified by Arctic Wolf.",
+      "context": "Upstream firewall logs, IDS/IPS",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Fortinet",
+    "CVE-2025-59718",
+    "CVE-2025-59719",
+    "SSO",
+    "SAML",
+    "Authentication Bypass",
+    "Active Exploitation",
+    "Cyberattack"
+  ],
+  "extract_datetime": "2025-12-16T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Government",
+      "Finance",
+      "Healthcare"
+    ],
+    "other_affected": [
+      "Organizations using Fortinet network security appliances"
+    ]
+  },
+  "pub_date": "2025-12-16",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-12-16T15:00:00.000Z",
+  "updatedAt": "2025-12-16T15:00:00.000Z"
+}
