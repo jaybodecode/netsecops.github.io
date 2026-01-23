@@ -1,0 +1,217 @@
+{
+  "id": "ed661c53-307b-42a5-a2cb-4e2bdba489c1",
+  "slug": "new-osiris-ransomware-linked-to-medusa-and-inc-gang-ttps",
+  "headline": "New 'Osiris' Ransomware Borrows TTPs from Medusa and Inc Gangs, Uses Signed Driver to Kill AV",
+  "title": "Osiris Ransomware Emerges with Advanced TTPs, Including Custom-Signed Driver for Defense Evasion",
+  "summary": "A new ransomware strain named Osiris is demonstrating a high level of sophistication by combining tactics from established ransomware groups like Medusa and Inc. The attackers use Rclone for data exfiltration to Wasabi cloud storage and deploy a version of Mimikatz named `kaz.exe`, both TTPs linked to the Inc group. More significantly, Osiris uses a custom-developed and signed malicious driver, 'Abyssworker' (aka Poortry), in a Bring-Your-Own-Vulnerable-Driver (BYOVD) attack to terminate security software. This driver and its loader, 'Stonestop,' have been previously associated with the Medusa ransomware gang. The use of these advanced, borrowed TTPs suggests Osiris is operated by experienced actors, possibly former affiliates of other groups.",
+  "full_report": "## Executive Summary\nA new ransomware operation, dubbed **Osiris**, has been observed deploying a sophisticated blend of tactics, techniques, and procedures (TTPs) borrowed from other prominent ransomware groups. This suggests the threat actors are experienced and may be an offshoot or evolution of existing gangs. Security researchers have identified tactical overlaps with the **[Medusa](https://malpedia.caad.fkie.fraunhofer.de/details/win.medusa)** and Inc ransomware families. Key indicators include the use of **[Rclone](https://rclone.org/)** for data exfiltration to **[Wasabi](https://wasabi.com/)** cloud storage (a hallmark of Inc) and the deployment of a custom-signed malicious driver known as Abyssworker/Poortry to disable endpoint security products (a known TTP of Medusa). This Bring-Your-Own-Vulnerable-Driver (BYOVD) attack allows the ransomware to execute unimpeded, highlighting the growing sophistication and shared tooling within the ransomware ecosystem.\n\n---\n\n## Threat Overview\nThe Osiris attack chain demonstrates a methodical and multi-faceted approach to compromise, combining data theft, defense evasion, and encryption.\n\n1.  **Initial Access**: The initial vector is not specified, but is typically achieved through phishing, exploitation of public-facing applications, or compromised credentials.\n2.  **Reconnaissance & Credential Access**: Once inside, the attackers use tools like Netscan and Netexec for network discovery. They deploy a version of **[Mimikatz](https://attack.mitre.org/software/S0002)** saved as `kaz.exe` to dump credentials, a file name previously associated with Inc ransomware.\n3.  **Data Exfiltration**: Before encryption, the attackers steal sensitive data using the legitimate `Rclone` tool to upload it to an attacker-controlled Wasabi cloud storage bucket. This is a double-extortion tactic.\n4.  **Defense Evasion**: This is the most notable stage. The attackers use a loader called Stonestop to install a malicious, custom-signed driver named Abyssworker (or Poortry). This driver operates with kernel-level privileges to forcefully terminate security processes (e.g., EDR, antivirus), blinding the organization's defenses.\n5.  **Remote Access & Encryption**: A customized version of the Rustdesk remote management tool is deployed for persistent access. Finally, the Osiris ransomware payload is executed to encrypt files across the network.\n\n## Technical Analysis\nThe Osiris operation is a prime example of threat actor convergence, where successful TTPs are shared and reused.\n\n*   **BYOVD Attack**: The use of the Abyssworker/Poortry driver is highly significant. Unlike typical BYOVD attacks that abuse legitimate but vulnerable drivers, this driver appears to be custom-developed by threat actors and has been successfully signed, likely with a stolen or fraudulently obtained code-signing certificate. This allows it to bypass driver signature enforcement on Windows and gain powerful kernel-level access. This technique is a direct link to the Medusa ransomware gang's operations from 2024-2025.\n*   **Tool Overlap**: The use of `Rclone` for exfiltration and the specific `kaz.exe` filename for Mimikatz create a strong link to the Inc ransomware group's playbook from October 2025.\n*   **Living off the Land**: The attackers use a mix of custom malware and legitimate dual-use tools (Rclone, Rustdesk, Netscan) to blend in with normal administrative activity and complicate detection.\n\n### MITRE ATT&CK TTPs\n- [`T1567.002 - Exfiltration Over Web Service: Exfiltration to Cloud Storage`](https://attack.mitre.org/techniques/T1567/002/): Using `Rclone` to exfiltrate data to Wasabi cloud storage.\n- [`T1003.001 - OS Credential Dumping: LSASS Memory`](https://attack.mitre.org/techniques/T1003/001/): Using `Mimikatz` (`kaz.exe`) to harvest credentials.\n- [`T1562.001 - Impair Defenses: Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/): Using the Poortry driver to terminate security software.\n- [`T1218.011 - System Binary Proxy Execution: Rundll32`](https://attack.mitre.org/techniques/T1218/011/): The Stonestop loader likely uses `rundll32.exe` to execute its payload.\n- [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/): The final payload is the Osiris ransomware, which encrypts victim files.\n- [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/): Deploying a customized version of `Rustdesk` for persistent access.\n\n## Impact Assessment\nAn attack by the Osiris group can be devastating, resulting in:\n- **Operational Disruption**: Encryption of critical files and systems leads to complete business shutdown.\n- **Data Breach**: Exfiltration of sensitive data exposes the organization to regulatory fines, legal action, and reputational damage.\n- **Double Extortion**: Victims are pressured to pay a ransom to both decrypt their files and prevent the public release of their stolen data.\n- **High Recovery Costs**: The use of a kernel-mode driver to disable security tools can make detection and eradication more complex, increasing incident response costs.\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| file_name | `kaz.exe` | Filename used for the Mimikatz credential dumping tool. |\n| malware | `Abyssworker` / `Poortry` | Name of the malicious kernel driver used to disable security tools. |\n| tool | `Rclone` | Legitimate tool used for data exfiltration to cloud storage. |\n\n## Detection & Response\n1.  **Driver Load Monitoring**: Monitor for the loading of new or unsigned drivers. Enable and monitor Windows Defender Attack Surface Reduction (ASR) rules that block vulnerable signed drivers. This aligns with D3FEND's Driver Load Integrity Checking ([D3-DLIC](https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking)).\n2.  **Behavioral Monitoring**: EDR tools should be configured to detect and alert on security process termination attempts. The Poortry driver's primary function is to kill these processes, which should be a high-fidelity alert.\n3.  **Egress Traffic Analysis ([D3-NTA](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis))**: Monitor for large data uploads to non-standard cloud storage providers like Wasabi, especially from servers that do not typically perform such actions. Look for traffic associated with the `Rclone` user agent.\n4.  **Credential Dumping Protection**: Enable Credential Guard on Windows endpoints to protect LSASS memory from being read by tools like Mimikatz.\n\n## Mitigation\n1.  **Application Control ([`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/))**: Implement application allow-listing to prevent the execution of unauthorized tools like `Rclone`, `Netscan`, and custom versions of `Rustdesk`.\n2.  **Driver Block Rules ([`M1042 - Disable or Remove Feature or Program`](https://attack.mitre.org/mitigations/M1042/))**: Proactively block known vulnerable or malicious drivers using Windows Defender ASR or EDR blocklists. Maintain an up-to-date list of drivers used in BYOVD attacks.\n3.  **Privileged Account Management ([`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/))**: Restrict administrative privileges and segment accounts to limit an attacker's ability to deploy drivers or run credential dumping tools.\n4.  **Backup and Recovery**: Maintain offline and immutable backups of critical data to ensure recovery is possible without paying a ransom. Test recovery procedures regularly.",
+  "twitter_post": "New Osiris ransomware borrows TTPs from Medusa & Inc gangs. 🐍 It uses a custom-signed driver ('Poortry') to kill EDR/AV before encrypting files. Also uses Rclone for data theft. #Ransomware #Osiris #BYOVD #ThreatIntel",
+  "meta_description": "The new Osiris ransomware strain shows links to Medusa and Inc groups, using a custom-signed malicious driver (Poortry/Abyssworker) to disable security software in a sophisticated BYOVD attack.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Osiris",
+      "type": "malware"
+    },
+    {
+      "name": "Medusa",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.medusa"
+    },
+    {
+      "name": "Inc",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Abyssworker",
+      "type": "malware"
+    },
+    {
+      "name": "Poortry",
+      "type": "malware"
+    },
+    {
+      "name": "Stonestop",
+      "type": "malware"
+    },
+    {
+      "name": "Rclone",
+      "type": "product"
+    },
+    {
+      "name": "Mimikatz",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0002/"
+    },
+    {
+      "name": "Rustdesk",
+      "type": "product"
+    },
+    {
+      "name": "Wasabi",
+      "type": "company",
+      "url": "https://wasabi.com/"
+    },
+    {
+      "name": "Mandiant",
+      "type": "security_organization",
+      "url": "https://www.mandiant.com"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://security-com.translate.goog/2026/01/22/osiris-new-ransomware-experienced-attackers/?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp",
+      "title": "Osiris: New Ransomware, Experienced Attackers?",
+      "date": "2026-01-22",
+      "friendly_name": "Security.com",
+      "website": "security.com"
+    },
+    {
+      "url": "https://www.trendmicro.com/ja_jp/research/26/a/new-osiris-ransomware-uses-living-off-the-land-and-dual-use-too.html",
+      "title": "新たなOsirisランサムウェア、攻撃でLiving off the Landとデュアルユースツールを悪用 (New Osiris Ransomware Abuses Living-off-the-Land and Dual-Use Tools in Attacks)",
+      "date": "2026-01-22",
+      "friendly_name": "Trend Micro",
+      "website": "trendmicro.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Impair Defenses: Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1003.001",
+      "name": "OS Credential Dumping: LSASS Memory",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        }
+      ],
+      "description": "Implement strict driver signature enforcement and maintain a blocklist of known malicious or vulnerable code-signing certificates.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application allow-listing to prevent unauthorized dual-use tools like Rclone and Netscan from running.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "description": "Deploy EDR solutions capable of detecting and blocking attempts to terminate security processes, a key behavior of the Poortry driver.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Block egress traffic to unusual cloud storage providers like Wasabi from endpoints and servers that have no business reason to connect to them.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "kaz.exe",
+      "description": "Filename for Mimikatz tool, linked to Inc ransomware TTPs."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "Abyssworker.sys",
+      "description": "Potential filename for the malicious kernel driver used for defense evasion.",
+      "context": "Driver load monitoring, file integrity monitoring on endpoints.",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "rclone.exe",
+      "description": "Execution of the Rclone tool, often used for data exfiltration to cloud storage.",
+      "context": "EDR logs, command line logging (Event ID 4688).",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "s3.wasabisys.com",
+      "description": "Connections to Wasabi cloud storage, which is not a common enterprise cloud provider, could indicate exfiltration.",
+      "context": "DNS logs, proxy logs, NetFlow analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "7045",
+      "description": "Windows System Event ID 7045 indicates a new service was installed, which could correspond to the installation of the malicious driver.",
+      "context": "Windows Event Log monitoring.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Ransomware",
+    "BYOVD",
+    "Kernel Driver",
+    "Defense Evasion",
+    "Double Extortion",
+    "Medusa",
+    "Inc"
+  ],
+  "extract_datetime": "2026-01-23T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ]
+  },
+  "pub_date": "2026-01-23",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-23T15:00:00.000Z",
+  "updatedAt": "2026-01-23T15:00:00.000Z"
+}

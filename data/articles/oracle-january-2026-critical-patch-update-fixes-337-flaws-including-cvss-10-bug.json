@@ -14,25 +14,23 @@
   "severity": "critical",
   "entities": [
     {
-      "name": "Oracle",
-      "type": "vendor",
-      "url": "https://www.oracle.com/"
+      "name": "Apache HTTP Server",
+      "type": "product"
     },
     {
-      "name": "Oracle WebLogic Server",
-      "type": "product",
-      "url": "https://www.oracle.com/java/weblogic/"
+      "name": "Microsoft IIS",
+      "type": "product"
+    },
+    {
+      "name": "Oracle",
+      "type": "vendor"
     },
     {
       "name": "Oracle HTTP Server",
       "type": "product"
     },
     {
-      "name": "Apache HTTP Server",
-      "type": "product"
-    },
-    {
-      "name": "Microsoft IIS",
+      "name": "Oracle WebLogic Server",
       "type": "product"
     }
   ],
@@ -41,7 +39,7 @@
       "id": "CVE-2026-21962",
       "cvss_score": 10,
       "cvss_version": "3.1",
-      "kev": false,
+      "kev": 0,
       "severity": "critical"
     }
   ],
@@ -50,14 +48,12 @@
       "url": "https://www.cyber.press/oracle-releases-critical-security-patch-fixing-337-vulnerabilities-across-product-families/",
       "title": "Oracle Releases Critical Security Patch Fixing 337 Vulnerabilities Across Product Families",
       "date": "2026-01-21",
-      "friendly_name": "Cyber Press",
       "website": "cyber.press"
     },
     {
       "url": "https://www.oracle.com/security-alerts/cpujan2026.html",
       "title": "Oracle Critical Patch Update Advisory - January 2026",
       "date": "2026-01-21",
-      "friendly_name": "Oracle",
       "website": "oracle.com"
     }
   ],
@@ -69,9 +65,9 @@
   ],
   "mitre_techniques": [
     {
-      "id": "T1190",
-      "name": "Exploit Public-Facing Application",
-      "tactic": "Initial Access"
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
     },
     {
       "id": "T1133",
@@ -79,95 +75,28 @@
       "tactic": "Initial Access"
     },
     {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
       "id": "T1505.003",
       "name": "Web Shell",
       "tactic": "Persistence"
-    },
-    {
-      "id": "T1068",
-      "name": "Exploitation for Privilege Escalation",
-      "tactic": "Privilege Escalation"
-    }
-  ],
-  "mitre_mitigations": [
-    {
-      "id": "M1051",
-      "name": "Update Software",
-      "description": "The primary mitigation is to apply the security patches provided by Oracle in the January 2026 CPU immediately.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1035",
-      "name": "Limit Access to Resource Over Network",
-      "description": "As a temporary measure, restrict network access to the WebLogic management console and application paths to only trusted IP addresses.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1040",
-      "name": "Behavior Prevention on Endpoint",
-      "description": "Use EDR to monitor the WebLogic server process for suspicious behavior, such as spawning shells, which could indicate successful exploitation.",
-      "domain": "enterprise"
-    }
-  ],
-  "d3fend_countermeasures": [
-    {
-      "technique_id": "D3-SU",
-      "technique_name": "Software Update",
-      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
-      "recommendation": "The most critical and effective countermeasure against CVE-2026-21962 is to apply the software update provided in Oracle's January 2026 Critical Patch Update. Given the CVSS 10.0 score and the history of rapid exploitation of WebLogic flaws, this should be treated as an emergency change. Organizations must activate their patch management and incident response teams to deploy this update immediately, prioritizing internet-facing WebLogic servers. The process should involve: 1) Identifying all vulnerable Oracle WebLogic Server Proxy Plug-in instances (versions 12.2.1.4.0, 14.1.1.0.0, 14.1.2.0.0) using vulnerability scanners and asset inventories. 2) Downloading the patch from Oracle Support. 3) Applying the patch in a staging environment to test for any operational issues. 4) Rolling out the patch to all production systems, starting with the most critical, internet-exposed assets. Failure to patch promptly leaves the door open for a trivial, unauthenticated remote compromise.",
-      "mitre_mitigation_id": "M1051"
-    },
-    {
-      "technique_id": "D3-ITF",
-      "technique_name": "Inbound Traffic Filtering",
-      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
-      "recommendation": "As a compensating control while patching is underway, or as a defense-in-depth measure, organizations should implement strict inbound traffic filtering. For the Oracle WebLogic Server, this means configuring firewalls, WAFs, and network access control lists (ACLs) to severely restrict access to the administrative console and any application paths that are not intended for public access. Access to the WebLogic management console (typically on port 7001/7002) should be blocked from the internet entirely and only allowed from a small set of internal administrative IP addresses or a bastion host. For the proxy plug-in vulnerability, a WAF can be used to inspect incoming HTTP traffic for patterns that might indicate an exploit attempt, although this may be difficult without a known exploit signature. The primary goal of filtering is to reduce the attack surface, making it much harder for a remote attacker to reach the vulnerable component.",
-      "mitre_mitigation_id": "M1031"
-    }
-  ],
-  "iocs": [],
-  "cyber_observables": [
-    {
-      "type": "file_name",
-      "value": "libweblogic.so | iisproxy.dll | iisforward.dll",
-      "description": "File versions of the WebLogic Server Proxy Plug-in. Checking the version number of these files can identify vulnerable systems.",
-      "context": "Asset inventory, vulnerability scanning, file system analysis.",
-      "confidence": "high"
-    },
-    {
-      "type": "url_pattern",
-      "value": "POST /<proxied_path> HTTP/1.1",
-      "description": "Monitor for unusual POST requests to paths proxied to WebLogic that result in successful authentication or access to protected resources without prior login.",
-      "context": "Web server access logs (Apache, IIS), WAF logs.",
-      "confidence": "medium"
-    },
-    {
-      "type": "process_name",
-      "value": "java.exe",
-      "description": "The WebLogic Server process spawning unexpected child processes like 'cmd.exe', 'powershell.exe', or '/bin/sh', which is a strong indicator of post-exploitation activity.",
-      "context": "EDR logs, Windows Event ID 4688, Linux auditd logs.",
-      "confidence": "high"
-    },
-    {
-      "type": "log_source",
-      "value": "WebLogic Server access logs",
-      "description": "Look for entries showing access to administrative consoles (e.g., /console) or deployment services from external, untrusted IP addresses.",
-      "context": "SIEM log analysis.",
-      "confidence": "high"
     }
   ],
   "tags": [
-    "Oracle",
-    "Critical Patch Update",
+    "Authentication Bypass",
     "CPU",
-    "Vulnerability",
     "CVE-2026-21962",
-    "WebLogic Server",
+    "Critical Patch Update",
+    "Oracle",
     "Patch Management",
-    "Authentication Bypass"
+    "Vulnerability",
+    "WebLogic Server"
   ],
-  "extract_datetime": "2026-01-21T15:00:00.000Z",
-  "article_type": "Advisory",
+  "extract_datetime": "2026-01-21",
+  "article_type": "NewsArticle",
   "impact_scope": {
     "geographic_scope": "global",
     "industries_affected": [
@@ -178,12 +107,54 @@
       "Retail",
       "Other"
     ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
     "other_affected": [
       "All users of Oracle WebLogic Server"
-    ]
+    ],
+    "people_affected_estimate": null
   },
+  "keywords": [
+    "Authentication Bypass",
+    "CPU",
+    "CVE-2026-21962",
+    "Critical Patch Update",
+    "Oracle",
+    "Patch Management",
+    "Vulnerability",
+    "WebLogic Server"
+  ],
   "pub_date": "2026-01-21",
   "reading_time_minutes": 5,
   "createdAt": "2026-01-21T15:00:00.000Z",
-  "updatedAt": "2026-01-21T15:00:00.000Z"
+  "updatedAt": "2026-01-22T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-01-22T00:00:00Z",
+      "summary": "Oracle's January 2026 CPU includes another CVSS 10.0 flaw (CVE-2025-66516 in Apache Tika) and addresses over 235 remotely exploitable vulnerabilities across 30+ product families.",
+      "content": "The January 2026 Critical Patch Update from Oracle is more extensive than initially detailed, addressing approximately 230 unique CVEs, with over 235 vulnerabilities remotely exploitable without authentication. Beyond the critical WebLogic flaw (CVE-2026-21962), another CVSS 10.0 vulnerability, CVE-2025-66516, has been identified in the Apache Tika library used by Oracle products. This broad update impacts over 30 product families, including JD Edwards, MySQL, E-Business Suite, and Fusion Middleware, underscoring the widespread risk and the urgent need for comprehensive patching across all affected Oracle environments.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.oracle.com/security-alerts/cpujan2026.html",
+          "title": "Oracle Critical Patch Update Advisory - January 2026",
+          "website": "",
+          "date": "2026-01-22T00:00:00Z"
+        },
+        {
+          "url": "https://socradar.io/oracle-january-2026-cpu-delivers-337-security-patches-including-cve-2025-66516-cve-2026-21962/",
+          "title": "Oracle January 2026 CPU Delivers 337 Security Patches Including CVE-2025-66516 & CVE-2026-21962",
+          "website": "",
+          "date": "2026-01-22T00:00:00Z"
+        },
+        {
+          "url": "https://www.dsp.co.uk/oracle-critical-patch-update-january-2026/",
+          "title": "Oracle Critical Patch Update January 2026",
+          "website": "",
+          "date": "2026-01-22T00:00:00Z"
+        }
+      ]
+    }
+  ]
 }
