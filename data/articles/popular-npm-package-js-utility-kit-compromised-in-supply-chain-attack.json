@@ -1,0 +1,212 @@
+{
+  "id": "ad2aaa0b-e4cd-4f4c-b593-100138560312",
+  "slug": "popular-npm-package-js-utility-kit-compromised-in-supply-chain-attack",
+  "headline": "NPM Package 'js-utility-kit' Hijacked in Supply Chain Attack to Steal Crypto Keys and Credentials",
+  "title": "Popular NPM Package 'js-utility-kit' with 5M+ Weekly Downloads Compromised to Distribute Info-Stealing Malware",
+  "summary": "A significant software supply chain attack has compromised the popular NPM package 'js-utility-kit', which is downloaded over 5 million times per week. Security firm Snyk discovered that malicious versions (2.1.8, 2.1.9, and 2.2.1) were published after the maintainer's account was hijacked via a credential stuffing attack. The compromised packages contained a post-install script that downloaded and executed a sophisticated information stealer. The malware was designed to steal cryptocurrency private keys, browser extension data for crypto wallets, and sensitive credentials such as environment variables and cloud provider CLI configurations from developers' machines and CI/CD pipelines. The NPM security team has removed the malicious versions, but any project that installed them between January 24 and 26 is considered compromised and requires immediate auditing and credential rotation.",
+  "full_report": "## Executive Summary\nA high-impact software supply chain attack has compromised the widely used **[NPM](https://www.npmjs.com/)** package `js-utility-kit`. The package, which has over 5 million weekly downloads, was injected with malicious code after its maintainer's account was hijacked. Security firm **[Snyk](https://snyk.io/)** reported that versions `2.1.8`, `2.1.9`, and `2.2.1` contain a post-install script that downloads a potent information-stealing malware. The malware is specifically designed to target software developers by exfiltrating cryptocurrency wallet files, browser session data, environment variables, and credentials for cloud services like AWS, Azure, and GCP. While the malicious packages have been removed from the registry, any developer or build system that downloaded them between January 24 and 26, 2026, is at high risk. Organizations are urged to audit their dependencies, identify exposure, and rotate all potentially compromised credentials.\n\n## Threat Overview\n-   **Attack Type:** Software Supply Chain Attack\n-   **Vector:** Hijacked NPM maintainer account via credential stuffing.\n-   **Affected Package:** `js-utility-kit`\n-   **Malicious Versions:** `2.1.8`, `2.1.9`, `2.2.1`\n-   **Payload:** Custom information-stealing malware.\n-   **Objective:** Theft of developer credentials, cryptocurrency, and other sensitive secrets.\n\nThe attack leverages the trust inherent in the open-source ecosystem. By compromising a popular package, the attackers were able to distribute their malware to a massive audience of developers and automated CI/CD systems. The use of a `post-install` script is a common technique in NPM supply chain attacks, as it ensures the malicious code is executed automatically as soon as the package is installed.\n\n## Technical Analysis\nThe attack chain is straightforward and effective:\n1.  **Account Takeover:** The attackers gained control of the legitimate maintainer's NPM account, likely through a credential stuffing attack where a password reused from another breached service was successfully tried ([`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/)).\n2.  **Malicious Publication:** The attackers published new, malicious patch versions of the `js-utility-kit` package. They used patch versions (`x.x.8`, `x.x.9`) to increase the likelihood that automated systems would pull them in without manual review ([`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/)).\n3.  **Execution:** The `package.json` file of the malicious versions contained a `post-install` script. When a developer or CI/CD system runs `npm install`, this script is automatically executed ([`T1059.007 - JavaScript`](https://attack.mitre.org/techniques/T1059/007/)).\n4.  **Payload Delivery:** The script downloads a second-stage payload (the information stealer) from an attacker-controlled server ([`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)).\n5.  **Collection & Exfiltration:** The info-stealer scans the compromised system for high-value data, including:\n    *   Cryptocurrency wallet files (`wallet.dat`) and browser extensions (MetaMask, Phantom).\n    *   Shell history files (`.bash_history`).\n    *   Environment variables (`.env` files).\n    *   Configuration files for SSH, AWS CLI, Azure CLI, and gcloud CLI ([`T1552.001 - Credentials In Files`](https://attack.mitre.org/techniques/T1552/001/)).\n    This data is then exfiltrated to a C2 server ([`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/)).\n\n## Impact Assessment\nThe impact of this supply chain attack is potentially vast. Any developer who installed one of the malicious versions on their workstation may have had their personal cryptocurrency wallets and saved credentials stolen. More critically, if these packages were installed in a CI/CD pipeline, the attackers could have stolen production secrets, API keys, and cloud credentials. This could grant them access to an organization's entire cloud infrastructure, leading to a much larger breach, data theft, or infrastructure destruction. The immediate need is for all downstream users of `js-utility-kit` to assume compromise and take remedial action.\n\n## Cyber Observables for Detection\nDevelopers and security teams should look for these signs of compromise:\n\n| Type | Value | Description | Context |\n| --- | --- | --- | --- |\n| `file_name` | `package-lock.json` or `yarn.lock` | Check lockfiles for `js-utility-kit` versions `2.1.8`, `2.1.9`, or `2.2.1`. | Source code repositories, developer workstations |\n| `network_traffic_pattern` | Outbound connections from `npm` or `node` processes during installation to unknown URLs. | The `post-install` script downloading the second-stage payload. | EDR logs, network proxy logs |\n| `file_path` | `~/.aws/credentials`, `~/.ssh/`, `~/.config/gcloud/` | The info-stealer specifically targets these paths for credential theft. Monitor for unexpected access. | File Integrity Monitoring (FIM), EDR file access logs |\n\n## Detection & Response\n-   **Dependency Scanning:** Use a Software Composition Analysis (SCA) tool like **[Snyk](https://snyk.io/)**, `npm audit`, or Dependabot to scan all projects for the malicious versions of `js-utility-kit`. **D3FEND Technique:** [`Software Bill of Materials (SBOM)`](https://d3fend.mitre.org/technique/d3f:SoftwareBillofMaterials).\n-   **Log Analysis:** Review CI/CD build logs for the timeframe of January 24-26, 2026. Look for installations of the affected package versions. Analyze network logs from build agents and developer machines for any suspicious outbound connections made during that period.\n-   **Incident Response:** If a malicious version is found, trigger an incident response. Isolate the affected machines/build agents. Immediately begin rotating all secrets, keys, and credentials that may have been present on the compromised systems.\n\n## Mitigation\n1.  **Enforce MFA on Registries:** Package maintainers must enable multi-factor authentication on their NPM (and other registry) accounts. This is the most effective defense against account hijacking via credential stuffing.\n2.  **Use Lockfiles:** Always use and commit package lockfiles (`package-lock.json`, `yarn.lock`). This ensures that builds are reproducible and prevents the unexpected introduction of new (and potentially malicious) package versions without a deliberate update.\n3.  **Vet Dependencies:** Before adding a new dependency, vet its popularity, maintenance status, and history. Use tools like `npm-view` to inspect package details, including its install scripts.\n4.  **Restrict Build Environments:** Execute CI/CD pipelines in ephemeral, isolated environments with no persistent state and with network access restricted to only known, required endpoints. Use short-lived credentials for cloud access instead of static keys stored on the build agent.",
+  "twitter_post": "⚠️ SUPPLY CHAIN ATTACK: Popular NPM package 'js-utility-kit' (>5M weekly downloads) was hijacked to steal crypto keys & cloud credentials. Malicious versions 2.1.8, 2.1.9, 2.2.1 are affected. Audit your dependencies NOW! #SupplyChain #NPM #CyberSecurity",
+  "meta_description": "A major supply chain attack hit the popular NPM package 'js-utility-kit', installing malware to steal cryptocurrency keys and developer credentials. Check your projects for malicious versions.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Data Breach"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "js-utility-kit",
+      "type": "product"
+    },
+    {
+      "name": "NPM",
+      "type": "technology",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "Snyk",
+      "type": "vendor",
+      "url": "https://snyk.io/"
+    },
+    {
+      "name": "MetaMask",
+      "type": "product"
+    },
+    {
+      "name": "Phantom",
+      "type": "product"
+    },
+    {
+      "name": "AWS",
+      "type": "vendor"
+    },
+    {
+      "name": "Azure",
+      "type": "vendor"
+    },
+    {
+      "name": "GCP",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://snyk.io/blog/supply-chain-attack-npm-package-js-utility-kit/",
+      "title": "Malicious Code Injected into Popular NPM Package 'js-utility-kit'",
+      "date": "2026-01-26",
+      "friendly_name": "Snyk",
+      "website": "snyk.io"
+    },
+    {
+      "url": "https://www.theregister.com/2026/01/26/npm_package_hijacked_crypto_stealer/",
+      "title": "Popular NPM package with 5M weekly downloads hijacked to spread crypto-stealing malware",
+      "date": "2026-01-26",
+      "friendly_name": "The Register",
+      "website": "theregister.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-01-24T00:00:00Z",
+      "summary": "The first malicious version of 'js-utility-kit' is published to the NPM registry."
+    },
+    {
+      "datetime": "2026-01-26T00:00:00Z",
+      "summary": "Snyk discovers the malicious packages and reports it. The NPM security team removes the affected versions."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials In Files",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforcing MFA on developer registry accounts is the most effective way to prevent takeovers via credential stuffing.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Using and enforcing package lockfiles prevents the automatic installation of untrusted or unexpected package versions.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Running build processes in isolated, ephemeral containers with restricted network access limits the potential damage of a compromised dependency.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The root cause of the 'js-utility-kit' compromise was a maintainer account takeover. All developers and organizations that publish packages to public registries like NPM, PyPI, or Maven Central must enable Multi-Factor Authentication (MFA) on their accounts. This is not optional. Use strong MFA methods like FIDO2 security keys or authenticator apps. This single control makes credential stuffing attacks, which were used here, significantly harder to execute. For organizations, this should be a mandatory policy for any employee who maintains open-source packages as part of their job. Enforcing this simple measure across the developer community is one of the most impactful ways to secure the software supply chain.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-PL",
+      "technique_name": "Process Lineage Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessLineageAnalysis",
+      "recommendation": "To detect malicious activity during software builds, security teams should monitor process execution on CI/CD runners and developer workstations. Specifically, create detection rules that alert when a package manager process (e.g., `npm`, `pip`, `mvn`) spawns a child process that makes an outbound network connection. In the 'js-utility-kit' attack, the `npm install` process executed a script that downloaded a second-stage payload. A legitimate package installation should rarely need to make arbitrary network calls. By baselining normal build behavior and alerting on this specific process lineage (package manager -> network utility), you can create a high-fidelity alert for potential supply chain attacks involving malicious install scripts. This can be achieved with an EDR agent deployed on build servers.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "A critical, non-negotiable practice for any software development project is the use of package lockfiles (e.g., `package-lock.json`, `yarn.lock`, `Pipfile.lock`). These files pin the exact versions of all direct and transitive dependencies. This prevents the package manager from automatically pulling in newer, potentially malicious patch versions during a fresh install. The presence of a lockfile turns a dependency update into a deliberate, reviewable action. CI/CD pipelines must be configured to use the lockfile (`npm ci` instead of `npm install`). This simple configuration ensures deterministic builds and is a powerful defense against trojaned package updates, as it would have prevented the malicious versions of 'js-utility-kit' from being installed automatically.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "package-lock.json",
+      "description": "The presence of 'js-utility-kit' with versions 2.1.8, 2.1.9, or 2.2.1 in this file is a direct indicator of compromise.",
+      "context": "Code repositories and developer workstations. Can be searched with simple text search or `grep`.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound HTTP/S requests from a 'node' or 'npm' process during package installation.",
+      "description": "This indicates a post-install script is running and making a network connection, which is often suspicious and was the method used in this attack.",
+      "context": "EDR process/network logs, firewall logs from CI/CD runners or developer machines.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install js-utility-kit",
+      "description": "Executing this command between Jan 24-26 could have pulled a malicious version if a lockfile was not used.",
+      "context": "Shell history (`.bash_history`), CI/CD build logs.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "supply chain attack",
+    "NPM",
+    "infostealer",
+    "malware",
+    "cryptocurrency",
+    "developer security",
+    "CI/CD"
+  ],
+  "extract_datetime": "2026-01-26T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Open-source software users"
+    ]
+  },
+  "pub_date": "2026-01-26",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-26T15:00:00.000Z",
+  "updatedAt": "2026-01-26T15:00:00.000Z"
+}
