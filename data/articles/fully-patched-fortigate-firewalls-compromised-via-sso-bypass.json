@@ -1,0 +1,181 @@
+{
+  "id": "dc73e147-d212-4cdc-836a-3ba68852c653",
+  "slug": "fully-patched-fortigate-firewalls-compromised-via-sso-bypass",
+  "headline": "Warning: Fully Patched FortiGate Firewalls Are Being Compromised via New SSO Bypass",
+  "title": "New Attack Path Allows Compromise of Fully Patched FortiGate Firewalls with SAML SSO Enabled",
+  "summary": "Security analysts are warning of a new wave of attacks compromising even fully patched Fortinet FortiGate firewalls. The activity, observed since January 15, 2026, allows attackers to bypass SAML-based single sign-on (SSO) authentication to gain administrative access. The attacks result in unauthorized configuration changes, creation of persistent user accounts, and exfiltration of device configurations. Fortinet has reportedly identified a new, distinct attack path related to previously disclosed vulnerabilities (CVE-2025-59718, CVE-2025-59719), suggesting existing patches may not be fully effective.",
+  "full_report": "## Executive Summary\nA critical security situation is unfolding as threat actors are actively compromising **[Fortinet](https://www.fortinet.com/)** FortiGate firewalls, including devices that are fully patched against previously known vulnerabilities. According to a bulletin from **[Arctic Wolf](https://arcticwolf.com/)**, a new campaign starting around January 15, 2026, is exploiting a new attack path to bypass SAML single sign-on (SSO) authentication. Successful exploitation grants attackers administrative access, allowing them to create rogue admin accounts for persistence, modify firewall policies, and exfiltrate device configurations. While the activity is similar to attacks exploiting **CVE-2025-59718** and **CVE-2025-59719**, Fortinet has reportedly confirmed this is a new, distinct vector affecting its SAML SSO implementations. This poses a severe risk to organizations relying on FortiGate devices for network security.\n\n---\n\n## Vulnerability Details\nThis appears to be a new, zero-day or n-day vulnerability in the SAML SSO implementation of FortiOS, the operating system for FortiGate firewalls. It allows an attacker to bypass authentication and gain administrative privileges.\n*   **Vulnerability Type:** Authentication Bypass\n*   **Attack Vector:** Network\n*   **Affected Component:** FortiOS SAML SSO Implementation\n*   **Related CVEs:** `CVE-2025-59718`, `CVE-2025-59719` (The new attack path is distinct but related).\n*   **Prerequisites:** The FortiGate device must be configured to use SAML for administrative or VPN login.\n\n## Exploitation Status\nActive exploitation has been observed in the wild since at least January 15, 2026. The activity is described as automated, suggesting that threat actors have developed reliable tooling to scan for and exploit vulnerable firewalls at scale. The malicious SSO logins have been traced back to a small number of hosting providers.\n\n## Technical Analysis\nThe core of the vulnerability lies in how the FortiGate appliance validates SAML assertions during the SSO login process. A flaw allows an attacker to craft a request that tricks the firewall into granting an authenticated session without proper validation from the Identity Provider (IdP).\n\n### Attacker Actions on Objective\n1.  **Authentication Bypass:** The attacker exploits the SAML flaw to log in as an administrator. [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/)\n2.  **Create Account:** The attacker immediately creates a new, local administrator account (e.g., `fortinet-tech`, `admin-tech`) to ensure persistent access even if the SSO path is fixed. [`T1136.001 - Create Account: Local Account`](https://attack.mitre.org/techniques/T1136/001/)\n3.  **Configuration Exfiltration:** The attacker downloads the full firewall configuration. This file contains sensitive information, including network topology, VPN settings, and credentials. [`T1005 - Data from Local System`](https://attack.mitre.org/techniques/T1005/)\n4.  **Defense Evasion:** They may alter firewall policies to allow further inbound access or to exfiltrate data from the internal network.\n\n## Impact Assessment\nThe compromise of a perimeter firewall is one of the most critical security incidents an organization can face.\n*   **Total Network Compromise:** An attacker with administrative access to a firewall can control all traffic entering and leaving the network. They can disable security policies, sniff traffic, and pivot into the internal network with ease.\n*   **Loss of Confidentiality:** Exfiltration of the firewall configuration exposes the entire network security posture, VPN secrets, and other sensitive data, enabling further, more targeted attacks.\n*   **Persistent Access:** The creation of rogue administrator accounts provides the attacker with a durable backdoor into the network's most critical security control.\n*   **Supply Chain Risk:** If the firewall is used to manage client networks (e.g., by an MSSP), the compromise could extend to all downstream customers.\n\n## Cyber Observables for Detection\n\n| Type | Value | Description |\n|---|---|---|\n| log_source | FortiGate Event Logs (System) | Look for the creation of new local administrator accounts, especially with non-standard names like 'fortinet-tech' or 'admin-tech'. |\n| log_source | FortiGate Event Logs (System) | Monitor for successful SAML logins from unexpected IP addresses or Identity Providers. |\n| process_name | `sslvpnd` | The SSL VPN daemon process. Monitor for crashes or anomalous behavior. |\n| command_line_pattern | `diagnose debug` | Attackers may use diagnostic commands to gather information after compromise. Monitor for their use outside of normal troubleshooting windows. |\n\n## Detection & Response\n*   **Detection:** Immediately audit all FortiGate devices for any recently created, unauthorized local administrator accounts. Review all system event logs for unexpected configuration changes or successful SAML logins from unknown IP addresses. Use **D3FEND** technique [`D3-DAM: Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring) (applied here to appliance accounts) to baseline and detect new account creation.\n*   **Response:** If an unauthorized account or suspicious login is found, assume the device is compromised. Isolate the device from the internet if possible, preserve logs and a configuration backup for forensic analysis, and prepare to rebuild the device from a trusted firmware image and a sanitized configuration. All secrets (passwords, keys, certificates) on the firewall must be considered compromised and should be rotated immediately.\n\n## Mitigation\n1.  **Disable SSO on Management Interface:** As an immediate mitigation, organizations should consider disabling SAML SSO for the FortiGate administrative interface and revert to local user login with phishing-resistant MFA until a patch is available. Access should be restricted by IP address.\n2.  **Patch Urgently:** Monitor Fortinet's PSIRT advisories closely and apply the forthcoming patch for this new attack vector on an emergency basis as soon as it is released. This is a critical application of **D3FEND**'s [`D3-SU: Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate).\n3.  **Review and Remove Unused Accounts:** Regularly audit all local user accounts on FortiGate devices and remove any that are not actively used or authorized.\n4.  **Restrict Management Access:** The firewall's management interface should never be exposed to the public internet. Access should be restricted to a trusted management network or specific administrative IP addresses.",
+  "twitter_post": "CRITICAL: Fully patched FortiGate firewalls are being compromised via a new SAML SSO bypass. 🚨 Attackers are gaining admin access, creating persistence, and stealing configs. Disable SSO on management interfaces now! #Fortinet #FortiGate #CyberAttack",
+  "meta_description": "Security alert: A new attack is compromising even fully patched Fortinet FortiGate firewalls by exploiting a new SAML SSO authentication bypass, granting attackers administrative access.",
+  "category": [
+    "Vulnerability",
+    "Cyberattack",
+    "Patch Management"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    },
+    {
+      "name": "FortiGate",
+      "type": "product"
+    },
+    {
+      "name": "Arctic Wolf",
+      "type": "security_organization",
+      "url": "https://arcticwolf.com/"
+    },
+    {
+      "name": "SAML",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-59718"
+    },
+    {
+      "id": "CVE-2025-59719"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.helpnetsecurity.com/2026/01/25/week-in-review-fully-patched-fortigate-firewalls-are-getting-compromised-attackers-probe-cisco-rce-flaw/",
+      "title": "Week in review: Fully patched FortiGate firewalls are getting compromised, attackers probe Cisco RCE flaw",
+      "date": "2026-01-25",
+      "friendly_name": "Help Net Security",
+      "website": "helpnetsecurity.com"
+    },
+    {
+      "url": "https://arcticwolf.com/resources/blog/arctic-wolf-observes-malicious-configuration-changes-on-fortinet-fortigate-devices-via-sso-accounts/",
+      "title": "Arctic Wolf Observes Malicious Configuration Changes On Fortinet FortiGate Devices via SSO Accounts",
+      "date": "2026-01-24",
+      "friendly_name": "Arctic Wolf",
+      "website": "arcticwolf.com"
+    },
+    {
+      "url": "https://www.cybersecurity-help.cz/blog/cyber-security-week-in-review-january-23-2026/",
+      "title": "Cyber Security Week in Review: January 23, 2026",
+      "date": "2026-01-24",
+      "friendly_name": "CyberSecurity Help",
+      "website": "cybersecurity-help.cz"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-12",
+      "summary": "Initial activity exploiting CVE-2025-59718 and CVE-2025-59719 is described."
+    },
+    {
+      "datetime": "2026-01-15",
+      "summary": "A new cluster of automated malicious activity begins, compromising even patched devices."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    },
+    {
+      "id": "T1136.001",
+      "name": "Create Account: Local Account"
+    },
+    {
+      "id": "T1098.001",
+      "name": "Account Manipulation: Additional Local Administrator"
+    },
+    {
+      "id": "T1005",
+      "name": "Data from Local System"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Apply the emergency patch from Fortinet as soon as it becomes available.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "description": "Temporarily disable SAML SSO on the management interface as a compensating control.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restrict access to the firewall's management interface to a limited set of trusted IP addresses.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "As an immediate compensating control, organizations using FortiGate firewalls should disable SAML SSO for the administrative management interface until a definitive patch is released and deployed. Revert to a local administrator login protected by phishing-resistant multi-factor authentication (MFA) like a FIDO2 hardware key. Furthermore, harden the management interface by restricting access via a 'local-in' policy to only allow connections from a dedicated, secure management subnet or a specific set of trusted administrative IP addresses. This action directly removes the vulnerable attack surface (the SAML SSO login page) from exposure, preventing exploitation of this specific authentication bypass vector.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-LAM",
+      "technique_name": "Local Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
+      "recommendation": "Immediately implement continuous monitoring and alerting for the creation of new local administrator accounts on all FortiGate devices. Since a key attacker TTP is to create a persistent local account like 'fortinet-tech', this is a high-fidelity indicator of compromise. Configure your SIEM or log management platform to ingest FortiGate system event logs and trigger a critical alert upon detection of an event ID corresponding to new admin account creation. The alert should trigger an immediate incident response playbook to verify the change, and if unauthorized, to isolate the device, remove the rogue account, and begin a full compromise investigation. This provides a crucial detection tripwire for this specific attack chain.",
+      "mitre_mitigation_id": "M1026"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "FortiGate System Event Logs",
+      "description": "Search for event log messages indicating the creation of a new administrator account (e.g., event_id=32003).",
+      "context": "SIEM, FortiAnalyzer",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "FortiGate VPN/Auth Logs",
+      "description": "Look for successful SAML logins for the administrative interface from IP addresses that are not associated with your Identity Provider or legitimate administrators.",
+      "context": "SIEM, FortiAnalyzer",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "fortigate-config.conf",
+      "description": "Monitor for downloads of the device configuration file. This action is often performed by attackers immediately after compromise.",
+      "context": "FortiGate System Event Logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "FortiGate",
+    "Fortinet",
+    "SSO",
+    "SAML",
+    "authentication bypass",
+    "firewall",
+    "zero-day"
+  ],
+  "extract_datetime": "2026-01-25T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Users of FortiGate firewalls"
+    ]
+  },
+  "pub_date": "2026-01-25",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-25T15:00:00.000Z",
+  "updatedAt": "2026-01-25T15:00:00.000Z"
+}
