@@ -1,0 +1,215 @@
+{
+  "id": "1b88d0ab-ac47-4148-a4b2-03fdd0cfd7d0",
+  "slug": "mustang-panda-apt-enhances-stealth-with-signed-kernel-mode-rootkit",
+  "headline": "Mustang Panda APT Deploys Signed Kernel-Mode Rootkit to Hide Backdoor",
+  "title": "Chinese-Linked APT Mustang Panda Uses Signed Kernel-Mode Rootkit to Stealthily Deploy TONESHELL Backdoor",
+  "summary": "The Chinese-linked cyber-espionage group Mustang Panda has significantly upgraded its stealth capabilities by using a signed kernel-mode rootkit to deploy its TONESHELL backdoor. Observed by Kaspersky, the rootkit, named 'ProjectConfiguration.sys', is signed with a leaked digital certificate from a Chinese tech company. By operating at the kernel level as a minifilter driver, the rootkit can effectively hide its malicious processes, files, and registry keys from security software. This new technique allows the group to inject its TONESHELL backdoor directly into the memory of legitimate processes like 'svchost.exe', enhancing its persistence and evasion in attacks targeting government organizations in Southeast Asia.",
+  "full_report": "## Executive Summary\nThe China-linked cyber-espionage group **[Mustang Panda](https://attack.mitre.org/groups/G0129/)** (also known as HoneyMyte or Earth Preta) has incorporated a new, sophisticated tool into its arsenal: a kernel-mode rootkit used to stealthily load its `TONESHELL` backdoor. According to research from **Kaspersky**, the rootkit is a driver file named `ProjectConfiguration.sys` that has been signed with a valid, albeit leaked, digital certificate from a Chinese ATM provider. This allows it to load into the Windows kernel without raising alarms. Once active, the rootkit functions as a minifilter driver, giving it the power to hide the presence of the `TONESHELL` malware from security tools and investigators. This marks a significant evolution in the group's tradecraft, enabling deeper, more persistent, and harder-to-detect intrusions into target networks, primarily government entities in Southeast Asia.\n\n---\n\n## Threat Overview\nMustang Panda is a well-known APT group with a history of targeting government, non-profit, and other strategic organizations, particularly in Asia. This latest campaign, observed in mid-2025, demonstrates a clear investment in enhancing their operational security and stealth.\n\n- **Threat Actor:** Mustang Panda, a group linked to Chinese state interests.\n- **Targets:** Government organizations in Southeast Asia, specifically Myanmar and Thailand.\n- **New Tool:** A kernel-mode rootkit (`ProjectConfiguration.sys`) that provides stealth and persistence.\n- **Payload:** The `TONESHELL` backdoor, a known malware used by the group for reverse shell and downloader capabilities.\n\n---\n\n## Technical Analysis\nThe core of this new TTP is the use of a signed rootkit to achieve unparalleled stealth.\n\n1.  **Initial Access:** The exact initial access vector is unconfirmed, but it is suspected that the attackers used previously compromised machines to deploy the new rootkit.\n2.  **Rootkit Deployment:** The driver file `ProjectConfiguration.sys` is dropped and loaded onto the system. It is signed with a leaked certificate from **Guangzhou Kingteller Technology Co., Ltd.**, which allows it to bypass Windows driver signature enforcement.\n3.  **Kernel-Mode Execution:** The driver registers itself as a minifilter driver, operating in kernel mode ([`T1014 - Rootkit`](https://attack.mitre.org/techniques/T1014/)). This gives it high-level privileges and the ability to intercept and modify system operations.\n4.  **Defense Evasion:** The rootkit's primary function is to hide malicious artifacts. It protects the `TONESHELL` backdoor's files, processes, and registry keys, making them invisible to user-mode applications like Task Manager, File Explorer, and most endpoint security products.\n5.  **Payload Injection:** The rootkit injects the `TONESHELL` shellcode directly into the memory of a legitimate system process, such as `svchost.exe` ([`T1055 - Process Injection`](https://attack.mitre.org/techniques/T1055/)). This in-memory execution further evades disk-based scanning.\n6.  **Command and Control:** The `TONESHELL` backdoor then establishes a reverse shell to an attacker-controlled C2 server, allowing for remote access and the downloading of additional malware.\n\n### MITRE ATT&CK Techniques Observed\n| Tactic | Technique ID | Name | Description |\n|---|---|---|---|\n| Defense Evasion, Persistence | `T1014` | Rootkit | A kernel-mode rootkit is used to hide malicious activities and maintain persistence. |\n| Defense Evasion | `T1574.006` | Hijack Execution Flow: Dynamic-link Library Hijacking | The use of a signed driver to load malicious code into the kernel. (Note: This is a conceptual fit, T1014 is more precise). |\n| Defense Evasion | `T1055` | Process Injection | TONESHELL shellcode is injected into the legitimate `svchost.exe` process. |\n| Execution | `T1059.003` | Command and Scripting Interpreter: Windows Command Shell | TONESHELL provides a reverse shell for executing commands. |\n| Command and Control | `T1071.001` | Application Layer Protocol: Web Protocols | TONESHELL likely uses standard protocols like HTTP/S for C2 communications. |\n\n---\n\n## Impact Assessment\nThe use of a signed kernel-mode rootkit represents a significant escalation in Mustang Panda's capabilities. This technique makes detection extremely difficult, allowing the threat actor to maintain long-term, undetected access to highly sensitive government networks. This level of persistence enables deep espionage, exfiltration of state secrets, and the potential to use the compromised networks as a launchpad for future attacks. The abuse of a legitimate digital certificate also erodes trust in the code-signing ecosystem.\n\n---\n\n## Cyber Observables for Detection\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| file_name | `ProjectConfiguration.sys` | The name of the malicious rootkit driver file. | Endpoint file system scanning. | high |\n| certificate_subject | `Guangzhou Kingteller Technology Co., Ltd.` | The subject of the leaked digital certificate used to sign the driver. | Driver signature verification tools, code signing logs. | high |\n| process_name | `svchost.exe` | Legitimate process making anomalous outbound network connections to unknown IPs. | EDR telemetry, NetFlow analysis. | medium |\n\n---\n\n## Detection & Response\n\n- **Memory Analysis:** Detecting this threat requires advanced techniques. Live memory analysis of compromised systems may reveal the injected `TONESHELL` code within `svchost.exe` or other processes. This aligns with **D3FEND**'s [`D3-DA: Dynamic Analysis`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis).\n- **Driver Monitoring:** Use tools that can inspect loaded kernel drivers. Look for the presence of `ProjectConfiguration.sys` or any drivers signed by Guangzhou Kingteller Technology Co., Ltd. that are not expected in your environment.\n- **Certificate Revocation:** Ensure systems are configured to check for certificate revocation. The leaked certificate should be added to an enterprise blocklist.\n- **Network Behavior Analysis:** Even if the malware is hidden on the host, its C2 traffic may be detectable. Monitor for unusual, periodic connections from sensitive systems to external IP addresses. This is a form of **D3FEND**'s [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n\n---\n\n## Mitigation\n\n- **Application Control / Driver Control:** Implement strict policies that prevent the loading of unauthorized or untrusted drivers. While this driver is signed, it can be blocklisted by its hash or signer. This is a form of **D3FEND**'s [`D3-DLIC: Driver Load Integrity Checking`](https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking).\n- **Hypervisor-Based Security:** Consider solutions that leverage virtualization to monitor the operating system from a higher privilege level (the hypervisor). These tools can be more effective at detecting kernel-level manipulation.\n- **Reduce Privileges:** Enforce the principle of least privilege. The initial deployment of the rootkit likely required administrative privileges. Limiting these privileges can prevent the attack from succeeding in the first place.",
+  "twitter_post": "🇨🇳 Chinese APT Mustang Panda deploys a signed kernel-mode rootkit to hide its TONESHELL backdoor. The rootkit uses a leaked certificate to bypass security, making it highly evasive. #APT #MustangPanda #Rootkit #CyberSecurity #China",
+  "meta_description": "The Chinese-linked espionage group Mustang Panda is using a signed kernel-mode rootkit ('ProjectConfiguration.sys') to stealthily deploy its TONESHELL backdoor, enhancing its evasion capabilities.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Mustang Panda",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0129/"
+    },
+    {
+      "name": "HoneyMyte",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0041/"
+    },
+    {
+      "name": "TONESHELL",
+      "type": "malware"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "security_organization"
+    },
+    {
+      "name": "Guangzhou Kingteller Technology Co., Ltd.",
+      "type": "company"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2025/12/mustang-panda-uses-signed-kernel-mode.html",
+      "title": "Mustang Panda Uses Signed Kernel-Mode Rootkit to Load TONESHELL Backdoor",
+      "date": "2025-12-30",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.securityweek.com/chinese-apt-mustang-panda-caught-using-kernel-mode-rootkit/",
+      "title": "Chinese APT Mustang Panda Caught Using Kernel-Mode Rootkit",
+      "date": "2025-12-30",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-02-01T00:00:00Z",
+      "summary": "Security researchers suspect the campaign began around this time."
+    },
+    {
+      "datetime": "2024-09-01T00:00:00Z",
+      "summary": "The C2 infrastructure for the campaign was set up."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1014",
+      "name": "Rootkit",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1055",
+      "name": "Process Injection",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1070.004",
+      "name": "File Deletion",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        }
+      ],
+      "description": "Use driver blocklisting to prevent the loading of drivers signed by the compromised certificate or with a known malicious hash.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Use advanced endpoint protection that includes memory scanning to detect injected shellcode and other in-memory threats.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1046",
+      "name": "Boot Integrity",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BA",
+          "name": "Bootloader Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:BootloaderAuthentication"
+        }
+      ],
+      "description": "Enable Secure Boot to help ensure the integrity of the boot process and prevent loading of unauthorized kernel-level drivers.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DLIC",
+      "technique_name": "Driver Load Integrity Checking",
+      "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking",
+      "recommendation": "To counter the threat of a signed rootkit like `ProjectConfiguration.sys`, organizations should implement strict driver load policies. While the driver is signed, the certificate from Guangzhou Kingteller Technology Co., Ltd. is now known to be compromised. Using application control solutions like Windows Defender Application Control (WDAC) or AppLocker, administrators can create rules to explicitly block any driver signed by this specific certificate or with the known hash of the malicious driver. This moves beyond simple signature validation to an intelligence-led blocklisting approach. This policy should be deployed across all endpoints, especially servers and systems holding sensitive data, to prevent the rootkit from ever being loaded into the kernel.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Detecting kernel-level threats requires capabilities beyond traditional file-based scanning. Security teams must employ tools that perform dynamic analysis of system memory. EDR solutions with memory scanning features or dedicated memory forensics tools can be used to hunt for anomalies. Specifically for this threat, analysts should look for evidence of process injection into `svchost.exe`. This includes examining the memory segments of `svchost.exe` instances for executable code that doesn't map to a known, legitimate DLL on disk. A mismatch between the in-memory code and the on-disk binary is a strong indicator of injection. This technique is resource-intensive but is one of the few effective ways to uncover threats that are actively hiding from the operating system itself.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "ProjectConfiguration.sys",
+      "description": "The filename of the malicious kernel-mode rootkit driver.",
+      "context": "Endpoint file system scanning, driver inventory tools.",
+      "confidence": "high"
+    },
+    {
+      "type": "certificate_subject",
+      "value": "Guangzhou Kingteller Technology Co., Ltd.",
+      "description": "The subject name on the leaked digital certificate used to sign the malicious driver.",
+      "context": "Certificate stores, code signing logs, driver analysis tools.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "svchost.exe",
+      "description": "Anomalous network connections originating from svchost.exe could indicate that the TONESHELL backdoor has been injected into it.",
+      "context": "EDR telemetry, NetFlow analysis, firewall logs.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Mustang Panda",
+    "APT",
+    "Rootkit",
+    "Kernel-mode",
+    "TONESHELL",
+    "China",
+    "Espionage",
+    "Kaspersky"
+  ],
+  "extract_datetime": "2026-01-01T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Myanmar",
+      "Thailand"
+    ],
+    "industries_affected": [
+      "Government"
+    ],
+    "other_affected": [
+      "Southeast and East Asian organizations"
+    ]
+  },
+  "pub_date": "2026-01-01",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-01T15:00:00.000Z",
+  "updatedAt": "2026-01-28T10:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-01-28T10:00:00Z",
+      "datetime": "2026-01-28T10:00:00Z",
+      "title": "Update 1",
+      "summary": "Mustang Panda (HoneyMyte) expands campaign with updated CoolClient backdoor, new browser data stealers, and continued use of kernel-mode rootkits targeting Asian governments.",
+      "sources": [
+        {
+          "title": "Daily Cybersecurity News – January 27, 2026",
+          "url": "https://www.cyber-recaps.com/2026/01/27/daily-cybersecurity-news-january-27-2026/"
+        },
+        {
+          "title": "News - January 2026",
+          "url": "https://www.cybersecurity-review.com/news-january-2026/"
+        },
+        {
+          "title": "Cyber Attack News - Risk Roundup - January 2026",
+          "url": "https://xage.com/cyber-attack-news-risk-roundup-january-2026/"
+        }
+      ]
+    }
+  ]
+}
