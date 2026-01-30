@@ -1,0 +1,188 @@
+{
+  "id": "b80d168b-f559-408d-9861-1d44462717c5",
+  "slug": "phishing-campaign-uses-vercel-domains-and-telegram-to-deliver-rat",
+  "headline": "Novel Phishing Attack Abuses Vercel and Telegram to Deliver RATs",
+  "title": "Phishing Campaign Abuses Trusted Vercel Domains and Telegram for Evasive RAT Delivery",
+  "summary": "A novel phishing campaign, observed between November 2025 and January 2026, is abusing trusted `*.vercel.app` domains to bypass email security filters and deliver malware. The attack, detailed by Cloudflare, uses financial lures like fake invoices to trick victims into clicking. A unique feature is its Telegram-gated payload delivery, which requires interaction with a Telegram bot to receive the final payload. This technique effectively filters out automated sandboxes and security researchers, ensuring the malware is only delivered to genuine targets. The campaign's ultimate goal is to install GoTo Resolve, a legitimate remote access tool, which is then abused by attackers for persistent access and control.",
+  "full_report": "## Executive Summary\nA sophisticated phishing campaign is leveraging the trusted reputation of the **[Vercel](https://vercel.com/)** cloud platform and the **[Telegram](https://telegram.org/)** messaging service to deliver a Remote Access Trojan (RAT). According to a report from **[Cloudflare](https://www.cloudflare.com/)**, attackers are hosting phishing pages on `*.vercel.app` subdomains to bypass email security gateways. The campaign uses financial-themed lures to entice victims. A key innovation is the use of a Telegram-gated mechanism, where the victim must interact with a Telegram channel or bot to download the final payload. This acts as a human-verification step, effectively evading automated analysis systems. The payload is an installer for **GoTo Resolve**, a legitimate remote access tool, which is then abused by the attackers to gain persistent control over the victim's machine.\n\n---\n\n## Threat Overview\nThe campaign, active from late 2025 to early 2026, demonstrates a growing trend of attackers abusing legitimate cloud services to enhance their operations. The attack chain is as follows:\n\n1.  **Phishing Email**: The victim receives an email with a financial lure, such as an 'overdue invoice' or 'shipping notification'. The email contains a link to a page hosted on a `*.vercel.app` domain.\n2.  **Trusted Domain Abuse**: Because `vercel.app` is a legitimate and widely used domain, the URL is less likely to be flagged as malicious by email security filters. This is an example of [`T1588.002 - Tool`](https://attack.mitre.org/techniques/T1588/002/) where attackers abuse a legitimate tool/service.\n3.  **Telegram Gating**: The Vercel landing page instructs the user to join a Telegram channel or interact with a bot to receive their document. This step is crucial for evasion. Automated sandboxes and URL scanners typically do not have Telegram clients and cannot proceed past this stage.\n4.  **Payload Delivery**: Once the user joins the Telegram channel, they are provided with a link to download the payload, which is the **GoTo Resolve** installer.\n5.  **RAT Installation**: The user, believing they are downloading a document, installs the legitimate remote access software. The attackers, who orchestrated the setup, now have full remote access to the machine.\n\nThis multi-stage, multi-platform approach significantly increases the attack's complexity and its ability to evade detection.\n\n---\n\n## Technical Analysis\nThis campaign combines several techniques to achieve its goals:\n\n*   **Initial Access**: [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/). The attack begins with a standard phishing email.\n*   **Defense Evasion**: The use of Vercel domains is a form of Masquerading, specifically [`T1036.007 - Double File Extension`](https://attack.mitre.org/techniques/T1036/007/) at a conceptual level, by hiding behind a trusted service. The Telegram gating is a sophisticated form of [`T1480.001 - Environmental Keying`](https://attack.mitre.org/techniques/T1480/001/), as the payload is only delivered if the 'environment' (a human with a Telegram account) is correct.\n*   **Command and Control**: The attackers abuse a legitimate remote access tool, **GoTo Resolve**, for C2. This is a classic Living off the Land (LotL) technique, falling under [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/). By using a legitimate, signed application, they bypass EDR/antivirus detections that look for known malicious RATs.\n\n> The use of Telegram as a filter is a clever evolution. It forces a human interaction that automated systems cannot replicate, ensuring a higher quality of victim and a lower rate of detection for the attackers' payload infrastructure.\n\n---\n\n## Impact Assessment\nWhile the initial payload is a legitimate tool, the impact is equivalent to a full RAT infection.\n\n*   **Persistent Access**: Attackers gain persistent, on-demand remote access to the compromised system.\n*   **Data Theft**: They can exfiltrate any files, documents, or credentials from the machine.\n*   **Further Compromise**: The compromised machine can be used as a pivot point to attack other systems on the internal network.\n*   **Spying**: Attackers can monitor user activity, log keystrokes, and capture screenshots.\n*   **Ransomware Deployment**: The access could be sold to or used by ransomware groups to deploy their payloads.\n\n---\n\n## Cyber Observables for Detection\n\n| Type | Value | Description |\n|---|---|---|\n| `url_pattern` | `*.vercel.app` | While many Vercel sites are legitimate, outbound traffic to newly created or suspicious-looking Vercel subdomains should be scrutinized. |\n| `process_name` | `GoToResolve.exe` | The installation or execution of GoTo Resolve (or similar remote access tools like AnyDesk, TeamViewer) in an environment where it is not standard software is a major red flag. |\n| `network_traffic_pattern` | `Outbound traffic to api.telegram.org` | While not inherently malicious, an employee's machine making API calls to Telegram, especially if initiated from a browser after visiting a Vercel link, could be part of this attack chain. |\n| `log_source` | `Email Gateway Logs` | Hunt for emails containing `*.vercel.app` links, especially those with financial keywords like 'invoice', 'payment', or 'shipping'. |\n\n---\n\n## Detection & Response\n\n*   **Application Control**: Use application allowlisting to prevent users from installing unauthorized software, including legitimate remote access tools like GoTo Resolve.\n*   **Network Filtering**: Block or alert on outbound connections to `api.telegram.org` from corporate workstations if Telegram is not an approved business application. While this may have business impact, it can be effective.\n*   **EDR Monitoring**: Monitor for the installation of any remote access software. Create alerts for when these tools are installed outside of a standard IT deployment process.\n*   **D3FEND Techniques**: **[Executable Allowlisting (D3-EAL)](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)** is the most effective defense here, as it would prevent the unauthorized GoTo Resolve installer from running. **[Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)** can also be used to block the C2 traffic from the abused tool.\n\n**Response**:\nIf an unauthorized remote access tool is found, isolate the host, uninstall the software, and investigate system logs and network traffic to determine what actions the attacker took.\n\n---\n\n## Mitigation\n\n1.  **User Education**: Train users to be suspicious of emails that require them to perform unusual actions, such as joining a Telegram channel to view a document. This is a major red flag.\n2.  **Restrict Software Installation**: Remove local administrator rights from standard users to prevent them from installing unauthorized applications.\n3.  **Email Security**: While the attackers are attempting to bypass filters, a well-configured email gateway may still flag suspicious language or sender reputation. Implement robust anti-phishing controls.\n4.  **Block Unnecessary Services**: If Telegram is not used for business purposes, consider blocking it at the network perimeter. Similarly, create policies to block other file-sharing and messaging platforms that are not sanctioned by the organization.",
+  "twitter_post": "🎣 Novel phishing attack abuses trusted Vercel domains to bypass email filters. A Telegram bot acts as a gate to filter out sandboxes before delivering a RAT, abusing the legitimate GoTo Resolve tool. #Phishing #Vercel #Telegram #CyberSecurity",
+  "meta_description": "A new phishing campaign abuses Vercel domains and a Telegram-gated delivery mechanism to evade security and install the GoTo Resolve remote access tool for malicious use.",
+  "category": [
+    "Phishing",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "Vercel",
+      "type": "vendor",
+      "url": "https://vercel.com/"
+    },
+    {
+      "name": "Telegram",
+      "type": "product",
+      "url": "https://telegram.org/"
+    },
+    {
+      "name": "GoTo Resolve",
+      "type": "product"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor",
+      "url": "https://www.cloudflare.com/"
+    },
+    {
+      "name": "CyberArmor",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/01/threatsday-bulletin-new-rces-darknet.html",
+      "title": "ThreatsDay Bulletin: New RCEs, Darknet Busts, Kernel Bugs & 25+ More Stories",
+      "date": "2026-01-29",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.cloudflare.com/learning/security/threats/threats-day-january-2026/",
+      "title": "Cloudflare ThreatsDay Bulletin January 2026",
+      "date": "2026-01-29",
+      "friendly_name": "Cloudflare",
+      "website": "cloudflare.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-06",
+      "summary": "CyberArmor first documents the TTPs used in this campaign."
+    },
+    {
+      "datetime": "2025-11",
+      "summary": "The phishing campaign leveraging Vercel and Telegram becomes active."
+    },
+    {
+      "datetime": "2026-01",
+      "summary": "The campaign continues to be observed in the wild."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1480.001",
+      "name": "Environmental Keying",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1588.002",
+      "name": "Tool",
+      "tactic": "Resource Development"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control or allowlisting to prevent users from installing unauthorized software, including legitimate but abused remote access tools.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate users to identify red flags in phishing campaigns, such as being asked to download software or join a messaging channel to view a document.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Block outbound connections to services like Telegram if they are not approved for business use, preventing the attack chain from completing.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Remove local administrator privileges from standard users to prevent them from installing software.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "The most direct technical countermeasure to this attack is executable allowlisting, a form of application control. By creating a policy that only allows known, approved applications to run, the unauthorized installation of GoTo Resolve would be blocked, regardless of whether the user was tricked into downloading it. This defense breaks the attack chain at the execution stage. Implementing a full allowlisting solution can be complex, so organizations can start with a more manageable approach: using tools like Windows Defender Application Control or AppLocker to create policies that block the installation of software from user-writable directories (like Downloads or AppData) and specifically denylisting common but unapproved remote access tools (AnyDesk, TeamViewer, GoTo Resolve, etc.). This provides a significant security uplift by preventing the execution of the attacker's chosen payload.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Hardening the configuration of web browsers can help mitigate the initial stages of this attack. Configure browsers to block or warn users about downloads of executable files. Additionally, IT policies should be enforced to remove local administrator privileges from standard user accounts. This single change prevents a user from being able to install most software, including the GoTo Resolve package used in this attack. Even if the user downloads the installer, they will be met with a UAC prompt requiring administrative credentials, which they do not have. This forces the user to stop and contact IT, often revealing the phishing attempt in the process. This simple, low-cost configuration change is one of the most effective defenses against user-initiated malware execution.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "*.vercel.app/*",
+      "description": "The phishing pages are hosted on subdomains of vercel.app. Monitoring for clicks to these links from corporate emails is a key observable.",
+      "context": "Web proxy logs, DNS logs, Email security gateway logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connection to api.telegram.org",
+      "description": "The attack requires the victim's machine to connect to Telegram's API. This traffic from a corporate endpoint, if not standard business practice, is suspicious.",
+      "context": "Firewall logs, NetFlow analysis",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "GoToResolve.exe",
+      "description": "The presence and execution of the GoTo Resolve application on a user endpoint where it is not an approved corporate tool.",
+      "context": "EDR, software inventory",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "invoice_*.exe",
+      "description": "The payload is often disguised as a document, but is actually an executable file. Executables with document-like names are a classic indicator.",
+      "context": "Endpoint file system monitoring, EDR",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Phishing",
+    "RAT",
+    "Evasion",
+    "Vercel",
+    "Telegram",
+    "GoTo Resolve",
+    "Living off the Land"
+  ],
+  "extract_datetime": "2026-01-30T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Finance"
+    ]
+  },
+  "pub_date": "2026-01-30",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-01-30T15:00:00.000Z",
+  "updatedAt": "2026-01-30T15:00:00.000Z"
+}

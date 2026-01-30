@@ -1,0 +1,171 @@
+{
+  "id": "b08a33b2-112a-4889-b22d-4e102ca999c0",
+  "slug": "new-sicarii-ransomware-raas-operation-identified-in-the-wild",
+  "headline": "New 'Sicarii Ransomware' RaaS Emerges, Targeting U.S. Manufacturing",
+  "title": "New 'Sicarii Ransomware' Ransomware-as-a-Service (RaaS) Operation Identified",
+  "summary": "A new ransomware-as-a-service (RaaS) operation named 'Sicarii Ransomware' has been discovered by researchers at CYFIRMA. Active since late 2025, the group is targeting the manufacturing sector in the United States. The malware encrypts victim files using AES-GCM and appends a '.sicarii' extension to them. In addition to encryption, the malware is capable of collecting system information and credentials from infected hosts, suggesting a double-extortion tactic may be part of their playbook. Tactical recommendations to defend against this threat include enhanced monitoring, maintaining offline backups, and strengthening network segmentation.",
+  "full_report": "## Executive Summary\nCybersecurity researchers at **[CYFIRMA](https://www.cyfirma.com/)** have identified a new ransomware-as-a-service (RaaS) operation named **Sicarii Ransomware**. The group, which has been active since at least late 2025, was discovered during monitoring of underground forums. The **Sicarii** operation is currently focused on targeting organizations in the manufacturing sector within the United States. The malware payload encrypts files using AES-GCM and appends the `.sicarii` extension. Notably, the malware also includes capabilities to collect system information and credentials, indicating a likely double-extortion model where data is both encrypted and exfiltrated for leverage. The emergence of a new RaaS group highlights the persistent and evolving nature of the ransomware threat.\n\n---\n\n## Threat Overview\n**Sicarii Ransomware** operates on a RaaS model, where the core developers provide the malware and infrastructure to affiliates, who then carry out the attacks in exchange for a share of the ransom payments. This model allows for rapid scaling of attack volume.\n\n*   **Threat Actor**: The group calls itself **Sicarii**, a name with historical connotations of assassins.\n*   **Targeting**: Current intelligence indicates a specific focus on the U.S. manufacturing industry. This sector is often targeted due to its low tolerance for downtime and the potential for significant disruption.\n*   **Malware**: The ransomware binary is designed for Windows systems. It encrypts files and appends the `.sicarii` extension. It also has information-stealing capabilities.\n\nInitial access vectors are not specified but are likely to include common methods such as phishing, exploitation of vulnerable public-facing services (like RDP or VPNs), or purchase of access from initial access brokers.\n\n---\n\n## Technical Analysis\nThe **Sicarii** malware performs several actions upon execution:\n\n1.  **Credential and Information Gathering**: Before encryption, the malware collects system information (e.g., OS version, hostname, user details) and searches for stored credentials. This data is likely exfiltrated to the attackers. This aligns with [`T1005 - Data from Local System`](https://attack.mitre.org/techniques/T1005/) and [`T1552 - Unsecured Credentials`](https://attack.mitre.org/techniques/T1552/).\n2.  **Defense Evasion**: Like most modern ransomware, it will likely attempt to stop security-related services and processes and delete Volume Shadow Copies to prevent easy recovery. This is a form of [`T1489 - Service Stop`](https://attack.mitre.org/techniques/T1489/) and [`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/).\n3.  **Encryption**: The core function is file encryption using the AES-GCM symmetric encryption algorithm. GCM (Galois/Counter Mode) provides both confidentiality and authenticity, making it a strong choice. This is the final impact, [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/).\n4.  **Ransom Note**: After encryption, a ransom note is dropped on the system, providing instructions on how to contact the attackers and pay the ransom.\n\nThe inclusion of data gathering capabilities strongly suggests a double-extortion strategy. The attackers will threaten to leak the stolen data on a dedicated leak site if the ransom is not paid.\n\n---\n\n## Impact Assessment\nA successful attack by **Sicarii Ransomware** can have a devastating impact on a manufacturing organization.\n\n*   **Operational Halt**: Encryption of critical systems, such as those controlling production lines, enterprise resource planning (ERP), or logistics, can bring all manufacturing operations to a complete standstill.\n*   **Financial Loss**: The financial impact includes the cost of the ransom (if paid), revenue lost during downtime, and the significant expense of incident response and system restoration.\n*   **Data Breach**: The exfiltration of data constitutes a data breach. If this data includes intellectual property (e.g., product designs, chemical formulas) or employee PII, the long-term damage can be severe.\n*   **Supply Chain Disruption**: A halt in production at one manufacturing company can have a cascading effect on its customers and suppliers, causing broader supply chain disruption.\n\n---\n\n## Cyber Observables for Detection\n\nDefenders should hunt for indicators associated with ransomware activity.\n\n| Type | Value | Description |\n|---|---|---|\n| `file_name` | `*.*.sicarii` | The file extension appended to encrypted files. The presence of files with this pattern is a definitive indicator of compromise. |\n| `command_line_pattern` | `vssadmin.exe delete shadows /all /quiet` | A common command used by ransomware to delete backups. This is a high-confidence indicator. |\n| `process_name` | `(Ransomware binary)` | Monitor for the execution of new, unsigned executables in user profiles or temporary directories. |\n| `network_traffic_pattern` | `Large outbound data transfer` | A spike in outbound data transfer prior to encryption activity can indicate data exfiltration for double extortion. |\n\n---\n\n## Detection & Response\n\n*   **Behavioral Detection**: Use an EDR solution with anti-ransomware capabilities. These tools are designed to detect and block the characteristic behaviors of ransomware, such as mass file encryption, regardless of the specific malware family.\n*   **File Canaries**: Place decoy files (canaries) on file shares and critical servers. Configure alerts to trigger immediately if these files are modified or encrypted, providing an early warning of an attack.\n*   **Data Exfiltration Monitoring**: Monitor network egress points for unusually large data uploads to cloud storage providers or other unexpected destinations.\n*   **D3FEND Techniques**: The most effective detection is through **[File Content Rules (D3-FCR)](https://d3fend.mitre.org/technique/d3f:FileContentRules)** and **[Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)** in an EDR. These can identify the rapid file modification behavior and terminate the malicious process.\n\n**Response**:\nUpon detection of ransomware activity, immediately isolate the affected hosts from the network to prevent its spread. Activate the incident response plan and engage with third-party experts if necessary. Do not power off the machine until a decision is made about forensic evidence collection.\n\n---\n\n## Mitigation\n\nStandard ransomware defenses are effective against new groups like **Sicarii**.\n\n1.  **Offline/Immutable Backups**: This is the most critical defense. Maintain a robust backup strategy with offline, air-gapped, or immutable copies of critical data. Regularly test the restoration process.\n2.  **Network Segmentation**: Segment the network to separate critical manufacturing (OT) environments from the corporate (IT) network. This can prevent a ransomware attack on the IT side from crippling production.\n3.  **Secure Remote Access**: Harden all remote access points. Enforce multi-factor authentication (MFA) on all VPN and RDP connections. Do not expose RDP directly to the internet.\n4.  **Patch Management**: Promptly patch vulnerabilities in public-facing systems and software, as these are common entry points for ransomware affiliates.\n5.  **User Training**: Train users to recognize and report phishing emails, which are a primary initial access vector.",
+  "twitter_post": "🚨 New RaaS operation 'Sicarii Ransomware' discovered. Active since late 2025, it targets U.S. manufacturing, encrypts files with '.sicarii', and steals data for double extortion. #Ransomware #Sicarii #CyberSecurity #Manufacturing",
+  "meta_description": "A new ransomware-as-a-service (RaaS) group named Sicarii Ransomware is targeting the U.S. manufacturing sector, using AES-GCM encryption and double-extortion tactics.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Sicarii Ransomware",
+      "type": "malware"
+    },
+    {
+      "name": "Sicarii",
+      "type": "threat_actor"
+    },
+    {
+      "name": "CYFIRMA",
+      "type": "security_organization",
+      "url": "https://www.cyfirma.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cyfirma.com/outofband/weekly-intelligence-report-30-january-2026/",
+      "title": "Weekly Intelligence Report – 30 January 2026",
+      "date": "2026-01-30",
+      "friendly_name": "CYFIRMA",
+      "website": "cyfirma.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/new-sicarii-ransomware-ramps-up-in-january/",
+      "title": "New Sicarii ransomware ramps up attacks in January",
+      "date": "2026-01-30",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-11",
+      "summary": "Sicarii Ransomware operation is believed to have started its activities."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1567",
+      "name": "Exfiltration Over Web Service",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Deploy EDR solutions with behavioral anti-ransomware modules that can detect and block mass encryption activity.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "description": "Segment IT and OT networks to prevent ransomware from spreading from corporate systems to critical industrial control systems.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforce MFA on all remote access solutions (VPN, RDP) to protect against credential-based initial access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M0930",
+      "name": "Data Backup",
+      "description": "Maintain and regularly test offline or immutable backups to ensure recovery without paying a ransom.",
+      "domain": "ics"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-FR",
+      "technique_name": "File Restoration",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileRestoration",
+      "recommendation": "The single most important defense against any ransomware threat, including Sicarii, is the ability to restore from clean backups. For manufacturing organizations, this means having a tiered backup strategy. Critical systems controlling production (OT/ICS) and core business functions (ERP) must have regularly tested, offline, air-gapped backups. This ensures that even if the entire production network is encrypted, there is a viable path to recovery that does not involve paying the ransom. The restoration process should be documented and drilled at least twice a year to ensure that recovery time objectives (RTO) can be met. Without a reliable backup and restoration plan, a manufacturing firm is at the mercy of the attackers.",
+      "mitre_mitigation_id": "M0930"
+    },
+    {
+      "technique_id": "D3-DO",
+      "technique_name": "Decoy Object",
+      "url": "https://d3fend.mitre.org/technique/d3f:DecoyObject",
+      "recommendation": "To gain early warning of a ransomware attack in progress, organizations should deploy decoy objects, also known as honeyfiles or canaries. These are files placed on network shares and servers that have no legitimate business use. For a manufacturing company, these could be files named 'production_schedule_Q3.xlsx' or 'machine_calibration_data.csv'. File integrity monitoring (FIM) or EDR solutions should be configured to generate a critical, high-priority alert the instant one of these decoy files is accessed, modified, or encrypted. Since no legitimate user or process should ever touch these files, any interaction is a high-fidelity indicator of malicious activity, likely a ransomware payload beginning its encryption routine. This can provide the security team with the crucial minutes needed to isolate the affected host and prevent the attack from spreading across the entire network.",
+      "mitre_mitigation_id": "M1056"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "*.sicarii",
+      "description": "The file pattern for files encrypted by Sicarii ransomware. Detection of this pattern indicates a successful encryption event.",
+      "context": "File Integrity Monitoring (FIM), EDR, file system scans",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "vssadmin.exe",
+      "description": "Ransomware frequently uses the vssadmin.exe utility to delete volume shadow copies. Monitoring for its execution, especially by non-admin users or scripts, is a key indicator.",
+      "context": "EDR, Windows Event ID 4688",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous data egress",
+      "description": "A large volume of data being uploaded from the internal network to an external host shortly before encryption begins is a sign of data exfiltration for double extortion.",
+      "context": "Firewall logs, DLP solutions, NetFlow analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "ransom.txt",
+      "description": "Ransomware drops a note, often with a common name like 'ransom.txt' or 'HOW_TO_RECOVER.txt'. Monitoring for the creation of such files can provide a fast alert.",
+      "context": "File Integrity Monitoring (FIM)",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Ransomware",
+    "RaaS",
+    "Double Extortion",
+    "Manufacturing",
+    "AES-GCM"
+  ],
+  "extract_datetime": "2026-01-30T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Manufacturing"
+    ]
+  },
+  "pub_date": "2026-01-30",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-01-30T15:00:00.000Z",
+  "updatedAt": "2026-01-30T15:00:00.000Z"
+}
