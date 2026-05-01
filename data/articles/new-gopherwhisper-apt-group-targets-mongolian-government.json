@@ -1,0 +1,228 @@
+{
+  "id": "a0fd2355-295a-493b-9c05-f6ef0b435d3e",
+  "slug": "new-gopherwhisper-apt-group-targets-mongolian-government",
+  "headline": "New 'GopherWhisper' APT Group Linked to China Targets Mongolian Government",
+  "title": "Undocumented GopherWhisper APT Abuses Slack and Discord for C2 in Espionage Campaign Against Mongolian Government",
+  "summary": "ESET researchers have uncovered a previously unknown, China-aligned APT group named 'GopherWhisper.' Active since at least November 2023, the group was discovered targeting a Mongolian governmental institution with a sophisticated, Go-based malware toolkit. This toolset includes multiple backdoors like LaxGopher, RatGopher, and BoxOfFriends. A key characteristic of GopherWhisper is its extensive use of legitimate commercial services for command and control (C2) to evade detection. The LaxGopher backdoor uses a private Slack workspace, RatGopher uses Discord, and BoxOfFriends uses Microsoft Graph API to communicate via Outlook draft emails. This 'living off the trusted service' approach makes their C2 traffic extremely difficult to distinguish from legitimate user activity.",
+  "full_report": "## Executive Summary\nResearchers at **[ESET](https://www.eset.com/us/)** have identified a previously undocumented advanced persistent threat (APT) group, which they have named **GopherWhisper**. This China-aligned group is focused on cyber-espionage and has been active since at least November 2023. The group was discovered after a novel backdoor was detected on the network of a government institution in Mongolia in January 2025. GopherWhisper employs a large, modular toolkit written primarily in the Go programming language. A defining feature of their operations is the heavy reliance on legitimate commercial services for command-and-control (C2) communications, a technique designed to blend in with normal network traffic. The group uses **[Slack](https://slack.com/)**, **[Discord](https://discord.com/)**, and **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** Outlook for C2, and the file.io service for data exfiltration, making their activities difficult to detect with traditional network security tools.\n\n## Threat Overview\n**Threat Actor:** **GopherWhisper** (China-aligned)\n**Targets:** Mongolian governmental institutions, with other potential victims identified.\n**Malware Toolkit (Go-based):**\n- **Backdoors:** `LaxGopher` (Slack C2), `RatGopher` (Discord C2), `BoxOfFriends` (Outlook C2)\n- **Injector:** `JabGopher`\n- **Loader:** `FriendDelivery`\n- **Exfiltration Tool:** `CompactGopher`\n**Objective:** Long-term cyber-espionage and data theft.\n\nESET's investigation revealed that at least 12 systems within the targeted Mongolian government organization were infected. By recovering API tokens used by the malware, the researchers gained access to the attackers' C2 channels, providing deep insight into their operations and uncovering dozens of other potential victims.\n\n## Technical Analysis\nGopherWhisper's TTPs are notable for their focus on stealth and evasion by abusing trusted services.\n- **Initial Access:** The initial vector for the Mongolian government intrusion was not specified in the reports.\n- **Execution & Persistence:** The attack likely involves a dropper that executes the `FriendDelivery` loader, which in turn deploys one of the backdoors. Persistence mechanisms were not detailed but are typical for APT groups.\n- **Command and Control:** This is the most innovative aspect of GopherWhisper's toolkit.\n    - [`T1102.003 - Dead-Drop Resolver`](https://attack.mitre.org/techniques/T1102/003/): The group uses various services as dead drops to pass commands and data.\n    - **LaxGopher** uses the Slack API to post messages with exfiltrated data to a private channel and read new messages for commands.\n    - **RatGopher** uses the Discord API and webhooks for C2 in a similar fashion.\n    - **BoxOfFriends** uses the Microsoft Graph API to create, read, and delete draft emails in a compromised Outlook account. Commands are placed in drafts, and results are written back, with the drafts being deleted after use.\n- **Exfiltration:** ([`T1567.002 - Exfiltration to Cloud Storage`](https://attack.mitre.org/techniques/T1567/002/)) The `CompactGopher` tool is used to exfiltrate stolen data via the legitimate file-sharing service `file.io`.\n\nThis 'Living off the Trusted Service' approach makes detection extremely challenging. Network defenders cannot simply block IPs associated with Slack, Discord, or Microsoft 365, as this would disrupt business operations.\n\n## Impact Assessment\nThe compromise of a government institution by a sophisticated APT group like GopherWhisper represents a significant national security breach for Mongolia. The attackers likely gained long-term access to sensitive government networks, allowing them to steal state secrets, monitor official communications, and gather intelligence aligned with the strategic interests of the Chinese state. The operational security of the targeted institution is severely undermined. The discovery of dozens of other potential victims suggests a broader espionage campaign that could have regional implications. This incident highlights the growing trend of APTs using Go-lang for cross-platform malware and abusing legitimate cloud services to bypass traditional security defenses.\n\n## IOCs — Directly from Articles\nNo specific file hashes or C2 domains were provided in the source articles, as the C2 infrastructure is hosted on legitimate services.\n\n## Cyber Observables — Hunting Hints\nDetection requires moving beyond IP/domain blocking and focusing on behavioral anomalies.\n\n| Type | Value | Description |\n|---|---|---|\n| url_pattern | `slack.com/api/chat.postMessage` | An unusual or unauthorized process making API calls to post messages to Slack. |\n| url_pattern | `discord.com/api/webhooks/` | An unusual or unauthorized process making API calls to Discord webhooks. |\n| url_pattern | `graph.microsoft.com/v1.0/me/mailFolders/drafts/messages` | An unusual process accessing Outlook draft messages via the Graph API. |\n| user_agent | `Go-http-client/1.1` | The default user agent for Go-lang's HTTP client. While not inherently malicious, its presence from an unexpected process could indicate a Go-based backdoor. |\n| network_traffic_pattern | API calls to file.io from server systems | The file.io service being used by server-side processes could be an indicator of the CompactGopher exfiltration tool. |\n\n## Detection & Response\n- **API Monitoring and Auditing**: For services like Microsoft 365, enable and ingest detailed audit logs, including Graph API activity. Monitor for anomalous API usage patterns, such as a service account or user account suddenly accessing draft emails at a high frequency. This is a form of **[Cloud Service Dashboard Monitoring](https://d3fend.mitre.org/technique/d3f:CloudServiceDashboardMonitoring)**.\n- **TLS/SSL Inspection**: Implement TLS inspection on outbound web traffic to gain visibility into API calls being made to services like Slack and Discord. While this is privacy-sensitive and requires careful policy design, it is one of the few ways to see the content of the C2 traffic.\n- **Endpoint Behavioral Analysis**: Use an EDR to detect suspicious Go-lang binaries. Look for unsigned executables making persistent connections to the APIs of legitimate cloud services. The combination of a `Go-http-client` user agent and connections to Slack/Discord/Graph API from a non-browser process is a strong detection signal.\n- **Response**: If GopherWhisper activity is suspected, the API keys and tokens used by the malware must be revoked immediately within the respective cloud service (Slack, Discord, Microsoft 365). This will sever the C2 channel.\n\n## Mitigation\n- **Restrict Application APIs**: Where possible, use cloud provider controls to restrict which applications can access APIs. For example, in Microsoft Entra ID, you can control application permissions for the Graph API ([`M1054 - Software Configuration`](https://attack.mitre.org/mitigations/M1054/)).\n- **Egress Traffic Filtering**: While blocking entire services is not feasible, consider blocking less common services like `file.io` if there is no business justification for their use. ([`M1037 - Filter Network Traffic`](https://attack.mitre.org/mitigations/M1037/)).\n- **Endpoint Hardening**: Use application control to prevent the execution of unknown or unsigned Go-lang executables ([`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/)).",
+  "twitter_post": "New China-aligned APT 'GopherWhisper' discovered targeting Mongolian gov't. 🕵️‍♂️ The group uses a Go-lang toolkit and evades detection by using Slack, Discord, and Outlook for C2 communications. #APT #CyberEspionage #GopherWhisper #ThreatIntel",
+  "meta_description": "ESET discovers GopherWhisper, a new China-aligned APT group targeting the Mongolian government with a Go-based malware toolkit that uses Slack, Discord, and Outlook for C2.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "GopherWhisper",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ESET",
+      "type": "security_organization",
+      "url": "https://www.eset.com/us/"
+    },
+    {
+      "name": "Slack",
+      "type": "product",
+      "url": "https://slack.com/"
+    },
+    {
+      "name": "Discord",
+      "type": "product",
+      "url": "https://discord.com/"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365"
+    },
+    {
+      "name": "LaxGopher",
+      "type": "malware"
+    },
+    {
+      "name": "RatGopher",
+      "type": "malware"
+    },
+    {
+      "name": "BoxOfFriends",
+      "type": "malware"
+    },
+    {
+      "name": "CompactGopher",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.welivesecurity.com/en/eset-research/gopherwhisper-burrow-full-malware/",
+      "title": "GopherWhisper: A burrow full of malware",
+      "date": "2026-04-23",
+      "friendly_name": "WeLiveSecurity",
+      "website": "welivesecurity.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/04/china-linked-gopherwhisper-infects-12.html",
+      "title": "China-Linked GopherWhisper Infects 12 Mongolian Government Systems with Go Backdoors",
+      "date": "2026-04-23",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://therecord.media/china-linked-gopherwhisper-apt-mongolia-slack-discord",
+      "title": "China-linked hackers targeted Mongolian government using Slack, Discord for covert communications",
+      "date": "2026-04-23",
+      "friendly_name": "The Record",
+      "website": "therecord.media"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2023-11",
+      "summary": "GopherWhisper group assessed to have been active since at least this time."
+    },
+    {
+      "datetime": "2025-01",
+      "summary": "ESET detects a novel backdoor on a Mongolian governmental institution's network, leading to the discovery of GopherWhisper."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1102",
+      "name": "Web Service",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1059.008",
+      "name": "Go",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Filter and monitor outbound traffic to legitimate web services. While blocking is hard, anomalous patterns can be detected.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use EDR and antivirus solutions with behavioral analysis to detect suspicious activities from unknown Go-lang binaries.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UA",
+          "name": "URL Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:URLAnalysis"
+        }
+      ],
+      "description": "Use TLS inspection and URL filtering to gain visibility into and control over API calls to cloud services.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To detect GopherWhisper's C2, which hides within legitimate cloud service traffic, organizations must employ sophisticated Network Traffic Analysis with a focus on API monitoring. This requires deploying solutions like a Cloud Access Security Broker (CASB) or a next-generation firewall with TLS inspection capabilities. The goal is to move beyond IP/domain reputation and analyze the behavior of the traffic itself. Establish a baseline of normal API usage for services like Slack, Discord, and Microsoft Graph. Then, create alerts for anomalies such as: a non-browser process making API calls, an unusually high frequency of API calls to draft email folders, or a single endpoint communicating with all three services. Correlating these network events with endpoint data (e.g., the presence of a `Go-http-client` user agent from an unsigned process) can provide a high-confidence alert for this specific threat.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-AZET",
+      "technique_name": "Authorization Event Thresholding",
+      "url": "https://d3fend.mitre.org/technique/d3f:AuthorizationEventThresholding",
+      "recommendation": "The BoxOfFriends backdoor's use of the Microsoft Graph API can be detected by monitoring authorization events within Microsoft 365. Configure audit logging for all Graph API activity and ingest these logs into a SIEM. Apply authorization event thresholding by creating rules that alert on suspicious patterns of access to the `.../mailFolders/drafts/messages` endpoint. For example, an alert could trigger if a user account or service principal accesses, creates, and deletes drafts more than X times in a minute, or if this activity occurs outside of normal business hours. This technique focuses on the *behavior* of the API interaction rather than the traffic's source or destination, making it an effective way to spot the abuse of legitimate credentials and APIs for C2, even when the traffic is encrypted and directed at a trusted Microsoft domain.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "slack.com/api/",
+      "description": "API endpoint for Slack. Monitor for non-standard processes or scripts making calls to this endpoint.",
+      "context": "Web proxy logs, TLS inspection, EDR network monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "url_pattern",
+      "value": "discord.com/api/",
+      "description": "API endpoint for Discord. Anomalous connections from server systems could indicate RatGopher C2.",
+      "context": "Web proxy logs, TLS inspection, EDR network monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "url_pattern",
+      "value": "graph.microsoft.com/v1.0/me/mailFolders/drafts",
+      "description": "Microsoft Graph API endpoint for accessing draft emails, used by the BoxOfFriends backdoor. Monitor for unusual access patterns.",
+      "context": "Microsoft 365 audit logs, CASB logs",
+      "confidence": "high"
+    },
+    {
+      "type": "user_account_pattern",
+      "value": "Go-http-client/1.1",
+      "description": "The default user agent for applications built with Go. When seen in conjunction with connections to Slack, Discord, or Graph API from a non-browser process, it is a strong indicator of GopherWhisper activity.",
+      "context": "Web proxy logs, Firewall logs",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "APT",
+    "GopherWhisper",
+    "China",
+    "Cyber Espionage",
+    "Go",
+    "Malware",
+    "Slack",
+    "Discord",
+    "Microsoft Graph API"
+  ],
+  "extract_datetime": "2026-04-24T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Mongolia"
+    ],
+    "governments_affected": [
+      "Mongolian governmental institution"
+    ]
+  },
+  "pub_date": "2026-04-24",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-04-24T15:00:00.000Z",
+  "updatedAt": "2026-04-24T15:00:00.000Z"
+}

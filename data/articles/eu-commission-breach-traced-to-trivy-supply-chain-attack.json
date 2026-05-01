@@ -1,0 +1,220 @@
+{
+  "id": "80e3c016-b978-4632-b676-30f53c70a477",
+  "slug": "eu-commission-breach-traced-to-trivy-supply-chain-attack",
+  "headline": "EU Commission Hacked via Compromised Trivy Scanner in Major Supply Chain Attack",
+  "title": "TeamPCP Exploits Compromised Trivy Scanner to Breach European Commission, Stealing 92GB of Data",
+  "summary": "A significant data breach at the European Commission has been attributed to the hacking group TeamPCP, who leveraged a compromised version of the popular Trivy open-source vulnerability scanner. The supply chain attack allowed the threat actors to steal an AWS API key, gain management rights to the Commission's cloud environment, and exfiltrate 92 GB of compressed data, including sensitive email communications. The stolen data was later put up for sale on a dark web forum by the data broker ShinyHunters, underscoring a dangerous collaboration between cybercriminal groups.",
+  "full_report": "## Executive Summary\nOn April 3, 2026, the European Union's cybersecurity agency, **[CERT-EU](https://www.cert.europa.eu/)**, confirmed that the hacking group **[TeamPCP]()** was responsible for a major data breach at the **[European Commission](https://commission.europa.eu/)**. The attack, which occurred on March 19, was a sophisticated supply chain compromise involving a malicious version of the **[Trivy](httpss://www.aquasec.com/products/trivy/)** open-source security scanner. Attackers used the compromised tool to steal an **[Amazon Web Services](https://aws.amazon.com/)** (AWS) API key, leading to the exfiltration of 91.7 GB of compressed data. The data, containing personal information and internal communications from numerous EU entities, was later advertised for sale by the notorious data broker **[ShinyHunters](). This incident highlights the critical risk of supply chain vulnerabilities and the cascading impact of a single compromised tool within a complex IT environment.\n\n## Threat Overview\nThe attack chain began with the **European Commission** ingesting a compromised version of the **Trivy** vulnerability scanner, likely through a standard software update channel. **TeamPCP**, a threat group that emerged in late 2025, is credited with orchestrating this initial compromise. Once the malicious scanner was active within the Commission's environment, it located and exfiltrated a secret AWS API key.\n\nWith this key, the attackers gained \"management rights\" to the Commission's AWS account. They established persistence by creating a new access key attached to an existing user, a common technique to evade detection. This privileged access allowed them to infiltrate the cloud infrastructure hosting the Europa.eu web platform. The breach affected not only the **European Commission** but also potentially 29 other EU entities and 42 internal clients utilizing the platform. The attackers exfiltrated a total of 91.7 GB of compressed data, including a 2.2 GB subset containing nearly 52,000 files related to email communications, which exposed personal names and email addresses.\n\n## Technical Analysis\nThe attack demonstrates a multi-stage operation leveraging several advanced TTPs. The initial access vector was a classic supply chain attack.\n\n*   **Initial Access:** [`T1195.001 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/001/). The attackers compromised the **Trivy** scanner, a trusted tool, to infiltrate the target network.\n*   **Credential Access:** [`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/). The primary goal of the malicious **Trivy** binary was to find and steal the AWS API key.\n*   **Privilege Escalation & Persistence:** [`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/). The stolen API key was used to gain administrative access. The attackers then created a new access key for an existing user ([`T1098.004 - Web Services `](https://attack.mitre.org/techniques/T1098/004/)) to maintain their foothold.\n*   **Discovery:** [`T1580 - Cloud Infrastructure Discovery`](https://attack.mitre.org/techniques/T1580/). Once inside the AWS environment, the attackers performed reconnaissance to identify valuable data and systems, such as the Europa.eu platform infrastructure.\n*   **Exfiltration:** [`T1537 - Transfer Data to Cloud Account`](https://attack.mitre.org/techniques/T1537/). The attackers used their privileged access to exfiltrate 92 GB of data from the Commission's S3 buckets or other storage services.\n\nThe final stage involved monetization, where **ShinyHunters** listed the stolen data for sale, indicating a potential partnership or a transaction between **TeamPCP** and the data broker.\n\n## Impact Assessment\nThe business impact of this breach is substantial, affecting the operational security and reputation of the **European Commission** and numerous other EU bodies. The exfiltration of 92 GB of data, including email communications, names, and addresses, constitutes a significant data privacy incident with potential regulatory consequences under **[GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)**. The exposure of internal documents, contracts, and database information could compromise ongoing projects, reveal sensitive negotiations, and expose internal vulnerabilities. The reliance on the Europa.eu platform by 29 other EU entities means the blast radius is wide, requiring a coordinated incident response effort across multiple agencies. Restoring trust in the Commission's digital infrastructure and its software supply chain will require significant time and investment.\n\n## Cyber Observables for Detection\nSecurity teams should hunt for signs of a similar compromise by monitoring for the following:\n\n| Type | Value | Description |\n|---|---|---|\n| log_source | AWS CloudTrail | Monitor for anomalous API calls, especially from unfamiliar IP ranges or user agents. |\n| event_id | CreateAccessKey | Scrutinize all `CreateAccessKey` events, especially if initiated by a service account or an automated tool. |\n| network_traffic_pattern | Outbound traffic from security tools | Monitor network connections from internal security scanners (like Trivy) to external endpoints. Any data transfer beyond metadata or definition updates is highly suspicious. |\n| command_line_pattern | `trivy` with unusual flags | Monitor execution of `trivy` or similar tools for unexpected command-line arguments that might indicate a malicious version. |\n\n## Detection & Response\nDetecting this attack requires a defense-in-depth approach focused on both supply chain and cloud security.\n\n1.  **Supply Chain Integrity:** Implement file integrity monitoring and code signing verification for all third-party tools, especially those with privileged access. Use a Software Bill of Materials (SBOM) to track all components and their versions.\n2.  **Cloud Security Monitoring:** Employ a Cloud Security Posture Management (CSPM) tool to continuously monitor for misconfigurations. Actively monitor **[AWS](https://aws.amazon.com/)** CloudTrail logs for suspicious activity. Key D3FEND techniques include **[Domain Account Monitoring (D3-DAM)](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring)** and **[Cloud Platform Monitoring](https://d3fend.mitre.org/technique/d3f:CloudPlatformMonitoring)**.\n3.  **SIEM/EDR Correlation:** Ingest CloudTrail logs and endpoint execution logs into a SIEM. Create correlation rules to alert when a process (e.g., `trivy.exe`) makes an anomalous network connection and is followed by AWS API activity like `CreateAccessKey` or `AttachUserPolicy` from an unexpected source IP.\n4.  **Threat Hunting:** Proactively hunt for unusual user agent strings in web server and cloud logs associated with security tools. Hunt for IAM users or roles with newly attached high-privilege policies.\n\n## Mitigation\nOrganizations should take the following steps to mitigate the risk of similar attacks:\n\n*   **Principle of Least Privilege:** Ensure that all tools, services, and user accounts in the cloud operate with the minimum necessary permissions. The compromised **Trivy** scanner should not have had access to a key with \"management rights.\" This aligns with D3FEND's **[User Account Permissions (D3-UAP)](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions)**.\n*   **Software Integrity Verification:** Do not blindly trust software updates. Use checksums, digital signatures, and other integrity verification methods to ensure that downloaded binaries have not been tampered with. This is a core part of D3FEND's **[Software Update (D3-SU)](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)** process.\n*   **Network Segmentation:** Isolate security scanning tools in a controlled environment with strict egress filtering. They should only be allowed to communicate with known, legitimate vendor endpoints.\n*   **Credential Management:** Avoid storing long-lived static credentials like API keys on disk or in code. Use temporary credentials and instance roles (e.g., IAM Roles for EC2) wherever possible to limit the window of exposure.\n*   **Multi-Factor Authentication (MFA):** Enforce **[MFA](https://www.cisa.gov/MFA)** on all user and administrative accounts, especially for cloud management consoles and sensitive applications.",
+  "twitter_post": "🚨 TeamPCP breaches European Commission via compromised Trivy scanner! 92GB of data stolen using a pilfered AWS API key. Data now sold by ShinyHunters. A critical lesson in supply chain and cloud security. ⛓️ #SupplyChainAttack #CloudSecurity #TeamPCP",
+  "meta_description": "Analysis of the TeamPCP supply chain attack that compromised the European Commission by exploiting a backdoored Trivy scanner to steal AWS keys and 92GB of data.",
+  "category": [
+    "Supply Chain Attack",
+    "Data Breach",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ShinyHunters",
+      "type": "threat_actor"
+    },
+    {
+      "name": "European Commission",
+      "type": "government_agency",
+      "url": "https://commission.europa.eu/"
+    },
+    {
+      "name": "CERT-EU",
+      "type": "security_organization",
+      "url": "https://www.cert.europa.eu/"
+    },
+    {
+      "name": "Trivy",
+      "type": "product",
+      "url": "https://www.aquasec.com/products/trivy/"
+    },
+    {
+      "name": "Aqua Security",
+      "type": "vendor",
+      "url": "https://www.aquasec.com/"
+    },
+    {
+      "name": "Amazon Web Services (AWS)",
+      "type": "company",
+      "url": "https://aws.amazon.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.therecord.media/cert-eu-attributes-major-data-breach-to-teampcp-hacking-group",
+      "title": "EU cyber agency attributes major data breach to TeamPCP hacking group",
+      "friendly_name": "The Record",
+      "website": "therecord.media"
+    },
+    {
+      "url": "https://www.csoonline.com/article/2126244/cert-eu-blames-trivy-supply-chain-attack-for-europa-eu-data-breach.html",
+      "title": "CERT-EU blames Trivy supply chain attack for Europa.eu data breach",
+      "friendly_name": "CSO Online",
+      "website": "csoonline.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-19T00:00:00Z",
+      "summary": "TeamPCP conducts the initial intrusion and data exfiltration from the European Commission's AWS account."
+    },
+    {
+      "datetime": "2026-03-28T00:00:00Z",
+      "summary": "The data broker ShinyHunters puts the stolen data up for sale on a dark web forum."
+    },
+    {
+      "datetime": "2026-04-03T00:00:00Z",
+      "summary": "CERT-EU officially attributes the data breach to the TeamPCP hacking group and the Trivy supply chain compromise."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts"
+    },
+    {
+      "id": "T1098.004",
+      "name": "Web Services"
+    },
+    {
+      "id": "T1580",
+      "name": "Cloud Infrastructure Discovery"
+    },
+    {
+      "id": "T1537",
+      "name": "Transfer Data to Cloud Account"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "While the attack came through an update, maintaining patched and verified software from trusted sources is crucial. This includes verifying update integrity.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Strictly manage user accounts and permissions in cloud environments, adhering to the principle of least privilege.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforce MFA on all cloud administrative accounts to prevent takeovers even if credentials are stolen.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Run security tools and other third-party applications in isolated environments with restricted network access to limit their potential blast radius.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Enforce policies that require all third-party software and updates to be properly signed by the vendor, and verify these signatures before deployment.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "AWS CloudTrail",
+      "description": "Primary log source for detecting unauthorized or anomalous AWS API activity, such as unexpected key creation or policy changes.",
+      "context": "SIEM, Cloud Security Monitoring Tools",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "iam:CreateAccessKey",
+      "description": "AWS API call used by attackers to create new keys for persistence. All invocations should be heavily scrutinized.",
+      "context": "AWS CloudTrail logs",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "iam:AttachUserPolicy",
+      "description": "AWS API call used to escalate privileges by attaching a more permissive policy to a compromised user or role.",
+      "context": "AWS CloudTrail logs",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound traffic from security scanners to non-vendor IPs",
+      "description": "Security scanners like Trivy should only communicate with their vendor's official update/telemetry servers. Any other outbound connection is suspicious.",
+      "context": "Firewall logs, Netflow data, EDR network logs",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "supply chain attack",
+    "cloud security",
+    "AWS",
+    "data breach",
+    "vulnerability scanner",
+    "TeamPCP",
+    "ShinyHunters",
+    "European Union"
+  ],
+  "extract_datetime": "2026-04-04T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "European Union"
+    ],
+    "governments_affected": [
+      "European Commission"
+    ],
+    "industries_affected": [
+      "Government"
+    ],
+    "other_affected": [
+      "29 other EU entities using the Europa.eu platform"
+    ]
+  },
+  "pub_date": "2026-04-04",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-04-04T15:00:00.000Z",
+  "updatedAt": "2026-04-05T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-04-05T00:00:00Z",
+      "datetime": "2026-04-05T00:00:00Z",
+      "title": "Update 1",
+      "summary": "New details on EU Commission breach: Trivy compromised via GitHub CI/CD, 340GB uncompressed data exfiltrated, leak confirmed March 28.",
+      "sources": [
+        {
+          "title": "Global Cybersecurity Incidents April 4, 2026 Major Breaches and Scam Crackdowns",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFVESqRhH2JCHb6ruQ-pbYmwhZ4PwR2UMHCY7Xdf56fzVoJD1KZwAYW0VY3h_KdW_HyydU7udVsY6uyjA76i4wGcwYUggurh092jcxQyhBMGgglLDKpFoknEmC2s7siaAIJTezD6iAueSUh32j8HTzo7j3t4XW5SqfA5oocm0eMbOCVMQ=="
+        },
+        {
+          "title": "European Commission Confirms Data Breach Linked to Trivy Supply Chain Attack",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGTfRdsM77fPhsMK8WPbrR26fMrLmSvCb1u2VcbK8okDYpixHql27cog4Y8ikc8oeqLfUYckJSSIKMQnK28_kzy0x8XkiGL1ggqFdbpfWBdayt09sxz_lx9ijEZMzhzkYEfG8ZSggQ0x-OudSXwuaNlM0HumiZlHU8_xCIyCx_PYBVZdyyLjA5BWZn8Oww6RujALMXaV9JoUMucMStPurK_IW56no=="
+        }
+      ]
+    }
+  ]
+}

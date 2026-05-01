@@ -1,0 +1,243 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:32:16.109Z",
+    "article_slug": "atomic-stealer-targets-macos-with-new-clickfix-attack",
+    "article_date": "2026-04-09",
+    "token_usage": {
+      "input_tokens": 141564,
+      "output_tokens": 2886,
+      "cached_tokens": 135916,
+      "total_tokens": 144450,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.052909
+    }
+  },
+  "report_name": "Atomic Stealer Malware Bypasses macOS Warnings with New 'ClickFix' Attack Vector",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "User Execution",
+      "mitre_id": "T1204",
+      "description": "Victims are tricked through a social engineering technique called 'ClickFix' into pasting and running malicious code within Apple's Script Editor, believing it to be a legitimate troubleshooting step."
+    },
+    {
+      "name": "Command and Scripting Interpreter: AppleScript",
+      "mitre_id": "T1059.002",
+      "description": "Attackers instruct users to paste and execute a malicious AppleScript via the Script Editor. The script likely uses a 'do shell script' command to download and execute the Atomic Stealer payload."
+    },
+    {
+      "name": "Impair Defenses",
+      "mitre_id": "T1562",
+      "description": "Attackers pivoted from using the Terminal application to using Apple's Script Editor to execute code, successfully bypassing a new security warning Apple introduced in macOS 26.4 for pasting commands into the Terminal."
+    },
+    {
+      "name": "Credentials from Password Stores",
+      "mitre_id": "T1555.003",
+      "description": "The Atomic Stealer malware is capable of harvesting passwords from all major browsers on a compromised macOS system."
+    },
+    {
+      "name": "Steal Web Session Cookie",
+      "mitre_id": "T1539",
+      "description": "Atomic Stealer steals browser cookies and session tokens, allowing attackers to hijack active sessions for various online accounts."
+    },
+    {
+      "name": "Launch Agent",
+      "mitre_id": "T1543.001",
+      "description": "The malware installs a backdoor for persistent access, likely by creating a file in a directory such as ~/Library/LaunchAgents/ to ensure it runs automatically."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Atomic Stealer",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": true,
+      "aliases": [
+        "AMOS"
+      ],
+      "description": "A potent infostealer targeting macOS, delivered via a social engineering campaign named 'ClickFix'. It harvests browser passwords, cookies, crypto wallets, and system information, and installs a persistent backdoor.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "installs-other-components",
+        "communicates-with-c2",
+        "fingerprints-host"
+      ],
+      "external_references": [
+        {
+          "source_name": "malpedia",
+          "external_id": "osx.atomic"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "Apple Script Editor",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Abused as part of the 'ClickFix' social engineering attack. Victims are tricked into pasting and executing malicious code in this trusted, built-in macOS application to bypass Terminal security warnings."
+    },
+    {
+      "name": "osascript",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The command-line utility for executing AppleScripts. This process is spawned when a user runs a script from the Script Editor, and can be monitored to detect malicious activity."
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Apple",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Vendor of the targeted macOS operating system and the abused Script Editor application. The company had previously added security warnings to the Terminal application, which the attackers bypassed."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Atomic Stealer C2 Infrastructure",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Command and control servers used by the Atomic Stealer malware to exfiltrate stolen data and receive commands."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "osascript"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Suspicious AppleScript Execution via osascript",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious AppleScript Execution Downloading Remote File\nid: 9b1d8c3a-7e4f-4b1a-9c8d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects 'osascript' executing a shell script that uses 'curl' to download a file, a TTP associated with the Atomic Stealer 'ClickFix' campaign.\nreferences:\n  - https://www.infosecurity-magazine.com/news/atomic-stealer-macos-clickfix/\nauthor: cyber.netsecops.io\ndate: 2026-04-09\ntags:\n  - attack.t1059.002\n  - attack.t1105\nlevel: high\nlogsource:\n  category: process_creation\n  product: macos\ndetection:\n  selection:\n    ParentImage|endswith: '/osascript'\n    Image|endswith: '/curl'\n  condition: selection\nfalsepositives:\n  - Legitimate scripts that use osascript to download files.",
+      "description": "Detects the execution of 'osascript' which then spawns a 'curl' process to download a remote payload, as seen in the Atomic Stealer campaign."
+    },
+    {
+      "name": "macOS Persistence via LaunchAgents",
+      "indicator_types": [
+        "malicious-activity",
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: macOS Persistence via LaunchAgents Creation\nid: a2c3b4d5-e6f7-4890-a1b2-c3d4e5f6a7b8\nstatus: experimental\ndescription: Detects the creation of files in the ~/Library/LaunchAgents directory, a common persistence technique used by macOS malware like Atomic Stealer.\nreferences:\n  - https://www.infosecurity-magazine.com/news/atomic-stealer-macos-clickfix/\nauthor: cyber.netsecops.io\ndate: 2026-04-09\ntags:\n  - attack.t1543.001\nlevel: medium\nlogsource:\n  category: file_event\n  product: macos\ndetection:\n  selection:\n    TargetFilename|startswith: '~/Library/LaunchAgents/'\n  condition: selection\nfalsepositives:\n  - Legitimate application installers creating LaunchAgents for legitimate purposes.",
+      "description": "Detects file creation in the `~/Library/LaunchAgents/` directory, a common persistence mechanism for macOS malware."
+    },
+    {
+      "name": "osascript Process Execution",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[process:name = 'osascript']",
+      "x_netsecio_sigma_rule": "title: osascript Execution Detected\nid: f1e2d3c4-b5a6-4987-8654-3210fedcba98\nstatus: experimental\ndescription: Detects the execution of osascript, the AppleScript command-line executor. While often legitimate, it was abused in the Atomic Stealer campaign.\nreferences:\n  - https://www.infosecurity-magazine.com/news/atomic-stealer-macos-clickfix/\nauthor: cyber.netsecops.io\ndate: 2026-04-09\ntags:\n  - attack.t1059.002\nlevel: informational\nlogsource:\n  product: macos\n  category: process_creation\ndetection:\n  selection:\n    Image|endswith: '/osascript'\n  condition: selection\nfalsepositives:\n  - Legitimate use by administrators or applications.",
+      "pattern": ""
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "User Execution",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter: AppleScript",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Impair Defenses",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials from Password Stores",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Steal Web Session Cookie",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Launch Agent",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Apple Script Editor",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "osascript",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "Atomic Stealer C2 Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Atomic Stealer",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "Apple",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Suspicious AppleScript Execution via osascript",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Atomic Stealer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "macOS Persistence via LaunchAgents",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Launch Agent",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "osascript Process Execution",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "osascript",
+      "target_type": "file"
+    }
+  ]
+}

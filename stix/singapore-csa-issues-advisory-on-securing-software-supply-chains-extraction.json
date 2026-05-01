@@ -1,0 +1,212 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:28:10.307Z",
+    "article_slug": "singapore-csa-issues-advisory-on-securing-software-supply-chains",
+    "article_date": "2026-04-08",
+    "token_usage": {
+      "input_tokens": 141347,
+      "output_tokens": 2381,
+      "cached_tokens": 135916,
+      "total_tokens": 143728,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.047588
+    }
+  },
+  "report_name": "Singapore's CSA Issues Advisory on Securing Software Supply Chains",
+  "threat_actors": [
+    {
+      "name": "Software Supply Chain Attackers",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A general class of threat actors described in the CSA advisory who target third-party software dependencies, open-source libraries, and automated development pipelines to compromise downstream targets by hijacking accounts or publishing malicious package versions.",
+      "goals": "Inject malicious code into software products to achieve widespread compromise of downstream targets, leading to data theft and operational disruption.",
+      "primary_motivation": "organizational-gain",
+      "secondary_motivations": [
+        "personal-gain"
+      ],
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "Threat actors compromise public repositories like npm or PyPI by hijacking maintainer accounts or poisoning transitive dependencies to distribute malicious code, as seen in the Axios and @ctrl/tinycolor incidents."
+    },
+    {
+      "name": "Valid Accounts",
+      "mitre_id": "T1078",
+      "description": "Threat actors hijack the accounts of package maintainers on platforms like npm to publish malicious versions of popular software packages."
+    },
+    {
+      "name": "Compromise Host Software Binary",
+      "mitre_id": "T1554",
+      "description": "As a result of a supply chain attack, malicious code is injected into a software product's binary before distribution, leading to compromise on downstream customer hosts when the software is installed or run."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "Axios",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A popular npm package that was hijacked by threat actors to distribute malicious versions, cited in the CSA advisory as an example of a software supply chain attack.",
+      "tool_types": []
+    },
+    {
+      "name": "@ctrl/tinycolor",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "An npm package whose compromise led to a cascading effect on over 180 other dependent packages, cited in the CSA advisory as an example of a transitive dependency attack.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Technology and Software Companies",
+      "identity_class": "class",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A high-risk sector identified in the CSA advisory, as they develop and distribute software that can be targeted in supply chain attacks."
+    },
+    {
+      "name": "Financial Services",
+      "identity_class": "class",
+      "sectors": [
+        "financial-services"
+      ],
+      "description": "A high-risk sector identified in the CSA advisory, as they build custom applications with sensitive data that rely on complex software supply chains."
+    },
+    {
+      "name": "Critical Infrastructure",
+      "identity_class": "class",
+      "sectors": [
+        "infrastructure"
+      ],
+      "description": "A high-risk sector identified in the CSA advisory, as their operational technology may depend on software with vulnerable supply chains."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Singapore",
+      "country": "Singapore",
+      "region": "south-eastern-asia"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Public Code Repositories",
+      "infrastructure_types": [
+        "hosting-malware",
+        "distribution"
+      ],
+      "description": "Public software repositories like npm and PyPI are targeted by attackers to host and distribute malicious versions of legitimate packages."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "package-lock.json"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "NPM Audit Command Execution",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: NPM Audit Command Execution\nid: 2b1a987c-c45d-4f8e-8b1a-9c7d6e5f4d3c\nstatus: experimental\ndescription: Detects the execution of 'npm audit', a tool used to scan for vulnerabilities in software dependencies, as recommended by the CSA advisory for securing software supply chains. This can be used for compliance and security posture monitoring.\nreferences:\n  - https://www.csa.gov.sg/alerts-advisories/advisories/advisory-on-securing-the-software-supply-chain-and-development-workflows\nauthor: cyber.netsecops.io\ndate: 2026-04-08\ntags:\n  - attack.t1195.001\nlevel: informational\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith:\n      - '\\npm.cmd'\n      - '\\npm'\n    CommandLine|contains: 'audit'\n  condition: selection",
+      "description": "Detects the execution of 'npm audit', a tool used to scan for vulnerabilities in software dependencies, as recommended by the CSA advisory for securing software supply chains."
+    },
+    {
+      "name": "NPM Dependency Lock File",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[file:name = 'package-lock.json']",
+      "x_netsecio_sigma_rule": "title: NPM Dependency Lock File Presence\nid: 5d8e9f0a-1b2c-4d3e-8f9a-0b1c2d3e4f5a\nstatus: experimental\ndescription: Detects the presence of 'package-lock.json', a file that inventories software dependencies. Its presence is normal in npm projects but monitoring its changes can be part of a supply chain security strategy.\nreferences:\n  - https://www.csa.gov.sg/alerts-advisories/advisories/advisory-on-securing-the-software-supply-chain-and-development-workflows\nauthor: cyber.netsecops.io\ndate: 2026-04-08\nfalsepositives:\n  - Legitimate file in any Node.js/npm project.\nlevel: informational\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '\\package-lock.json'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the presence of 'package-lock.json', a file that inventories software dependencies and is a key artifact for conducting a supply chain security audit as per the CSA advisory."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Valid Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Host Software Binary",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Axios",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "@ctrl/tinycolor",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Public Code Repositories",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Technology and Software Companies",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Financial Services",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Software Supply Chain Attackers",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Critical Infrastructure",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "NPM Dependency Lock File",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "package-lock.json",
+      "target_type": "file"
+    }
+  ]
+}

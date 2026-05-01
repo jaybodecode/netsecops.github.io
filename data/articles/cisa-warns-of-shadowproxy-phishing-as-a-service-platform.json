@@ -1,0 +1,174 @@
+{
+  "id": "d4dc34a6-34e0-46a2-ae70-b6e820813c23",
+  "slug": "cisa-warns-of-shadowproxy-phishing-as-a-service-platform",
+  "headline": "CISA Warns of 'ShadowProxy' Phishing-as-a-Service that Bypasses MFA",
+  "title": "CISA and FBI Issue Joint Advisory on 'ShadowProxy' Phishing-as-a-Service (PhaaS) Platform",
+  "summary": "The Cybersecurity and Infrastructure Security Agency (CISA) and the FBI have issued a joint advisory about the growing threat from 'ShadowProxy,' a sophisticated Phishing-as-a-Service (PhaaS) platform. Sold on dark web forums, ShadowProxy enables even low-skilled criminals to launch large-scale phishing campaigns capable of defeating multi-factor authentication (MFA). The platform uses an adversary-in-the-middle (AiTM) technique, acting as a reverse proxy to intercept credentials and, crucially, the session cookie generated after a successful MFA login. This allows attackers to hijack active sessions and gain full access to accounts like Microsoft 365 and Google Workspace.",
+  "full_report": "## Executive Summary\n\nThe **[Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov)** and the **[FBI](https://www.fbi.gov/)** have released a joint cybersecurity advisory to warn of **ShadowProxy**, a potent Phishing-as-a-Service (PhaaS) platform. This service, sold via subscription on dark web forums, dramatically lowers the barrier to entry for sophisticated credential theft by providing all the necessary tools and infrastructure. ShadowProxy's most dangerous feature is its ability to defeat many common forms of multi-factor authentication (MFA). It achieves this by using an adversary-in-the-middle (AiTM) reverse proxy technique. This method allows the platform to intercept not just usernames and passwords, but also the valuable session cookie generated after a legitimate user successfully authenticates with their second factor. By stealing this cookie, attackers can bypass MFA entirely and hijack the user's authenticated session, gaining access to critical services like **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** and **Google Workspace**.\n\n---\n\n## Threat Overview\n\n- **Threat:** ShadowProxy Phishing-as-a-Service (PhaaS) platform.\n- **Mechanism:** Adversary-in-the-Middle (AiTM) reverse proxy.\n- **Objective:** Credential and session cookie theft to bypass MFA.\n- **Targets:** Users of major cloud services, primarily Microsoft 365 and Google Workspace.\n- **Accessibility:** Sold as a subscription service, making advanced phishing capabilities available to a broad range of threat actors, regardless of their technical skill.\n- **Impact:** Full compromise of user accounts, leading to data breaches, business email compromise (BEC), and further internal network compromise.\n\n---\n\n## Technical Analysis\n\nThe ShadowProxy platform automates the complex AiTM attack flow:\n\n1.  **Phishing Email:** The attacker, using ShadowProxy's tools, sends a phishing email to a target. The email contains a link that points to the ShadowProxy reverse proxy server instead of the legitimate service. ([`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/))\n2.  **Reverse Proxy:** When the victim clicks the link, they are connected to the ShadowProxy server. This server forwards the victim's request to the real login page (e.g., `login.microsoftonline.com`) and presents the real page back to the victim. The victim sees the legitimate login page and URL (though the initial domain is the attacker's).\n3.  **Credential Interception:** The victim enters their username and password. The ShadowProxy proxy intercepts these credentials as they are passed through to the real site.\n4.  **MFA Interception:** The legitimate site, having received valid credentials, prompts for MFA (e.g., an SMS code, authenticator app number). This prompt is passed through the proxy to the victim. The victim enters their MFA code.\n5.  **Session Cookie Theft:** The proxy forwards the MFA code to the legitimate site. The site validates it and, in response, sends back a session cookie to establish an authenticated session. **This is the critical step.** The ShadowProxy server intercepts this session cookie before it reaches the victim's browser.\n6.  **Account Takeover:** The attacker now has the victim's username, password, and, most importantly, the session cookie. They can inject this cookie into their own browser to access the victim's account without needing to re-authenticate or provide MFA. ([`T1539 - Steal Web Session Cookie`](https://attack.mitre.org/techniques/T1539/))\n\nThis technique effectively bypasses MFA methods that are code or push-based, as the attacker is hijacking the final, authenticated session itself.\n\n---\n\n## Impact Assessment\n\n-   **MFA Becomes Ineffective:** The primary impact is that it renders many common MFA implementations useless, eroding the security of what is considered a foundational control.\n-   **Widespread Account Compromise:** Enables large-scale takeover of corporate email and cloud accounts.\n-   **Business Email Compromise (BEC):** Attackers can use hijacked email accounts to launch convincing BEC attacks, such as fraudulent wire transfer requests.\n-   **Data Exfiltration:** Full access to cloud accounts (Microsoft 365, Google Workspace) means attackers can steal vast amounts of sensitive data from email, SharePoint, OneDrive, etc.\n-   **Downstream Attacks:** A compromised account is often used as a beachhead to launch further attacks within the organization's network.\n\n---\n\n## IOCs — Directly from Articles\n\nThe CISA advisory contains technical details and TTPs, but specific IOCs like domains and IPs used by ShadowProxy were not listed in the summary articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nDetecting AiTM phishing requires looking for subtle clues and network-level indicators.\n\n| Type | Value / Pattern | Description | Context | Confidence |\n|---|---|---|---|---|\n| `url_pattern` | Typosquatted or lookalike domains in email links (e.g., `login-microsft.com` instead of `login.microsoft.com`). | The initial phishing link cannot be the real domain. | Email security gateway logs and user awareness. | high |\n| `log_source` | Azure AD Sign-in Logs showing an authentication from an unexpected location or IP. | A successful session hijacking will result in the attacker's IP accessing the account. | Azure AD / Entra ID sign-in logs. | high |\n| `other` | Mismatched session location and authentication location. | A sign-in log may show authentication from a known location (the victim) but subsequent activity from an anomalous location (the attacker). | SIEM correlation of sign-in logs. | high |\n| `certificate_subject` | SSL certificates for phishing domains that try to mimic the target brand. | Attackers use valid SSL certs to make their sites look legitimate. | Certificate Transparency log monitoring. | medium |\n\n---\n\n## Detection & Response\n\n**Detection:**\n-   **Conditional Access Policies:** Configure Azure AD/Entra ID Conditional Access to flag or block sign-ins where properties don't match (e.g., IP address, device compliance). A session starting from a non-compliant device after a successful MFA prompt is a huge red flag.\n-   **Log Analysis:** Actively monitor sign-in logs for impossible travel scenarios, sign-ins from anonymous proxy services, and other anomalies. ([D3-UGLPA: User Geolocation Logon Pattern Analysis](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis))\n-   **Enhanced Email Filtering:** Use email security solutions that can analyze links at time-of-click to detect redirects to phishing sites.\n\n**Response:**\n-   If a compromised session is detected, immediately initiate a 'sign-out all sessions' command for the affected user account.\n-   Force a password reset for the user.\n-   Investigate all activity performed by the attacker during the hijacked session.\n\n---\n\n## Mitigation\n\nThe key to defeating AiTM attacks is to use MFA that is resistant to proxying.\n\n1.  **Phishing-Resistant MFA:** This is the most critical mitigation. CISA and the FBI strongly recommend implementing phishing-resistant MFA. This ties the authentication challenge to the device the user is on, which cannot be proxied. Examples include:\n    -   **FIDO2/WebAuthn:** Using hardware security keys (e.g., YubiKey) or platform authenticators (e.g., Windows Hello, Face ID/Touch ID).\n    -   **Certificate-Based Authentication:** Smart cards or device-based certificates.\n2.  **User Training:** Educate users to be suspicious of login pages where the URL is not the correct, legitimate domain. Train them to inspect the address bar before entering credentials.\n3.  **Conditional Access Policies:** Implement strict Conditional Access Policies that require logins to come from trusted, compliant, and managed devices. This can prevent a stolen session cookie from being used on an attacker's machine.\n4.  **Limit Session Lifetimes:** Configure shorter session lifetimes to reduce the window of opportunity for an attacker to use a stolen cookie.",
+  "twitter_post": "⚠️ CISA & FBI warn of 'ShadowProxy' Phishing-as-a-Service that bypasses MFA! The platform uses adversary-in-the-middle (AiTM) attacks to steal session cookies for M365/Google accounts. Move to FIDO2 now! #PhaaS #MFA #Phishing #CISA",
+  "meta_description": "CISA and the FBI have issued a joint advisory on 'ShadowProxy,' a Phishing-as-a-Service (PhaaS) platform using adversary-in-the-middle (AiTM) techniques to bypass MFA and hijack sessions.",
+  "category": [
+    "Phishing",
+    "Threat Intelligence",
+    "Security Operations"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "CISA",
+      "type": "government_agency",
+      "url": "https://www.cisa.gov"
+    },
+    {
+      "name": "FBI",
+      "type": "government_agency",
+      "url": "https://www.fbi.gov/"
+    },
+    {
+      "name": "ShadowProxy",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365"
+    },
+    {
+      "name": "Google Workspace",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cisa.gov/news-events/alerts/2026/04/26/joint-advisory-on-shadowproxy-phaas",
+      "title": "Joint Cybersecurity Advisory on ShadowProxy Phishing-as-a-Service",
+      "date": "2026-04-26",
+      "friendly_name": "CISA",
+      "website": "cisa.gov"
+    },
+    {
+      "url": "https://krebsonsecurity.com/2026/04/shadowproxy-phishing-service-bypasses-mfa/",
+      "title": "'ShadowProxy' Phishing Service Lets Anyone Bypass MFA",
+      "date": "2026-04-26",
+      "friendly_name": "Krebs on Security",
+      "website": "krebsonsecurity.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04-26",
+      "summary": "CISA and the FBI issue a joint advisory warning about the ShadowProxy PhaaS platform."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1111",
+      "name": "Two-Factor Authentication Interception",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1556.006",
+      "name": "Replay-by-Cookie"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "The key mitigation is to upgrade from standard MFA to phishing-resistant MFA like FIDO2/WebAuthn, which is not vulnerable to AiTM attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to always verify the domain in the address bar before entering credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "description": "Use Conditional Access Policies to require logins to originate from trusted and compliant devices, making stolen session cookies less useful.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The CISA advisory on ShadowProxy makes it clear that not all MFA is created equal. To counter this AiTM threat, organizations must evolve their MFA strategy. The specific implementation of this D3FEND technique must be phishing-resistant. This means moving away from OTP codes (SMS, email, authenticator app) and push notifications, as these are all vulnerable to proxying. The required implementation is FIDO2/WebAuthn. By requiring employees to use a hardware security key (like a YubiKey) or a platform authenticator (like Windows Hello), the cryptographic challenge-response is tied directly to the origin domain and the user's device. The ShadowProxy server, being on a different domain, cannot complete this authentication. This is the single most effective technical control to defeat this class of attack.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-WSAA",
+      "technique_name": "Web Session Activity Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis",
+      "recommendation": "For detecting a successful ShadowProxy compromise, Web Session Activity Analysis is critical. Security teams must configure their SIEM to correlate Azure AD/Entra ID sign-in logs with subsequent activity logs. A key pattern to hunt for is a successful MFA authentication from a user's known location, followed almost immediately by session activity from a completely different and anomalous IP address, ASN, or country. This 'impossible travel' scenario within the same session is a strong indicator that the session cookie has been stolen and is being used by the attacker. Tools like Microsoft Sentinel and the advanced risk detection capabilities in Entra ID are designed to detect this, but they must be enabled, monitored, and acted upon.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Azure AD Sign-in logs",
+      "description": "Look for sign-in events where the 'MFA result' is 'success' but the IP address, location, or device is anomalous or does not match the user's typical pattern.",
+      "context": "SIEM and security analytics platforms.",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "URL containing a legitimate-looking domain with a long, encoded string representing the user's email.",
+      "description": "AiTM phishing kits often pass the victim's email in the URL to pre-fill the username field, which can be an observable pattern.",
+      "context": "Web proxy logs and email security gateway logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Conditional Access policy failure for 'MFA requirement' followed shortly by a success from a different IP.",
+      "description": "This could indicate the user failing an MFA prompt, then being tricked into completing it on the phishing site, with the attacker then using the session cookie.",
+      "context": "Azure AD sign-in and risk event logs.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "ShadowProxy",
+    "PhaaS",
+    "Phishing",
+    "MFA",
+    "AiTM",
+    "CISA",
+    "FBI",
+    "Session Hijacking"
+  ],
+  "extract_datetime": "2026-04-26T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government"
+    ],
+    "other_affected": [
+      "users of Microsoft 365",
+      "users of Google Workspace"
+    ]
+  },
+  "pub_date": "2026-04-26",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-04-26T15:00:00.000Z",
+  "updatedAt": "2026-04-26T15:00:00.000Z"
+}

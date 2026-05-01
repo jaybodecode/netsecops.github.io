@@ -1,0 +1,51 @@
+title: Anomalous Cloud Service Account Behavior
+id: 2f8e1c9d-5b7a-4d3c-8e1f-9a0b3c2d1e0f
+status: experimental
+description: |
+  Detects anomalous behavior from third-party service accounts, such as logins from new or unexpected IP ranges or attempts to access unusual resources. This is indicative of a compromised service token, as seen in the Anodot/Snowflake supply chain attack.
+references:
+  - https://rhisac.org/cyber-security-articles/active-data-theft-campaign-targeting-snowflake-customers-via-anodot-third-party-saas-integration-breach/
+author: cyber.netsecops.io
+date: 2026-04-10
+tags:
+  - attack.t1078.004
+  - attack.t1528
+level: medium
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    UserPrincipalName|contains: '_SERVICE_'
+    Status: 'success'
+  filter:
+    IPAddress|cidr:
+      - 192.168.0.0/16 # Replace with known good IP ranges for the service
+      - 10.0.0.0/8
+  condition: selection and not filter
+falsepositives:
+  - Legitimate service account activity from a new IP address used by the vendor.
+---
+title: Unusual Data Egress from Cloud Data Warehouse
+id: 8c1d9b3a-7e5f-4c2d-8a1b-0f9e8d7c6b5a
+status: experimental
+description: |
+  Detects when a service account performs an unusually large data query or data transfer from a cloud data warehouse like Snowflake. This could indicate data exfiltration using a compromised third-party token.
+references:
+  - https://rhisac.org/cyber-security-articles/active-data-theft-campaign-targeting-snowflake-customers-via-anodot-third-party-saas-integration-breach/
+author: cyber.netsecops.io
+date: 2026-04-10
+tags:
+  - attack.t1530
+  - attack.collection
+level: medium
+logsource:
+  category: database
+  product: generic
+detection:
+  selection:
+    user|contains: '_SERVICE_'
+    bytes_scanned >: 1000000000 # Threshold for large query in bytes, adjust for baseline
+  condition: selection
+falsepositives:
+  - Legitimate large-scale data analysis jobs run by the third-party service.

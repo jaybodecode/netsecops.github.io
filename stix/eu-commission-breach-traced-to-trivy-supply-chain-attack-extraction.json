@@ -1,0 +1,279 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:18:15.152Z",
+    "article_slug": "eu-commission-breach-traced-to-trivy-supply-chain-attack",
+    "article_date": "2026-04-05",
+    "token_usage": {
+      "input_tokens": 142255,
+      "output_tokens": 3101,
+      "cached_tokens": 135916,
+      "total_tokens": 145356,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.055923
+    }
+  },
+  "report_name": "EU Commission Hacked via Compromised Trivy Scanner in Major Supply Chain Attack",
+  "threat_actors": [
+    {
+      "name": "TeamPCP",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A threat group that emerged in late 2025, credited with orchestrating a supply chain attack against the European Commission by compromising the Trivy vulnerability scanner to steal an AWS API key and exfiltrate 92GB of data.",
+      "goals": "Data theft for financial gain via sale on dark web forums.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    },
+    {
+      "name": "ShinyHunters",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A notorious data broker who advertised the 91.7 GB of data stolen from the European Commission for sale on a dark web forum, indicating a collaboration with TeamPCP.",
+      "goals": "Monetization of stolen data.",
+      "primary_motivation": "personal-gain",
+      "roles": [
+        "agent"
+      ],
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "The attackers compromised the Trivy open-source security scanner, a trusted tool, to infiltrate the European Commission's network."
+    },
+    {
+      "name": "Steal Application Access Token",
+      "mitre_id": "T1528",
+      "description": "The malicious version of the Trivy scanner was used to find and steal a secret AWS API key from within the European Commission's environment."
+    },
+    {
+      "name": "Cloud Accounts",
+      "mitre_id": "T1078.004",
+      "description": "The stolen AWS API key was used to gain administrative access to the European Commission's AWS account."
+    },
+    {
+      "name": "Additional Cloud Credentials",
+      "mitre_id": "T1098.001",
+      "description": "To maintain their foothold and establish persistence, the attackers created a new access key for an existing user within the compromised AWS account."
+    },
+    {
+      "name": "Cloud Infrastructure Discovery",
+      "mitre_id": "T1580",
+      "description": "Once inside the AWS environment, the attackers performed reconnaissance to identify valuable data and systems, such as the infrastructure for the Europa.eu web platform."
+    },
+    {
+      "name": "Transfer Data to Cloud Account",
+      "mitre_id": "T1537",
+      "description": "The attackers used their privileged access to exfiltrate 91.7 GB of compressed data from the Commission's AWS storage services."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Compromised Trivy Scanner",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious version of the legitimate Trivy open-source vulnerability scanner, modified by TeamPCP to locate and exfiltrate an AWS API key.",
+      "capabilities": [
+        "steals-authentication-credentials"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "Trivy",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A popular open-source vulnerability scanner that was compromised in a supply chain attack to gain initial access to the European Commission's network.",
+      "tool_types": [
+        "vulnerability-scanning"
+      ]
+    },
+    {
+      "name": "Amazon Web Services",
+      "mitre_id": "",
+      "aliases": [
+        "AWS"
+      ],
+      "description": "The cloud platform used by the European Commission. Attackers gained management rights to the AWS account using a stolen API key to discover infrastructure and exfiltrate data.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "European Commission",
+      "identity_class": "organization",
+      "sectors": [
+        "government"
+      ],
+      "description": "The primary victim of the data breach. The attackers compromised their AWS environment via a malicious Trivy scanner and exfiltrated 92GB of data."
+    },
+    {
+      "name": "Affected EU Entities and Clients",
+      "identity_class": "class",
+      "sectors": [
+        "government"
+      ],
+      "description": "A group of 29 other EU entities and 42 internal clients who utilized the compromised Europa.eu platform and were potentially affected by the data breach."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Europe",
+      "region": "europe"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Dark Web Data Market",
+      "infrastructure_types": [
+        "staging"
+      ],
+      "description": "A dark web forum where the data broker ShinyHunters listed the data stolen from the European Commission for sale."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "AWS CreateAccessKey by Automated Tool",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: AWS CreateAccessKey by Automated Tool\nid: 2a8b3c1d-f4e5-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: 'Detects the creation of a new AWS access key, particularly when initiated by a service account or an automated tool, which could indicate a persistence technique following a credential compromise.'\nreferences:\n  - https://www.therecord.media/cert-eu-attributes-major-data-breach-to-teampcp-hacking-group\nauthor: cyber.netsecops.io\ndate: 2026-04-04\ntags:\n  - attack.t1098.001\n  - attack.persistence\nlevel: medium\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventName: CreateAccessKey\n    userIdentity.type: AssumedRole\n  condition: selection\nfalsepositives:\n  - Legitimate automated processes that rotate or create access keys.\n",
+      "description": "Monitors for the creation of new AWS access keys, a technique used by TeamPCP for persistence after gaining initial access."
+    },
+    {
+      "name": "Anomalous Egress from Security Scanner",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Egress from Security Scanner\nid: 8b7c6d5e-4f3a-4b2c-9d8e-7f6a5b4c3d2e\nstatus: experimental\ndescription: 'Detects network connections from known security scanning tools (like Trivy) to external endpoints that are not approved vendor update sites. This could indicate data exfiltration by a compromised tool.'\nreferences:\n  - https://www.therecord.media/cert-eu-attributes-major-data-breach-to-teampcp-hacking-group\nauthor: cyber.netsecops.io\ndate: 2026-04-04\ntags:\n  - attack.t1537\n  - attack.exfiltration\nlevel: high\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    Image|endswith: '/trivy'\n    Initiated: true\n  filter:\n    DestinationIp:\n      # Add legitimate Aqua Security / Trivy update IPs/domains here\n      - '1.1.1.1'\n  condition: selection and not filter\nfalsepositives:\n  - Scanners configured to send reports to a legitimate, but unlisted, external service.\n",
+      "description": "Monitors for network traffic from security scanners like Trivy to external destinations, which could be a sign of data exfiltration by a compromised tool."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromised Trivy Scanner",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Amazon Web Services",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "European Commission",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Affected EU Entities and Clients",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "collaborates-with",
+      "target_name": "TeamPCP",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Dark Web Data Market",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Compromised Trivy Scanner",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Steal Application Access Token",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Steal Application Access Token",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Additional Cloud Credentials",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Infrastructure Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Transfer Data to Cloud Account",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "European Commission",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "Europe",
+      "target_type": "location"
+    },
+    {
+      "source_name": "AWS CreateAccessKey by Automated Tool",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Additional Cloud Credentials",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Egress from Security Scanner",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Transfer Data to Cloud Account",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

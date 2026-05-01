@@ -1,0 +1,72 @@
+title: Progress ADC API Command Injection Attempt
+id: 2b1a9c8d-3e4f-4a5b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects potential command injection attempts against Progress ADC product APIs (addcountry, aclcontrol, killsession) as described in CVE-2026-3517, CVE-2026-3519, and CVE-2026-3518.
+references:
+  - https://www.securityweek.com/progress-patches-multiple-vulnerabilities-in-moveit-waf-loadmaster/
+author: cyber.netsecops.io
+date: 2026-04-21
+tags:
+  - cve.2026.3517
+  - cve.2026.3519
+  - cve.2026.3518
+falsepositives:
+  - Legitimate API calls with unusual characters in parameters could trigger.
+level: high
+logsource:
+  category: webserver
+detection:
+  selection_api:
+    c-uri-stem|contains:
+      - 'addcountry'
+      - 'aclcontrol'
+      - 'killsession'
+  selection_chars:
+    c-uri-query|contains:
+      - ';'
+      - '|'
+      - '&&'
+      - '`'
+      - '$('
+  condition: all of selection_*
+---
+title: Progress ADC Malicious WAF Rule Upload
+id: 8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c
+status: experimental
+description: Detects the creation or modification of custom WAF rule files on a Progress ADC appliance, which could indicate an attempt to exploit CVE-2026-4048.
+references:
+  - https://www.securityweek.com/progress-patches-multiple-vulnerabilities-in-moveit-waf-loadmaster/
+author: cyber.netsecops.io
+date: 2026-04-21
+tags:
+  - cve.2026.4048
+falsepositives:
+  - Legitimate creation or modification of custom WAF rules by administrators.
+level: medium
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|startswith: '/var/airlock/waf/custom-rules/'
+  condition: selection
+---
+title: Progress WAF Bypass Attempt (CVE-2026-21876)
+id: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
+status: experimental
+description: Detects HTTP requests with a multipart/form-data content type, which could be part of an attempt to bypass Progress WAF policies as per CVE-2026-21876. The vulnerability involves using multiple multipart headers; this rule detects the presence of the header and requires further analysis.
+references:
+  - https://www.securityweek.com/progress-patches-multiple-vulnerabilities-in-moveit-waf-loadmaster/
+author: cyber.netsecops.io
+date: 2026-04-21
+tags:
+  - cve.2026.21876
+falsepositives:
+  - Legitimate applications that use multipart/form-data requests (e.g., file uploads).
+level: low
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-content-type: 'multipart/form-data'
+  condition: selection

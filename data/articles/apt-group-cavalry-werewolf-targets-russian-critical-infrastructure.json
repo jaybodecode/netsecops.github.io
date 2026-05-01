@@ -1,0 +1,210 @@
+{
+  "id": "17828d55-a6a1-485f-a9ec-3fde7ea33e1e",
+  "slug": "apt-group-cavalry-werewolf-targets-russian-critical-infrastructure",
+  "headline": "'Cavalry Werewolf' APT Targets Russian Critical Infrastructure with Custom Malware",
+  "title": "APT Group Cavalry Werewolf (YoroTrooper) Targets Russian Public Sector and Critical Industries with Custom Malware and SOCKS5 Proxying",
+  "summary": "The Advanced Persistent Threat (APT) group known as Cavalry Werewolf (also tracked as YoroTrooper and Silent Lynx) conducted a targeted cyberattack campaign against Russia's public sector and critical industries between May and August 2025. The group leveraged spear-phishing emails to deliver custom malware, including FoalShell and StallionRAT. Post-compromise activities focused on reconnaissance and establishing persistence via Windows Registry modifications, while using SOCKS5 proxies for command-and-control and data exfiltration.",
+  "full_report": "## Executive Summary\nBetween May and August 2025, the threat actor group **Cavalry Werewolf** (also known as YoroTrooper and Silent Lynx) launched a cyber-espionage campaign targeting Russian organizations. The campaign focused on the public sector and critical industries, including energy, mining, and manufacturing. The group used spear-phishing as its primary initial access vector to deliver custom malware like FoalShell and StallionRAT. The attackers established persistence by modifying Windows Registry run keys and conducted extensive network reconnaissance. For command-and-control (C2), the group employed SOCKS5 proxying tools to tunnel traffic through specific IP addresses, including `96.9.125.168` and `78.128.112.209`.\n\n## Threat Overview\n**Cavalry Werewolf**'s campaign was characterized by its targeted nature and focus on stealthy persistence. The attack began with spear-phishing emails crafted to look like official government correspondence, luring victims into executing the malicious payload. Once inside the network, the group's malware established a foothold. A key post-compromise technique was modifying the `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run` registry key to ensure the malware would execute automatically upon system startup. The attackers then systematically mapped the victim's network using standard reconnaissance commands (`ipconfig`, `netstat`, `whoami`). To exfiltrate data and maintain C2, the group used the ReverseSocks5Agent tool to proxy their traffic, making it harder to trace back to its origin. Artifacts found on compromised systems suggest the group may be expanding its targeting to include Tajikistan and the Middle East.\n\n## Technical Analysis\nThe TTPs used by **Cavalry Werewolf** are indicative of a resourceful espionage-focused group:\n\n*   **Initial Access:** [`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/). The use of targeted emails with malicious attachments disguised as official documents is a classic APT tactic.\n*   **Persistence:** [`T1547.001 - Registry Run Keys / Startup Folder`](https://attack.mitre.org/techniques/T1547/001/). Modifying this registry key is one of the most common and effective methods for achieving persistence on Windows systems.\n*   **Discovery:** The use of `ipconfig` ([`T1016 - System Network Configuration Discovery`](https://attack.mitre.org/techniques/T1016/)), `netstat` ([`T1049 - System Network Connections Discovery`](https://attack.mitre.org/techniques/T1049/)), and `whoami` ([`T1033 - System Owner/User Discovery`](https://attack.mitre.org/techniques/T1033/)) shows a systematic approach to understanding the compromised environment before deciding on the next action.\n*   **Command and Control:** [`T1090.002 - External Proxy`](https://attack.mitre.org/techniques/T1090/002/). Using a SOCKS5 proxy like ReverseSocks5Agent allows the attacker to tunnel various types of traffic (e.g., RDP, SMB) through the C2 channel and obfuscate the true destination of exfiltrated data.\n\n## Impact Assessment\nThe compromise of critical infrastructure and public sector organizations in Russia could provide the threat actor's sponsors with valuable intelligence on Russia's industrial capacity, energy production, and government operations. The reconnaissance activities suggest the attackers are not conducting a smash-and-grab attack but are carefully mapping networks for long-term espionage or to identify high-value targets for further exploitation. The potential expansion of operations to Tajikistan and the Middle East indicates that **Cavalry Werewolf** is an active and evolving threat with broad strategic interests.\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| `ip_address_v4` | `96.9.125.168` | C2 server IP address. |\n| `destination_port` | `443` | C2 communication port associated with 96.9.125.168. |\n| `ip_address_v4` | `78.128.112.209` | C2 server IP address. |\n| `destination_port` | `10443` | C2 communication port associated with 78.128.112.209. |\n\n## Cyber Observables for Detection\n| Type | Value | Description |\n|---|---|---|\n| `registry_key` | `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run` | Monitor for any new or unauthorized programs being added to this key. |\n| `process_name` | `ReverseSocks5Agent.exe` | Hunt for the execution of this specific proxy tool. |\n| `command_line_pattern` | `netstat -an` | While a legitimate command, its execution by an unusual process or user can be an indicator of reconnaissance. |\n\n## Detection & Response\n1.  **Network Traffic Filtering:** Block outbound traffic to the known C2 IPs (`96.9.125.168`, `78.128.112.209`) at the network perimeter. This is a direct application of [`D3-OTF: Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering).\n2.  **Registry Monitoring:** Use an EDR or FIM solution to monitor for and alert on any changes to the `CurrentVersion\\Run` registry keys. This can provide early detection of the group's persistence mechanism. This falls under [`D3-SFA: System File Analysis`](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis) (conceptually applied to registry).\n3.  **Process Monitoring:** Correlate process execution with network activity. Create a detection rule that alerts when a process spawned from an email attachment (e.g., `outlook.exe` -> `winword.exe` -> `cmd.exe`) executes discovery commands like `ipconfig` or `netstat`. This is a form of [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n\n## Mitigation\n*   **User Training:** Train users to be suspicious of unsolicited emails, even those that appear to be from official sources, and to report them to the security team ([`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/)).\n*   **Email Security:** Implement an email security gateway that can scan attachments for malware and block emails from suspicious sources.\n*   **Attack Surface Reduction (ASR):** Use ASR rules to block Office applications from creating child processes, which would prevent the initial execution of the malware from a malicious document.\n*   **Egress Filtering:** Implement strict egress filtering policies to block outbound connections on all ports except those that are explicitly required for business purposes. This can prevent the SOCKS5 proxy from connecting to its C2 server.",
+  "twitter_post": "🐺 APT group 'Cavalry Werewolf' targeted Russian critical infrastructure using spear-phishing & custom malware. The group used SOCKS5 proxies for C2 & exfiltration. #APT #CavalryWerewolf #Russia #CyberAttack",
+  "meta_description": "The APT group Cavalry Werewolf (YoroTrooper) targeted Russian critical infrastructure and public sector entities using spear-phishing, custom malware, and SOCKS5 proxying for C2.",
+  "category": [
+    "Threat Actor",
+    "Cyberattack",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Cavalry Werewolf",
+      "type": "threat_actor"
+    },
+    {
+      "name": "YoroTrooper",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Silent Lynx",
+      "type": "threat_actor"
+    },
+    {
+      "name": "FoalShell",
+      "type": "malware"
+    },
+    {
+      "name": "StallionRAT",
+      "type": "malware"
+    },
+    {
+      "name": "ReverseSocks5Agent",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://cyber-press.com/apt-group-cavalry-werewolf-launches-multi-industry-campaigns-leveraging-foalshell-and-stallionrat/",
+      "title": "APT Group Cavalry Werewolf Launches Multi-Industry Campaigns Leveraging FoalShell and StallionRAT",
+      "date": "2025-10-21",
+      "friendly_name": "Cyber Press",
+      "website": "cyber-press.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-05-01T00:00:00Z",
+      "summary": "Start of the Cavalry Werewolf campaign targeting Russian entities."
+    },
+    {
+      "datetime": "2025-08-31T00:00:00Z",
+      "summary": "End of the observed Cavalry Werewolf campaign period."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment"
+    },
+    {
+      "id": "T1547.001",
+      "name": "Registry Run Keys / Startup Folder"
+    },
+    {
+      "id": "T1090.002",
+      "name": "External Proxy"
+    },
+    {
+      "id": "T1016",
+      "name": "System Network Configuration Discovery"
+    },
+    {
+      "id": "T1049",
+      "name": "System Network Connections Discovery"
+    },
+    {
+      "id": "T1033",
+      "name": "System Owner/User Discovery"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate users to identify and report spear-phishing emails, which serve as the initial access vector for this threat actor.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Implement egress filtering to block connections to known malicious IPs and ports used by the SOCKS5 proxy C2.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable logging of process creation and registry modifications to detect the reconnaissance and persistence techniques used by Cavalry Werewolf.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To directly counter Cavalry Werewolf's C2 method, implement a strict outbound traffic filtering policy at the network edge. First, add the known malicious IPs (`96.9.125.168` and `78.128.112.209`) to a denylist. More strategically, adopt a default-deny egress policy, only allowing outbound traffic to known-good destinations on standard ports. Since the attackers used both standard (`443`) and non-standard (`10443`) ports, this policy would block the non-standard port communication and allow for closer inspection of the traffic on port 443, disrupting the SOCKS5 proxy C2 channel.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an EDR to monitor for the specific post-compromise behaviors of Cavalry Werewolf. Create detection rules that correlate process lineage with command-line execution. For example, an alert should be generated if a process originating from an email client (e.g., `outlook.exe`) spawns a shell that then executes a sequence of discovery commands like `ipconfig`, `netstat`, and `whoami`. This behavioral chain is a strong indicator of the reconnaissance phase of this specific attack and can provide early warning of a breach.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-RKM",
+      "technique_name": "Registry Key Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:RegistryKeyMonitoring",
+      "recommendation": "The attacker's use of the `HKCU\\...\\CurrentVersion\\Run` key for persistence is a classic and detectable technique. Configure your EDR or a dedicated File/Registry Integrity Monitoring tool to generate a high-priority alert for any modification to this specific registry path. While legitimate installers sometimes write to this key, any changes on a user's machine outside of a managed software deployment should be investigated immediately. This provides a reliable method for detecting the malware's attempt to establish a persistent foothold on the compromised system.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "96.9.125.168",
+      "description": "C2 server"
+    },
+    {
+      "type": "destination_port",
+      "value": "443",
+      "description": "C2 port for 96.9.125.168"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "78.128.112.209",
+      "description": "C2 server"
+    },
+    {
+      "type": "destination_port",
+      "value": "10443",
+      "description": "C2 port for 78.128.112.209"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "registry_key",
+      "value": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "description": "The specific registry key modified by Cavalry Werewolf to establish persistence. Monitoring changes to this key is a high-fidelity detection method.",
+      "context": "Registry monitoring tools, EDR, Autoruns.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "ipconfig /all",
+      "description": "Command used for network reconnaissance. When executed by a non-interactive or unusual process, it's a strong indicator of compromise.",
+      "context": "Process creation logs (Event ID 4688), SIEM.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "SOCKS5 protocol traffic to non-standard ports",
+      "description": "The use of SOCKS5 for C2 is a key TTP. Deep packet inspection or protocol analysis can identify this traffic, especially to untrusted IPs.",
+      "context": "Network Intrusion Detection System (NIDS), Netflow analysis.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "CavalryWerewolf",
+    "YoroTrooper",
+    "APT",
+    "Russia",
+    "CriticalInfrastructure",
+    "Spearphishing",
+    "SOCKS5"
+  ],
+  "extract_datetime": "2025-10-21T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Russia"
+    ],
+    "industries_affected": [
+      "Government",
+      "Energy",
+      "Manufacturing",
+      "Critical Infrastructure"
+    ]
+  },
+  "pub_date": "2025-10-21",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-21T15:00:00.000Z",
+  "updatedAt": "2025-10-21T15:00:00.000Z"
+}

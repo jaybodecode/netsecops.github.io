@@ -1,0 +1,181 @@
+{
+  "id": "852a840f-ff4a-425e-9cdc-347902396b6e",
+  "slug": "high-severity-code-injection-flaw-in-open-webui-disclosed",
+  "headline": "High-Severity Code Injection Flaw in Open WebUI (CVE-2025-64496) Allows RCE",
+  "title": "Open WebUI Vulnerability (CVE-2025-64496) Allows Account Takeover and Remote Code Execution",
+  "summary": "A high-severity vulnerability, tracked as CVE-2025-64496, has been discovered in Open WebUI, a popular self-hosted interface for large language models (LLMs). The flaw, found by Cato Networks, allows a malicious AI server to inject arbitrary JavaScript code into a user's browser session. This can be exploited to steal authentication tokens and take over the user's account. If the compromised user has specific permissions enabled, the vulnerability can be escalated to achieve full remote code execution (RCE) on the host server. The issue affects Open WebUI versions 0.6.34 and older and was patched in version 0.6.35.",
+  "full_report": "## Executive Summary\n\nResearchers have disclosed a **high-severity** code injection vulnerability, **[CVE-2025-64496](https://nvd.nist.gov/vuln/detail/CVE-2025-64496)**, in **Open WebUI**, a widely used open-source web interface for interacting with self-hosted AI models like Ollama. Discovered by researchers at Cato Networks, the flaw allows a malicious AI model server to execute arbitrary JavaScript code in the context of a user's browser. An attacker can exploit this by tricking a user into connecting their Open WebUI instance to a malicious server endpoint. This leads to the theft of authentication tokens and complete account takeover. Crucially, if the compromised user has `workspace.tools` permissions, the attacker can leverage the stolen token to achieve remote code execution (RCE) on the Open WebUI host server. The vulnerability affects versions 0.6.34 and older and has been remediated in version 0.6.35.\n\n## Vulnerability Details\n\n-   **CVE ID**: CVE-2025-64496\n-   **CVSS Score**: 7.3 (High)\n-   **Affected Software**: Open WebUI versions 0.6.34 and below.\n-   **Vulnerability Type**: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')\n\nThe vulnerability exists within the 'Direct Connections' feature of Open WebUI. This feature allows users to connect to any OpenAI-compatible API endpoint, not just locally hosted models. The flaw lies in how the Open WebUI front-end processes Server-Sent Events (SSE) received from these external servers. An attacker can set up a malicious server that, when a user sends it a prompt, responds with a specially crafted SSE payload. Instead of a normal text response, the payload contains a malicious JavaScript instruction. The Open WebUI front-end fails to properly sanitize this response and executes the script in the user's browser.\n\n## Exploitation Status\n\nThe exploitation chain is as follows:\n1.  **Social Engineering**: An attacker tricks an Open WebUI user into adding their malicious server URL as a 'Direct Connection'.\n2.  **Connection and Prompt**: The user sends any message or prompt to the malicious model via the WebUI.\n3.  **Malicious Response**: The attacker's server sends back a crafted SSE containing a JavaScript payload (e.g., `event: 'execute', data: 'alert(1)'`).\n4.  **Code Execution**: The victim's browser executes the script. The attacker's script can then access the browser's `localStorage` to steal the user's JSON Web Token (JWT) authentication token.\n5.  **Account Takeover**: With the stolen JWT, the attacker can impersonate the user, access all their chat history, documents, and API keys stored in the account.\n6.  **Remote Code Execution (RCE)**: If the compromised user has the `workspace.tools` permission enabled, the attacker can use the stolen token to make an authenticated API call to create a new 'tool'. This tool can be configured to execute arbitrary Python code on the underlying server, achieving full RCE without any sandboxing.\n\n## Impact Assessment\n\nThe impact is severe. At a minimum, it allows for complete account takeover, leading to the theft of potentially sensitive information processed by the AI model, including proprietary code, business documents, and personal data. The escalation path to RCE is the most critical aspect. An attacker with RCE on the server can install persistent backdoors, pivot to other systems on the network, or use the server to launch further attacks. Given that Open WebUI is often used by developers and researchers, the compromised server could be a high-value target with access to other critical infrastructure.\n\n## Detection Methods\n\n-   **Version Scanning**: The most reliable detection method is to identify all instances of Open WebUI in your environment and check their version. Any instance running version 0.6.34 or older is vulnerable and should be prioritized for patching.\n-   **Log Analysis**: Monitor Open WebUI and web server logs for connections to unusual or untrusted external model URLs. This is an application of **[D3FEND's URL Analysis (D3-UA)](https://d3fend.mitre.org/technique/d3f:URLAnalysis)**.\n-   **Network Traffic Analysis**: Look for outbound connections from the Open WebUI server to suspicious IP addresses. If RCE is achieved, the attacker may establish a reverse shell, which can be detected by monitoring for anomalous outbound network connections. This aligns with **[D3FEND's Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)**.\n\n## Remediation Steps\n\n-   **Immediate Patching**: The primary remediation is to update all Open WebUI instances to version **0.6.35** or newer. The patch, released in November 2025, blocks the malicious `execute` event from being processed from Direct Connections servers, neutralizing the vulnerability.\n-   **Review Permissions**: As a secondary mitigation, administrators should review which users have the `workspace.tools` permission. This permission should be granted on a principle of least privilege, as it represents a significant security risk if a user account is compromised. This is a form of **[D3FEND's User Account Permissions (D3-UAP)](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions)**.\n-   **Restrict Direct Connections**: If not required, consider disabling the 'Direct Connections' feature or restricting it to a list of trusted, pre-approved model endpoints. This is a form of **[D3FEND's Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**.",
+  "twitter_post": "🚨 High-severity flaw CVE-2025-64496 in Open WebUI allows account takeover and RCE! A malicious AI server can inject code to steal auth tokens. Affects versions <= 0.6.34. Patch immediately to v0.6.35. #Vulnerability #RCE #AI #OpenWebUI",
+  "meta_description": "A critical code injection vulnerability (CVE-2025-64496) in Open WebUI can lead to account takeover and remote code execution. Learn how the flaw works and how to patch it.",
+  "category": [
+    "Vulnerability",
+    "Cloud Security",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Open WebUI",
+      "type": "product"
+    },
+    {
+      "name": "Cato Networks",
+      "type": "vendor"
+    },
+    {
+      "name": "OpenAI",
+      "type": "company",
+      "url": "https://openai.com/"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-64496",
+      "cvss_score": 7.3,
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://research.checkpoint.com/2026/01/12/12th-january-threat-intelligence-report/",
+      "title": "12th January – Threat Intelligence Report",
+      "date": "2026-01-12",
+      "friendly_name": "Check Point Research",
+      "website": "research.checkpoint.com"
+    },
+    {
+      "url": "https://www.scmagazine.com/news/open-webui-account-takeover-flaw-could-lead-to-remote-code-execution",
+      "title": "Open WebUI account takeover flaw could lead to remote code execution",
+      "date": "2026-01-12",
+      "friendly_name": "SC Magazine",
+      "website": "scmagazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-11-01T00:00:00Z",
+      "summary": "Open WebUI version 0.6.35 is released, patching CVE-2025-64496."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1555.003",
+      "name": "Credentials from Web Browsers",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1059.006",
+      "name": "Python",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Updating Open WebUI to the patched version is the primary and most effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Restricting the high-risk 'workspace.tools' permission based on the principle of least privilege limits the potential impact of an account compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Restricting or disabling the 'Direct Connections' feature hardens the application against this specific attack vector.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The most critical and immediate action for all organizations using Open WebUI is to apply the security patch. Administrators must identify all instances of Open WebUI within their environment and upgrade them to version 0.6.35 or higher. This is not a complex mitigation; it is a straightforward software update that directly remediates the root cause of CVE-2025-64496. The patched version correctly sanitizes server-sent events, preventing the code injection that enables the entire attack chain. Delaying this patch leaves the organization exposed to account takeover and potential remote code execution. A robust patch management program that can quickly identify and update vulnerable software is essential for modern cybersecurity.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "As a vital secondary defense, administrators should conduct a thorough audit of user permissions within Open WebUI. The ability to escalate from account takeover to RCE hinges entirely on the compromised user having the `workspace.tools` permission. This permission is powerful and should be treated as a high-privilege capability. It should only be assigned to a minimal number of trusted users who have a clear, documented need for it. By applying the principle of least privilege, organizations can significantly limit the blast radius of a compromised account. Even if an attacker successfully steals a standard user's token via CVE-2025-64496, they will be unable to escalate to RCE if that user does not have the necessary permissions. This control contains the incident to data exposure rather than a full server compromise.",
+      "mitre_mitigation_id": "M1018"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Open WebUI application logs",
+      "description": "Logs showing connections being made to untrusted or non-standard OpenAI-compatible API endpoints via the 'Direct Connections' feature.",
+      "context": "SIEM, application log review.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous outbound connection from Open WebUI server",
+      "description": "If RCE is achieved, an attacker might establish a reverse shell or download further tools. Any unexpected outbound connection is suspicious.",
+      "context": "Firewall logs, NetFlow analysis, EDR.",
+      "confidence": "medium"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "/api/tools",
+      "description": "Authenticated API calls to this endpoint to create a new tool by a user who does not normally do so could indicate an attacker leveraging a stolen token for RCE.",
+      "context": "Web server access logs, API gateway logs.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "CVE-2025-64496",
+    "Open WebUI",
+    "Vulnerability",
+    "RCE",
+    "Account Takeover",
+    "AI",
+    "LLM"
+  ],
+  "extract_datetime": "2026-01-12T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Users of Open WebUI",
+      "AI developers and researchers"
+    ]
+  },
+  "pub_date": "2026-01-12",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-01-12T15:00:00.000Z",
+  "updatedAt": "2026-01-12T15:00:00.000Z"
+}

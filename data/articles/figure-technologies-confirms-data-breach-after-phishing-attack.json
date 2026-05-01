@@ -1,0 +1,245 @@
+{
+  "id": "62412a65-2834-48a4-bd65-441cfbac7d66",
+  "slug": "figure-technologies-confirms-data-breach-after-phishing-attack",
+  "headline": "Fintech Firm Figure Technologies Breached by ShinyHunters; 1 Million Customer Records Leaked",
+  "title": "Figure Technologies Confirms Data Breach After Employee Targeted in Phishing Attack, ShinyHunters Leaks 2.5GB of Customer Data",
+  "summary": "Blockchain lending firm Figure Technology Solutions confirmed it suffered a major data breach after an employee's credentials were stolen in a social engineering attack. The notorious cybercrime group ShinyHunters has claimed responsibility, leaking 2.5GB of data allegedly belonging to nearly one million customers after the company refused to pay a ransom. The exposed data includes names, dates of birth, email addresses, and physical addresses, placing affected individuals at high risk for identity theft and further phishing attacks. Figure is now offering credit monitoring services to impacted users as legal investigations begin.",
+  "full_report": "## Executive Summary\n\nOn February 14, 2026, fintech firm **[Figure Technology Solutions, Inc.](https://figure.com)** confirmed a significant data breach resulting from a targeted social engineering attack on an employee. The threat actor group **[ShinyHunters](https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters)** claimed responsibility, subsequently leaking a 2.5GB data trove on the dark web after the company reportedly refused to pay a ransom. The leaked data contains the personally identifiable information (PII) of approximately 967,000 customers, including full names, dates of birth, email addresses, physical addresses, and phone numbers. The incident highlights the effectiveness of social engineering as an initial access vector and underscores the severe consequences of a single credential compromise, particularly in organizations handling sensitive financial data.\n\n---\n\n## Threat Overview\n\nThe attack began with a sophisticated social engineering campaign, likely voice phishing (vishing), targeting a Figure employee. The attackers successfully manipulated the employee into divulging their credentials, granting them unauthorized access to Figure's internal systems. This access was then used to navigate the network and exfiltrate sensitive customer data. \n\n**ShinyHunters**, a well-known data extortion group, followed its typical modus operandi: exfiltrate data, demand a ransom, and leak the data if the demand is not met. By publishing the data on their leak site, they aim to maximize reputational damage to the victim and pressure future victims into paying. The leaked information is highly valuable for other malicious actors, who can use it to conduct identity theft, targeted phishing campaigns, and other fraudulent activities. Some researchers suggest this attack may be part of a wider campaign targeting users of the single sign-on provider **[Okta](https://www.okta.com/)**, although this connection is still under investigation.\n\n## Technical Analysis\n\nThe attack chain follows a common pattern seen in modern data breaches, leveraging human vulnerability before exploiting technical systems.\n\n1.  **Initial Access:** The attackers used social engineering, as described in [`T1566 - Phishing`](https://attack.mitre.org/techniques/T1566/). Given the context, this was likely a vishing attack (`T1566.004`) combined with smishing or email phishing to direct the employee to a malicious site.\n2.  **Credential Compromise:** The employee's credentials were stolen, aligning with [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/). This single point of failure allowed attackers to bypass perimeter defenses.\n3.  **Discovery & Lateral Movement:** While not detailed, once inside, attackers would have performed discovery techniques to locate valuable data repositories. This likely involved techniques like [`T1087 - Account Discovery`](https://attack.mitre.org/techniques/T1087/) and [`T1082 - System Information Discovery`](https://attack.mitre.org/techniques/T1082/).\n4.  **Exfiltration:** The final stage was the theft of data, corresponding to [`T1048 - Exfiltration Over Alternative Protocol`](https://attack.mitre.org/techniques/T1048/) or [`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/). The 2.5GB size suggests a compressed archive was exfiltrated over a common protocol like HTTPS to avoid detection.\n\n> This incident is a stark reminder that even with advanced blockchain technology, the human element remains the weakest link. The focus on \"frictionless speed\" mentioned by investigators often correlates with relaxed internal security controls that attackers are quick to exploit.\n\n## Impact Assessment\n\nThe business impact on Figure Technologies is multifaceted and severe. It includes immediate financial costs for incident response, legal fees, and providing credit monitoring services. The long-term impact involves significant reputational damage, loss of customer trust, and potential regulatory fines for failing to protect PII. The investigation by law firm Woods Lonergan PLLC indicates the potential for class-action lawsuits.\n\nFor the 967,000 affected customers, the impact is direct and personal. They face an elevated and long-term risk of:\n- **Identity Theft:** Criminals can use the leaked data to open new accounts, file fraudulent tax returns, or obtain loans.\n- **Targeted Phishing:** Armed with names, emails, and addresses, attackers can craft highly convincing phishing emails or calls to extract further sensitive information like passwords or financial details.\n- **Social Engineering:** The data can be used to impersonate individuals to their friends, family, or employers.\n\n## Cyber Observables for Detection\n\nSecurity teams can hunt for similar activity by monitoring for:\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| `log_source` | VPN & SSO Logs | Monitor for logins from unusual geolocations, multiple failed logins followed by a success, or logins outside of normal business hours. Correlate with MFA push notifications. |\n| `network_traffic_pattern` | Large data egress | Alert on unusually large data transfers from internal servers to external, non-business-related IP addresses or cloud storage services. |\n| `event_id` | Windows Event ID 4625 | Look for spikes in failed logon attempts (Event ID 4625) on internal systems, which could indicate attempts to use compromised credentials. |\n| `process_name` | `rclone.exe`, `megasync.exe` | Monitor for the execution of common data transfer tools on endpoints and servers where they are not expected. |\n| `command_line_pattern` | `7z.exe a -p...` | Hunt for command-line activity related to compressing large directories into password-protected archives, a common precursor to exfiltration. |\n\n## Detection & Response\n\n**Detection Strategies:**\n1.  **User and Entity Behavior Analytics (UEBA):** Implement UEBA solutions to baseline normal user activity. This can help detect when a compromised account is used in an anomalous way, such as accessing unusual files or logging in from a new location. This aligns with D3FEND's **[User Geolocation Logon Pattern Analysis (D3-UGLPA)](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis)**.\n2.  **MFA Anomaly Detection:** Monitor for \"MFA fatigue\" or \"push bombing\" attacks, where an attacker who has a password spams the user with MFA requests hoping they will approve one by mistake. Correlate multiple MFA denial events with subsequent login attempts.\n3.  **Data Loss Prevention (DLP):** Deploy DLP solutions that monitor and can block the exfiltration of data containing sensitive PII patterns. Configure rules to detect large volumes of customer data being moved to external destinations. This is a form of **[Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)**.\n\n**Response Actions:**\n- Immediately disable the compromised account.\n- Force a password reset for all users, especially those with privileged access.\n- Analyze firewall, VPN, and proxy logs to determine the scope of attacker activity and identify the exfiltration path.\n- Preserve all relevant logs and system images for forensic analysis.\n\n## Mitigation\n\n**Immediate Actions:**\n1.  **Enforce Phishing-Resistant MFA:** Upgrade from push-based MFA to more secure methods like FIDO2/WebAuthn. This is a critical step in mitigating credential theft.\n2.  **User Training:** Conduct immediate, targeted training for all employees on identifying social engineering and vishing attacks. Use this incident as a real-world example.\n3.  **Review Access Controls:** Audit and enforce the principle of least privilege. Ensure employees only have access to the data and systems absolutely necessary for their roles.\n\n**Strategic Improvements:**\n- **Network Segmentation:** Implement network segmentation to prevent attackers from moving laterally from a less secure part of the network (like a user workstation) to critical data stores. This is a core principle of **[Network Isolation (D3-NI)](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**.\n- **Assume Breach Mentality:** Shift from a perimeter-focused defense to an \"assume breach\" model. This means investing more in detection and response capabilities inside the network.\n- **Security Culture:** Foster a security-first culture where employees feel empowered to question suspicious requests and report potential incidents without fear of blame.",
+  "twitter_post": "🚨 Fintech firm Figure Technologies confirms massive data breach after a social engineering attack. ShinyHunters claims responsibility, leaking data of nearly 1M customers. Names, DOBs, addresses exposed. ⚠️ #DataBreach #ShinyHunters #Fintech #Phishing",
+  "meta_description": "Fintech firm Figure Technologies confirms a major data breach after a social engineering attack compromised an employee. The ShinyHunters group has leaked data on nearly 1 million customers.",
+  "category": [
+    "Data Breach",
+    "Threat Actor",
+    "Phishing"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Figure Technology Solutions, Inc.",
+      "type": "company",
+      "url": "https://figure.com"
+    },
+    {
+      "name": "ShinyHunters",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters"
+    },
+    {
+      "name": "Okta",
+      "type": "vendor",
+      "url": "https://www.okta.com/"
+    },
+    {
+      "name": "Woods Lonergan PLLC",
+      "type": "company"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securityaffairs.com/159079/data-breach/figure-data-breach.html",
+      "title": "Fintech firm Figure disclosed data breach after employee phishing attack",
+      "date": "2026-02-14",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    },
+    {
+      "url": "https://www.upguard.com/blog/cybersecurity-news",
+      "title": "Cybersecurity News",
+      "date": "2026-02-15",
+      "friendly_name": "UpGuard",
+      "website": "upguard.com"
+    },
+    {
+      "url": "https://www.brightdefense.com/blog/data-breaches-2026/",
+      "title": "List of Recent Data Breaches in 2026",
+      "date": "2026-02-14",
+      "friendly_name": "BrightDefense",
+      "website": "brightdefense.com"
+    },
+    {
+      "url": "https://woodslaw.com/services/data-breach-lawyer/figure-technology-data-breach-lawyer/",
+      "title": "Figure Technology Data Breach Lawyer & Investigation | 1M Records",
+      "date": "2026-02-15",
+      "friendly_name": "Woods Lonergan",
+      "website": "woodslaw.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02-14T00:00:00Z",
+      "summary": "Figure Technology Solutions confirms it sustained a data breach."
+    },
+    {
+      "datetime": "2026-02-14T00:00:00Z",
+      "summary": "ShinyHunters claims responsibility and leaks 2.5GB of data."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566",
+      "name": "Phishing",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1537",
+      "name": "Transfer Data to Cloud Account",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to recognize and report phishing and social engineering attempts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Implement phishing-resistant MFA (like FIDO2) to prevent credential abuse.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering to block unauthorized data exfiltration to known malicious or personal cloud storage destinations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Enforce the principle of least privilege to limit the impact of a compromised account.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "Given that this breach stemmed from a credential compromise, implementing robust MFA is the single most effective countermeasure. Organizations should prioritize the rollout of phishing-resistant MFA, such as FIDO2 security keys or device-bound biometrics, for all employees, especially those with access to sensitive systems or data. This moves beyond less secure methods like SMS or push notifications, which are vulnerable to interception and MFA fatigue attacks. For Figure, this would mean requiring a hardware token or biometric verification for any access to internal customer databases or administrative panels, rendering the stolen password useless to the attacker without physical access to the employee's second factor. This directly counters the initial access vector used by ShinyHunters.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To prevent a similar data leak, organizations must control and monitor outbound network traffic. This involves configuring egress filtering rules on perimeter firewalls to deny all traffic by default and only allow connections to known-good, business-required destinations on specific ports. For a company like Figure, this means blocking access to all personal cloud storage (e.g., Mega, Dropbox), file-sharing sites, and anonymous proxies. Furthermore, deep packet inspection (DPI) and Data Loss Prevention (DLP) systems should be deployed to analyze the content of allowed outbound traffic, looking for patterns matching customer PII. An alert should have been triggered when a 2.5GB compressed file containing customer data was uploaded to an external server, allowing security teams to intervene before the breach was complete.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-UBA",
+      "technique_name": "User Behavior Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis",
+      "recommendation": "Deploying User Behavior Analysis (UBA) tools can detect when a compromised account behaves anomalously. After ShinyHunters gained access, the account would have performed actions outside its normal baseline, such as accessing a large customer database it doesn't usually touch, running data compression tools, or initiating a large data transfer. A UBA system would flag these deviations—such as 'access from a new geolocation,' 'unusual file access volume,' and 'first time running `7z.exe`'—and generate a high-fidelity alert. This allows the security team to investigate and lock the account before significant data exfiltration occurs, acting as a critical internal safety net when perimeter defenses fail.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "VPN/SSO Authentication Logs",
+      "description": "Monitor for anomalous login patterns, such as logins from impossible-travel locations, multiple failed attempts followed by a success, or logins outside of an employee's normal working hours.",
+      "context": "SIEM, Identity and Access Management (IAM) system logs",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Large egress traffic to non-corporate destinations",
+      "description": "Detects potential data exfiltration. Attackers often compress data into a single archive and upload it. A 2.5GB transfer should trigger an alert.",
+      "context": "Firewall logs, Netflow data, DLP systems",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "* 7z a * or * zip -r *",
+      "description": "Detects the use of command-line archiving tools, which are frequently used by attackers to stage data for exfiltration.",
+      "context": "EDR logs, Windows Event ID 4688, Sysmon Event ID 1",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "MFA Logs",
+      "description": "Monitor for high volumes of MFA denial alerts for a single user, which may indicate an MFA fatigue attack in progress.",
+      "context": "IAM logs, Authentication provider logs (e.g., Okta, Duo)",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "ShinyHunters",
+    "Data Breach",
+    "Phishing",
+    "Social Engineering",
+    "Fintech",
+    "PII",
+    "Credential Compromise"
+  ],
+  "extract_datetime": "2026-02-15T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "companies_affected": [
+      "Figure Technology Solutions, Inc."
+    ],
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Finance",
+      "Technology"
+    ],
+    "people_affected_estimate": "967,000"
+  },
+  "pub_date": "2026-02-15",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-02-15T15:00:00.000Z",
+  "updatedAt": "2026-02-21T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-02-18T12:00:00Z",
+      "datetime": "2026-02-18T12:00:00Z",
+      "title": "Update 1",
+      "summary": "Breach confirmed by Have I Been Pwned, affecting 967,000 customers. Incident occurred during company's secondary stock offering.",
+      "sources": [
+        {
+          "title": "Data breach hits 1 million Figure customers",
+          "url": "https://www.americanbanker.com/news/data-breach-hits-1-million-figure-customers"
+        },
+        {
+          "title": "Figure data breach claimed by ShinyHunters, nearly 1 million affected",
+          "url": "https://www.cyberscoop.com/figure-data-breach-shinyhunters/"
+        }
+      ]
+    },
+    {
+      "update_id": "update-2",
+      "update_date": "2026-02-21T12:00:00Z",
+      "datetime": "2026-02-21T12:00:00Z",
+      "title": "Update 2",
+      "summary": "Public data leak confirmed on Feb 21, 2026; initial access vector for the breach is now reported as undisclosed.",
+      "sources": [
+        {
+          "title": "BPInsights: February 21, 2026",
+          "url": "https://www.bpi.com/bpinsights-february-21-2026/"
+        },
+        {
+          "title": "February 2026: Recent Cyber Attacks, Data Breaches, Ransomware Attacks",
+          "url": "https://www.cybermatters.info/2026/03/02/february-2026-recent-cyber-attacks-data-breaches-ransomware-attacks/"
+        }
+      ]
+    }
+  ]
+}

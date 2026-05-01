@@ -1,0 +1,223 @@
+{
+  "id": "dafa6852-5028-4096-ac37-854b632d98f7",
+  "slug": "malicious-chrome-extensions-caught-hijacking-enterprise-user-sessions",
+  "headline": "Warning: Malicious Chrome Extensions Hijack Workday, NetSuite Sessions to Bypass MFA",
+  "title": "Malicious Chrome Extensions Discovered Hijacking Enterprise User Sessions for Workday and NetSuite",
+  "summary": "Security researchers have uncovered five malicious Google Chrome extensions that impersonate legitimate add-ons for popular enterprise SaaS applications like Workday and NetSuite. The extensions are designed to perform session hijacking by stealing active session cookies and tokens after a user logs in. This technique allows attackers to completely bypass security controls, including multi-factor authentication (MFA), and gain full, authenticated access to the user's account. The stolen sessions can be used to exfiltrate sensitive corporate data, such as financial records and employee PII, highlighting the significant threat posed by unvetted browser extensions in corporate environments.",
+  "full_report": "## Executive Summary\n\nSecurity firm ReSecurity has identified a cluster of five malicious **[Google Chrome](https://www.google.com/chrome/)** extensions designed to hijack authenticated sessions of enterprise users. These extensions masquerade as helpful tools for popular Software-as-a-Service (SaaS) platforms, including **[Workday](https://www.workday.com/)** and **[NetSuite](https://www.netsuite.com/)**, to trick employees into installing them. Once installed, the malware waits for the user to log into their legitimate corporate account and then steals the active session cookie or token. This **[session hijacking](https://en.wikipedia.org/wiki/Session_hijacking)** attack is particularly dangerous because it allows the threat actor to bypass all login-time security measures, including strong passwords and multi-factor authentication (MFA). The attacker can then use the stolen session to impersonate the user and access sensitive financial data, HR information, and other proprietary corporate data.\n\n## Threat Overview\n\nThe attack leverages the trust users place in the Chrome Web Store and the perceived legitimacy of extensions that promise to enhance their workflow with enterprise applications. The core of the attack is not stealing passwords, but stealing the *result* of a successful authentication: the session token.\n\n### Attack Chain:\n1.  **Distribution**: The malicious extensions are published to the Google Chrome Web Store with names and descriptions that spoof legitimate applications or productivity tools.\n2.  **Installation**: An employee, searching for a tool to help with Workday or NetSuite, installs the malicious extension.\n3.  **Dormancy**: The extension remains dormant until it detects the user navigating to a target login page (e.g., `myworkday.com`).\n4.  **Session Theft**: After the user successfully authenticates (including completing MFA), the extension's background script activates, reads the session cookies from the browser's cookie store, and exfiltrates them to an attacker-controlled C2 server.\n5.  **Impersonation**: The attacker injects the stolen session cookie into their own browser, gaining full, authenticated access to the victim's SaaS application account.\n\nThis technique completely sidesteps the need to crack passwords or bypass MFA prompts, as the attacker is taking over a session that has already been authenticated.\n\n## Technical Analysis\n\nThis attack is a textbook example of [`T1185 - Browser Session Hijacking`](https://attack.mitre.org/techniques/T1185/). The malicious Chrome extensions require permissions to read and modify data on the websites the user visits. The `cookies` permission is particularly powerful, as it allows the extension to access session tokens stored as cookies.\n\nAn example `manifest.json` for such an extension might include:\n```json\n{\n  \"name\": \"Super-Awesome Report Exporter for Workday\",\n  \"version\": \"1.0\",\n  \"manifest_version\": 3,\n  \"permissions\": [\n    \"cookies\",\n    \"storage\",\n    \"tabs\"\n  ],\n  \"host_permissions\": [\n    \"*://*.myworkday.com/\",\n    \"*://*.netsuite.com/\"\n  ],\n  \"background\": {\n    \"service_worker\": \"background.js\"\n  }\n}\n```\nThe `background.js` script would contain the logic to monitor for successful logins and then use the `chrome.cookies.get()` API to steal the relevant session cookie and send it to the attacker.\n\n## Impact Assessment\n\nA successful session hijacking attack on an enterprise SaaS platform can be devastating:\n*   **Sensitive Data Exfiltration**: Attackers can access and steal financial reports, payroll data, employee PII, customer lists, and other confidential information.\n*   **Financial Fraud**: An attacker with access to a NetSuite account could potentially initiate fraudulent transactions or modify banking details.\n*   **Business Process Disruption**: The attacker could alter workflows, delete data, or sabotage business operations within the SaaS platform.\n*   **Compliance Violations**: A breach of platforms containing PII or financial data can lead to severe regulatory fines under GDPR, CCPA, and other regulations.\n\nSince the attacker's actions appear to originate from a legitimate, authenticated user session, detecting the malicious activity can be extremely difficult.\n\n## Detection & Response\n\n*   **Extension Auditing**: The first step is to audit all browser extensions installed on corporate devices. Use browser management tools or endpoint scripts to get a complete inventory.\n*   **Behavioral Analysis**: Monitor SaaS application logs for anomalous behavior. For example, a single user session originating from two different IP addresses or geographic locations simultaneously (the real user and the attacker) is a strong indicator of hijacking. This is a form of **D3FEND's** [`User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis).\n*   **Session Invalidation**: If a hijack is suspected, the immediate response is to terminate all active sessions for the user, forcing a re-authentication which invalidates the stolen token.\n\n## Mitigation\n\n1.  **Extension Allowlisting**: The most effective mitigation is to use enterprise browser management policies (e.g., via Google Workspace or Microsoft Endpoint Manager) to create a strict allowlist of approved Chrome extensions. Deny all others by default. This is a direct application of **D3FEND's** [`Executable Denylisting`](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting).\n2.  **User Education**: Train employees on the dangers of browser extensions. Teach them to be skeptical of add-ons, even those in the official store, and to report any requested extensions for a security review.\n3.  **Session Management Hardening**: Some applications offer session binding features, which tie a session to a specific IP address. While this can be disruptive for mobile users, it can be an effective control for preventing session hijacking.\n4.  **Endpoint Security**: Deploy EDR solutions that have visibility into browser activity and can detect or block extensions that exhibit malicious behavior, such as reading sensitive cookies.",
+  "twitter_post": "⚠️ Malicious Chrome extensions are hijacking Workday & NetSuite sessions to bypass MFA. Attackers steal active session cookies to gain full access to enterprise data. Audit your browser extensions NOW! #SessionHijacking #CyberSecurity #MFA",
+  "meta_description": "Five malicious Google Chrome extensions have been found hijacking user sessions for enterprise apps like Workday and NetSuite, allowing attackers to bypass MFA and steal data.",
+  "category": [
+    "Malware",
+    "Data Breach",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Google Chrome",
+      "type": "product",
+      "url": "https://www.google.com/chrome/"
+    },
+    {
+      "name": "Workday",
+      "type": "vendor",
+      "url": "https://www.workday.com/"
+    },
+    {
+      "name": "NetSuite",
+      "type": "vendor",
+      "url": "https://www.netsuite.com/"
+    },
+    {
+      "name": "ReSecurity",
+      "type": "security_organization"
+    },
+    {
+      "name": "Session Hijacking",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.resecurity.com/blog/article/five-chrome-extensions-caught-hijacking-enterprise-sessions",
+      "title": "Five Chrome extensions caught hijacking enterprise sessions",
+      "date": "2026-01-19",
+      "friendly_name": "ReSecurity",
+      "website": "resecurity.com"
+    },
+    {
+      "url": "https://www.techradar.com/pro/security/these-chrome-extensions-spoof-workday-netsuite-and-others-to-trick-victims-heres-what-to-look-for",
+      "title": "These Chrome extensions spoof Workday, NetSuite, and others to trick victims - here's what to look for",
+      "date": "2026-01-19",
+      "friendly_name": "TechRadar",
+      "website": "techradar.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1185",
+      "name": "Browser Session Hijacking",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1033",
+      "name": "Limit Software Installation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use enterprise policies to create an allowlist of approved browser extensions and block all others.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate employees about the risks of installing unvetted browser extensions.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ANET",
+          "name": "Authentication Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding"
+        },
+        {
+          "id": "D3-AZET",
+          "name": "Authorization Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthorizationEventThresholding"
+        },
+        {
+          "id": "D3-JFAPA",
+          "name": "Job Function Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:JobFunctionAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-SDA",
+          "name": "Session Duration Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SessionDurationAnalysis"
+        },
+        {
+          "id": "D3-UDTA",
+          "name": "User Data Transfer Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserDataTransferAnalysis"
+        },
+        {
+          "id": "D3-UGLPA",
+          "name": "User Geolocation Logon Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis"
+        },
+        {
+          "id": "D3-WSAA",
+          "name": "Web Session Activity Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis"
+        }
+      ],
+      "description": "Use UEBA to detect anomalous session activity, such as simultaneous logins from different geolocations.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "The most effective defense against malicious browser extensions is to prevent their installation in the first place. Organizations must use an enterprise browser management solution (like Google's Chrome Browser Cloud Management or Microsoft Endpoint Manager policies) to enforce a strict extension policy. Instead of a blocklist, which is always reactive, implement an allowlist. Define a small, curated list of extensions that are approved for business use after a thorough security review. Then, configure the policy to block the installation of any extension not on this list. This proactive control eliminates the attack vector entirely. For existing installations, run an audit to identify all non-allowlisted extensions and enforce their removal. This ensures that employees cannot be tricked into installing session-hijacking malware from the Chrome Web Store.",
+      "mitre_mitigation_id": "M1033"
+    },
+    {
+      "technique_id": "D3-UGLPA",
+      "technique_name": "User Geolocation Logon Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis",
+      "recommendation": "To detect a session hijacking attack in progress, organizations must analyze their SaaS application logs for impossible travel scenarios. This involves ingesting audit logs from platforms like Workday and NetSuite into a SIEM or UEBA tool. The system should track the source IP address and approximate geolocation for each user's active session. A high-priority alert should be triggered if activity for a single user session is detected from two geographically distant locations within a short time frame (e.g., a login from New York followed by an action from an IP in Eastern Europe five minutes later). This is a strong indicator that the session token has been stolen and is being used by an attacker. The automated response to such an alert should be to immediately terminate all active sessions for that user, forcing re-authentication and invalidating the stolen token.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "other",
+      "value": "Browser extension requesting 'cookies' permission for all sites",
+      "description": "A highly permissive and risky permission request that could indicate a malicious extension designed for session hijacking.",
+      "context": "Auditing browser extension manifests and permissions.",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "SaaS Application Audit Logs (e.g., Workday, NetSuite)",
+      "description": "These logs can show concurrent sessions from different IPs or geolocations for the same user account.",
+      "context": "SIEM correlation and UEBA.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connection from browser process to unknown URL containing session cookie data",
+      "description": "A direct indicator of a malicious extension exfiltrating a stolen session token.",
+      "context": "Endpoint EDR with network visibility, or network-level NDR.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Session Hijacking",
+    "Chrome Extension",
+    "Malware",
+    "Workday",
+    "NetSuite",
+    "MFA Bypass",
+    "SaaS Security"
+  ],
+  "extract_datetime": "2026-01-19T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Enterprises using Workday, NetSuite, and other SaaS platforms"
+    ]
+  },
+  "keywords": [
+    "malicious chrome extensions",
+    "session hijacking",
+    "Workday security",
+    "NetSuite security",
+    "bypass MFA",
+    "enterprise security",
+    "browser security"
+  ],
+  "pub_date": "2026-01-19",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-19T15:00:00.000Z",
+  "updatedAt": "2026-01-19T15:00:00.000Z"
+}

@@ -1,0 +1,56 @@
+title: Suspicious Git Force Push Command
+id: 8d3e4f5a-1b2c-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Detects the use of 'git push --force', which can be indicative of tag poisoning or other malicious repository manipulation as seen in the TeamPCP supply chain attack.
+references:
+  - https://www.paloaltonetworks.com/blog/2026/03/trivy-supply-chain-attack/
+author: cyber.netsecops.io
+date: 2026-03-25
+tags:
+  - attack.t1195.001
+  - attack.initial_access
+falsepositives:
+  - Legitimate force pushes by developers during feature development, though this is often against best practice for shared branches.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\git.exe'
+    CommandLine|contains|all:
+      - 'push'
+      - '--force'
+  condition: selection
+---
+title: Anomalous Egress Traffic from CI/CD Runner
+id: c7a1b2d3-e4f5-4a6b-7c8d-9e0f1a2b3c4d
+status: experimental
+description: Detects outbound network traffic from a CI/CD runner to a domain not on a pre-approved allowlist. This was the primary exfiltration method in the TeamPCP attack.
+references:
+  - https://www.paloaltonetworks.com/blog/2026/03/trivy-supply-chain-attack/
+author: cyber.netsecops.io
+date: 2026-03-25
+tags:
+  - attack.t1048
+  - attack.exfiltration
+falsepositives:
+  - Legitimate connections to new or unlisted services.
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: 'true'
+    # This field assumes enrichment where the source process is identified as a CI/CD agent
+    Image|contains:
+      - 'runner'
+      - 'agent'
+      - 'build'
+  filter:
+    DestinationHostname|endswith:
+      - '.github.com'
+      - '.docker.io'
+      - '.pkg.dev'
+  condition: selection and not filter

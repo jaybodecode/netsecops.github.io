@@ -1,0 +1,223 @@
+{
+  "id": "472531d8-b9be-4841-a4f2-9cb6260019db",
+  "slug": "critical-cisco-imc-flaw-allows-unauthenticated-admin-takeover",
+  "headline": "Critical Cisco IMC Flaw (CVE-2026-20093) Allows Full Server Takeover",
+  "title": "Cisco Patches Critical 9.8 CVSS Flaw in IMC Firmware Allowing Unauthenticated Admin Password Reset",
+  "summary": "Cisco has patched a critical authentication bypass vulnerability, CVE-2026-20093, in its Integrated Management Controller (IMC) firmware. The flaw, rated 9.8 on the CVSS scale, allows an unauthenticated, remote attacker to reset any user's password, including the administrator's, by sending a single crafted HTTP request. A successful exploit grants complete hardware-level control over a wide range of Cisco UCS servers and appliances. Cisco has released patched firmware and advises customers to update immediately, as there are no workarounds.",
+  "full_report": "## Executive Summary\n\n**[Cisco](https://www.cisco.com/)** has released security updates to address a critical authentication bypass vulnerability, **[CVE-2026-20093](https://www.cve.org/CVERecord?id=CVE-2026-20093)**, in its Integrated Management Controller (IMC) firmware. This vulnerability, with a CVSS score of 9.8, allows a remote, unauthenticated attacker to reset the password of any user account on a target device, including administrative accounts. The flaw exists in the XML API and can be exploited with a single crafted HTTP POST request. A successful attack results in a full takeover of the server at the hardware management level, operating below the operating system and hypervisor where traditional security tools have no visibility. The vulnerability affects a wide range of Cisco UCS C-Series and E-Series servers, as well as numerous appliances built on this hardware. Cisco has released patched firmware and strongly recommends immediate updates.\n\n---\n\n## Vulnerability Details\n\n**CVE-2026-20093** is an authentication bypass vulnerability resulting from improper input validation in the XML API of the Cisco IMC. An attacker can exploit this by sending a specially crafted HTTP POST request to the `configConfMo` method targeting the `aaaUser` object class. This request bypasses normal authorization checks and allows the attacker to modify user account properties, including setting a new password.\n\n- **CVE ID:** CVE-2026-20093\n- **CVSS Score:** 9.8 (Critical)\n- **Attack Vector:** Network\n- **Attack Complexity:** Low\n- **Privileges Required:** None\n- **User Interaction:** None\n- **Impact:** Complete administrative takeover of the server management controller.\n\n---\n\n## Affected Systems\n\nThe vulnerability affects a broad portfolio of Cisco products that use the IMC for standalone management. This includes, but is not limited to:\n\n- **Cisco UCS C-Series M5 and M6 Rack Servers** (in standalone mode)\n- **Cisco UCS E-Series M3 and M6 Servers**\n- **Cisco 5000 Series Enterprise Network Compute Systems (ENCS)**\n- **Cisco Catalyst 8300 Series Edge uCPE platforms**\n- Various appliances built on this hardware, such as **APIC Servers** and **Secure Firewall Management Center** appliances, where the IMC interface is exposed.\n\nIt is crucial for administrators to identify all devices in their environment that run the vulnerable IMC firmware and have an exposed management interface.\n\n---\n\n## Exploitation Status\n\nAs of the advisory, Cisco is not aware of any active exploitation in the wild. However, with the public disclosure of the vulnerability and the low complexity of the exploit, it is highly likely that threat actors will develop and deploy exploits quickly. The public availability of proof-of-concept code would significantly increase the risk of widespread attacks.\n\n> The ability to take over a server at the baseboard management controller (BMC) level is a worst-case scenario. It grants persistence that can survive OS reinstalls and provides a stealthy platform for deeper network intrusion.\n\n---\n\n## Impact Assessment\n\nCompromise of the Cisco IMC provides an attacker with full hardware-level control, independent of the main operating system. This level of access allows an attacker to:\n\n- **Install Persistent Malware:** Implant malware in the firmware of the management controller, which is extremely difficult to detect and remove.\n- **Monitor and Manipulate Hardware:** Power the server on/off, monitor console access, and potentially manipulate hardware settings.\n- **Bypass All OS/Hypervisor Security:** Since the IMC operates at a lower level, it can be used to bypass all security controls implemented in the operating system or hypervisor.\n- **Lateral Movement:** Use the compromised server as a pivot point to attack other systems on the management network.\n\n---\n\n## Cyber Observables for Detection\n\n- **Log Analysis:** Monitor Cisco IMC logs for unexpected password change events or configuration modifications, especially for administrative accounts.\n- **Network Traffic:** Scrutinize HTTP/S POST requests to the `/imc/xml-api` endpoint. Look for requests targeting the `configConfMo` method and the `aaaUser` class, especially if they originate from untrusted IP addresses.\n- **Account Monitoring:** Monitor for unexpected changes to user accounts on the IMC, or the creation of new, unauthorized administrative accounts.\n\n| Type | Value | Description |\n|---|---|---|\n| `url_pattern` | `/imc/xml-api` | The endpoint for the vulnerable XML API. All POST requests to this URL should be scrutinized. |\n| `command_line_pattern` | `<configConfMo classId=\"aaaUser\" ...>` | The XML payload structure used to exploit the vulnerability. Can be detected by a WAF or deep packet inspection. |\n| `log_source` | Cisco IMC Audit Logs | The primary source to detect unauthorized password resets or user modifications. |\n\n---\n\n## Detection & Response\n\n**Detection Methods:**\n1.  **Vulnerability Scanning:** Use authenticated and unauthenticated network vulnerability scanners with updated plugins to identify all affected Cisco IMC instances in your environment.\n2.  **Web Application Firewall (WAF) Logging:** If a WAF is deployed in front of management interfaces, create rules to log and alert on any POST requests to `/imc/xml-api` containing the string `configConfMo`.\n3.  **Log Aggregation:** Centralize IMC logs and create alerts for any password modification events that do not correlate with a legitimate, ticketed change request.\n\n**Response Actions:**\n- If a compromise is suspected, immediately isolate the management interface of the affected device.\n- Assume full server compromise and initiate incident response procedures.\n- Re-flash the IMC firmware from a trusted source to remove any potential persistence mechanisms.\n\n---\n\n## Remediation Steps\n\n1.  **Update Firmware:** The primary and only effective remediation is to update the Cisco IMC firmware to a patched version as specified in the Cisco security advisory. This is a direct application of **[D3FEND Software Update](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.\n2.  **Network Segmentation:** As a critical best practice, management interfaces like the Cisco IMC should never be exposed to the public internet. They should be on a separate, highly restricted management network accessible only to authorized personnel from secure workstations. This aligns with **[D3FEND Network Isolation](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**.\n3.  **Access Control Lists (ACLs):** Implement strict ACLs to limit access to the IMC management IP and port to only essential personnel and systems. Deny all other access by default.",
+  "twitter_post": "🚨 CRITICAL FLAW: Cisco patches a 9.8 CVSS bug (CVE-2026-20093) in its IMC firmware. The flaw allows unauthenticated remote attackers to reset admin passwords and take full control of UCS servers. Patch immediately! #Cisco #Vulnerability #CyberSecurity",
+  "meta_description": "A critical 9.8 CVSS vulnerability (CVE-2026-20093) in Cisco IMC allows unauthenticated attackers to reset admin passwords. Learn which products are affected and how to mitigate.",
+  "category": [
+    "Vulnerability",
+    "Patch Management",
+    "Industrial Control Systems"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Cisco",
+      "type": "vendor",
+      "url": "https://www.cisco.com/"
+    },
+    {
+      "name": "Cisco Integrated Management Controller (IMC)",
+      "type": "product"
+    },
+    {
+      "name": "Cisco UCS C-Series Server",
+      "type": "product"
+    },
+    {
+      "name": "Cisco UCS E-Series Server",
+      "type": "product"
+    },
+    {
+      "name": "Cisco 5000 Series ENCS",
+      "type": "product"
+    },
+    {
+      "name": "Cisco Catalyst 8300 Series Edge uCPE",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-20093",
+      "cvss_score": 9.8,
+      "kev": false,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.cycognito.com/blog/emerging-threat-cve-2026-20093-cisco-imc-authentication-bypass",
+      "title": "Emerging Threat: (CVE-2026-20093) Cisco IMC Authentication Bypass | CyCognito Blog",
+      "friendly_name": "CyCognito",
+      "website": "cycognito.com"
+    },
+    {
+      "url": "https://research.checkpoint.com/2026/04/06/6th-april-threat-intelligence-report/",
+      "title": "6th April – Threat Intelligence Report",
+      "friendly_name": "Check Point Research",
+      "website": "checkpoint.com"
+    },
+    {
+      "url": "https://socradar.io/critical-cisco-imc-flaw-allows-unauthenticated-admin-access-to-ucs-servers-cve-2026-20093/",
+      "title": "CVE-2026-20093: Critical Cisco IMC Flaw Allows Unauthenticated Admin Access to UCS Servers",
+      "friendly_name": "SOCRadar",
+      "website": "socradar.io"
+    },
+    {
+      "url": "https://www.runzero.com/blog/cisco-imc-vulnerabilities-2026-04-02/",
+      "title": "Latest Cisco IMC vulnerabilities: How to find impacted assets",
+      "friendly_name": "runZero",
+      "website": "runzero.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04-02T00:00:00Z",
+      "summary": "Cisco releases firmware patches to address CVE-2026-20093."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1098.005",
+      "name": "Device Registration",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "The primary mitigation is to apply the firmware updates provided by Cisco.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Restrict access to the IMC management interface to a dedicated, secure management network.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        }
+      ],
+      "description": "Isolating management interfaces from production networks prevents attackers from pivoting from a compromised user workstation to critical infrastructure.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The only definitive fix for CVE-2026-20093 is to update the Cisco IMC firmware on all affected devices. Organizations must prioritize this patching activity due to the vulnerability's critical 9.8 CVSS score and low attack complexity. Use asset management and vulnerability scanning tools like runZero to identify all Cisco UCS servers, ENCS, and Catalyst platforms in your environment. Download the appropriate patched firmware from Cisco's website and follow the recommended update procedure. Given the criticality, this should be treated as an emergency change. After updating, re-scan the devices to confirm that they are no longer vulnerable.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "As a fundamental security principle and a powerful compensating control, all out-of-band management interfaces like the Cisco IMC must be on a physically or logically separate management network. This network should be firewalled off from the general production and user networks. Access to this management network should be strictly controlled via jump boxes or bastion hosts, which require MFA. Under no circumstances should a Cisco IMC interface be accessible from the public internet. By implementing this isolation, you remove the 'remote' aspect of the attack for most potential attackers, requiring them to first gain a foothold on the highly restricted management network itself, a much more difficult task.",
+      "mitre_mitigation_id": "M1035"
+    },
+    {
+      "technique_id": "D3-ITF",
+      "technique_name": "Inbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
+      "recommendation": "In addition to network isolation, use inbound traffic filtering via Access Control Lists (ACLs) on switches or firewalls protecting the management network. Create strict rules that only permit traffic to the IMC's management port (typically TCP 443) from the specific IP addresses of authorized management workstations or jump hosts. All other traffic from any other source should be explicitly denied. This provides a granular layer of defense within the management network itself, ensuring that even if an unauthorized device is connected to that network segment, it cannot communicate with the vulnerable IMC interface.",
+      "mitre_mitigation_id": "M1037"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/imc/xml-api",
+      "description": "The specific API endpoint path that is vulnerable to the authentication bypass.",
+      "context": "Web server logs, WAF logs, Network traffic analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "configConfMo",
+      "description": "The method within the XML API that is exploited to modify user configurations without authentication.",
+      "context": "Deep packet inspection, WAF signature",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "aaaUser",
+      "description": "The object class targeted by the exploit to perform password resets.",
+      "context": "Deep packet inspection, WAF signature",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Cisco IMC Syslog/Audit Log",
+      "description": "Log source to monitor for unexpected password changes or configuration modifications originating from unknown sources.",
+      "context": "SIEM, Log Management",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Cisco",
+    "CVE-2026-20093",
+    "IMC",
+    "authentication bypass",
+    "RCE",
+    "firmware",
+    "UCS Server"
+  ],
+  "extract_datetime": "2026-04-06T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Telecommunications",
+      "Finance",
+      "Healthcare",
+      "Government"
+    ],
+    "other_affected": [
+      "Users of Cisco UCS servers and related appliances"
+    ]
+  },
+  "pub_date": "2026-04-06",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-04-06T15:00:00.000Z",
+  "updatedAt": "2026-04-06T15:00:00.000Z"
+}

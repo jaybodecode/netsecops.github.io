@@ -1,0 +1,102 @@
+title: Suspicious AWS API Activity for Discovery
+id: 2b8c1f9a-1e3d-4b5a-9c8d-7e6f5a4b3c2d
+status: experimental
+description: 'Monitors for suspicious AWS API calls like ListBuckets, GetObject, or CreateUser from unusual IP ranges or user agents, which could indicate reconnaissance activity as seen in the ShinyHunters breach of the European Commission.'
+references:
+  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact
+author: cyber.netsecops.io
+date: 2026-04-01
+tags:
+  - attack.t1580
+  - attack.discovery
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: 's3.amazonaws.com'
+    eventName:
+      - 'ListBuckets'
+      - 'GetObject'
+  selection_iam:
+    eventSource: 'iam.amazonaws.com'
+    eventName:
+      - 'CreateUser'
+      - 'ListUsers'
+  filter_known_good:
+    # Add known good IPs, UserAgents, or account ARNs here
+    source_ip_address: '192.168.1.1'
+  condition: (selection or selection_iam) and not filter_known_good
+---
+title: Anomalous AWS STS AssumeRole Activity
+id: 8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a
+status: experimental
+description: 'Detects anomalous AWS STS AssumeRole activity, especially if roles are assumed by external accounts or from unexpected geolocations. This can be an indicator of a compromised cloud account.'
+references:
+  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact
+author: cyber.netsecops.io
+date: 2026-04-01
+tags:
+  - attack.t1078.004
+  - attack.defense_evasion
+  - attack.privilege_escalation
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: 'sts.amazonaws.com'
+    eventName: 'AssumeRole'
+  filter_external:
+    userIdentity.type: 'AWSAccount'
+    userIdentity.principalId|contains: # Add your own account ID here to filter for external accounts
+      - 'AROA:'
+  condition: selection and filter_external
+---
+title: Anomalous High-Volume AWS Egress Traffic
+id: 4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d
+status: experimental
+description: 'Alerts on unusually large data transfers from S3 buckets or EC2 instances to external IP addresses, which could indicate data exfiltration.'
+references:
+  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact
+author: cyber.netsecops.io
+date: 2026-04-01
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: high
+logsource:
+  product: aws
+  service: guardduty
+detection:
+  selection:
+    type|startswith:
+      - 'Exfiltration:S3'
+      - 'Exfiltration:EC2'
+  condition: selection
+---
+title: Anomalous AWS Console Login Location
+id: 1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b
+status: experimental
+description: 'Monitors for AWS console logins from geolocations inconsistent with known employee locations, which can indicate a compromised cloud account.'
+references:
+  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact
+author: cyber.netsecops.io
+date: 2026-04-01
+tags:
+  - attack.t1078.004
+  - attack.initial_access
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName: 'ConsoleLogin'
+    responseElements.ConsoleLogin: 'Success'
+  filter_known_locations:
+    # Add known good country codes here
+    awsRegion: 'eu-central-1'
+  condition: selection and not filter_known_locations

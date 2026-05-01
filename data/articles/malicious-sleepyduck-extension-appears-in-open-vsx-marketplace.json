@@ -1,0 +1,220 @@
+{
+  "id": "9b8ff493-fdfb-49da-b7fb-0f865f1e0957",
+  "slug": "malicious-sleepyduck-extension-appears-in-open-vsx-marketplace",
+  "headline": "\"SleepyDuck\" RAT Emerges in Open VSX Marketplace via Malicious Update",
+  "title": "SleepyDuck RAT Discovered in Open VSX Marketplace Using Ethereum Smart Contract for C2",
+  "summary": "A new remote access trojan (RAT) named \"SleepyDuck\" has been discovered in the Open VSX marketplace, a popular repository for IDE extensions. A seemingly benign developer extension, 'juan-bianco.solidity-vlang', was updated on November 1, 2025, to include the malware after it had already been downloaded thousands of times. SleepyDuck activates when a user opens a new editor window or a Solidity file. In a sophisticated twist, the malware uses an Ethereum smart contract for a resilient and dynamic command-and-control (C2) infrastructure, allowing it to fetch updated C2 server addresses from the blockchain.",
+  "full_report": "## Executive Summary\nA new Remote Access Trojan (RAT), dubbed **SleepyDuck**, has been identified in a malicious extension on the **[Open VSX](https://open-vsx.org/)** registry, a popular alternative to the VS Code Marketplace. The malware was delivered via a supply chain attack, where a legitimate-seeming extension named `juan-bianco.solidity-vlang` was updated to include malicious code. The RAT uses a novel and highly resilient command-and-control (C2) mechanism, leveraging an **[Ethereum](https://ethereum.org/)** smart contract to dynamically retrieve its C2 server address, making it difficult to takedown. The malware exfiltrates system information and awaits further commands, posing a significant threat to developers who installed the compromised extension.\n\n---\n\n## Threat Overview\nThis campaign represents a growing trend of targeting software developers through their development tools. The attacker employed a classic bait-and-switch tactic: publishing a benign extension to build trust and a user base (reportedly 14,000 downloads), and then pushing a malicious update (version 0.0.8) on November 1, 2025. The malware, SleepyDuck, is designed to activate when a developer opens a new code editor window or a Solidity (`.sol`) file, indicating a specific interest in developers working with smart contracts.\n\nThe most innovative aspect of SleepyDuck is its C2 infrastructure. Instead of relying on hardcoded domains or IPs, it queries a public Ethereum smart contract to get the current C2 address. This allows the attacker to easily update the C2 server if the current one is blocked or taken down, simply by sending a transaction to their smart contract.\n\n## Technical Analysis\n1.  **Initial Access / Delivery:** The malware was delivered via a compromised software dependency, a form of supply chain attack. This maps to [`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/). Users voluntarily installed the extension from the Open VSX marketplace.\n2.  **Execution:** The malware's code is executed when the extension is activated by the IDE, triggered by events like opening a Solidity file. This falls under [`T1127 - Trusted Developer Utilities Proxy Execution`](https://attack.mitre.org/techniques/T1127/).\n3.  **Command and Control:** SleepyDuck uses a non-standard C2 channel. It queries an Ethereum smart contract at address `0xDAfb81732db454DA238e9cFC9A9Fe5fb8e34c465` to retrieve the C2 server address. This is a sophisticated variant of [`T1102.002 - Bidirectional Communication`](https://attack.mitre.org/techniques/T1102/002/), using a public blockchain as a dead drop resolver. The malware then communicates with the resolved C2 server, `sleepyduck[.]xyz`, likely over standard web protocols ([`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/)).\n4.  **Discovery & Exfiltration:** Upon activation, the RAT collects system information (hostname, username, MAC address) as per [`T1082 - System Information Discovery`](https://attack.mitre.org/techniques/T1082/) and exfiltrates it to the C2 server.\n\n> The use of a blockchain smart contract for C2 is a significant evolution in malware design. It creates a decentralized, censorship-resistant, and easily updatable pointer to the active C2 server, presenting a major challenge for defenders who rely on static domain or IP blocklists.\n\n## Impact Assessment\n*   **Developer Compromise:** Infected developers could have their source code, API keys, cryptocurrency wallet keys, and other sensitive credentials stolen from their machines.\n*   **Further Supply Chain Attacks:** A compromised developer machine is a gateway to a much larger supply chain attack. The attacker could use the developer's access to inject malicious code into legitimate software projects, affecting countless downstream users.\n*   **Information Theft:** The RAT can be used to steal proprietary information, intellectual property, and personal data from the developer and their organization.\n\n## IOCs\n| Type | Value | Description |\n| --- | --- | --- |\n| other | `0xDAfb81732db454DA238e9cFC9A9Fe5fb8e34c465` | Ethereum smart contract address used for C2 resolution. |\n| domain | `sleepyduck[.]xyz` | Malicious C2 domain retrieved from the smart contract. |\n| file_name | `juan-bianco.solidity-vlang` (version 0.0.8) | The malicious Open VSX extension. |\n\n## Cyber Observables for Detection\n| Type | Value | Description |\n| --- | --- | --- |\n| network_traffic_pattern | Connections to Ethereum nodes | Monitor for unexpected processes making connections to public Ethereum gateways (e.g., Infura, Alchemy) from developer workstations. |\n| domain | `sleepyduck.xyz` | Block and alert on any DNS queries or outbound connections to this domain. |\n| file_name | `juan-bianco.solidity-vlang` | Search developer machines for the presence of this extension, specifically version 0.0.8. |\n\n## Detection & Response\n*   **Extension Auditing:** Security teams should regularly audit the extensions installed in developers' IDEs. Use scripts to list all installed extensions and their versions, and check them against known malicious lists.\n*   **Egress Traffic Filtering:** Monitor and filter outbound network traffic from developer workstations. While blocking all access to Ethereum nodes may not be feasible, alerting on connections from unusual processes (i.e., not a crypto wallet) can be an effective detection strategy.\n*   **Threat Intelligence:** Subscribe to threat intelligence feeds that track malicious packages in open-source repositories and marketplaces like Open VSX.\n\n## Mitigation\n*   **Developer Education:** Train developers on the risks of installing extensions from unverified publishers. Encourage the use of a minimal, vetted set of extensions.\n*   **Sandboxing:** Where possible, run development environments in sandboxed or containerized environments to limit a compromised extension's access to the underlying host system and internal network.\n*   **Egress Filtering:** Implement strict egress filtering policies that deny all outbound traffic by default and only allow connections to known-good, necessary services. This would prevent the malware from reaching its C2 server, even if the C2 address is dynamic. This is an application of D3FEND's [`D3-OTF - Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering).",
+  "twitter_post": "🚨 Malicious VS Code extension 'SleepyDuck' found in Open VSX! 🦆 The RAT uses an Ethereum smart contract for a resilient C2 infrastructure. Targets developers via a trojanized Solidity extension. #Malware #SupplyChain #Crypto #DevSecOps",
+  "meta_description": "A new RAT named SleepyDuck has been found in a malicious extension in the Open VSX marketplace, using an Ethereum smart contract for a resilient command-and-control (C2) mechanism to target developers.",
+  "category": [
+    "Malware",
+    "Supply Chain Attack",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "SleepyDuck",
+      "type": "malware"
+    },
+    {
+      "name": "Open VSX",
+      "type": "product",
+      "url": "https://open-vsx.org/"
+    },
+    {
+      "name": "Ethereum",
+      "type": "technology",
+      "url": "https://ethereum.org/"
+    },
+    {
+      "name": "Cursor",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cyberwarzone.com/sleepyduck-malware-evolves-with-ethereum-c2-resilience/",
+      "title": "SleepyDuck Malware Evolves with Ethereum C2 Resilience",
+      "date": "2025-11-02",
+      "friendly_name": "Cyberwarzone",
+      "website": "cyberwarzone.com"
+    },
+    {
+      "url": "https://www.cyberwarzone.com/malicious-vsx-extension-sleepyduck-leverages-ethereum-for-command-and-control/",
+      "title": "Malicious VSX Extension “SleepyDuck” Leverages Ethereum for Command and Control",
+      "date": "2025-11-02",
+      "friendly_name": "Cyberwarzone",
+      "website": "cyberwarzone.com"
+    },
+    {
+      "url": "https://threatable.io/",
+      "title": "ThreatABLE Feed",
+      "date": "2025-11-02",
+      "friendly_name": "ThreatABLE",
+      "website": "threatable.io"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-10-31T00:00:00Z",
+      "summary": "The benign version of the 'juan-bianco.solidity-vlang' extension is first published."
+    },
+    {
+      "datetime": "2025-11-01T00:00:00Z",
+      "summary": "The extension is updated to version 0.0.8, which contains the malicious SleepyDuck RAT."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1127",
+      "name": "Trusted Developer Utilities Proxy Execution",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1102.002",
+      "name": "Bidirectional Communication",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1082",
+      "name": "System Information Discovery",
+      "tactic": "Discovery"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implementing strict egress filtering to block outbound connections to unauthorized domains, including the dynamically resolved C2 server.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        },
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Running developer environments inside containers or sandboxes to limit the malware's access to the host system.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educating developers on the risks of third-party extensions and establishing policies for vetting and approving them.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To neutralize the SleepyDuck RAT, organizations must implement strict outbound traffic filtering on developer workstations. A default-deny policy should be established, blocking all egress network connections except those explicitly required for development and business operations. This is particularly effective against SleepyDuck's novel C2 mechanism. By blocking outbound connections to both the Ethereum blockchain gateways (used for C2 resolution) and the resolved C2 domain (`sleepyduck.xyz`), the malware is rendered inert. It cannot receive commands or exfiltrate data, effectively breaking the attack chain post-infection.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Organizations should maintain a strict inventory of approved IDE extensions for developers. Create a policy that only allows the installation of extensions from a pre-vetted allowlist of trusted publishers and tools. This can be enforced through IDE settings management or endpoint security policies. This preventative measure stops supply chain attacks like the SleepyDuck campaign at the source, by ensuring that trojanized extensions like `juan-bianco.solidity-vlang` can never be installed in the first place. This shifts the security posture from reactive detection to proactive prevention.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "For vetting new or untrusted IDE extensions, security teams should use dynamic analysis in a sandboxed environment. Before an extension is approved for widespread use, it should be installed in an isolated virtual machine or container that mimics a developer's environment. The sandbox should have network and process monitoring enabled to observe the extension's behavior upon installation and activation. This process would quickly reveal suspicious activities, such as SleepyDuck's attempt to connect to an Ethereum node or an unknown C2 server, allowing the malicious extension to be identified and blocked before it enters the production environment.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "other",
+      "value": "0xDAfb81732db454DA238e9cFC9A9Fe5fb8e34c465",
+      "description": "Ethereum smart contract address for C2 resolution"
+    },
+    {
+      "type": "domain",
+      "value": "sleepyduck[.]xyz",
+      "description": "Malicious C2 domain"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "juan-bianco.solidity-vlang",
+      "description": "The name of the malicious extension in the Open VSX marketplace.",
+      "context": "File system scan, IDE extension list",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections to Ethereum gateways",
+      "description": "Unexpected processes on developer workstations making connections to public Ethereum nodes or gateways like Infura/Alchemy.",
+      "context": "Firewall logs, Netflow, EDR network logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "domain",
+      "value": "sleepyduck.xyz",
+      "description": "DNS queries or outbound connections to the known C2 domain.",
+      "context": "DNS logs, Proxy logs, Firewall logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "SleepyDuck",
+    "RAT",
+    "Supply Chain Attack",
+    "Open VSX",
+    "Ethereum",
+    "Smart Contract",
+    "Malware",
+    "Developer"
+  ],
+  "extract_datetime": "2025-11-02T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Cryptocurrency developers"
+    ]
+  },
+  "pub_date": "2025-11-02",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-11-02T15:00:00.000Z",
+  "updatedAt": "2025-11-02T15:00:00.000Z"
+}

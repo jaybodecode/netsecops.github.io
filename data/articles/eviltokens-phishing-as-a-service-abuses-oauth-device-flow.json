@@ -1,0 +1,191 @@
+{
+  "id": "5fc7bd28-3080-4bf4-93f6-376aa0a91c9f",
+  "slug": "eviltokens-phishing-as-a-service-abuses-oauth-device-flow",
+  "headline": "New Phishing-as-a-Service \"EvilTokens\" Abuses Microsoft's OAuth Device Code Flow",
+  "title": "EvilTokens Phishing-as-a-Service Emerges, Automating MFA-Bypass Attacks on Microsoft 365",
+  "summary": "A new and sophisticated Phishing-as-a-Service (PhaaS) platform named EvilTokens is enabling widespread attacks against Microsoft 365 accounts. The service automates the process of stealing access tokens by abusing the legitimate OAuth 2.0 device code authentication flow. This technique allows attackers to bypass certain types of MFA and gain persistent access to a victim's cloud account, even if the user changes their password. The EvilTokens kit provides a turnkey solution for criminals, complete with phishing templates and a dashboard for managing stolen tokens, significantly lowering the bar for conducting advanced cloud-based attacks.",
+  "full_report": "## Executive Summary\nA new Phishing-as-a-Service (PhaaS) platform, dubbed **EvilTokens**, has emerged, specializing in attacks against **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** accounts. The service automates a technique known as device code phishing, which abuses the legitimate OAuth 2.0 device authorization grant flow. This method allows attackers to trick users into authorizing a malicious application, which then grants the attacker powerful access and refresh tokens. Crucially, this attack vector can bypass non-phishing-resistant Multi-Factor Authentication (MFA), such as SMS and push notifications. The EvilTokens platform provides cybercriminals with a complete toolkit, including phishing pages, token harvesting automation, and a post-compromise dashboard, making it easier than ever to gain persistent, password-less access to corporate cloud environments.\n\n---\n\n## Threat Overview\n- **Service**: EvilTokens Phishing-as-a-Service (PhaaS).\n- **Target**: Microsoft 365 accounts.\n- **Technique**: Abuse of the OAuth 2.0 Device Authorization Grant flow (Device Code Phishing).\n- **Impact**: Theft of access and refresh tokens, leading to persistent account access and bypass of some MFA methods.\n\nThe attack exploits the way the device code flow is designed for input-constrained devices. The process is as follows:\n1.  The attacker initiates a login request on their machine, which generates a short, one-time `user_code`.\n2.  The attacker sends a phishing email to the victim, tricking them into navigating to the legitimate Microsoft device login page: `microsoft.com/devicelogin`.\n3.  The victim enters the `user_code` provided by the attacker and approves the sign-in request, often including an MFA prompt.\n4.  Because the victim completed the authentication on their trusted device, Microsoft issues the access and refresh tokens for their account... but it sends them to the attacker's machine, which initiated the request.\n\nThe attacker now has persistent access to the victim's account via the refresh token, even if the victim's password is changed.\n\n---\n\n## Technical Analysis\nThe EvilTokens platform operationalizes this attack.\n\n1.  **Phishing**: The attack begins with a standard phishing email, often disguised as a support request or a document-sharing notification. This is [`T1566 - Phishing`](https://attack.mitre.org/techniques/T1566/).\n2.  **Abuse of Legitimate Services**: The attack leverages the legitimate Microsoft device login page, making it much harder for users to spot the scam. The EvilTokens actors have also been seen hosting their attack infrastructure on trusted PaaS platforms like Railway and Cloudflare Workers to further evade detection.\n3.  **Steal Application Access Token**: The entire goal of the operation is to steal OAuth tokens, a technique defined as [`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/).\n4.  **Use Alternate Authentication Material**: Once the attacker has the refresh token, they can use it to generate new access tokens indefinitely, without needing the user's password or MFA. This is a form of [`T1550.004 - Use Alternate Authentication Material: Web Session Cookie`](https://attack.mitre.org/techniques/T1550/004/) (though in this case, it's a token, the principle is the same).\n5.  **Post-Compromise Activity**: The EvilTokens dashboard provides attackers with tools for post-compromise actions, such as reading emails ([`T1114.002 - Email Collection: Remote Email Collection`](https://attack.mitre.org/techniques/T1114/002/)) and launching further attacks.\n\n---\n\n## Impact Assessment\nThe impact of a successful EvilTokens attack is severe.\n\n- **Persistent Account Access**: Stolen refresh tokens can provide attackers with access to an account for weeks or months, allowing for long-term monitoring and data exfiltration.\n- **MFA Bypass**: The technique effectively bypasses weaker forms of MFA, giving organizations a false sense of security.\n- **Data Exfiltration**: Attackers can access and exfiltrate all data the victim has access to, including emails, OneDrive files, and SharePoint documents.\n- **Business Email Compromise (BEC)**: The compromised account can be used to launch convincing BEC attacks, targeting colleagues, partners, or customers to authorize fraudulent wire transfers.\n- **Lateral Movement**: An attacker can use information from the compromised account to pivot and launch further attacks within the organization.\n\n---\n\n## IOCs\nNo specific IOCs were provided, as the infrastructure is dynamic. The primary indicators are behavioral and related to the use of the device code flow.\n\n---\n\n## Detection & Response\n\n**Detection:**\n1.  **Monitor Azure AD Sign-in Logs**: This is the most critical detection source. Filter for sign-in events where the `Authentication App` is `Microsoft Authentication Broker` and the `Sign-in event type` is `device code`. Look for successful authentications where the geographic location of the request initiation (the attacker) is different from the location of the authentication completion (the victim). This 'impossible travel' scenario is a high-fidelity indicator of this attack.\n2.  **Alert on New Application Registrations**: Monitor for the registration of new Enterprise Applications in Azure AD, especially those with broad permissions.\n3.  **D3FEND Techniques**: Employ [`D3-UGLPA: User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis) to automatically detect the impossible travel scenarios inherent in this attack.\n\n**Response:**\n1.  **Revoke Sessions**: If a compromise is detected, immediately go to the user's Azure AD profile and click \"Revoke Sessions.\" This will invalidate the stolen refresh tokens.\n2.  **Investigate**: Review the Azure AD sign-in logs and audit logs for the compromised user to determine what actions the attacker took.\n3.  **Change Password**: While changing the password does not revoke the stolen token, it is still a necessary step in the remediation process.\n\n---\n\n## Mitigation\n\n**Tactical (Immediate):**\n1.  **Disable Device Code Flow**: The most effective mitigation is to disable the device code flow if it is not needed for business operations. This can be done via a Conditional Access policy in Azure AD. Create a policy that targets all users and cloud apps, and under \"Conditions,\" configure \"Device platforms\" to include all platforms, then under \"Grant,\" select \"Block access.\" This will prevent the initial step of the attack. This is a direct application of [`M1042 - Disable or Remove Feature or Program`](https://attack.mitre.org/mitigations/M1042/).\n2.  **User Training**: Educate users about this specific attack. Train them to be suspicious of any request that asks them to enter a code on the `microsoft.com/devicelogin` page, especially if they did not initiate the process themselves. This falls under [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n\n**Strategic (Long-Term):**\n1.  **Phishing-Resistant MFA**: The ultimate defense is to move to phishing-resistant MFA, such as FIDO2 security keys or Windows Hello for Business. These methods are not vulnerable to token theft attacks like device code phishing. This is the strongest form of [`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/).\n2.  **Conditional Access Policies**: Implement granular Conditional Access policies that restrict access based on device compliance, location, and risk level. For example, block logins from non-compliant devices or from countries where you do not do business.",
+  "twitter_post": "A new Phishing-as-a-Service called 'EvilTokens' is automating MFA-bypass attacks on Microsoft 365. It abuses the OAuth device code flow to steal access tokens. If you don't use it, disable this feature in Azure AD now! 🛡️ #Phishing #MFA #Office365 #CyberSecurity #OAuth",
+  "meta_description": "A new Phishing-as-a-Service (PhaaS) platform named EvilTokens is automating the theft of Microsoft 365 access tokens by abusing the OAuth 2.0 device code flow to bypass MFA.",
+  "category": [
+    "Phishing",
+    "Threat Actor",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "EvilTokens",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/"
+    },
+    {
+      "name": "OAuth",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/OAuth"
+    },
+    {
+      "name": "Railway",
+      "type": "company"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor",
+      "url": "https://www.cloudflare.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.arcticwolf.com/resources/blog/riding-the-rails-abusing-railway-paas-for-m365-token-compromise/",
+      "title": "Riding the Rails: Arctic Wolf Tracking Threat Actors Abusing Railway PaaS for Microsoft 365 Token Compromise",
+      "friendly_name": "Arctic Wolf",
+      "website": "arcticwolf.com"
+    },
+    {
+      "url": "https://www.huntress.com/blog/the-eviltokens-attack-how-device-code-phishing-hijacks-your-cloud",
+      "title": "The EvilTokens Attack: How Device Code Phishing Hijacks Your Cloud",
+      "friendly_name": "Huntress",
+      "website": "huntress.com"
+    },
+    {
+      "url": "https://www.sekoia.io/en/new-widespread-eviltokens-kit-device-code-phishing-as-a-service-part-1/",
+      "title": "New widespread EvilTokens kit: device code phishing as-a-service – Part 1",
+      "friendly_name": "Sekoia.io",
+      "website": "sekoia.io"
+    },
+    {
+      "url": "https://mnemonic.io/resources/blog/eviltokens-from-device-codes-to-token-theft/",
+      "title": "EvilTokens: From device codes to token theft",
+      "friendly_name": "mnemonic",
+      "website": "mnemonic.io"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566",
+      "name": "Phishing",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1550.004",
+      "name": "Use Alternate Authentication Material: Web Session Cookie",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1114.002",
+      "name": "Email Collection: Remote Email Collection",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "description": "Disable the OAuth device code flow via Conditional Access policies if it is not required for business operations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Migrate to phishing-resistant MFA methods like FIDO2 security keys that are not vulnerable to this type of token theft attack.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate users on the specifics of device code phishing and to be suspicious of any unsolicited requests to enter a code.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Monitor Azure AD sign-in logs for the specific indicators of device code flow abuse, such as impossible travel scenarios.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "The most direct and effective countermeasure to the EvilTokens threat is to harden the configuration of Azure AD. If your organization has no legitimate business need for the OAuth device code flow (which is common for most businesses that don't deploy applications on input-constrained devices like smart TVs), it should be disabled entirely. This can be accomplished by creating a Conditional Access policy that targets 'All cloud apps', sets a condition for 'All device platforms', and applies a 'Block' access control. This single configuration change completely removes the attack surface that EvilTokens relies on. This is a prime example of the D3FEND 'Harden' tactic: reducing the attack surface by disabling unnecessary features.",
+      "mitre_mitigation_id": "M1042"
+    },
+    {
+      "technique_id": "D3-UGLPA",
+      "technique_name": "User Geolocation Logon Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis",
+      "recommendation": "For organizations that cannot disable the device code flow, `User Geolocation Logon Pattern Analysis` is the key detection strategy. The device code attack creates a distinct 'impossible travel' signature: the device code is requested from one location (the attacker) but authorized in another (the victim). Security teams must configure their SIEM or use Azure AD Identity Protection to specifically alert on this scenario for device code flows. The logic should be: `IF (SignInEventType == 'DeviceCode' AND RequestLocation != AuthenticationLocation) THEN trigger HighSeverityAlert`. This provides a very high-fidelity detection of an active attack, allowing the incident response team to immediately revoke the stolen tokens and investigate the targeted user's account.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "microsoft.com/devicelogin",
+      "description": "The legitimate Microsoft URL abused in this attack. Phishing emails will direct users here.",
+      "context": "Email content analysis, web proxy logs.",
+      "confidence": "low"
+    },
+    {
+      "type": "log_source",
+      "value": "Azure AD Sign-in Logs",
+      "description": "Look for sign-ins with 'Sign-in event type' of 'device code' and 'Authentication App' of 'Microsoft Authentication Broker'.",
+      "context": "Azure AD portal or SIEM with Azure AD log integration.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Azure AD Audit Logs",
+      "description": "Look for 'Add service principal' or 'Consent to application' events for unknown or suspicious applications.",
+      "context": "Azure AD portal or SIEM with Azure AD log integration.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "phishing",
+    "phaas",
+    "eviltokens",
+    "oauth",
+    "mfa",
+    "microsoft 365",
+    "azure ad",
+    "token theft"
+  ],
+  "extract_datetime": "2026-03-30T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government",
+      "Other"
+    ],
+    "other_affected": [
+      "Microsoft 365 users"
+    ]
+  },
+  "pub_date": "2026-03-30",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-03-30T15:00:00.000Z",
+  "updatedAt": "2026-03-30T15:00:00.000Z"
+}
