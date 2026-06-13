@@ -1,0 +1,232 @@
+{
+  "id": "73a47967-5e2c-45b9-a258-4b48689fd3b5",
+  "slug": "npm-threat-landscape-teampcp-supply-chain-attack-shai-hulud",
+  "headline": "TeamPCP Weaponizes npm with Malicious Bitwarden CLI in Sophisticated Supply Chain Attack",
+  "title": "Unit 42 Details TeamPCP's Wormable npm Malware Campaign Impersonating Bitwarden",
+  "summary": "A sophisticated supply chain attack targeting the npm ecosystem has been uncovered by Unit 42, attributed to the threat actor group TeamPCP. The attackers published a malicious package, `@bitwarden/cli` version `2026.4.0`, which perfectly impersonates the legitimate Bitwarden command-line tool. Upon installation, the package executes a multi-stage, heavily obfuscated payload designed to harvest credentials from developer workstations, cloud environments (AWS, Azure, Google Cloud), and CI/CD pipelines. The malware exhibits worm-like capabilities, inspired by the 2025 \"Shai-Hulud\" worm, by automatically backdooring and republishing other npm packages to which the compromised developer has access, ensuring its rapid propagation. The campaign, which also targeted other distribution channels like a VS Code extension, utilized a centralized C2 infrastructure at `audit.checkmarx[.]cx`, indicating a coordinated effort to compromise developer tooling.",
+  "full_report": "## Executive Summary\n\nA significant software supply chain attack has been identified targeting the **[npm](https://www.npmjs.com/)** ecosystem, attributed to the threat actor **[TeamPCP](https://x.com/pcpcats)**. A report from **[Palo Alto Networks](https://www.paloaltonetworks.com/)**' **[Unit 42](https://unit42.paloaltonetworks.com/)** details a malicious package, `@bitwarden/cli`, that impersonates the legitimate **[Bitwarden](https://bitwarden.com/)** password manager CLI. This attack represents a dangerous evolution in supply chain threats, combining social engineering, advanced obfuscation, and a wormable propagation mechanism. The malware's primary objective is widespread credential harvesting from developer environments, including local files, CI/CD systems, and major cloud providers like **[AWS](https://aws.amazon.com/)**, **[Azure](https://azure.microsoft.com/)**, and **[Google Cloud](https://cloud.google.com/)**. The incident underscores the critical risk posed by compromised dependencies, as a single infected developer can inadvertently spread the malware throughout their organization's software projects and into the broader open-source community.\n\n## Threat Overview\n\nThe attack, reminiscent of the infamous **[Shai-Hulud](https://malpedia.caad.fkie.fraunhofer.de/details/js.shai_hulud)** worm of 2025, leverages the trust inherent in the software development lifecycle. **TeamPCP** published a malicious package named `@bitwarden/cli` with version `2026.4.0` to the public npm registry. Developers installing this package, believing it to be the official tool, would unknowingly trigger a multi-stage attack.\n\n1.  **Initial Compromise**: A developer installs the malicious package via the `npm install` command.\n2.  **Execution**: A `preinstall` hook in the package's `package.json` file automatically executes a bootstrap script, `bw_setup.js`. This script also registers itself as the `bw` command, ensuring it runs even if the user disables installation scripts.\n3.  **Payload Deployment**: The bootstrap script unpacks and executes a heavily obfuscated, 10 MB JavaScript payload.\n4.  **Credential Harvesting**: The payload systematically scours the system for credentials, targeting local configuration files (`.npmrc`, `.git-credentials`), environment variables, and secrets stored in AWS Systems Manager, Azure Key Vault, and Google Secret Manager.\n5.  **Exfiltration**: All harvested data is sent to a command-and-control (C2) server at `audit.checkmarx[.]cx`.\n6.  **Propagation**: In its final, most dangerous stage, the malware uses any discovered npm and **[GitHub](https://github.com/)** tokens to find all other npm packages the compromised user has publishing rights to. It then backdoors these packages and publishes new, malicious versions, effectively turning the victim into a distributor of the malware.\n\nThe campaign was part of a broader effort targeting security tooling vendors, with **[Checkmarx](https://checkmarx.com/)**, **[Trivy](https://www.aquasec.com/products/trivy/)**, and **[LiteLLM](https://litellm.ai/)** also being targeted by **TeamPCP**.\n\n## Technical Analysis\n\nThe attack showcases a high degree of sophistication in its execution and evasion techniques.\n\n### Execution and Persistence\nThe malware ensures its execution through two primary methods within the `package.json` file:\n-   **`preinstall` hook**: This script runs automatically upon `npm install`, providing an immediate entry point.\n-   **`bin` field**: The package registers the malicious `bw_setup.js` script as the `bw` command. This acts as a secondary trigger, executing the malware whenever a user or script invokes the `bw` command, bypassing protections like `npm install --ignore-scripts`.\n\nThis dual-trigger mechanism demonstrates a deep understanding of the npm ecosystem and is a key technique for achieving persistence and ensuring execution.\n\n### Defense Evasion\n**[TeamPCP](https://x.com/pcpcats)** employed multiple layers of obfuscation ([`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/)) to hinder analysis:\n-   **Payload Bundling**: The ~10 MB payload bundles numerous legitimate SDKs (e.g., AWS SDK, Azure Identity, Octokit) with the malicious code, making it difficult to isolate the harmful components.\n-   **Custom Scrambler**: A deterministic character substitution cipher was used to hide strings like the C2 domain. For example, `audit.checkmarx[.]cx` was stored as a sequence of hex values `[0x42, 0x6e, 0x36, 0x4b, 0x2b, 0x5c, 0xd, 0x57, 0x0, 0xd, 0x7, 0x26, 0x42, 0x3, 0x2a, 0x5c, 0xd, 0x2a]`.\n-   **String Manipulation**: Simple string splitting and concatenation were used to break up keywords and function names.\n\n### Credential Access\nThe payload is a comprehensive credential harvesting tool ([`T1552.001 - Credentials In Files`](https://attack.mitre.org/techniques/T1552/001/), [`T1552.005 - Cloud Credentials`](https://attack.mitre.org/techniques/T1552/005/)) targeting various sources:\n-   **Local Files**: Reads sensitive files from developer workstations, including `.npmrc`, `.bash_history`, `.zsh_history`, SSH keys, and Git credentials.\n-   **Shell Environment**: Executes `gh auth token` to steal the active GitHub CLI token and captures all environment variables.\n-   **CI/CD Systems**: Detects **[GitHub Actions](https://github.com/features/actions)** environments and extracts secrets from the runner context.\n-   **Cloud Providers**: Uses bundled SDKs to programmatically enumerate and retrieve secrets from AWS Systems Manager, Azure Key Vault, and Google Cloud Secret Manager.\n\n### Propagation and Impact\nThe malware's most destructive feature is its wormable propagation, a clear instance of [`T1554 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1554/). By using stolen npm and GitHub tokens, it automates the compromise of additional software packages, creating a cascading failure of trust within the ecosystem.\n\n## Impact Assessment\nThe potential impact of this campaign is severe and widespread. A single compromised developer can trigger a chain reaction, leading to:\n-   **Widespread Credential Leakage**: Theft of developer, CI/CD, and cloud credentials can grant attackers deep access into corporate networks and infrastructure.\n-   **Source Code Compromise**: Attackers could inject backdoors or vulnerabilities into proprietary source code, leading to compromised products being shipped to customers.\n-   **Software Supply Chain Poisoning**: The wormable nature of the malware means it can rapidly infect numerous public and private packages, eroding trust in the open-source ecosystem.\n-   **Financial and Reputational Damage**: Victim organizations face significant costs related to incident response, remediation, customer notification, and loss of brand trust.\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| Domain | `audit.checkmarx[.]cx` | Command-and-Control (C2) server. |\n| Other | `@bitwarden/cli@2026.4.0` | Malicious npm package name and version. |\n| File Name | `bw_setup.js` | Malicious bootstrap script. |\n| File Name | `mcpAddon.js` | Payload delivered in the VS Code extension variant. |\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns, which could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| Network Traffic | Connections to `audit.checkmarx[.]cx` | Monitor DNS queries and outbound web traffic for the C2 domain. |\n| Process Chain | `node.exe` -> `gh auth token` | A Node.js process spawning a GitHub CLI command to steal a token is highly suspicious. |\n| File System | `package.json` with `preinstall` scripts executing unknown JS files | Scrutinize `preinstall`, `install`, and `postinstall` hooks in dependency manifests. |\n| File System | Unusually large (>5MB) single-line JavaScript files in `node_modules` | The payload's size and structure are anomalous. |\n| CI/CD Logs | Unexpected `npm publish` events | Monitor for packages being published outside of established release processes. |\n\n## Detection & Response\n-   **Dependency Scanning**: Implement automated dependency scanning tools (e.g., **[Socket](https://socket.dev/)**, Snyk, **[Checkmarx](https://checkmarx.com/)**) within the CI/CD pipeline to detect malicious or vulnerable packages before they are installed.\n-   **Network Monitoring**: Employ egress filtering on firewalls and web proxies to block connections to known malicious domains like `audit.checkmarx[.]cx`. Use **[Network Traffic Analysis](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** to detect anomalous outbound connections from build servers and developer machines.\n-   **Endpoint Detection and Response (EDR)**: Deploy EDR agents to monitor for suspicious process chains, such as `npm` or `node` processes accessing sensitive files or executing shell commands like `gh auth token`. Use **[Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)** to baseline normal developer activity.\n-   **Log Auditing**: Regularly audit CI/CD pipeline logs, npm access logs, and cloud audit logs for signs of compromise, such as unexpected package publications or secret access from unusual locations.\n\n## Mitigation\n-   **Principle of Least Privilege**: Ensure developer and CI/CD service accounts have the minimum permissions necessary. npm tokens should be scoped with read-only access unless publishing is required, and publishing rights should be tightly controlled.\n-   **Multi-Factor Authentication (MFA)**: Enforce MFA on all developer accounts, especially for npm and GitHub, to prevent account takeover via stolen credentials. This is a critical control ([`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/)).\n-   **Use `--ignore-scripts`**: While not foolproof, running `npm install --ignore-scripts` can prevent many attacks that rely on `preinstall` or `postinstall` hooks. This should be combined with other defenses.\n-   **Vet Dependencies**: Establish a process for vetting new open-source dependencies. Favor well-maintained packages with a strong reputation. Lock dependency versions using `package-lock.json` to prevent unexpected updates.\n-   **Network Segmentation**: Isolate build environments from production networks to limit the blast radius of a compromised build server. Restrict outbound internet access from build agents to only essential services.",
+  "twitter_post": "⚠️ Major npm supply chain attack! A malicious package, `@bitwarden/cli`, impersonates Bitwarden to steal cloud & CI/CD credentials and self-propagates. Attributed to TeamPCP. Check your dependencies now! #SupplyChain #npm #CyberAttack",
+  "meta_description": "Unit 42 details a sophisticated npm supply chain attack by TeamPCP using a malicious @bitwarden/cli package to harvest credentials and propagate like a worm. Learn the TTPs and how to mitigate this threat.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "AWS",
+      "type": "vendor"
+    },
+    {
+      "name": "Azure",
+      "type": "vendor"
+    },
+    {
+      "name": "Bitwarden",
+      "type": "company"
+    },
+    {
+      "name": "Checkmarx",
+      "type": "company"
+    },
+    {
+      "name": "GitHub",
+      "type": "product"
+    },
+    {
+      "name": "Google Cloud",
+      "type": "vendor"
+    },
+    {
+      "name": "LiteLLM",
+      "type": "product"
+    },
+    {
+      "name": "Octokit",
+      "type": "product"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor"
+    },
+    {
+      "name": "Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "Socket",
+      "type": "company"
+    },
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Trivy",
+      "type": "product"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization"
+    },
+    {
+      "name": "VS Code",
+      "type": "product"
+    },
+    {
+      "name": "jsonwebtoken",
+      "type": "product"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    },
+    {
+      "name": "tar",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/",
+      "title": "The npm Threat Landscape: Attack Surface and Mitigations",
+      "date": "2026-04-24",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-09",
+      "summary": "The Shai-Hulud worm incident marks a turning point in npm security, beginning the era of high-consequence threats."
+    },
+    {
+      "datetime": "2026-03",
+      "summary": "TeamPCP reportedly targets infrastructure of security vendors Checkmarx, Trivy, and LiteLLM."
+    },
+    {
+      "datetime": "2026-04-24T21:40:33Z",
+      "summary": "Unit 42 publishes their analysis of the malicious '@bitwarden/cli' npm package and the broader TeamPCP campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials In Files",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1552.005",
+      "name": "Cloud Credentials",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1554",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    }
+  ],
+  "tags": [
+    "Bitwarden",
+    "Checkmarx",
+    "Shai-Hulud",
+    "TeamPCP",
+    "credential harvesting",
+    "malware",
+    "npm",
+    "obfuscation",
+    "supply chain attack",
+    "wormable"
+  ],
+  "extract_datetime": "2026-04-25",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government",
+      "Critical Infrastructure"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "open-source software users",
+      "software developers",
+      "CI/CD pipeline users"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Bitwarden",
+    "Checkmarx",
+    "Shai-Hulud",
+    "TeamPCP",
+    "credential harvesting",
+    "malware",
+    "npm",
+    "obfuscation",
+    "supply chain attack",
+    "wormable"
+  ],
+  "pub_date": "2026-04-25",
+  "reading_time_minutes": 12,
+  "createdAt": "2026-04-25T15:00:00.000Z",
+  "updatedAt": "2026-05-01T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-01T00:00:00Z",
+      "summary": "TeamPCP's 'Mini Shai-Hulud' campaign expands, compromising SAP, PyTorch, and Intercom packages on NPM/PyPI, impacting 1,800+ developers with worm-like credential theft.",
+      "content": "The TeamPCP supply chain attack, now dubbed 'Mini Shai-Hulud,' has significantly expanded its scope since April 29, 2026. Beyond the initial Bitwarden CLI impersonation, the campaign now targets official packages from SAP, PyTorch Lightning, and Intercom across NPM, PyPI, and Packagist repositories. This multi-platform attack, leveraging malicious preinstall scripts, has impacted over 1,800 developers, stealing credentials and cloud keys. The malware uses a new C2, 'zero.masscan.cloud', and exhibits enhanced worm-like propagation by injecting malicious code into up to 50 GitHub repository branches using stolen tokens, creating new infection vectors.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://thehackernews.com/2026/04/pytorch-lightning-and-intercom-client.html",
+          "title": "PyTorch Lightning and Intercom-client Hit in Supply Chain Attacks to Steal Credentials",
+          "website": "",
+          "date": "2026-05-01T00:00:00Z"
+        },
+        {
+          "url": "https://www.securityweek.com/1800-hit-in-mini-shai-hulud-attack-on-sap-lightning-intercom/",
+          "title": "1,800 Hit in Mini Shai-Hulud Attack on SAP, Lightning, Intercom",
+          "website": "",
+          "date": "2026-05-01T00:00:00Z"
+        },
+        {
+          "url": "https://www.theregister.com/2026/04/30/sap_npm_packages_supply_chain/",
+          "title": "Ongoing supply chain attacks worm into SAP npm packages",
+          "website": "",
+          "date": "2026-05-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

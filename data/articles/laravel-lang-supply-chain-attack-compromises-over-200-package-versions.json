@@ -1,0 +1,185 @@
+{
+  "id": "6f3c59ff-627e-4b9c-b8dd-4cc0ed680543",
+  "slug": "laravel-lang-supply-chain-attack-compromises-over-200-package-versions",
+  "headline": "Laravel-Lang Supply Chain Attack Injects Credential Stealer into 233 Package Versions",
+  "title": "Supply Chain Attack on Popular Laravel-Lang Project Compromises Over 200 Package Versions with Credential Stealer",
+  "summary": "A major supply chain attack has targeted the popular Laravel-Lang project, used for language localization in the Laravel PHP framework. Attackers compromised 233 version tags across three key repositories, injecting a multi-stage credential-stealing payload. The attack cleverly exploited a GitHub feature, allowing malicious version tags to point to a forked repository, thereby bypassing direct code commits to the official project. The package manager Packagist served the compromised code, which fingerprinted infected machines and downloaded a second-stage payload from a C2 server to steal a wide array of credentials.",
+  "full_report": "## Executive Summary\nOn May 22, 2026, a sophisticated **[supply chain attack](https://en.wikipedia.org/wiki/Software_supply_chain)** was identified targeting the **[Laravel-Lang](https://laravel-lang.com/)** project, a vital set of language translation packages for the Laravel PHP framework. The attack compromised 233 distinct version tags across three of the project's most popular repositories. The threat actor injected a multi-stage credential-stealing malware into these versions. The attack vector was particularly insidious, abusing a **[GitHub](https://github.com/)** feature to create malicious version tags that pointed to code in a forked repository, rather than committing malicious code to the main project. This allowed the compromised packages to be distributed via the **[Packagist](https://packagist.org/)** repository, appearing as legitimate updates. The Packagist team has since taken down the malicious versions.\n\n---\n\n## Threat Overview\nThe attack represents a significant evolution in PHP ecosystem supply chain attacks, moving beyond simple typosquatting to compromising legitimate, popular packages through advanced techniques.\n\n- **What Happened:** 233 versions of three popular Laravel-Lang packages were poisoned with a credential-stealing payload.\n- **Who's Affected:** Any developer or organization that installed or updated one of the compromised package versions.\n- **Attack Vector:** The attacker did not need to gain write access to the main repositories. Instead, they created tags in their own accounts that pointed to commits in their malicious fork of the official repositories. When pushed to the main repo (a feature of Git), Packagist indexed these tags as new, official versions, pulling the malicious code from the attacker's fork.\n\n## Technical Analysis\nThe attack chain consisted of multiple stages:\n\n1.  **Compromise:** The attacker created malicious tags for the following packages:\n    - `laravel-lang/lang`\n    - `laravel-lang/attributes`\n    - `laravel-lang/http-statuses`\n\n2.  **Injection:** The malicious code was added to a file named `src/helpers.php`. This is a classic example of [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/).\n\n3.  **Dropper:** The injected code acted as a dropper. Upon installation via `composer`, it would execute, fingerprint the compromised machine (gathering system information), and send this data to a Command and Control (C2) server.\n\n4.  **Second Stage Payload:** The C2 server, located at `flipboxstudio[.]info`, would then deliver a second-stage payload. This payload was a large (nearly 6,000 lines) and comprehensive PHP script designed to steal a vast range of credentials, including:\n    - Environment variables (`.env` files)\n    - Cloud credentials (AWS, Google Cloud)\n    - Database credentials\n    - SSH keys\n    - Application-specific API keys\n\nThis extensive credential harvesting is aligned with techniques like [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/) and [`T1552.001 - Credentials in Files`](https://attack.mitre.org/techniques/T1552/001/).\n\n## Impact Assessment\nThe impact of this attack is significant for any organization that downloaded the compromised packages. The stolen credentials could lead to a full compromise of development and production environments, data breaches, financial loss, and further supply chain attacks originating from the compromised organization. The attack's stealthy nature means many organizations may be unaware of the compromise. The quick response by the Packagist team helped limit the window of exposure, but any system that pulled the malicious versions during that window should be considered fully compromised.\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| Domain | `flipboxstudio[.]info` | Command and Control (C2) server used to host the second-stage payload. |\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify potentially compromised systems:\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `src/helpers.php` | In the context of Laravel-Lang packages, inspect this file for obfuscated or suspicious code, especially `eval()` or `base64_decode()` functions. |\n| Network Traffic Pattern | Outbound connections to `flipboxstudio[.]info` | Check DNS logs, proxy logs, and firewall logs for any communication with this C2 domain from web servers or developer machines. |\n| Command Line Pattern | `composer update laravel-lang/*` | Review CI/CD pipeline logs and developer shell histories for updates to these packages during the attack window. |\n| File Path | `vendor/laravel-lang/` | Security scanners should be configured to perform deep analysis of code within the `vendor` directory, not just application code. |\n\n## Detection & Response\n1.  **Check for Compromised Versions:** Immediately audit all PHP projects that use Laravel-Lang packages. Check your `composer.lock` file to see which specific versions are installed. Compare these against the list of 233 compromised versions (if available from security providers).\n2.  **Scan for IOCs:** Scan all relevant systems (developer workstations, build servers, web servers) for the `flipboxstudio[.]info` IOC in network logs and for suspicious `src/helpers.php` files.\n3.  **Assume Compromise:** If a compromised version was installed, assume all credentials accessible to the PHP process have been stolen. This includes database passwords, API keys in `.env` files, and any IAM roles attached to the server.\n4.  **Credential Rotation:** Initiate an immediate and full rotation of all potentially exposed credentials. This is a critical and non-negotiable step.\n5.  **Code Scanning:** Implement security tools that scan third-party dependencies for malicious code, not just known vulnerabilities. Tools that analyze package behavior and provenance are becoming essential.\n\n## Mitigation\n1.  **Lock Dependencies:** Use a `composer.lock` file to pin your project to specific, known-good versions of dependencies. This prevents `composer update` from automatically pulling in a newly published malicious version.\n2.  **Vendor Code Audits:** Implement a process or use automated tools to audit the code of third-party dependencies before they are introduced or updated in your environment.\n3.  **Network Egress Filtering:** Block outbound connections from web servers to unknown destinations. An allowlist-based approach for egress traffic can prevent malware from calling out to its C2 server.\n4.  **Least Privilege for Applications:** Run web applications with the minimum necessary permissions. Ensure the PHP process does not have access to credentials or keys that are not strictly required for its operation.",
+  "twitter_post": "🚨 SUPPLY CHAIN ATTACK: Popular Laravel-Lang project hit! 233 package versions compromised with a credential stealer. Attacker used a novel GitHub fork technique to poison packages on Packagist. Check your dependencies! #PHP #Laravel #CyberSecurity",
+  "meta_description": "A major supply chain attack on the Laravel-Lang project compromised 233 package versions, injecting a credential-stealing payload via a clever GitHub fork and tag abuse technique.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Data Breach"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Laravel-Lang",
+      "type": "product"
+    },
+    {
+      "name": "Laravel",
+      "type": "product"
+    },
+    {
+      "name": "PHP",
+      "type": "technology"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Packagist",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://socket.dev/blog/laravel-lang-supply-chain-attack",
+      "title": "Supply Chain Attack Targets Laravel-Lang Packages with Credential Stealer",
+      "friendly_name": "Socket",
+      "website": "socket.dev"
+    },
+    {
+      "url": "https://thehackernews.com/2026/05/laravel-lang-supply-chain-attack.html",
+      "title": "New Supply Chain Attack on Laravel-Lang Packages Deploys Credential Stealer",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-22T00:00:00Z",
+      "summary": "Security researchers detect and report the active supply chain attack against Laravel-Lang."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials in Files"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly audit 'composer.lock' files and CI/CD logs to verify the integrity and origin of all software dependencies.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement egress filtering to block outbound connections from servers to untrusted domains, which can prevent malware from contacting its C2 server.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Use dependency locking (e.g., composer.lock) to ensure that only specific, vetted versions of packages are used in builds, preventing automatic updates to malicious versions.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "To defend against attacks like the one on Laravel-Lang, it's crucial to analyze the code you deploy, including third-party dependencies. Implement a static analysis (SAST) tool in your CI/CD pipeline that is configured to scan the entire `vendor` directory. The tool should be tuned to flag high-risk functions and patterns common in PHP malware, such as `eval()`, `base64_decode()`, `gzuncompress()`, and remote file inclusions (`include 'http://...'`). Specifically for this attack, a rule to inspect `src/helpers.php` in all dependencies for obfuscated code would be effective. This moves beyond simple vulnerability scanning (which would not find this) to active malicious code hunting within your supply chain.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Assume that a malicious package may eventually get into your system. A critical compensating control is to prevent it from communicating with its C2 server. For your PHP application servers, configure network security groups or host-based firewalls to deny all outbound traffic by default. Then, create explicit allow rules for only the essential connections required for the application to function (e.g., to a database, a payment gateway API, etc.). The malicious Laravel-Lang package's attempt to connect to `flipboxstudio[.]info` would have been blocked by this policy, rendering the credential-stealing payload useless. This Zero Trust network approach contains the breach and provides a high-fidelity alert when an application attempts to violate the policy.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Before promoting new or updated dependencies to production, run them in an isolated, sandboxed environment to observe their behavior. For this Laravel-Lang attack, a dynamic analysis sandbox would have detected the package attempting to make an unauthorized network connection to `flipboxstudio[.]info` during the `composer install` process. This behavioral analysis is key to catching novel attacks that static analysis might miss. Integrating an automated dependency sandbox into the CI/CD pipeline, which fails the build if any suspicious behavior (like unexpected network calls, file system access outside the project directory, or process execution) is detected, provides a powerful defense against this class of supply chain attack.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "flipboxstudio[.]info",
+      "description": "C2 server"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "src/helpers.php",
+      "description": "Malicious code was injected into this file within the compromised Laravel-Lang packages.",
+      "context": "Static analysis and file integrity monitoring of PHP vendor directories.",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "flipboxstudio.info",
+      "description": "Command-and-control domain used to download the second-stage credential stealing payload.",
+      "context": "DNS query logs, web proxy logs, and firewall logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "composer.lock",
+      "description": "This file contains the exact versions of PHP dependencies installed. It should be audited to check for any of the 233 compromised versions.",
+      "context": "Code repositories and deployment artifacts.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "eval(base64_decode(",
+      "description": "A common pattern of obfuscation used in PHP malware. The presence of this in third-party code is highly suspicious.",
+      "context": "Static code analysis tools (SAST).",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Supply Chain Attack",
+    "Laravel",
+    "PHP",
+    "Packagist",
+    "Credential Stealing"
+  ],
+  "extract_datetime": "2026-05-23T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "PHP developers",
+      "Users of the Laravel framework"
+    ]
+  },
+  "pub_date": "2026-05-23",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-05-23T15:00:00.000Z",
+  "updatedAt": "2026-05-23T15:00:00.000Z"
+}

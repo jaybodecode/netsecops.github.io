@@ -1,0 +1,151 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:37:22.105Z",
+    "article_slug": "claroty-warns-of-systemic-risk-from-insecure-building-management-systems",
+    "article_date": "2026-04-11",
+    "token_usage": {
+      "input_tokens": 141545,
+      "output_tokens": 2097,
+      "cached_tokens": 135916,
+      "total_tokens": 143642,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.044996
+    }
+  },
+  "report_name": "Smart Buildings, Dumb Security: Claroty Warns New Standard Exposes BMS to Remote Attack",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "Attackers can compromise internet-exposed Building Management System (BMS) gateways that use the insecure CEA-852 standard, as the protocol lacks authentication, allowing for remote exploitation and potential remote code execution via malformed packets."
+    },
+    {
+      "name": "Manipulation of Control",
+      "mitre_id": "T0831",
+      "description": "Attackers can intercept, modify, or inject malicious LonTalk packets over an IP network to manipulate physical process controls, such as turning off lights or changing HVAC setpoints, due to the lack of encryption and authentication in the CEA-852 standard.",
+      "external_references": [
+        {
+          "source_name": "mitre-ics",
+          "external_id": "T0831"
+        }
+      ]
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CEA-852 Standard Insecure Design",
+      "cve": "",
+      "description": "The CEA-852 standard for tunneling legacy LonTalk protocol packets over IP networks lacks fundamental security controls like authentication and encryption. This design flaw allows any remote attacker who can reach an exposed gateway to send valid commands, manipulate traffic, or potentially achieve remote code execution.",
+      "affected_products": [
+        "LonTalk-based devices",
+        "BACnet-based devices",
+        "Modbus-based devices",
+        "EnOcean products",
+        "Loytec products"
+      ],
+      "severity": "high"
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "EnOcean",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A vendor mentioned as part of the Building Management System ecosystem affected by the insecure CEA-852 standard."
+    },
+    {
+      "name": "Loytec",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A vendor mentioned as part of the Building Management System ecosystem affected by the insecure CEA-852 standard."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Internet-Exposed BMS Gateway",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "A Building Management System (BMS) gateway implementing the insecure CEA-852 standard and exposed to the internet. It acts as a bridge for attackers to send malicious LonTalk commands to control building systems like HVAC and lighting."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Insecure LonTalk/IP (CEA-852) Protocol Traffic",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[network-traffic:dst_port IN (1628, 1629) AND network-traffic:protocols[*] = 'udp']",
+      "x_netsecio_sigma_rule": "title: Insecure LonTalk/IP (CEA-852) Protocol Traffic\nid: 2b1a9c8d-4e5f-4a3b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects network traffic on UDP ports 1628 or 1629, which are the default ports for the insecure LonTalk/IP (CEA-852) protocol. Traffic from the internet on these ports indicates an exposed Building Management System (BMS) gateway.\nreferences:\n  - https://www.industrialcyber.co/management-strategy/claroty-says-cea-852-adoption-accelerates-risk-as-building-systems-become-exposed-to-critical-infrastructure-threats/\nauthor: cyber.netsecops.io\ndate: 2026-04-11\ntags:\n  - attack.t1190\n  - attack.initial_access\nlevel: high\nlogsource:\n  category: firewall\ndetection:\n  selection:\n    protocol: udp\n    destination.port:\n      - 1628\n      - 1629\n  condition: selection",
+      "pattern": "",
+      "description": "Detects network traffic on UDP ports 1628 or 1629, which are the default ports for the insecure LonTalk/IP (CEA-852) protocol. Internet-sourced traffic on these ports is a critical indicator of an exposed and vulnerable Building Management System."
+    },
+    {
+      "name": "Anomalous IT to BMS Network Communication",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous IT to BMS Network Communication\nid: f9e8d7c6-b5a4-4987-6543-210987fedcba\nstatus: experimental\ndescription: Detects network traffic originating from the corporate IT network destined for the Building Management System (BMS) network. Such traffic may indicate a misconfiguration or an attacker pivoting from IT to OT systems.\nreferences:\n  - https://www.industrialcyber.co/management-strategy/claroty-says-cea-852-adoption-accelerates-risk-as-building-systems-become-exposed-to-critical-infrastructure-threats/\nauthor: cyber.netsecops.io\ndate: 2026-04-11\ntags:\n  - attack.t1190\nlevel: medium\nlogsource:\n  category: firewall\ndetection:\n  selection:\n    source.ip|cidr:\n      - 10.0.0.0/8 # Placeholder for corporate IT subnets\n      - 172.16.0.0/12 # Placeholder for corporate IT subnets\n      - 192.168.0.0/16 # Placeholder for corporate IT subnets\n    destination.ip|cidr:\n      - 100.64.0.0/10 # Placeholder for BMS/OT subnets\n  filter_known_mgmt:\n    source.ip:\n      - 192.168.1.100 # Placeholder for authorized management server\n  condition: selection and not filter_known_mgmt",
+      "description": "Detects un-firewalled communication between the corporate IT network and the dedicated BMS network, which indicates a high-risk configuration that could be exploited for lateral movement."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Exploit Public-Facing Application",
+      "source_type": "attack-pattern",
+      "relationship_type": "targets",
+      "target_name": "Internet-Exposed BMS Gateway",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Manipulation of Control",
+      "source_type": "attack-pattern",
+      "relationship_type": "targets",
+      "target_name": "Internet-Exposed BMS Gateway",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Exploit Public-Facing Application",
+      "source_type": "attack-pattern",
+      "relationship_type": "exploits",
+      "target_name": "CEA-852 Standard Insecure Design",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Manipulation of Control",
+      "source_type": "attack-pattern",
+      "relationship_type": "exploits",
+      "target_name": "CEA-852 Standard Insecure Design",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Insecure LonTalk/IP (CEA-852) Protocol Traffic",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CEA-852 Standard Insecure Design",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Anomalous IT to BMS Network Communication",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

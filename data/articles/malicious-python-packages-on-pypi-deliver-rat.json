@@ -1,0 +1,150 @@
+{
+  "id": "7d58a690-c5cc-4c2b-8b4e-45e32ca91e87",
+  "slug": "malicious-python-packages-on-pypi-deliver-rat",
+  "headline": "Malicious PyPI Packages `spellcheckerpy` & `spellcheckpy` Deliver RAT via Hidden Payload",
+  "title": "Malicious Python Packages on PyPI Deliver Remote Access Trojan via Hidden Payload",
+  "summary": "A software supply chain attack has been uncovered on the Python Package Index (PyPI), involving two malicious packages named `spellcheckerpy` and `spellcheckpy`. Downloaded over 1,000 times, the packages contained a hidden, dormant payload. A later version update activated the malware, which was designed to fingerprint the compromised developer's system and deploy a Remote Access Trojan (RAT). The attack was cleverly concealed, with the malicious code base64-encoded and hidden inside a Basque language dictionary file. The C2 domain used has been linked to a hosting provider known to service nation-state actors, suggesting a potentially sophisticated adversary.",
+  "full_report": "## Executive Summary\nCybersecurity researchers have discovered a sophisticated software supply chain attack targeting developers via the official **[Python](https://www.python.org/)** Package Index (**[PyPI](https://pypi.org/)**). Two malicious packages, `spellcheckerpy` and `spellcheckpy`, were downloaded over 1,000 times before being removed. The packages employed a multi-stage attack, initially appearing benign. However, an update to version 1.2.0 activated a hidden payload that delivered a Remote Access Trojan (RAT). The malware was obfuscated and concealed within a dictionary file to evade detection. The RAT is capable of system fingerprinting and executing commands from a remote server, whose infrastructure has been associated with nation-state activity. This incident highlights the persistent threat of supply chain attacks against open-source ecosystems.\n\n---\n\n## Threat Overview\nThe attack represents a classic example of a **[Software Supply Chain Attack](https://attack.mitre.org/techniques/T1195/)**, where threat actors inject malicious code into a legitimate-seeming software component that is then distributed to unsuspecting users. In this case, the attackers typosquatted legitimate package names to fool developers.\n\nThe attack unfolded in several stages:\n1.  **Initial Infection:** Developers install one of the malicious packages (`spellcheckerpy` or `spellcheckpy`) from PyPI, believing it to be a legitimate spell-checking library.\n2.  **Dormant Phase:** The initial versions of the package are dormant and contain no overtly malicious code, allowing them to build a user base and potentially pass initial security scans.\n3.  **Activation:** The attackers push an update (version 1.2.0). When a developer updates to this version, the malicious code is activated.\n4.  **Payload Execution:** Upon being imported into a project, the malware decodes and executes a payload hidden within a seemingly innocuous data file (a Basque dictionary file).\n5.  **Compromise:** The payload acts as a downloader for a full-featured RAT, which establishes a connection to a command-and-control (C2) server, giving the attacker control over the developer's machine.\n\n## Technical Analysis\nThe key to this attack's stealth was its obfuscation and delayed execution. The malicious Python code was encoded using Base64 and embedded within a large dictionary file (`eu.dic`). This makes it difficult for static analysis tools to flag the package as malicious.\n\nWhen version 1.2.0 is imported, a script within the package's `__init__.py` file reads the dictionary, extracts the Base64-encoded string, decodes it, and executes it using `exec()`.\n\nThe executed payload performs two main functions:\n-   **System Fingerprinting:** It collects information about the compromised host, such as its operating system, username, and network configuration. This data is likely sent to the C2 server to help the attacker identify high-value targets.\n-   **Command Execution:** It contacts an external C2 domain to receive and execute further commands, effectively turning the compromised machine into a bot.\n\nThe C2 domain was reportedly hosted on infrastructure previously associated with nation-state APT groups, raising the possibility that this was not a common cybercrime campaign but a targeted espionage operation.\n\n## Impact Assessment\nCompromising a developer's machine is a high-impact event that can lead to a much larger breach:\n-   **Credential Theft:** Attackers can steal SSH keys, API tokens, and passwords stored on the developer's machine, giving them access to source code repositories, cloud infrastructure, and production systems.\n-   **Code Injection:** The attacker could use the compromised developer's access to inject malicious code into the organization's own software, creating a secondary supply chain attack.\n-   **Internal Reconnaissance:** The RAT provides a foothold for the attacker to explore the internal network, identify other targets, and move laterally.\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| File Name | `spellcheckerpy` | Malicious PyPI package name. |\n| File Name | `spellcheckpy` | Malicious PyPI package name. |\n| Other | PyPI package version `1.2.0` | The specific version that activated the malicious payload. |\n\n## Detection & Response\n1.  **Dependency Scanning:** Use software composition analysis (SCA) tools to scan your projects' dependencies. Check for the presence of `spellcheckerpy` or `spellcheckpy` in your `requirements.txt` or other dependency management files.\n\n2.  **Network Log Analysis:** Monitor outbound network traffic from developer workstations and build servers. Look for connections to unknown or suspicious domains, especially from Python processes.\n\n3.  **Endpoint Forensics:** If a malicious package is found, the affected machine must be isolated from the network and a forensic analysis should be conducted to determine the extent of the compromise.\n\n## Mitigation\n1.  **Vet Dependencies:** Do not blindly trust open-source packages. Use services like Snyk, Socket, or PyPI's own security advisories to check for known vulnerabilities or malicious packages. Carefully inspect packages with low download counts, recent publication dates, or names that are slight misspellings of popular libraries.\n\n2.  **Pin Versions:** Pin your dependencies to specific, known-good versions in your `requirements.txt` file. This prevents automatic updates to potentially malicious newer versions.\n\n3.  **Use a Private Repository:** For enterprise environments, consider using a private package repository (e.g., Nexus, Artifactory) that acts as a proxy to PyPI. This allows you to vet and approve packages before they are made available to your developers.",
+  "twitter_post": "🐍 Malicious PyPI packages `spellcheckerpy` & `spellcheckpy` caught delivering a RAT. The payload was hidden and activated in a later version. Over 1,000 downloads. #Python #PyPI #SupplyChainAttack #Malware",
+  "meta_description": "Researchers have discovered two malicious Python packages on PyPI, `spellcheckerpy` and `spellcheckpy`, that deliver a RAT via a hidden, time-delayed payload. Learn how the supply chain attack works.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Python Package Index (PyPI)",
+      "type": "technology"
+    },
+    {
+      "name": "Python",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cyware.com/cyware-funnel/cyware-daily-threat-intelligence-january-28-2026-f3b1",
+      "title": "Cyware Daily Threat Intelligence, January 28, 2026",
+      "date": "2026-01-28",
+      "friendly_name": "Cyware",
+      "website": "cyware.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.006",
+      "name": "Python",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1033",
+      "name": "Limit Software Installation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use a private, curated package repository to control which third-party libraries developers can install, preventing the download of malicious packages.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Use an egress filter or proxy to block outbound connections from developer environments to unknown or uncategorized domains, which can prevent the RAT from connecting to its C2 server.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "While not foolproof in open-source, encouraging a culture of using signed packages where available can add a layer of trust. Internally, all proprietary code should be signed.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "spellcheckerpy",
+      "description": "Malicious package on PyPI"
+    },
+    {
+      "type": "file_name",
+      "value": "spellcheckpy",
+      "description": "Malicious package on PyPI"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "requirements.txt",
+      "description": "Check for the presence of 'spellcheckerpy' or 'spellcheckpy' in Python project dependency files.",
+      "context": "Source code scanning, Software Composition Analysis (SCA)",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections from python.exe to unknown domains",
+      "description": "A Python process making unexpected connections to the internet from a developer machine could indicate C2 traffic from a malicious package.",
+      "context": "EDR telemetry, firewall logs, proxy logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "*/site-packages/spellcheckerpy/__init__.py",
+      "description": "The init file in the malicious package (version 1.2.0) contains the code to decode and execute the hidden payload.",
+      "context": "File integrity monitoring, endpoint forensics",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "PyPI",
+    "Python",
+    "supply chain attack",
+    "malware",
+    "RAT",
+    "typosquatting"
+  ],
+  "extract_datetime": "2026-01-28T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Python developers"
+    ]
+  },
+  "pub_date": "2026-01-28",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-01-28T15:00:00.000Z",
+  "updatedAt": "2026-01-28T15:00:00.000Z"
+}

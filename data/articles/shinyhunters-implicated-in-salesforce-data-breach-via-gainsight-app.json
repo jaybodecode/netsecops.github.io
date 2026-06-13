@@ -1,0 +1,234 @@
+{
+  "id": "1500e788-fe3c-47f4-af1b-60548a85718d",
+  "slug": "shinyhunters-implicated-in-salesforce-data-breach-via-gainsight-app",
+  "headline": "ShinyHunters Hits Salesforce Again, Breaching Customers via Gainsight App",
+  "title": "ShinyHunters Implicated in Major Salesforce Data Breach Through Compromised Gainsight Third-Party Application",
+  "summary": "Salesforce has disclosed a significant data breach affecting its customers, stemming from a compromised connection with the Gainsight customer success application. The notorious cybercrime group ShinyHunters, also tracked as UNC6240, has claimed responsibility for the attack, stating they exploited OAuth tokens to gain unauthorized access to approximately 285 additional Salesforce instances. In response, Salesforce has revoked credentials and removed the Gainsight apps from its AppExchange. The incident highlights the growing risk of supply chain attacks targeting trusted third-party SaaS integrations to pivot into major enterprise environments.",
+  "full_report": "## Executive Summary\n\nOn November 19, 2025, **[Salesforce](https://www.salesforce.com/)** disclosed a security incident where customer data was exposed due to a compromise of the third-party **[Gainsight](https://www.gainsight.com/)** application. The threat actor, identified as the prolific cybercrime group **[ShinyHunters](https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters)** (also known as UNC6240), exploited OAuth tokens to gain unauthorized access to Salesforce customer environments. This supply chain attack did not exploit a vulnerability in the Salesforce platform itself but rather abused the trusted connection between the two SaaS platforms. In response, Salesforce revoked all associated credentials and temporarily delisted Gainsight's apps from its AppExchange. This incident underscores the critical risk posed by third-party application integrations and the sophisticated tactics used by threat actors to abuse authentication mechanisms.\n\n---\n\n## Threat Overview\n\nThe attack was initiated by compromising the **Gainsight** customer success management (CSM) application, which integrates with Salesforce environments. The threat actors, **ShinyHunters**, leveraged this access to exploit the OAuth authentication tokens that govern the connection between Gainsight and its customers' Salesforce instances. By compromising these tokens, the attackers were able to move laterally from the third-party application into the primary Salesforce environments of numerous organizations.\n\n**ShinyHunters** claimed to have accessed approximately 285 Salesforce customer instances through this method. This campaign is the latest in a series of similar attacks targeting the Salesforce ecosystem, following a pattern of abusing trusted SaaS-to-SaaS connections. The attack vector highlights a significant and growing threat surface for enterprises that rely on a web of interconnected cloud applications. The initial compromise of Gainsight's systems allowed the threat actor to bypass traditional perimeter defenses and operate with the privileges of a legitimate, integrated application.\n\n---\n\n## Technical Analysis\n\nThe core of this attack revolves around the abuse of the **[OAuth](https://en.wikipedia.org/wiki/OAuth)** 2.0 authorization framework. OAuth is widely used to grant applications access to resources on behalf of a user without sharing credentials. In this case, Gainsight applications were granted persistent access to customer Salesforce data via access and refresh tokens.\n\n**Attack Chain:**\n1.  **Initial Compromise:** The exact method used to compromise Gainsight is not publicly detailed, but it likely involved compromising credentials or infrastructure with access to their Salesforce integration secrets.\n2.  **Token Theft:** The attackers stole the OAuth access and refresh tokens associated with Gainsight's applications. These tokens are bearer tokens, meaning anyone who possesses them can use them to access the associated resources.\n3.  **Unauthorized Access:** Using the stolen tokens, **ShinyHunters** made API calls to the Salesforce environments of Gainsight's customers. This access would appear legitimate, as it originated from what looked like the trusted Gainsight application.\n4.  **Data Exfiltration:** The attackers then used this unauthorized API access to exfiltrate data from the compromised Salesforce instances.\n\nThis attack methodology maps to several MITRE ATT&CK techniques:\n- [`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/): The primary technique used to gain access to the Salesforce environments.\n- [`T1111 - Two-Factor Authentication Interception`](https://attack.mitre.org/techniques/T1111/): While not explicitly stated, compromising OAuth tokens effectively bypasses MFA protections that would otherwise protect direct user logins.\n- [`T1550 - Use Alternate Authentication Material`](https://attack.mitre.org/techniques/T1550/): The attackers used the stolen tokens as their authentication material.\n- [`T1098.001 - Additional Cloud Credentials`](https://attack.mitre.org/techniques/T1098/001/): The compromised tokens represent a form of cloud credential.\n- [`T1213 - Data from Information Repositories`](https://attack.mitre.org/techniques/T1213/): The ultimate goal of accessing and exfiltrating data from Salesforce.\n\n---\n\n## Impact Assessment\n\nThe business impact of this breach is significant for the affected Salesforce customers. The exposed data could include sensitive customer information, sales pipelines, contact details, and other proprietary business data stored within their CRM. The potential consequences include:\n\n- **Financial Loss:** Direct costs associated with incident response, legal fees, and potential regulatory fines.\n- **Reputational Damage:** Loss of customer trust and damage to brand reputation.\n- **Competitive Disadvantage:** If stolen data, such as sales strategies or customer lists, is sold or leaked, it could be used by competitors.\n- **Regulatory Scrutiny:** Organizations subject to regulations like GDPR or CCPA may face investigations and penalties for the data exposure, even if the breach originated with a third party.\n- **Operational Disruption:** Salesforce's action to revoke tokens and delist the apps, while necessary, caused immediate operational disruption for legitimate users of the Gainsight application.\n\nThis incident forces organizations to re-evaluate their third-party risk management programs, especially concerning SaaS applications with deep integrations and privileged access to critical data repositories.\n\n---\n\n## IOCs\n\n| Type | Value | Description |\n|---|---|---|\n| `ip_address_v4` | `3.239.45.43` | Malicious IP address observed by Obsidian Security. |\n| `user_agent` | `Python/3.11 aiohttp/3.13.1` | User agent associated with the attacker's tools. |\n\n---\n\n## Cyber Observables for Detection\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| `api_endpoint` | `/services/oauth2/token` | Salesforce OAuth token endpoint. Monitor for anomalous requests or requests from unusual IPs. | API Gateway Logs, Cloud Trail | high |\n| `log_source` | `Salesforce Event Monitoring` | Specifically monitor `Login` and `API` event types for suspicious activity. | SIEM, Salesforce Shield | high |\n| `network_traffic_pattern` | `Unusual geographic source for API calls` | Look for API access from IP ranges inconsistent with the third-party vendor's known infrastructure. | Firewall Logs, VPC Flow Logs | medium |\n| `command_line_pattern` | `curl -H \"Authorization: Bearer [TOKEN]\"` | Hunt for command-line history on potentially compromised developer or admin workstations that might handle tokens. | EDR Logs, Shell History | low |\n| `user_account_pattern` | `API-only user accounts` | Closely monitor the activity of service accounts used for integrations for any deviation from baseline behavior. | IAM Logs, SIEM | high |\n\n---\n\n## Detection & Response\n\n**Detection:**\n- **Monitor Salesforce Logs:** Utilize Salesforce Event Monitoring (part of Salesforce Shield) to analyze `Login`, `API`, `RestApi`, and `ReportExport` event types. Look for logins from the specified malicious IP (`3.239.45.43`) or user agent (`Python/3.11 aiohttp/3.13.1`).\n- **Analyze API Usage:** Baseline normal API usage patterns for integrated third-party applications. Alert on significant deviations, such as an unusual volume of `ReportExport` events, access to objects outside the application's normal scope, or activity outside of normal business hours.\n- **Third-Party App Auditing:** Regularly audit all connected applications in the Salesforce environment. Review their permissions and access levels. Tools like **[Obsidian Security](https://www.obsidiansecurity.com/)** specialize in detecting this type of SaaS-to-SaaS attack.\n- **D3FEND Techniques:** Implement [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) to identify anomalous API calls and [`D3-UBA: User Behavior Analysis`](https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis) to baseline and detect deviations in the behavior of integration accounts.\n\n**Response:**\n1.  **Revoke Credentials:** Immediately revoke all OAuth tokens and credentials associated with the suspected compromised application. Salesforce has already done this for Gainsight, but this is a critical first step in any similar incident.\n2.  **Investigate Activity:** Analyze historical logs to determine the scope of the compromise. Identify which records were accessed, modified, or exfiltrated by the threat actor.\n3.  **Notify Affected Parties:** Based on the investigation, notify affected customers and regulatory bodies as required by law.\n4.  **Review Third-Party Integrations:** Conduct a full audit of all third-party applications connected to your critical SaaS platforms. Re-evaluate the business need and permissions for each.\n\n---\n\n## Mitigation\n\n**Strategic Mitigation:**\n- **Principle of Least Privilege:** Ensure that third-party applications are granted the absolute minimum permissions necessary to perform their function. Avoid granting broad `Read/Write All` permissions.\n- **Third-Party Risk Management (TPRM):** Enhance vendor security reviews. Scrutinize the security practices of any vendor whose application will have API access to critical data.\n- **D3FEND Hardening:** Apply [`D3-ACH: Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening) by restricting the IP ranges from which third-party applications can connect to your Salesforce instance, if the vendor supports it.\n\n**Tactical Mitigation:**\n1.  **Regular Token Rotation:** While refresh tokens are long-lived, enforce policies for periodic review and re-authorization of third-party applications.\n2.  **IP Whitelisting:** If the third-party application uses a predictable set of source IPs, configure Salesforce to only allow API access from those addresses.\n3.  **Use Scoped API Tokens:** When granting access, use tokens with narrow scopes that limit access to specific data types and API functions.\n4.  **Implement SaaS Security Posture Management (SSPM):** Deploy SSPM tools to continuously monitor for misconfigurations, excessive permissions, and anomalous activity across interconnected SaaS applications.",
+  "twitter_post": "🚨 Salesforce customers exposed in a supply chain attack! ShinyHunters exploited OAuth tokens from the Gainsight app to breach ~285 Salesforce instances. Salesforce has revoked credentials & delisted the app. ⚠️ #DataBreach #Salesforce #ShinyHunters #SaaS",
+  "meta_description": "Salesforce discloses a major data breach affecting customers after the ShinyHunters group compromised the third-party Gainsight app, exploiting OAuth tokens to gain unauthorized access. Learn about the attack and mitigation steps.",
+  "category": [
+    "Supply Chain Attack",
+    "Data Breach",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Salesforce",
+      "type": "vendor",
+      "url": "https://www.salesforce.com/"
+    },
+    {
+      "name": "Gainsight",
+      "type": "vendor",
+      "url": "https://www.gainsight.com/"
+    },
+    {
+      "name": "ShinyHunters",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters"
+    },
+    {
+      "name": "UNC6240",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Google Threat Intelligence Group (GTIG)",
+      "type": "security_organization"
+    },
+    {
+      "name": "Obsidian Security",
+      "type": "vendor",
+      "url": "https://www.obsidiansecurity.com/"
+    },
+    {
+      "name": "Salesloft",
+      "type": "company"
+    },
+    {
+      "name": "Drift",
+      "type": "product"
+    },
+    {
+      "name": "OAuth",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/OAuth"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cybersecuritydive.com/news/salesforce-gainsight-breach-shinyhunters/733365/",
+      "title": "Salesforce investigating campaign targeting customer environments connected to Gainsight app",
+      "date": "2025-11-20",
+      "friendly_name": "Cybersecurity Dive",
+      "website": "cybersecuritydive.com"
+    },
+    {
+      "url": "https://www.databreaches.net/threat-actors-have-reportedly-launched-yet-another-campaign-involving-an-application-connected-to-salesforce/",
+      "title": "Threat actors have reportedly launched yet another campaign involving an application connected to Salesforce",
+      "date": "2025-11-20",
+      "friendly_name": "DataBreaches.net",
+      "website": "databreaches.net"
+    },
+    {
+      "url": "https://www.cyberscoop.com/salesforce-gainsight-breach-shinyhunters/",
+      "title": "Hundreds of Salesforce customers hit by yet another third-party vendor breach",
+      "date": "2025-11-20",
+      "friendly_name": "Cyberscoop",
+      "website": "cyberscoop.com"
+    },
+    {
+      "url": "https://www.obsidiansecurity.com/blog/salesforce-gainsight-data-breach/",
+      "title": "Obsidian Security Customer Alert on Salesforce-Gainsight Data Breach",
+      "date": "2025-11-20",
+      "friendly_name": "Obsidian Security",
+      "website": "obsidiansecurity.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-10-22",
+      "summary": "Malicious activity primarily observed by Obsidian Security."
+    },
+    {
+      "datetime": "2025-10-23",
+      "summary": "Malicious activity primarily observed by Obsidian Security."
+    },
+    {
+      "datetime": "2025-11-19",
+      "summary": "Salesforce issues a security advisory about suspicious activity involving Gainsight applications."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1098.001",
+      "name": "Additional Cloud Credentials",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1550",
+      "name": "Use Alternate Authentication Material",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1136.003",
+      "name": "Create Account: Cloud Account",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1213",
+      "name": "Data from Information Repositories",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Implement comprehensive logging and auditing for SaaS platforms to detect anomalous API usage and access patterns.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "While token theft bypasses user-facing MFA, enforce MFA for all administrative access to SaaS platforms to make initial compromise harder.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restrict API access to trusted IP ranges for third-party integrations where possible to limit the impact of token theft.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Regularly audit and harden the configuration of third-party app integrations, applying the principle of least privilege for permissions and data access scopes.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "To counter threats like the ShinyHunters' abuse of OAuth tokens, organizations must implement Resource Access Pattern Analysis within their SaaS environments. This involves establishing a baseline of normal API activity for each integrated third-party application, such as Gainsight. Security teams should use a Cloud Access Security Broker (CASB) or a SaaS Security Posture Management (SSPM) tool to monitor all API calls made by the integration's service account. The baseline should profile the types of data objects accessed, the volume of requests, the time of day, and the geographic source. For the Gainsight-Salesforce breach, this would mean flagging the sudden access of 285 different customer instances or unusual 'ReportExport' events. Alerts should be configured to trigger when the integration's behavior deviates significantly from this baseline, such as accessing new types of data, exfiltrating large volumes of information, or operating from a new IP address like the one identified (`3.239.45.43`). This proactive monitoring transforms API logs from a forensic tool into a real-time detection mechanism, enabling rapid response to token compromise before a full-scale data breach occurs.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Application Configuration Hardening is a critical defense against the abuse of third-party integrations. Within the context of the Salesforce-Gainsight breach, this means moving beyond default settings and applying the principle of least privilege to the OAuth connection. Instead of granting broad permissions, administrators should configure the connected app to have the most restrictive scope possible. For example, if an app only needs to read contact objects, it should not have permission to export reports or access financial data. Furthermore, where supported by the vendor, configure IP range restrictions on the Salesforce connected app settings to only allow API calls from Gainsight's known production IP addresses. Regularly schedule and conduct audits of all connected applications, reviewing their permissions and questioning the business justification for each. This process should be part of a larger Third-Party Risk Management (TPRM) program. By systematically hardening these configurations, organizations can significantly reduce the 'blast radius' of a compromise, ensuring that even if a third-party's token is stolen, the attacker's access is severely limited.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "3.239.45.43",
+      "description": "Malicious IP address observed by Obsidian Security"
+    },
+    {
+      "type": "user_agent",
+      "value": "Python/3.11 aiohttp/3.13.1",
+      "description": "User agent associated with the attacker's tools"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "api_endpoint",
+      "value": "/services/oauth2/token",
+      "description": "Salesforce OAuth token endpoint. Monitor for anomalous requests or requests from unusual IPs.",
+      "context": "API Gateway Logs, Cloud Trail, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Salesforce Event Monitoring LogFile",
+      "description": "Monitor Login, API, and ReportExport event types for suspicious activity originating from third-party integration user accounts.",
+      "context": "SIEM, Security Data Lake",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous geographic source for API calls",
+      "description": "Look for API access from IP ranges inconsistent with the third-party vendor's known infrastructure, especially those linked to malicious actors.",
+      "context": "Firewall Logs, VPC Flow Logs, CASB",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "OAuth",
+    "SaaS Security",
+    "Third-Party Risk",
+    "API Security",
+    "Supply Chain",
+    "UNC6240"
+  ],
+  "extract_datetime": "2025-11-21T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "SaaS customers",
+      "Salesforce customers",
+      "Gainsight customers"
+    ],
+    "people_affected_estimate": "Data from users of approximately 285 Salesforce instances"
+  },
+  "pub_date": "2025-11-21",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-11-21T15:00:00.000Z",
+  "updatedAt": "2025-11-21T15:00:00.000Z"
+}

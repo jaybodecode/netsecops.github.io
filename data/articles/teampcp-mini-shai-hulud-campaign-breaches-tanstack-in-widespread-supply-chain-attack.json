@@ -1,0 +1,210 @@
+{
+  "id": "2631d683-e678-4af4-843d-aa54bd5a2f09",
+  "slug": "teampcp-mini-shai-hulud-campaign-breaches-tanstack-in-widespread-supply-chain-attack",
+  "headline": "TeamPCP Threat Actor Breaches TanStack in 'Mini Shai-Hulud' Supply Chain Campaign",
+  "title": "Financially Motivated Threat Actor TeamPCP Compromises TanStack Library in 'Mini Shai-Hulud' Supply Chain Attack",
+  "summary": "The financially motivated threat group 'TeamPCP' has been identified as the actor behind the 'Mini Shai-Hulud' supply chain campaign, which recently compromised the popular TanStack open-source library. The attack, which also targeted the npm and PyPI ecosystems, involved publishing malicious packages that, when downloaded by developers, execute a credential-stealing payload. The compromise of TanStack, a widely used suite of tools for web application development, represents a significant threat to the numerous downstream projects that depend on it. This incident is part of a growing trend of software supply chain poisoning attacks aimed at compromising developer environments to steal sensitive secrets.",
+  "full_report": "## Executive Summary\n\nA financially motivated threat cluster known as **[TeamPCP](https://www.reversinglabs.com/blog/teampcp-the-developer-focused-malware-behind-the-iconburst-supply-chain-attack)** has been attributed to a widespread supply chain campaign dubbed \"Mini Shai-Hulud.\" This campaign recently achieved a significant victory by compromising the popular open-source library **[TanStack](https://tanstack.com/)**, a suite of widely used tools for building web applications. The attack, which also impacted the **[npm](https://www.npmjs.com/)** and **[PyPI](https://pypi.org/)** package ecosystems, relies on typosquatting and dependency confusion to trick developers into downloading malicious packages. Once installed, these packages execute a payload designed to steal credentials and other sensitive information from the developer's environment. The breach of a foundational library like **[TanStack](https://tanstack.com/)** poses a severe risk to the software supply chain, potentially affecting thousands of downstream applications and organizations.\n\n## Threat Overview\n\n**[TeamPCP](https://www.reversinglabs.com/blog/teampcp-the-developer-focused-malware-behind-the-iconburst-supply-chain-attack)** is a threat group focused on compromising developer environments to steal valuable secrets, such as API keys, private code, and cryptocurrency wallets. Their \"Mini Shai-Hulud\" campaign employs several common supply chain attack techniques.\n\n- **Attack Vector**: The primary vector is publishing malicious packages to public repositories like **[npm](https://www.npmjs.com/)** and **[PyPI](https://pypi.org/)**. These packages often use names similar to legitimate ones (typosquatting) or exploit how package managers resolve dependencies to get their malicious code installed (dependency confusion).\n- **Malicious Action**: The malicious packages contain installation scripts (e.g., `postinstall` scripts in `package.json`) that execute automatically upon download. This script typically downloads and runs a second-stage payload, which is the credential stealer.\n- **Targeting**: The compromise of **[TanStack](https://tanstack.com/)** is particularly impactful. **[TanStack](https://tanstack.com/)** provides popular libraries like TanStack Query (formerly React Query) and TanStack Table, which are used by countless developers and companies. By compromising this upstream project, **[TeamPCP](https://www.reversinglabs.com/blog/teampcp-the-developer-focused-malware-behind-the-iconburst-supply-chain-attack)** gains a powerful distribution channel for its malware.\n\n## Technical Analysis\n\nThe attack chain is typical of modern package manager-based supply chain attacks:\n\n1.  **Package Publication**: **[TeamPCP](https://www.reversinglabs.com/blog/teampcp-the-developer-focused-malware-behind-the-iconburst-supply-chain-attack)** publishes a malicious package to **[npm](https://www.npmjs.com/)** or **[PyPI](https://pypi.org/)**. The package might be a direct compromise of a legitimate package (if they steal maintainer credentials) or a typosquatted version.\n2.  **Installation**: A developer or a CI/CD system installs the malicious package, believing it to be legitimate.\n3.  **Automated Execution**: The package manager automatically runs a `postinstall` script defined in the malicious package's configuration file.\n4.  **Payload Delivery**: The script contacts an attacker-controlled server to download the main credential-stealing payload. This two-stage approach helps evade static analysis of the package itself.\n5.  **Credential Theft & Exfiltration**: The payload scans the compromised system for environment variables, configuration files (`.env`, `.aws/credentials`), SSH keys, and browser data, then exfiltrates the findings to the attacker's C2 server.\n\n### MITRE ATT&CK Techniques\n- [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/): The attack centers on poisoning packages in public software repositories.\n- [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/): To compromise a major package like **[TanStack](https://tanstack.com/)**, the attackers likely needed to compromise a legitimate maintainer's account.\n- [`T1059 - Command and Scripting Interpreter`](https://attack.mitre.org/techniques/T1059/): The use of `postinstall` scripts to execute malicious commands.\n- [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/): The payload is designed to steal credentials from various sources on the developer's machine.\n- [`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/): Stolen data is sent back to the attacker.\n\n## Impact Assessment\n\nThe compromise of a foundational framework like **[TanStack](https://tanstack.com/)** has a cascading effect across the software industry.\n\n- **Direct Impact**: The immediate victims are the developers and organizations that directly installed the compromised version of the package. Their development environments, CI/CD pipelines, and any secrets accessible from them are considered compromised.\n- **Downstream Impact**: Any application built using the compromised **[TanStack](https://tanstack.com/)** library is now a potential risk to its own users. While the primary goal of the malware is to steal developer credentials, it could also be modified to inject backdoors into the final application.\n- **Ecosystem Erosion**: Each successful attack of this nature further erodes the trust developers place in the open-source ecosystem. It forces developers to be more vigilant but also increases friction in the development process, as dependencies must be more carefully vetted.\n\n## IOCs — Directly from Articles\n\nNo specific package names, versions, or C2 domains were mentioned in the source articles.\n\n## Detection & Response\n\n- **Detection**: Use dependency scanning tools (e.g., `npm audit`, Snyk, Dependabot) to check for known malicious packages. Monitor network logs from developer machines and build servers for suspicious outbound connections, especially from package manager processes. Analyze `package-lock.json` or `yarn.lock` files to see exactly which package versions are being used and from where they were resolved.\n- **Response**: If a malicious package is discovered:\n  1.  Immediately remove the dependency from the project and delete it from local caches (`node_modules`).\n  2.  Isolate the affected machines.\n  3.  Assume all secrets on the machine have been compromised and begin a full credential rotation.\n  4.  Investigate logs to determine what commands the malicious `postinstall` script executed.\n\n## Mitigation\n\n- **Dependency Vetting**: Do not blindly trust packages. Before adding a new dependency, check its reputation, download statistics, and the activity of its maintainers. Be wary of typosquatted package names.\n- **Lockfiles**: Always use and commit lockfiles (`package-lock.json`, `yarn.lock`, `poetry.lock`). This ensures that builds are reproducible and that only specific, vetted versions of dependencies are installed, preventing a malicious update from being pulled in automatically.\n- **Disable Scripts**: Consider running package manager commands with flags that disable automatic script execution (e.g., `npm install --ignore-scripts`) in environments where it's not strictly necessary. This provides a crucial layer of protection against malicious `postinstall` hooks.\n- **Secure Environments**: Run builds in ephemeral, isolated containers with no access to the broader network or persistent secrets. Use least-privilege principles for all CI/CD jobs.",
+  "twitter_post": "💸 Financially motivated group TeamPCP compromises popular TanStack library in 'Mini Shai-Hulud' supply chain campaign. The attack on npm/PyPI ecosystems uses malicious packages to steal developer credentials. #SupplyChain #TeamPCP #TanStack #npm",
+  "meta_description": "The threat group TeamPCP has compromised the popular TanStack open-source library as part of the 'Mini Shai-Hulud' supply chain campaign, targeting developers on npm and PyPI with credential-stealing malware.",
+  "category": [
+    "Supply Chain Attack",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "TanStack",
+      "type": "product",
+      "url": "https://tanstack.com/"
+    },
+    {
+      "name": "npm",
+      "type": "security_organization",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "PyPI",
+      "type": "security_organization",
+      "url": "https://pypi.org/"
+    },
+    {
+      "name": "Trivy",
+      "type": "product"
+    },
+    {
+      "name": "Checkmarx KICS",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://cybermagazine.com/articles/this-weeks-top-five-stories-in-cyber",
+      "title": "This Week's Top Five Stories in Cyber",
+      "date": "2026-05-23",
+      "friendly_name": "Cyber Magazine",
+      "website": "cybermagazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-11T00:00:00Z",
+      "summary": "A coordinated supply chain attack linked to the 'Mini Shai-Hulud' campaign compromises the npm and PyPI ecosystems, including the TanStack library."
+    },
+    {
+      "datetime": "2026-05-23T00:00:00Z",
+      "summary": "The attack campaign is publicly attributed to the threat group TeamPCP."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Prevent the automatic execution of installation scripts from package managers (e.g., using `--ignore-scripts`).",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Use automated dependency scanning tools to audit projects for malicious or vulnerable packages.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Apply strict egress filtering on build servers to prevent malicious scripts from connecting to attacker C2 servers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Run build processes in isolated, ephemeral environments to limit the potential impact of a compromised dependency.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "While traditionally for binaries, the principle of Executable Allowlisting can be adapted to CI/CD pipelines to defend against attacks like the one on TanStack. Instead of allowing `npm` or `pip` to execute any arbitrary `postinstall` script, the build environment should be hardened to prevent it. A practical implementation is to run package manager commands with flags that disable script execution by default (e.g., `npm install --ignore-scripts`). If a specific package legitimately requires a post-install script, it can be explicitly allowed after a thorough security review. This 'default-deny' posture for script execution directly blocks the primary attack vector used by TeamPCP, preventing the malicious payload from ever running, even if a compromised package is downloaded.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Dynamic Analysis in a sandbox is a powerful technique for vetting new or updated dependencies before they are introduced into a production build environment. Before a developer commits an update to a dependency like TanStack, the new version should be automatically installed in an isolated, instrumented sandbox. This sandbox would monitor for suspicious activities during installation, such as: 1) Network connections to unknown or non-repository domains. 2) Filesystem access outside the package's directory. 3) Execution of unexpected processes. If the sandbox detects the malicious `postinstall` script attempting to contact a C2 server, it would flag the package as malicious and block the dependency update. This automated vetting process acts as a crucial quality gate, preventing poisoned packages from entering the software supply chain.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "System File Analysis, in the form of dependency scanning, is a fundamental defense. Organizations must integrate automated tools like Snyk, Dependabot, or `npm audit` directly into their CI/CD pipelines. These tools maintain databases of known malicious packages and vulnerabilities. When a developer attempts to add or update a dependency, the scanner checks the package name and version against this database. In the case of the TanStack compromise, once the malicious version was identified and added to these databases, any subsequent build attempting to use it would fail with a security warning. This provides a rapid, ecosystem-wide response to known threats. It's a critical, albeit reactive, control that helps contain the spread of a publicly disclosed supply chain attack.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "package.json",
+      "description": "Review 'postinstall' or other script hooks in this file for suspicious commands (e.g., curl, wget, base64 decoding).",
+      "context": "Code repository scanning",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "npm",
+      "description": "The npm process making outbound network connections to unusual domains during an 'install' operation is a strong indicator of a malicious package.",
+      "context": "EDR logs, Process monitoring on build servers",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install --ignore-scripts",
+      "description": "Using this command can prevent the execution of malicious installation hooks, serving as a mitigation and a testing method.",
+      "context": "CI/CD pipeline configuration, Developer best practices",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "tanstak",
+      "description": "Example of a typosquatted package name that an attacker might use to trick developers.",
+      "context": "Dependency analysis, Code scanning",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "TeamPCP",
+    "Mini Shai-Hulud",
+    "TanStack",
+    "Supply Chain Attack",
+    "npm",
+    "PyPI",
+    "Malware"
+  ],
+  "extract_datetime": "2026-05-24T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "web developers"
+    ]
+  },
+  "keywords": [
+    "TeamPCP threat actor",
+    "Mini Shai-Hulud campaign",
+    "TanStack compromise",
+    "npm supply chain attack",
+    "PyPI malware",
+    "developer security",
+    "credential stealing"
+  ],
+  "pub_date": "2026-05-24",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-05-24T15:00:00.000Z",
+  "updatedAt": "2026-05-24T15:00:00.000Z"
+}

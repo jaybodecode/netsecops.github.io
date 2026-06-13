@@ -1,0 +1,209 @@
+{
+  "id": "6689bdfe-4446-432c-8158-efa7497d43e5",
+  "slug": "dozen-critical-sandbox-escape-vulnerabilities-disclosed-in-vm2-nodejs-library",
+  "headline": "A Dozen Critical Sandbox Escape Flaws Found in Popular 'vm2' Node.js Library",
+  "title": "Twelve Critical Sandbox Escape Vulnerabilities Disclosed in vm2 Node.js Library, Enabling Arbitrary Code Execution",
+  "summary": "A dozen critical security vulnerabilities have been discovered in 'vm2', a popular Node.js library used for running untrusted code in a sandboxed environment. The flaws, several of which are rated 9.8 (Critical) on the CVSS scale, allow an attacker to bypass the sandbox's protections and execute arbitrary code on the host system. The affected versions are up to 3.10.4. The maintainer has released patches in version 3.11.2 and is urging all users to update immediately. Key vulnerabilities include CVE-2026-24118, CVE-2026-24120, CVE-2026-24781, and CVE-2026-26332. This discovery highlights the inherent difficulty and risk associated with creating secure JavaScript sandboxes.",
+  "full_report": "## Executive Summary\n\nResearchers have disclosed a batch of twelve critical security vulnerabilities in **vm2**, a widely-used **[Node.js](https://nodejs.org/)** library designed to provide a secure sandbox for executing untrusted JavaScript code. These vulnerabilities can be exploited by malicious code running inside the sandbox to break out and achieve arbitrary code execution on the host operating system, completely defeating the library's purpose. Several of the flaws have been assigned a CVSS score of 9.8 (Critical). The maintainer of **vm2**, Patrik Simek, has released version 3.11.2 to address these issues and strongly advises all users to update without delay. This incident underscores the profound challenges of creating secure sandboxing environments in dynamic languages like JavaScript.\n\n---\n\n## Vulnerability Details\n\nThe core issue across all twelve vulnerabilities is a failure in the sandboxing mechanism, allowing code within the **vm2** environment to access and manipulate objects or functions in the parent Node.js process (the host). This is commonly referred to as a \"sandbox escape.\" An attacker who can control the JavaScript code being run inside the sandbox can craft a payload to exploit one of these flaws.\n\nAmong the disclosed vulnerabilities, four have been highlighted with a **critical** CVSS score of 9.8:\n\n- **[CVE-2026-24118](https://www.cve.org/CVERecord?id=CVE-2026-24118):** A sandbox escape that can be triggered via the `__lookupGetter__` property, allowing access to the host context.\n- **[CVE-2026-24120](https://www.cve.org/CVERecord?id=CVE-2026-24120):** A bypass for a previously patched vulnerability (CVE-2023-37466). This new method exploits the `species` property of promise objects to escape the sandbox.\n- **[CVE-2026-24781](https://www.cve.org/CVERecord?id=CVE-2026-24781):** A sandbox escape that leverages the `inspect` function to gain access to host objects.\n- **[CVE-2026-26332](https://www.cve.org/CVERecord?id=CVE-2026-26332):** A sandbox escape that can be achieved by manipulating `SuppressedError` objects.\n\nThese vulnerabilities represent different logical flaws in the way **vm2** isolates the guest code from the host environment.\n\n## Affected Systems\n\n- **Product:** **vm2** Node.js library\n- **Affected Versions:** Versions up to and including 3.10.4 are affected by one or more of these vulnerabilities.\n- **Patched Version:** 3.11.2\n\nAny application that uses an affected version of the **vm2** library to run untrusted or user-supplied JavaScript code is at risk.\n\n## Exploitation Status\n\nWhile there are no public reports of active exploitation in the wild for these specific CVEs, the public disclosure of these vulnerabilities, coupled with their critical nature, means that proof-of-concept (PoC) exploits are likely to be developed quickly. Any system running a vulnerable version should be considered at high risk of exploitation.\n\n## Impact Assessment\n\nThe impact of a successful sandbox escape is severe. It completely nullifies the security boundary that **vm2** is intended to provide. An attacker can execute arbitrary commands on the server hosting the Node.js application. This could lead to a full system compromise, allowing the attacker to:\n\n- Steal sensitive data, including application source code, user data, and server credentials.\n- Install persistent backdoors or ransomware.\n- Use the compromised server to pivot and attack other systems within the internal network.\n- Use the server's resources for malicious activities like cryptomining or participating in DDoS attacks.\n\nFor any service that relies on **vm2** for security (e.g., online code editors, plugin systems, serverless function platforms), this vulnerability is a business-critical issue.\n\n## Cyber Observables — Hunting Hints\n\nDetecting exploitation of these vulnerabilities can be challenging as it occurs within the application process. However, post-exploitation activity may be detectable.\n\nThe following patterns may help identify systems that have been compromised:\n\n| Type | Value | Description | Context |\n| :--- | :--- | :--- | :--- |\n| `command_line_pattern` | `node` process spawning `sh`, `bash`, `powershell.exe` | A Node.js process spawning a shell is highly suspicious and a common indicator of RCE. | EDR, Process monitoring (Windows Event ID 4688, Linux auditd). |\n| `network_traffic_pattern` | Unexpected outbound connections from a Node.js server | A compromised server may initiate connections to an attacker's C2 server. | Firewall logs, Netflow analysis. |\n| `file_name` | `package-lock.json` or `yarn.lock` | Review lock files for versions of `vm2` older than 3.11.2 to identify vulnerable applications. | Source code repositories, Asset inventory. |\n\n## Detection Methods\n\n1.  **Software Composition Analysis (SCA):** The most effective detection method is to use an SCA tool (e.g., Snyk, Dependabot, `npm audit`) to scan your projects' dependencies. These tools will flag the use of vulnerable versions of **vm2** and point to the disclosed CVEs. This aligns with [`D3-SCA - Software Component Analysis`](https://d3fend.mitre.org/technique/d3f:SoftwareComponentAnalysis).\n2.  **Runtime Monitoring:** Use an EDR or application security monitoring tool to detect anomalous behavior from your Node.js processes, such as unexpected file system access, process creation, or network connections.\n\n## Remediation Steps\n\n1.  **Update Immediately:** The primary and most urgent remediation step is to update the **vm2** library to the patched version, **3.11.2**, or later. This can be done by running `npm install vm2@latest` or `yarn upgrade vm2@latest` in your project directory.\n2.  **Verify Update:** After updating, check your `package-lock.json` or `yarn.lock` file to ensure that the resolved version of **vm2** is indeed 3.11.2 or higher.\n3.  **Consider Alternatives:** Given the history of critical sandbox escape vulnerabilities in **vm2**, organizations should re-evaluate their reliance on it. The maintainer himself has noted the difficulty of securing it. Alternative sandboxing strategies, such as running untrusted code in separate, containerized environments (e.g., Docker) with strict resource limits and no network access, may provide a more robust security boundary. This is a form of [`D3-HBPI - Hardware-based Process Isolation`](https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation) at a logical level.",
+  "twitter_post": "📢 CRITICAL: A dozen sandbox escape vulnerabilities found in the popular 'vm2' Node.js library. Flaws (CVSS 9.8) allow for full host takeover. If you use vm2, update to version 3.11.2 immediately! #NodeJS #CyberSecurity #Vulnerability #PatchNow",
+  "meta_description": "A dozen critical sandbox escape vulnerabilities (including CVE-2026-24118) have been found in the vm2 Node.js library, allowing for arbitrary code execution. Users are urged to update to version 3.11.2.",
+  "category": [
+    "Vulnerability",
+    "Supply Chain Attack"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "vm2",
+      "type": "product"
+    },
+    {
+      "name": "Node.js",
+      "type": "technology",
+      "url": "https://nodejs.org/"
+    },
+    {
+      "name": "Patrik Simek",
+      "type": "person"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-22709",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-24118",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-24120",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-24781",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-26332",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2023-37466"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/05/vm2-nodejs-library-vulnerabilities-enable-sandbox-escape-and-arbitrary-code-execution.html",
+      "title": "vm2 Node.js Library Vulnerabilities Enable Sandbox Escape and Arbitrary Code Execution",
+      "date": "2026-05-07",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.wiu.edu/cbt/computer_sciences/cybersecurity_center/news.php",
+      "title": "Cybersecurity News",
+      "date": "2026-05-07",
+      "friendly_name": "Western Illinois University"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1611",
+      "name": "Escape to Host",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "The most critical mitigation is to update the vm2 library to the patched version 3.11.2 or later.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Given the recurring issues with vm2, consider running untrusted code in a stronger isolation primitive, such as a dedicated container (e.g., Docker) or micro-VM, to provide a hardware-enforced boundary.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "description": "Use runtime security monitoring to detect post-exploitation behavior, such as a Node.js process spawning a shell or making unexpected network connections.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The immediate and most crucial action for any organization using the vm2 library is to update to the patched version, 3.11.2. This directly remediates the known sandbox escape vulnerabilities. This process should be automated as part of a robust patch management program. Developers should update their project's `package.json` file and run `npm install` or `yarn upgrade` to pull in the secure version. It is vital to then verify in the `package-lock.json` or `yarn.lock` file that the transitive dependencies have also resolved to the patched version. Given the critical 9.8 CVSS score, this update should be treated as an emergency change and deployed to all environments (development, staging, and production) as quickly as possible to close the window of opportunity for attackers.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-SCA",
+      "technique_name": "Software Component Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareComponentAnalysis",
+      "recommendation": "To proactively manage risks from libraries like vm2, organizations must implement continuous Software Component Analysis (SCA). This involves integrating tools like `npm audit`, Snyk, or Dependabot into the CI/CD pipeline. These tools automatically scan all dependencies, including transitive ones, for known vulnerabilities like the dozen flaws in vm2. By running these scans on every code commit and on a regular schedule, teams can get immediate notifications when a vulnerability is discovered in a component they use. This allows for rapid identification of all affected applications across the enterprise, enabling a targeted and efficient patching response. SCA is a foundational practice for modern application security and is essential for defending against supply chain risks.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-PSEP",
+      "technique_name": "Process Segment Execution Prevention",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessSegmentExecutionPrevention",
+      "recommendation": "As a defense-in-depth strategy, organizations should consider moving away from process-level sandboxes like vm2 for running highly untrusted code. A more secure architectural pattern involves using stronger isolation boundaries. This could involve techniques like Process Segment Execution Prevention by running the untrusted JavaScript code in a completely separate process or, even better, a dedicated, minimal container (e.g., using Docker or gVisor) or a micro-VM (e.g., Firecracker). This container would have its own kernel context, a restricted file system, no network access by default, and strict CPU/memory limits. While this approach has higher overhead than vm2, it provides a much stronger security guarantee, as an escape would be contained within the ephemeral container and would not grant access to the host OS. This aligns with the principle of zero trust and is a more resilient long-term solution for handling untrusted code.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "node",
+      "description": "A 'node' process spawning a shell (sh, bash, cmd.exe, powershell.exe) is a strong indicator of a successful RCE exploit.",
+      "context": "EDR logs, Process creation events (Windows Event ID 4688), Linux auditd logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "package-lock.json",
+      "description": "Searching for '\"vm2\":' in this file can identify projects using the library and their specific versions, allowing for quick identification of vulnerable applications.",
+      "context": "Source code scanning, Asset inventory management.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm audit",
+      "description": "Running this command in a Node.js project directory will automatically check for dependencies with known vulnerabilities, including the ones in vm2.",
+      "context": "Developer workstations, CI/CD pipelines.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "vm2",
+    "Node.js",
+    "Sandbox Escape",
+    "Vulnerability",
+    "RCE",
+    "CVE-2026-24118",
+    "CVE-2026-24120",
+    "CVE-2026-24781",
+    "CVE-2026-26332"
+  ],
+  "extract_datetime": "2026-05-07T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Any organization using the vm2 Node.js library in their applications"
+    ]
+  },
+  "keywords": [
+    "vm2 vulnerability",
+    "Node.js sandbox escape",
+    "CVE-2026-24118",
+    "javascript sandbox",
+    "remote code execution",
+    "T1611",
+    "npm security"
+  ],
+  "pub_date": "2026-05-07",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-05-07T15:00:00.000Z",
+  "updatedAt": "2026-05-07T15:00:00.000Z"
+}

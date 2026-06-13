@@ -1,0 +1,88 @@
+title: LSASS Process Memory Dump
+id: 2b1b8b1e-7b1b-4b1b-8b1b-1b8b1b8b1b8b
+status: experimental
+description: Detects attempts to dump credentials from the LSASS process memory, a common TTP for credential access used by groups like Qilin.
+references:
+  - https://claimdepot.org/data-breach/bank3-data-breach-exposes-clients-ssns-and-financial-information/
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1003.001
+  - attack.credential_access
+level: high
+logsource:
+  category: process_access
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess: '0x1010' # PROCESS_VM_READ | PROCESS_QUERY_INFORMATION
+  condition: selection
+---
+title: Kerberoasting Attack Detection
+id: 3c2c9c2f-8c2c-4c2c-9c2c-2c9c2c9c2c9c
+status: experimental
+description: Detects potential Kerberoasting attacks by monitoring for service ticket requests (Event ID 4769) with RC4 encryption, a technique used for privilege escalation.
+references:
+  - https://claimdepot.org/data-breach/bank3-data-breach-exposes-clients-ssns-and-financial-information/
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1558.003
+  - attack.credential_access
+level: high
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4769
+    TicketEncryptionType: '0x17' # RC4-HMAC
+  condition: selection
+---
+title: Suspicious Data Staging Activity
+id: 4d3d0d3a-9d3d-4d3d-ad3d-3d0d3d0d3d0d
+status: experimental
+description: Detects the creation of large archive files (.zip, .rar) on servers, which often precedes data exfiltration.
+references:
+  - https://claimdepot.org/data-breach/bank3-data-breach-exposes-clients-ssns-and-financial-information/
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1560.001
+  - attack.collection
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.zip'
+      - '.rar'
+      - '.7z'
+  condition: selection
+---
+title: Cobalt Strike C2 Beaconing
+id: 5e4e1e4b-0e4e-4e4e-be4e-4e1e4e1e4e1e
+status: experimental
+description: Detects network traffic patterns consistent with Cobalt Strike C2 beaconing, characterized by regular, timed beacons to external IP addresses.
+references:
+  - https://claimdepot.org/data-breach/bank3-data-breach-exposes-clients-ssns-and-financial-information/
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: 
+      - '\powershell.exe'
+      - '\rundll32.exe'
+    Initiated: 'true'
+  timeframe: 1m
+  condition: selection | count() > 10

