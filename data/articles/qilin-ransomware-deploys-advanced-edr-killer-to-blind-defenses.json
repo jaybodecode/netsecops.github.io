@@ -1,0 +1,273 @@
+{
+  "id": "657a66c5-cf9d-4b34-9b18-2856eb0faf0d",
+  "slug": "qilin-ransomware-deploys-advanced-edr-killer-to-blind-defenses",
+  "headline": "Qilin Ransomware Blinds Defenses with Advanced EDR Killer, Abusing Vulnerable Drivers",
+  "title": "Qilin Ransomware Uses Sophisticated EDR Killer to Disable Over 300 Security Products",
+  "summary": "The Qilin ransomware group is using a sophisticated, multi-stage attack to neutralize endpoint security solutions before encrypting systems. According to analysis by Cisco Talos, the attack uses DLL side-loading and a \"bring your own vulnerable driver\" (BYOVD) technique to gain kernel-level access. By abusing a legitimately signed driver (`rwdrv.sys`), the malware manipulates kernel memory to unregister the monitoring callbacks of over 300 different EDR products, effectively blinding them. This advanced defense evasion highlights a significant escalation in ransomware tactics.",
+  "full_report": "## Executive Summary\n\nThe **[Qilin](https://malpedia.caad.fkie.fraunhofer.de/actor/qilin)** ransomware-as-a-service (RaaS) operation is deploying a highly advanced, multi-stage infection chain specifically designed to disable Endpoint Detection and Response (EDR) solutions. Research from **[Cisco Talos](https://www.talosintelligence.com/)** details how the attackers use a combination of DLL side-loading, in-memory execution, and the \"bring your own vulnerable driver\" (BYOVD) technique to systematically dismantle security defenses at the kernel level. The malware abuses a legitimately signed but vulnerable driver (`rwdrv.sys`) to gain read/write access to kernel memory, which it then uses to find and unregister the callbacks for over 300 different EDR drivers. This effectively renders the security tools blind and powerless, allowing the ransomware to execute unimpeded. This tactic represents a significant evolution in ransomware tradecraft, focusing on the complete neutralization of the security stack as a standard operational step.\n\n---\n\n## Threat Overview\n\nThe attack demonstrates a deep understanding of Windows internals and EDR product architecture. The primary goal is defense evasion to ensure the successful execution of the final ransomware payload. The operation is notable for its stealth and sophistication, executing almost entirely in memory to avoid detection by traditional file-based antivirus.\n\nThe group, also known as Agenda, Gold Feather, or Water Galura, has a high operational tempo, claiming over 40 victims per month.\n\n## Technical Analysis\n\nThe attack chain is a masterclass in defense evasion.\n\n**Infection Chain:**\n1.  **DLL Side-Loading:** The attack begins when a legitimate, signed application (e.g., `FoxitPDFReader.exe`) is executed from a directory containing a malicious DLL named `msimg32.dll`. The legitimate application loads the malicious DLL instead of the real one from the system directory.\n2.  **In-Memory Execution:** The malicious `msimg32.dll` acts as a loader. It forwards legitimate function calls to the real system DLL to maintain normal application behavior while initiating a four-stage, in-memory loading process for its final payload. This avoids writing malicious files to disk.\n3.  **Evasion Techniques:** The loader employs advanced evasion techniques, including suppressing Event Tracing for Windows (ETW) to blind logging and using Structured Exception Handling (SEH) to obfuscate its own execution flow.\n4.  **Bring Your Own Vulnerable Driver (BYOVD):** The final payload is the EDR killer. It drops and loads a legitimately signed but vulnerable driver, `rwdrv.sys` (a renamed version of `ThrottleStop.sys`). This driver is vulnerable to an issue that allows user-mode applications to gain arbitrary read/write access to kernel memory.\n5.  **Kernel-Level Manipulation:** Using the access granted by `rwdrv.sys`, the malware scans kernel memory to locate the callback routines registered by EDR drivers. These callbacks are what allow EDR products to monitor events like process creation, thread creation, and image loading.\n6.  **Disabling EDR:** The malware systematically unregisters or overwrites the pointers for these callbacks, effectively detaching the EDR product from the kernel. With its eyes and ears gone, the EDR is rendered useless.\n7.  **Ransomware Execution:** With defenses disabled, the malware loads a second driver, `hlpdrv.sys`, to terminate the now-unprotected EDR processes and then proceeds to deploy the Qilin ransomware payload to encrypt the system.\n\n**MITRE ATT&CK TTPs:**\n- [`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/): The primary goal of the EDR killer payload.\n- [`T1574.002 - DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/): The initial execution vector.\n- [`T1055.001 - Dynamic-link Library Injection`](https://attack.mitre.org/techniques/T1055/001/): The malware uses a multi-stage loader process in memory.\n- [`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/): The BYOVD technique is used to escalate privileges from user-mode to kernel-mode.\n- [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/): The final objective of the Qilin ransomware.\n\n## Impact Assessment\n\nThe use of such a sophisticated EDR killer significantly increases the probability of a successful ransomware attack. Organizations that rely solely on their EDR solution for protection are left completely vulnerable. A successful Qilin attack leads to widespread data encryption, operational downtime, and financial losses from recovery efforts and potential ransom payments. The technical sophistication required to reverse-engineer and defeat this attack means that recovery can be complex and costly. This tactic effectively resets the balance of power between attackers and defenders, forcing security vendors to develop new methods of tamper protection for their kernel-level components.\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| File Name | `msimg32.dll` | Malicious loader DLL used in side-loading attack |\n| File Name | `rwdrv.sys` | Renamed, vulnerable, signed driver (ThrottleStop.sys) used for kernel access |\n| File Name | `hlpdrv.sys` | Second driver used to terminate EDR processes |\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams should hunt for the following indicators of a Qilin attack:\n\n| Type | Value | Description | Context |\n| :--- | :--- | :--- | :--- |\n| File Name | `rwdrv.sys` or `ThrottleStop.sys` | The presence of this driver, especially if recently created or loaded by an unusual process, is highly suspicious. | EDR, Sysmon Event ID 6 (Driver Loaded). |\n| Process Name | `FoxitPDFReader.exe` (or other legitimate apps) | Look for legitimate applications spawning unusual child processes or making suspicious network connections. | EDR process tree analysis. |\n| Registry Key | `HKLM\\SYSTEM\\CurrentControlSet\\Services\\rwdrv` | Creation of a new service to load the vulnerable driver. | Registry monitoring, Sysmon Event ID 12/13. |\n| Log Source | EDR/AV Logs | Alerts indicating that the EDR/AV service has stopped unexpectedly or that tamper protection has been triggered. | Security tool health monitoring. |\n\n## Detection & Response\n\n**Detection:**\n1.  **Driver Monitoring:** Monitor for the loading of any new or non-standard drivers. Use a driver blocklist to prevent known vulnerable drivers like `rwdrv.sys` from being loaded.\n2.  **Tamper Protection:** Ensure that the tamper protection features of your EDR solution are enabled and configured to the highest level.\n3.  **Behavioral Detections:** While the EDR may be blinded, other security tools (network, identity) may still detect downstream activity. Look for a sudden loss of telemetry from an endpoint as a key indicator of compromise.\n\n**Response:**\n1.  **Isolate:** If an endpoint suddenly stops reporting to the EDR console, immediately isolate it from the network as a precaution.\n2.  **Preserve and Analyze:** Do not simply re-image the machine. Preserve a forensic image to analyze how the EDR was bypassed. This is critical intelligence for improving defenses.\n\n## Mitigation\n\n1.  **Driver Block-listing:** Use technologies like Windows Defender Application Control (WDAC) to create policies that block known vulnerable drivers from being loaded into the kernel.\n2.  **Attack Surface Reduction (ASR):** Implement ASR rules to block legitimate applications from being abused in DLL side-loading attacks.\n3.  **Kernel-Level Security:** Enable virtualization-based security features like Hypervisor-Protected Code Integrity (HVCI) which can make it more difficult for attackers to load malicious drivers or modify kernel memory.",
+  "twitter_post": "🔥 Qilin ransomware deploys a sophisticated EDR killer, using a vulnerable signed driver (BYOVD) to disable over 300 security products at the kernel level. A major escalation in defense evasion tactics. #Ransomware #Qilin #EDR #CyberSecurity #BYOVD",
+  "meta_description": "The Qilin ransomware group is using a sophisticated, multi-stage attack with a \"bring your own vulnerable driver\" (BYOVD) technique to disable hundreds of EDR solutions before encryption.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Qilin",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/qilin"
+    },
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://www.talosintelligence.com/"
+    },
+    {
+      "name": "Qilin Ransomware",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://blog.talosintelligence.com/qilin-edr-killer-infection-chain/",
+      "title": "Qilin EDR killer infection chain",
+      "date": "2026-04-02",
+      "friendly_name": "Cisco Talos",
+      "website": "talosintelligence.com"
+    },
+    {
+      "url": "https://cybersecuritynews.co.uk/qilin-ransomware-uses-malicious-dll-to-kill-almost-every-vendors-edr-solutions/",
+      "title": "Qilin Ransomware Uses Malicious DLL to Kill Almost Every Vendor’s EDR Solutions",
+      "date": "2026-04-02",
+      "friendly_name": "Cybersecurity News",
+      "website": "cybersecuritynews.co.uk"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1055.001",
+      "name": "Dynamic-link Library Injection",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1548.002",
+      "name": "Bypass User Account Control",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        },
+        {
+          "id": "D3-PSEP",
+          "name": "Process Segment Execution Prevention",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessSegmentExecutionPrevention"
+        }
+      ],
+      "description": "Use application control solutions like WDAC to block known vulnerable drivers from being loaded.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1025",
+      "name": "Privileged Process Integrity",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BA",
+          "name": "Bootloader Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:BootloaderAuthentication"
+        },
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-PSEP",
+          "name": "Process Segment Execution Prevention",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessSegmentExecutionPrevention"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Enable virtualization-based security (VBS) and Hypervisor-Protected Code Integrity (HVCI) to protect the kernel from manipulation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ANET",
+          "name": "Authentication Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding"
+        },
+        {
+          "id": "D3-AZET",
+          "name": "Authorization Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthorizationEventThresholding"
+        },
+        {
+          "id": "D3-JFAPA",
+          "name": "Job Function Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:JobFunctionAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-SDA",
+          "name": "Session Duration Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SessionDurationAnalysis"
+        },
+        {
+          "id": "D3-UDTA",
+          "name": "User Data Transfer Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserDataTransferAnalysis"
+        },
+        {
+          "id": "D3-UGLPA",
+          "name": "User Geolocation Logon Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis"
+        },
+        {
+          "id": "D3-WSAA",
+          "name": "Web Session Activity Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis"
+        }
+      ],
+      "description": "Ensure EDR tamper protection is enabled and monitor for alerts indicating the security service has been stopped or modified.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DLIC",
+      "technique_name": "Driver Load Integrity Checking",
+      "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking",
+      "recommendation": "To directly counter the Qilin ransomware's BYOVD technique, organizations must implement robust driver load integrity checking. The most effective way to do this on Windows systems is through Windows Defender Application Control (WDAC) and Hypervisor-Protected Code Integrity (HVCI). A WDAC policy can be created to explicitly block known vulnerable drivers like `rwdrv.sys` (and its original `ThrottleStop.sys`) by hash or signing certificate. This prevents the driver from ever being loaded into the kernel, stopping the attack chain before it can gain kernel memory access. For a more advanced posture, HVCI uses virtualization-based security (VBS) to protect the kernel from modification, making it significantly harder for even a malicious driver to manipulate kernel structures like EDR callbacks. Implementing a strict WDAC policy that only allows known, good drivers to load is the ultimate defense against this entire class of attack.",
+      "mitre_mitigation_id": "M1025"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "For detecting the initial stages of the Qilin attack, detailed process analysis is key. Security teams should configure EDR and SIEM solutions to monitor for the specific behaviors of the DLL side-loading technique. Create detection rules that look for a legitimate, signed executable (like `FoxitPDFReader.exe`) loading a DLL (like `msimg32.dll`) from a non-standard path (e.g., the same directory as the executable, instead of `System32`). Further, analyze the process tree: is this legitimate application suddenly creating a new service, writing a `.sys` file to disk, or attempting to load a driver? This chain of events is highly anomalous and a strong indicator of compromise. Even if the EDR is later blinded, detecting this initial activity provides a crucial window for incident responders to isolate the host and prevent the final ransomware payload from executing.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "msimg32.dll",
+      "description": "Malicious loader DLL used in side-loading attack"
+    },
+    {
+      "type": "file_name",
+      "value": "rwdrv.sys",
+      "description": "Renamed, vulnerable, signed driver (ThrottleStop.sys) used for kernel access"
+    },
+    {
+      "type": "file_name",
+      "value": "hlpdrv.sys",
+      "description": "Second driver used to terminate EDR processes"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Sysmon Event ID 6",
+      "description": "Monitor for driver loading events, specifically for `rwdrv.sys` or `ThrottleStop.sys`. The hash and signature can be used for verification.",
+      "context": "Windows Event Logs, SIEM.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "FoxitPDFReader.exe",
+      "description": "Look for legitimate applications like Foxit Reader loading `msimg32.dll` from a non-system directory or spawning unusual child processes.",
+      "context": "EDR process tree analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "registry_key",
+      "value": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\rwdrv",
+      "description": "Creation of a new service to load the vulnerable `rwdrv.sys` driver is a strong indicator of compromise.",
+      "context": "Registry monitoring, Sysmon Event ID 12/13.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "EDR/AV Logs",
+      "description": "An alert indicating that the EDR/AV service has stopped unexpectedly or that tamper protection has been triggered should be treated as a critical incident.",
+      "context": "Security tool health monitoring dashboard, SIEM.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Qilin",
+    "ransomware",
+    "EDR",
+    "BYOVD",
+    "kernel",
+    "defense evasion",
+    "Cisco Talos",
+    "DLL side-loading"
+  ],
+  "extract_datetime": "2026-04-21T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Healthcare",
+      "Manufacturing"
+    ],
+    "other_affected": [
+      "Users of over 300 different EDR products"
+    ]
+  },
+  "pub_date": "2026-04-21",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-04-21T15:00:00.000Z",
+  "updatedAt": "2026-04-21T15:00:00.000Z"
+}

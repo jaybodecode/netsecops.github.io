@@ -1,0 +1,1 @@
+function n(t){return t&&t.__esModule&&Object.prototype.hasOwnProperty.call(t,"default")?t.default:t}var e,o;function p(){return o||(o=1,e=function(r){return r!==null&&typeof r=="object"&&typeof r.addUndirectedEdgeWithKey=="function"&&typeof r.dropNode=="function"&&typeof r.multi=="boolean"}),e}export{n as g,p as r};

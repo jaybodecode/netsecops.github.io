@@ -1,0 +1,231 @@
+{
+  "id": "abd2c9c0-4f55-4e63-b3be-4d2f2cb2efdd",
+  "slug": "malicious-plugins-on-jetbrains-marketplace-steal-ai-api-keys",
+  "headline": "Supply Chain Attack: Malicious JetBrains Plugins Steal AI Provider API Keys from Developers",
+  "title": "Malicious Plugins on JetBrains Marketplace Steal AI Provider API Keys",
+  "summary": "A software supply chain attack on the JetBrains Marketplace has been uncovered, involving at least 15 malicious plugins that masqueraded as legitimate AI coding assistants to steal API keys. Active since October 2025, the plugins exfiltrated credentials for services like OpenAI, Anthropic, and Google AI from developers' IDEs. The malware, which had tens of thousands of downloads, sent the stolen keys in plaintext to an attacker-controlled server. JetBrains has since removed the plugins, blocked the publisher, and remotely disabled the malware in affected IDEs, while also planning to enhance its plugin vetting process.",
+  "full_report": "## Executive Summary\nA significant software supply chain attack has been identified on the **[JetBrains](https://www.jetbrains.com/)** Marketplace, where at least 15 malicious plugins were found stealing sensitive API keys from developers. These plugins, disguised as AI coding assistants, were downloaded by an estimated 70,000 users. Active since at least October 2025, the plugins covertly exfiltrated API keys for major AI services like **[OpenAI](https://openai.com/)**, Anthropic, and **[Google](https://www.google.com/)** AI. The stolen credentials were sent over unencrypted HTTP to a hardcoded command-and-control (C2) server. In response to the discovery by Aikido Security, JetBrains has taken down the malicious plugins, banned the publisher, and is working to improve its marketplace security. This incident highlights the growing risk of supply chain attacks targeting the developer ecosystem.\n\n## Threat Overview\nThe attack leveraged the trust developers place in the JetBrains Marketplace ecosystem. The threat actor published 15 plugins with names designed to mimic legitimate AI tools, such as 'CodeGPT AI Assistant' and 'DeepSeek AI Assist'. The attack flow was as follows:\n1.  **Deceptive Lure:** The plugins provided their advertised functionality, lulling developers into a false sense of security.\n2.  **Credential Entry:** The developer would enter their personal or corporate API key for an AI service (e.g., OpenAI) into the plugin's settings within their IDE (e.g., IntelliJ IDEA, PyCharm).\n3.  **Exfiltration:** Upon saving the settings, the plugin would immediately send the API key in a plaintext JSON payload via an unencrypted HTTP POST request to the C2 server at `39.107.60[.]51`.\n4.  **Evasion:** To bypass security warnings, some plugins installed a custom trust manager to suppress TLS certificate validation errors, indicating a degree of sophistication.\n\nResearchers also found evidence that the attackers may have been monetizing the stolen keys by reselling access to the AI services through their own plugins.\n\n## Technical Analysis\nThis attack is a classic example of a trojanized software supply chain attack. By compromising a trusted distribution channel (JetBrains Marketplace), the attackers gained direct access to the developer's local environment. The use of unencrypted HTTP for exfiltration is simple yet effective, as outbound port 80 traffic is often permitted in corporate environments.\n\nThe most concerning technical aspect is the direct targeting of developer credentials. Stolen AI API keys can lead to significant financial loss through fraudulent usage, as well as the potential for corporate espionage if the keys provide access to proprietary models or data.\n\n### MITRE ATT&CK Techniques:\n- **[`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/):** The core of the attack, involving the distribution of malicious code through a legitimate software marketplace.\n- **[`T1555.005 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/005/):** The plugins acted as a malicious password store, tricking users into entering credentials which were then stolen.\n- **[`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/):** The use of HTTP for C2 communication and data exfiltration.\n- **[`T1552.006 - Stored Plaintext Passwords`](https://attack.mitre.org/techniques/T1552/006/):** The malware exfiltrated the API keys in plaintext, a severe security anti-pattern.\n- **[`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/):** While not the primary vector, the plugins themselves act as a form of social engineering lure.\n\n## Impact Assessment\nThe impact on affected developers and their employers can be substantial:\n- **Financial Loss:** Attackers can use the stolen API keys to rack up enormous bills on AI service accounts, with costs potentially running into thousands of dollars per day.\n- **Data Leakage:** If the API keys provided access to fine-tuned models or proprietary datasets hosted on AI platforms, this could lead to a major intellectual property breach.\n- **Loss of Trust:** This incident erodes trust in the security of third-party developer tools and marketplaces, potentially slowing down development workflows as organizations implement stricter vetting.\n- **Further Compromise:** Stolen keys could be used to interact with internal company services that are integrated with the AI provider, potentially leading to further network intrusion.\n\n## IOCs — Directly from Articles\n| Type          | Value         | Description      |\n|---------------|---------------|------------------|\n| IP Address    | `39.107.60.51`  | C2 Server        |\n\n## Cyber Observables — Hunting Hints\nSecurity teams should hunt for the following to identify potential compromise:\n- **Log Source:** Firewall logs, Proxy logs, DNS logs.\n- **Observable:** Any outbound network connections from developer workstations or build servers to the IP address `39.107.60[.]51`.\n- **Observable:** Unencrypted HTTP POST requests to unknown IP addresses originating from Java processes (`java.exe`), which power JetBrains IDEs.\n- **Observable:** Review installed plugins on developer machines for any of the 15 malicious plugins (a full list may be available from JetBrains or Aikido Security).\n\n## Detection & Response\n- **Network Monitoring:** Block the C2 IP address `39.107.60[.]51` at the network perimeter. Monitor for any historical connections to this IP.\n- **Credential Rotation:** Any developer who used one of the malicious plugins must immediately revoke the compromised API key from the respective AI service provider (OpenAI, Google AI, etc.) and generate a new one.\n- **Audit Usage:** Review billing and usage logs from AI service providers for any anomalous activity or unexpected cost spikes.\n- **Plugin Audit:** Conduct an audit of all third-party plugins installed in developer IDEs across the organization. Remove any non-essential or unvetted plugins.\n- **D3FEND Techniques:** Employ [`D3-OTF: Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) to block connections to known-bad IPs and [`D3-UA: URL Analysis`](https://d3fend.mitre.org/technique/d3f:URLAnalysis) on proxy logs to spot suspicious connections.\n\n## Mitigation\n1.  **Plugin Vetting:** Establish a corporate policy for vetting and approving third-party IDE plugins. Maintain an internal allowlist of trusted plugins.\n2.  **Principle of Least Privilege:** When generating API keys, grant them the minimum scope of permissions necessary for their function. Use short-lived keys for development and testing where possible.\n3.  **Secrets Management:** Avoid storing API keys directly in IDE settings. Use a dedicated secrets management solution (e.g., HashiCorp Vault, AWS Secrets Manager) and have the IDE retrieve them at runtime.\n4.  **Network Egress Filtering:** Implement stricter egress filtering rules for developer environments, denying outbound connections by default and only allowing traffic to approved services and domains.\n5.  **Developer Education:** Train developers on the risks of third-party plugins and the importance of verifying the publisher and permissions before installation.",
+  "twitter_post": "🚨 SUPPLY CHAIN ATTACK: 15 malicious plugins on the JetBrains Marketplace stole AI API keys from ~70k developers. Plugins posed as AI assistants to exfiltrate OpenAI & Google AI keys. #SupplyChain #CyberSecurity #JetBrains #DevSecOps",
+  "meta_description": "A software supply chain attack on the JetBrains Marketplace involved 15 malicious plugins stealing AI provider API keys. Learn how the attack worked and how to mitigate it.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "JetBrains",
+      "type": "vendor",
+      "url": "https://www.jetbrains.com/"
+    },
+    {
+      "name": "JetBrains Marketplace",
+      "type": "product"
+    },
+    {
+      "name": "OpenAI",
+      "type": "company",
+      "url": "https://openai.com/"
+    },
+    {
+      "name": "Anthropic",
+      "type": "company"
+    },
+    {
+      "name": "Google AI",
+      "type": "product"
+    },
+    {
+      "name": "DeepSeek",
+      "type": "company"
+    },
+    {
+      "name": "SiliconFlow",
+      "type": "company"
+    },
+    {
+      "name": "Aikido Security",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://diesec.com/2026/06/top-5-cybersecurity-news-stories-june-19-2026/",
+      "title": "Top 5 Cybersecurity News Stories June 19, 2026",
+      "date": "2026-06-19",
+      "friendly_name": "DieSec",
+      "website": "diesec.com"
+    },
+    {
+      "url": "https://www.techzine.eu/news/devops/142221/jetbrains-plug-ins-steal-api-keys-from-ai-services/",
+      "title": "JetBrains plug-ins steal API keys from AI services",
+      "date": "2026-06-18",
+      "friendly_name": "Techzine",
+      "website": "techzine.eu"
+    },
+    {
+      "url": "https://blog.jetbrains.com/platform/2026/06/marketplace-ecosystem-security-update-malicious-ai-plugins/",
+      "title": "JetBrains Marketplace Ecosystem Security Update: Addressing Malicious Third-Party AI Plugins",
+      "date": "2026-06-18",
+      "friendly_name": "JetBrains",
+      "website": "jetbrains.com"
+    },
+    {
+      "url": "https://www.opensourceforu.com/2026/06/attackers-exploit-jetbrains-plugins-to-steal-ai-provider-keys/",
+      "title": "Attackers Exploit JetBrains Plugins To Steal AI Provider Keys",
+      "date": "2026-06-19",
+      "friendly_name": "Open Source For U",
+      "website": "opensourceforu.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-10",
+      "summary": "The malicious campaign is believed to have started."
+    },
+    {
+      "datetime": "2026-06-10",
+      "summary": "The malicious plugins were observed to be active until at least this date."
+    },
+    {
+      "datetime": "2026-06-16",
+      "summary": "JetBrains removes the malicious plugins from its marketplace and remotely disables them."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1555.005",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Vet third-party plugins before installation and maintain an organizational allowlist of approved developer tools.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict network egress filtering to block outbound connections to untrusted IP addresses and domains, preventing data exfiltration.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate developers on the risks associated with third-party plugins and the importance of using secure secrets management practices.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1043",
+      "name": "Credential Access Protection",
+      "description": "Use dedicated secrets management tools instead of storing sensitive credentials like API keys in IDE configuration files.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To directly counter the exfiltration method used by the malicious JetBrains plugins, organizations must implement strict outbound traffic filtering for developer environments. The C2 server IP `39.107.60.51` should be blocked immediately at the perimeter firewall. More strategically, security teams should configure a default-deny policy for outbound traffic from developer workstations and build servers. An explicit allowlist should be created for only necessary destinations, such as code repositories (GitHub, GitLab), package managers (NPM, Maven), and required cloud services. This approach would have blocked the unencrypted HTTP POST request to the attacker's unknown IP, preventing the theft of the API keys even after the plugin was installed. Monitoring for and alerting on any attempts to connect to non-allowlisted destinations is crucial for detection.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "While JetBrains plugins are not traditional executables, the principle of allowlisting can be applied to the IDE's ecosystem. Organizations should establish a formal vetting process for all third-party plugins. This involves creating an internal 'approved' repository or list of plugins that have been reviewed for security, functionality, and publisher reputation. Developers should be restricted from installing any plugin not on this list. This moves from a model of 'trust by default' to 'trust by exception,' significantly reducing the attack surface. This preventative control stops the malicious software from ever being installed, which is the most effective way to thwart this type of supply chain attack.",
+      "mitre_mitigation_id": "M1033"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Developers and organizations should harden the configuration of their IDEs by externalizing secrets. API keys and other sensitive credentials should never be stored in plaintext within IDE configuration files or settings panels. Instead, use a dedicated secrets management tool (e.g., HashiCorp Vault, Doppler, AWS Secrets Manager). The IDE can be configured to retrieve these secrets dynamically at runtime using a secure authentication method. This practice ensures that even if a malicious plugin gains the ability to read configuration files or intercept settings, there are no plaintext credentials to steal. This decouples the secret from the developer's local environment, providing a robust defense against credential theft.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "39.107.60.51",
+      "description": "Attacker-controlled C2 server used for exfiltrating stolen API keys."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "HTTP POST requests to 39.107.60.51",
+      "description": "Direct indicator of compromise. Any connection to this IP from a developer environment should be treated as a confirmed breach.",
+      "context": "Firewall logs, Proxy logs, Netflow",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "java.exe",
+      "description": "JetBrains IDEs run as Java processes. Outbound HTTP traffic from this process to untrusted IPs is suspicious.",
+      "context": "EDR logs, Process-aware network monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "string_pattern",
+      "value": "\"CodeGPT AI Assistant\"",
+      "description": "Name of one of the primary malicious plugins. Can be searched for in IDE configuration files or plugin lists.",
+      "context": "File system search, IDE configuration audit",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "\"DeepSeek AI Assist\"",
+      "description": "Name of another primary malicious plugin.",
+      "context": "File system search, IDE configuration audit",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "JetBrains",
+    "Supply Chain Attack",
+    "API Keys",
+    "Malware",
+    "OpenAI",
+    "DevSecOps",
+    "IDE"
+  ],
+  "extract_datetime": "2026-06-19T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Users of AI services"
+    ],
+    "people_affected_estimate": "70,000 developers"
+  },
+  "pub_date": "2026-06-19",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-06-19T15:00:00.000Z",
+  "updatedAt": "2026-06-19T15:00:00.000Z"
+}

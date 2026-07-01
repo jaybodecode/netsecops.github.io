@@ -1,0 +1,97 @@
+title: Gamaredon PowerShell Execution Policy Bypass
+id: 2b8c1f3a-1e9d-4b7c-8a0d-9f6e5d4c3b2a
+status: experimental
+description: Monitor for PowerShell being launched with a bypass policy to run an unsigned script, a common Gamaredon TTP.
+references:
+  - https://thehackernews.com/2026/06/gamaredon-expands-ukraine-attacks-with.html
+author: cyber.netsecops.io
+date: 2026-06-29
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains|all:
+      - ' -ExecutionPolicy Bypass'
+      - ' -File'
+  condition: selection
+---
+title: Gamaredon LNK/Script in Startup Folder
+id: 8d3e4f5a-9c6b-4a2d-8f1e-3a2b1c0d9e8f
+status: experimental
+description: Monitor the user Startup folder for the creation of new LNK, VBS, or PowerShell files, a persistence method used by Gamaredon.
+references:
+  - https://thehackernews.com/2026/06/gamaredon-expands-ukraine-attacks-with.html
+author: cyber.netsecops.io
+date: 2026-06-29
+tags:
+  - attack.t1547.001
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains: '\Microsoft\Windows\Start Menu\Programs\Startup\'
+    TargetFilename|endswith:
+      - '.lnk'
+      - '.vbs'
+      - '.ps1'
+  condition: selection
+---
+title: Potential Gamaredon C2 via Cloudflare Tunnel
+id: 808f8480-86c4-49f9-9225-0186c9ac7668
+status: experimental
+description: Detects DNS queries to trycloudflare.com, which is used by Cloudflare Tunnels and has been abused by Gamaredon for C2. High potential for FPs, requires context.
+references:
+  - https://thehackernews.com/2026/06/gamaredon-expands-ukraine-attacks-with.html
+author: cyber.netsecops.io
+date: 2026-06-29
+tags:
+  - attack.t1102.002
+  - attack.command_and_control
+level: medium
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName|endswith: '.trycloudflare.com'
+  filter_legit:
+    Image|endswith:
+      - '\cloudflared.exe'
+  condition: selection and not filter_legit
+---
+title: Suspicious HTA or LNK Attachment Creation
+id: 1e2f3a4b-5c6d-4e7f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: Detects HTA or LNK files, commonly used by Gamaredon in spear-phishing campaigns, being created by common email or browser processes.
+references:
+  - https://thehackernews.com/2026/06/gamaredon-expands-ukraine-attacks-with.html
+author: cyber.netsecops.io
+date: 2026-06-29
+tags:
+  - attack.t1566.001
+  - attack.initial_access
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_file:
+    TargetFilename|endswith:
+      - '.hta'
+      - '.lnk'
+  selection_source:
+    Image|endswith:
+      - '\outlook.exe'
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+  condition: all of selection_*

@@ -1,0 +1,242 @@
+{
+  "id": "2a3b5180-57ff-40ae-a2cf-4a03148b154e",
+  "slug": "tanstack-discloses-sophisticated-supply-chain-attack-on-npm-packages",
+  "headline": "TanStack Details Sophisticated Supply Chain Attack That Compromised 42 npm Packages",
+  "title": "TanStack Reveals Novel Supply Chain Attack Using GitHub Actions Cache Poisoning and OIDC Token Theft",
+  "summary": "The maintainers of the popular open-source toolkit TanStack have detailed a highly sophisticated supply chain attack that compromised 42 of their npm packages. In a six-minute window, attackers used a novel method involving a malicious pull request, GitHub Actions cache poisoning, and the theft of a short-lived OIDC token to publish 84 malicious package versions. The attack did not require compromised maintainer credentials and highlights a new, dangerous vector for attacking the software supply chain through CI/CD pipelines.",
+  "full_report": "## Executive Summary\nOn May 11, 2026, the **[TanStack](https://tanstack.com/)** open-source project was the target of a brief but highly sophisticated supply chain attack that resulted in the malicious modification of 42 popular **[npm](https://www.npmjs.com/)** packages. The attackers demonstrated a deep understanding of modern CI/CD practices, bypassing traditional security controls like credential protection. They leveraged a novel chain of exploits involving a malicious pull request, poisoning the **[GitHub](https://github.com)** Actions cache, and stealing a short-lived OpenID Connect (OIDC) token from within the build environment to publish malicious package versions. The payload was a potent credential-stealing malware aimed at developer environments. The incident serves as a critical wake-up call about the security of automated CI/CD pipelines and the evolving tactics of supply chain attackers.\n\n---\n\n## Threat Overview\nThe attack, which occurred between 19:20 and 19:26 UTC, was remarkable for its speed and sophistication. It did not rely on phishing or stealing long-lived API keys. Instead, it manipulated the trusted automation that powers modern software development.\n\n**Attack Chain:**\n1.  **Initial Access via Pull Request:** The attacker submitted a pull request from a forked repository. This PR targeted a GitHub Actions workflow that was insecurely configured with the `pull_request_target` trigger, allowing code from the fork to run with elevated permissions. ([`T1195.001 - Compromise Software Development Tools`](https://attack.mitre.org/techniques/T1195/001/))\n2.  **Cache Poisoning:** The malicious script in the PR executed within the trusted context and wrote a malicious payload to the shared GitHub Actions cache. This cache is used to speed up subsequent builds.\n3.  **Triggering the Payload:** A legitimate TanStack maintainer, unaware of the poisoned cache, merged a separate, benign pull request. This action triggered the standard release workflow.\n4.  **Token Theft:** The release workflow restored the poisoned cache, which then executed the malicious code. This code ran within the trusted GitHub Actions runner and was able to access the runner's environment to steal the short-lived OIDC token provided by GitHub for passwordless publishing to npm. ([`T1552.006 - Stored Accounts`](https://attack.mitre.org/techniques/T1552/006/))\n5.  **Malicious Publication:** The stolen OIDC token was immediately used by the attacker to authenticate to npm and publish malicious versions of 42 different TanStack packages. ([`T1553 - Subvert Trust Controls`](https://attack.mitre.org/techniques/T1553/))\n\n---\n\n## Technical Analysis\nThe attack's brilliance lies in its abuse of trusted, ephemeral mechanisms. OIDC tokens are designed to be a more secure alternative to static secrets, but this attack shows that if an attacker can gain execution within the CI/CD environment, even for a moment, they can steal and misuse these tokens.\n\nThe payload itself was a comprehensive credential harvester designed to compromise developer workstations and CI/CD environments. Its capabilities included stealing:\n*   Cloud credentials (AWS, GCP)\n*   Kubernetes tokens\n*   GitHub tokens\n*   SSH keys\n*   npm configurations (`.npmrc`)\n\nIt also contained a self-propagation mechanism, meaning that any developer who installed the malicious package and then worked on their own npm package could inadvertently spread the infection further. The rapid detection by external researchers (within 20 minutes) was crucial in limiting the downstream impact.\n\n> This attack demonstrates that CI/CD pipelines are not just build tools; they are high-privilege environments and a primary target for attackers. Securing the pipeline itself is as important as securing the code.\n\n---\n\n## Impact Assessment\nThe potential impact of this attack was enormous. TanStack tools are used by countless developers and organizations worldwide. A successful, widespread compromise could have led to a catastrophic wave of secondary breaches as developer credentials from thousands of companies were stolen. The payload's ability to steal cloud and Kubernetes credentials means attackers could have gained access to production infrastructure, not just source code. The self-propagation feature could have created a worm-like event within the npm ecosystem. While the quick detection mitigated the worst-case scenario, the incident exposes a systemic risk in the open-source software supply chain.\n\n---\n\n## Detection & Response\n*   **Dependency Monitoring:** Use tools like `npm audit` or third-party Software Composition Analysis (SCA) tools to detect when a malicious or deprecated version of a dependency is being used.\n*   **CI/CD Log Analysis:** Monitor CI/CD logs for anomalous behavior, such as unexpected script executions, network connections to unusual domains, or changes in build artifacts. This is an application of D3FEND's [`Dynamic Analysis`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis).\n*   **OIDC Token Auditing:** In GitHub, use audit logs to review OIDC token requests and their associated claims to detect suspicious publishing activity.\n\n---\n\n## Mitigation Recommendations\n1.  **Secure CI/CD Workflows ([`M1054 - Software Configuration`](https://attack.mitre.org/mitigations/M1054/)):**\n    *   **Avoid `pull_request_target`:** Never use the `pull_request_target` trigger for workflows that build, test, or publish code. Use `pull_request` and `workflow_run` instead, which run code from forks in a properly isolated context.\n    *   **Harden Actions:** Pin GitHub Actions to a specific commit hash (`uses: actions/checkout@a12a3943b43c672646b4de65223a8ba24118e134`) instead of a floating tag (`@v3`) to prevent upstream compromises.\n\n2.  **Isolate Build Environments ([`M1048 - Application Isolation and Sandboxing`](https://attack.mitre.org/mitigations/M1048/)):**\n    *   Ensure that build steps that handle untrusted code (like from a PR) run in isolated, ephemeral environments with no access to secrets or the shared cache.\n    *   Protect the release process. Use protected environments in GitHub Actions that require manual approval before a workflow with access to publishing secrets can run.\n\n3.  **Implement Publishing Safeguards:**\n    *   **Token Permissions:** Configure your npm OIDC provider in GitHub to be highly specific. Restrict which repositories, branches, and workflows are allowed to request a token for publishing.\n    *   **Provenance:** Generate and publish SLSA provenance with your packages. This provides consumers with a verifiable record of how a package was built and published, allowing them to detect packages that were not published through the legitimate CI/CD pipeline.\n\n4.  **Developer Environment Security:**\n    *   Encourage the use of the `npm` command-line tool over direct script execution to benefit from its built-in security features. Discourage running arbitrary scripts from dependencies during installation.",
+  "twitter_post": "🚨 A sophisticated supply chain attack hit 42 TanStack npm packages. Attackers used GitHub Actions cache poisoning & OIDC token theft to publish malicious versions. A critical warning for CI/CD security. #SupplyChain #CyberSecurity #npm #GitHub",
+  "meta_description": "A detailed breakdown of the sophisticated npm supply chain attack on TanStack, which used GitHub Actions cache poisoning and OIDC token theft to compromise 42 packages. Learn the TTPs and how to secure your CI/CD pipeline.",
+  "category": [
+    "Supply Chain Attack",
+    "Vulnerability",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "TanStack",
+      "type": "security_organization"
+    },
+    {
+      "name": "npm",
+      "type": "product",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "GitHub",
+      "type": "vendor",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "GitHub Actions",
+      "type": "product"
+    },
+    {
+      "name": "OpenID Connect (OIDC)",
+      "type": "technology"
+    },
+    {
+      "name": "AWS",
+      "type": "vendor",
+      "url": "https://aws.amazon.com/"
+    },
+    {
+      "name": "GCP",
+      "type": "vendor"
+    },
+    {
+      "name": "Kubernetes",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityboulevard.com/2026/05/the-tanstack-breach-and-the-fragility-of-trusted-code/",
+      "title": "The TanStack Breach and the Fragility of Trusted Code",
+      "friendly_name": "Security Boulevard",
+      "website": "securityboulevard.com"
+    },
+    {
+      "url": "https://tech.wrapt.dev/posts/tanstack-details-sophisticated-npm-supply-chain-attack",
+      "title": "TanStack Details Sophisticated npm Supply Chain Attack That Compromised 42 Packages",
+      "friendly_name": "WRAPT",
+      "website": "tech.wrapt.dev"
+    },
+    {
+      "url": "https://dev.to/flippedcoding/what-now-explaining-the-tanstack-supply-chain-attack-1j3a",
+      "title": "What now? explaining the TanStack Supply Chain Attack",
+      "friendly_name": "DEV Community",
+      "website": "dev.to"
+    },
+    {
+      "url": "https://www.okta.com/blog/2026/05/defending-against-team-pcp-software-supply-chain-attacks/",
+      "title": "Defending against Team PCP software supply chain attacks",
+      "friendly_name": "Okta",
+      "website": "okta.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-11T19:20:00Z",
+      "summary": "The supply chain attack begins."
+    },
+    {
+      "datetime": "2026-05-11T19:26:00Z",
+      "summary": "The attack concludes after publishing 84 malicious versions across 42 packages."
+    },
+    {
+      "datetime": "2026-05-11T19:46:00Z",
+      "summary": "The attack is detected by external security researchers approximately 20 minutes after it began."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Development Tools"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Stored Accounts"
+    },
+    {
+      "id": "T1553",
+      "name": "Subvert Trust Controls"
+    },
+    {
+      "id": "T1078.001",
+      "name": "Default Accounts"
+    },
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Crucial for securing CI/CD pipelines. This includes avoiding insecure triggers like 'pull_request_target' and properly configuring OIDC trust relationships.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Ensures that builds from untrusted sources (like PRs) run in isolated environments without access to secrets or shared resources like the build cache.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Applies to CI/CD environments by using short-lived, narrowly-scoped tokens (like OIDC) and requiring manual approvals for privileged operations like publishing.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly auditing CI/CD logs and repository configurations for insecure patterns is essential for proactive defense.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "The TanStack attack was enabled by a specific misconfiguration in a GitHub Actions workflow. The most direct and impactful countermeasure is to harden these configurations. Specifically, organizations must audit all CI/CD pipelines and prohibit the use of the `pull_request_target` trigger in any workflow that checks out or executes code from the pull request. This trigger is extremely dangerous as it grants the permissions of the base repository to code from an external fork. Instead, workflows should use the `pull_request` trigger, which runs in a read-only context, and the `workflow_run` trigger to act upon the results of the PR check. This configuration change alone would have prevented the initial cache poisoning step of this attack. Security teams should use automated code scanning (e.g., GitHub Advanced Security, Semgrep) to enforce this rule across the entire organization.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-HBPI",
+      "technique_name": "Hardware-based Process Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation",
+      "recommendation": "While the D3FEND definition is broad, the principle of isolation is key. In the context of the TanStack attack, this translates to strict logical isolation within the CI/CD pipeline. The build process should be broken into distinct, isolated stages. The initial stage, which handles the untrusted pull request code, must run in a completely sandboxed, ephemeral environment. This environment should have no access to secrets, no ability to write to a shared cache, and restricted network access. Only after this stage successfully completes and the code is deemed safe (e.g., merged by a maintainer) should a separate, privileged workflow run to handle tasks like publishing. This privileged workflow should never interact directly with the untrusted PR code. This logical separation prevents a malicious PR from ever gaining access to the high-privilege context where secrets like OIDC tokens are available.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-DTP",
+      "technique_name": "Domain Trust Policy",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainTrustPolicy",
+      "recommendation": "This attack succeeded by stealing and using an OIDC token. Organizations can significantly limit the window of opportunity by implementing strict trust policies on the service provider side (in this case, npm). The OIDC trust relationship between GitHub and npm should be configured with maximum specificity. The policy should only grant publishing tokens to requests originating from a specific repository, a specific branch (e.g., `main`), and a specific workflow file (e.g., `.github/workflows/release.yml`). This ensures that even if an attacker finds a way to execute code in a different workflow (e.g., a test workflow), they cannot use that context to request a publishing token. This fine-grained trust policy shrinks the attack surface from 'anywhere in the repository's Actions' to 'only this one specific, protected workflow'.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "other",
+      "value": "GitHub Actions workflow using 'pull_request_target' trigger",
+      "description": "This insecure configuration is the entry point for the attack, allowing forked PR code to run with elevated permissions.",
+      "context": "Code scanning, GitHub repository configuration review",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm publish --provenance",
+      "description": "The absence of provenance information in a published npm package from a project that normally includes it can be an indicator of a malicious or out-of-band publication.",
+      "context": "Package registry analysis, Software Composition Analysis (SCA) tools",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "GitHub Actions Audit Logs",
+      "description": "Look for OIDC token requests originating from unexpected workflows or repositories, which could indicate a stolen token being used.",
+      "context": "GitHub organization audit logs",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": ".npmrc",
+      "description": "The malicious payload attempted to exfiltrate this file, which contains npm authentication tokens. Monitoring for unexpected access to this file on developer machines is a valuable detection.",
+      "context": "EDR, File Integrity Monitoring",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "TanStack",
+    "npm",
+    "Supply Chain Attack",
+    "GitHub Actions",
+    "OIDC",
+    "Cache Poisoning",
+    "CI/CD Security",
+    "Open Source"
+  ],
+  "extract_datetime": "2026-05-19T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "software developers"
+    ]
+  },
+  "pub_date": "2026-05-19",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-05-19T15:00:00.000Z",
+  "updatedAt": "2026-05-24T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-05-24T12:00:00Z",
+      "datetime": "2026-05-24T12:00:00Z",
+      "title": "Update 1",
+      "summary": "Grafana Labs source code stolen by 'CoinbaseCartel' due to fallout from TanStack supply chain attack, highlighting cascading impact and missed credential rotation.",
+      "sources": [
+        {
+          "title": "Weekly Cyber Threat Bulletin: 22 May 2026",
+          "url": "https://medium.com/@marcelle.lee/weekly-cyber-threat-bulletin-22-may-2026-62118ffb4d24"
+        },
+        {
+          "title": "'Underminr' Vulnerability Lets Attackers Hide Malicious Connections Behind Trusted Domains",
+          "url": "https://www.securityweek.com/underminr-vulnerability-lets-attackers-hide-malicious-connections-behind-trusted-domains/"
+        }
+      ]
+    }
+  ]
+}
