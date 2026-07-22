@@ -1,0 +1,295 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-16T16:57:30.141Z",
+    "article_slug": "dragonforce-ransomware-abused-microsoft-teams-for-covert-c2",
+    "article_date": "2026-06-16",
+    "token_usage": {
+      "input_tokens": 143508,
+      "output_tokens": 3446,
+      "cached_tokens": 137831,
+      "total_tokens": 146954,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.058785
+    }
+  },
+  "report_name": "DragonForce Ransomware Abuses Microsoft Teams TURN Servers for Covert Command and Control",
+  "threat_actors": [
+    {
+      "name": "DragonForce",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A ransomware group that compromised a major US services firm by hiding its command-and-control (C2) traffic within legitimate Microsoft Teams TURN server infrastructure.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "The custom Go-based RAT abused Microsoft Teams' TURN (Traversal Using Relays around NAT) servers, which use web protocols, as a relay for its C2 traffic, camouflaging it as legitimate activity."
+    },
+    {
+      "name": "Impair Defenses",
+      "mitre_id": "T1562",
+      "description": "The attackers altered the `LimitBlankPasswordUse` security setting, allowing them to use accounts with blank passwords for remote access."
+    },
+    {
+      "name": "Disable or Modify System Firewall",
+      "mitre_id": "T1562.004",
+      "description": "The attackers modified firewall rules to ensure their C2 traffic was not blocked."
+    },
+    {
+      "name": "Exploitation for Defense Evasion",
+      "mitre_id": "T1211",
+      "description": "The attackers deployed an exploit for a then-undocumented vulnerability in a Huawei driver to mask their activity on the network."
+    },
+    {
+      "name": "Create Account: Local Account",
+      "mitre_id": "T1136.001",
+      "description": "The attackers created new local user accounts to maintain persistence within the compromised network."
+    },
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "The DragonForce ransomware was deployed to encrypt the victim's systems as the final stage of the attack."
+    }
+  ],
+  "malware": [
+    {
+      "name": "DragonForce Go RAT",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": false,
+      "aliases": [],
+      "description": "A custom Go-based Remote Access Trojan (RAT) designed to route its C2 traffic through Microsoft Teams' TURN servers to evade detection.",
+      "capabilities": [
+        "communicates-with-c2"
+      ]
+    },
+    {
+      "name": "DragonForce Ransomware",
+      "mitre_id": "",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [],
+      "description": "The final ransomware payload deployed by the DragonForce group to encrypt the victim's systems after a prolonged dwell time.",
+      "capabilities": [
+        "compromises-data-availability"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "reg.exe",
+      "mitre_id": "S0075",
+      "aliases": [],
+      "description": "Used by attackers to modify the 'LimitBlankPasswordUse' registry key to weaken security policy."
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "Undocumented Huawei driver vulnerability",
+      "cve": "",
+      "description": "A then-undocumented vulnerability in a Huawei driver was exploited by the DragonForce group to help mask their activity on the network. The vulnerability was later disclosed by Huntress.",
+      "affected_products": [
+        "Huawei driver"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Major US services firm",
+      "identity_class": "organization",
+      "sectors": [
+        "commercial"
+      ],
+      "description": "A large US-based services company that was compromised by the DragonForce ransomware group."
+    }
+  ],
+  "locations": [
+    {
+      "name": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Microsoft Teams TURN Servers",
+      "infrastructure_types": [
+        "command-and-control",
+        "proxy"
+      ],
+      "description": "Legitimate Microsoft Teams TURN (Traversal Using Relays around NAT) relay servers abused by the DragonForce Go RAT to camouflage C2 communications."
+    }
+  ],
+  "observables": [
+    {
+      "type": "windows-registry-key",
+      "value": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Anomalous Microsoft Teams TURN Server Connection",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Microsoft Teams TURN Server Connection\nid: 2b8c5a1f-3d4e-4b1a-9c8d-7e6f5a4b3c2d\nstatus: experimental\ndescription: Detects network connections to Microsoft Teams TURN servers originating from servers or non-interactive service accounts, which is anomalous behavior. Legitimate Teams traffic typically originates from user workstations.\nreferences:\n  - https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1071.001\n  - attack.command_and_control\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    DestinationHostname|endswith: '.turn.teams.microsoft.com'\n    Initiated: 'true'\n  filter:\n    Image|endswith:\n      - '\\teams.exe'\n      - '\\ms-teams.exe'\n  condition: selection and not filter",
+      "description": "Detects network connections to Microsoft Teams TURN servers originating from servers or non-interactive service accounts, which is anomalous behavior. Legitimate Teams traffic typically originates from user workstations."
+    },
+    {
+      "name": "Modification of LimitBlankPasswordUse Registry Key via CLI",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Modification of LimitBlankPasswordUse Registry Key via CLI\nid: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a\nstatus: experimental\ndescription: Detects command-line modification of the 'LimitBlankPasswordUse' registry key, a technique used to weaken security policies for remote access.\nreferences:\n  - https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1562\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\reg.exe'\n    CommandLine|contains|all:\n      - 'add'\n      - 'LimitBlankPasswordUse'\n      - 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa'\n  condition: selection",
+      "description": "Detects command-line modification of the 'LimitBlankPasswordUse' registry key, a technique used to weaken security policies for remote access."
+    },
+    {
+      "name": "DragonForce Registry Modification for Defense Evasion",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[windows-registry-key:key = 'HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Lsa\\\\LimitBlankPasswordUse']",
+      "x_netsecio_sigma_rule": "title: DragonForce Registry Modification for Defense Evasion\nid: 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d\nstatus: experimental\ndescription: Detects registry modification of the LimitBlankPasswordUse value, a technique used by DragonForce to weaken security policies.\nreferences:\n  - https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1562\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  category: registry_event\n  product: windows\ndetection:\n  selection:\n    TargetObject|contains: '\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects modification of the LimitBlankPasswordUse registry value, as seen in the DragonForce ransomware campaign."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DragonForce Go RAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DragonForce Ransomware",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "reg.exe",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Major US services firm",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Major US services firm",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "United States",
+      "target_type": "location"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Impair Defenses",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Disable or Modify System Firewall",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Defense Evasion",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Create Account: Local Account",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce Go RAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce Go RAT",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "Microsoft Teams TURN Servers",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "DragonForce Ransomware",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "Undocumented Huawei driver vulnerability",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Anomalous Microsoft Teams TURN Server Connection",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "DragonForce",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "Modification of LimitBlankPasswordUse Registry Key via CLI",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Impair Defenses",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce Registry Modification for Defense Evasion",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Impair Defenses",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce Registry Modification for Defense Evasion",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse",
+      "target_type": "windows-registry-key"
+    }
+  ]
+}

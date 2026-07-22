@@ -1,0 +1,271 @@
+{
+  "id": "1e87405d-be3c-4f08-a2c4-cbb1e065cee4",
+  "slug": "sedgwick-subsidiary-hit-by-tridentlocker-ransomware",
+  "headline": "TridentLocker Ransomware Hits Sedgwick's Federal Contracting Arm",
+  "title": "Sedgwick Confirms Ransomware Attack on Government Solutions Subsidiary by TridentLocker",
+  "summary": "Claims administration giant Sedgwick confirmed on January 4, 2026, that its government-focused subsidiary, Sedgwick Government Solutions (SGS), was breached by the emerging TridentLocker ransomware group. The attackers employed a double-extortion strategy, exfiltrating 3.4 GB of data from an isolated file transfer system and threatening its public release. SGS is a major federal contractor for U.S. agencies like the Department of Homeland Security and CISA, making this a significant supply chain security incident.",
+  "full_report": "## Executive Summary\nOn January 4, 2026, claims administration firm **[Sedgwick](https://www.sedgwick.com/)** confirmed a ransomware attack against its subsidiary, **[Sedgwick Government Solutions (SGS)](https://www.sedgwick.com/solutions/public-sector)**. The incident, claimed by the new **TridentLocker** ransomware group, involved the exfiltration of 3.4 GB of data from a file transfer system. While Sedgwick reports that its primary corporate network and claims management servers were not affected due to network segmentation, the breach poses a significant supply chain risk. SGS is a critical federal contractor serving numerous U.S. government agencies, including the **[Department of Homeland Security (DHS)](https://www.dhs.gov/)** and the **[Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov/)**. This attack underscores the vulnerability of government supply chains to emerging ransomware threats.\n\n## Threat Overview\nThe attack was claimed on New Year's Eve by **TridentLocker**, a relatively new ransomware-as-a-service (RaaS) group that first appeared in late November 2025. The group employs a double-extortion model, combining data encryption with the threat of leaking stolen information. In this case, **TridentLocker** posted samples of stolen documents on its dark web leak site to validate its claim of exfiltrating 3.4 GB of data. The initial access vector targeted an \"isolated file transfer system\" within SGS, suggesting a potential vulnerability or compromised credential related to that specific environment. The targeted organization, SGS, provides claims and risk management services to a sensitive portfolio of clients, including DHS, **[ICE](https://www.ice.gov/)**, **[CBP](https://www.cbp.gov/)**, the Department of Labor, and the **[Smithsonian Institution](https://www.si.edu/)**.\n\n## Technical Analysis\nThe attack pattern is characteristic of modern ransomware operations focusing on data exfiltration prior to encryption. The threat actor, **TridentLocker**, likely gained initial access through a compromised account or an exploited vulnerability on the internet-facing file transfer system.\n\n### MITRE ATT&CK Techniques\n- **Initial Access**: Likely [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/) or [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/) targeting the file transfer system.\n- **Collection**: [`T1560 - Archive Collected Data`](https://attack.mitre.org/techniques/T1560/), where attackers compress data before exfiltration. The 3.4 GB figure suggests a staged and compressed data package.\n- **Exfiltration**: [`T1567.002 - Exfiltration to Cloud Storage`](https://attack.mitre.org/techniques/T1567/002/) or a similar web-based service to move the stolen data out of the network.\n- **Impact**: [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/) is the primary goal of ransomware, though the report focuses on exfiltration. [`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/) is also a possibility if files are deleted after encryption. The public leak threat corresponds to `T1657 - Financial Cryptography`.\n\n## Impact Assessment\nThe primary impact is the significant supply chain risk to the U.S. government. The exfiltrated data, although limited to 3.4 GB, could contain sensitive information related to federal contracts, claims processing, or personally identifiable information (PII) of government employees. A breach at a contractor like SGS can provide adversaries with intelligence on government operations, personnel, or security postures. Even if core claims systems were not breached, the reputational damage to Sedgwick is substantial. The incident forces SGS's high-profile government clients to assess their own exposure and the security of their third-party vendors, potentially leading to contract reviews and heightened scrutiny.\n\n## Cyber Observables for Detection\nSecurity teams should hunt for the following activities, which are common in such attacks:\n\n| Type | Value | Description |\n|---|---|---|\n| `log_source` | File Transfer Appliance Logs | Monitor for anomalous logins, especially from unusual geolocations or IP ranges. |\n| `network_traffic_pattern` | Large outbound data transfer | Look for unusually large data flows from file transfer systems to unknown external destinations. |\n| `process_name` | `rclone.exe`, `megacmd.exe` | Common tools used by ransomware groups for data exfiltration. |\n| `command_line_pattern` | `7z.exe a -p[password] ...` | Command-line usage of archiving tools like 7-Zip to stage data for exfiltration. |\n\n## Detection & Response\n**Detection:**\n1.  **Network Traffic Analysis**: Implement solutions ([D3-NTA](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)) to monitor for large, unexpected outbound data transfers, especially from systems like file servers or transfer appliances that hold sensitive data. Set alerts for transfers exceeding a baseline threshold.\n2.  **Log Monitoring**: Aggregate and analyze logs from file transfer systems. Look for patterns of enumeration, multiple failed logins followed by a success, or access from non-standard IP addresses.\n3.  **Endpoint Detection and Response (EDR)**: Deploy EDR agents on servers, including file transfer systems, to detect ransomware behaviors such as rapid file modification, shadow copy deletion (`vssadmin`), and the execution of suspicious archiving or exfiltration tools.\n\n**Response:**\n- Isolate the compromised system from the network immediately to prevent lateral movement, as Sedgwick did.\n- Activate the incident response plan, including engaging third-party forensic experts.\n- Preserve logs and system images for investigation.\n- Review access logs for the compromised system to identify the full scope of data accessed.\n\n## Mitigation\n**Strategic:**\n- **Third-Party Risk Management**: Continuously assess the security posture of all critical third-party vendors and supply chain partners.\n- **Network Segmentation**: Implement and maintain robust network segmentation ([D3-NI](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)) to isolate critical systems and prevent a breach in one area from spreading. Sedgwick's segmentation was a key mitigating factor.\n- **Data Encryption**: Encrypt sensitive data at rest and in transit to reduce the impact of an exfiltration event.\n\n**Tactical:**\n- **Harden Public-Facing Systems**: Secure all internet-facing systems, including file transfer appliances, by applying patches promptly, disabling unnecessary services, and using strong, unique credentials.\n- **Multi-Factor Authentication (MFA)**: Enforce **[MFA](https://en.wikipedia.org/wiki/Multi-factor_authentication)** ([D3-MFA](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication)) on all external access points, including VPNs and file transfer portals.\n- **Immutable Backups**: Maintain offline and immutable backups of critical data to ensure recovery without paying a ransom.",
+  "twitter_post": "🚨 Emerging ransomware group TridentLocker breaches Sedgwick's federal contracting unit, exfiltrating 3.4GB of data. The attack targets a key supplier for DHS, CISA, and other US agencies. ⚠️ #TridentLocker #Ransomware #SupplyChain",
+  "meta_description": "Cybersecurity incident report: New ransomware group TridentLocker claims attack on Sedgwick Government Solutions, a major federal contractor, exfiltrating 3.4GB of data and impacting the government supply chain.",
+  "category": [
+    "Ransomware",
+    "Data Breach",
+    "Supply Chain Attack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TridentLocker",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Sedgwick Government Solutions",
+      "type": "company"
+    },
+    {
+      "name": "Sedgwick",
+      "type": "company",
+      "url": "https://www.sedgwick.com/"
+    },
+    {
+      "name": "Department of Homeland Security",
+      "type": "government_agency",
+      "url": "https://www.dhs.gov/"
+    },
+    {
+      "name": "Cybersecurity and Infrastructure Security Agency",
+      "type": "government_agency",
+      "url": "https://www.cisa.gov/"
+    },
+    {
+      "name": "Immigration and Customs Enforcement",
+      "type": "government_agency",
+      "url": "https://www.ice.gov/"
+    },
+    {
+      "name": "Customs and Border Protection",
+      "type": "government_agency",
+      "url": "https://www.cbp.gov/"
+    },
+    {
+      "name": "Department of Labor",
+      "type": "government_agency"
+    },
+    {
+      "name": "Smithsonian Institution",
+      "type": "government_agency",
+      "url": "https://www.si.edu/"
+    },
+    {
+      "name": "Port Authority of New York and New Jersey",
+      "type": "government_agency"
+    },
+    {
+      "name": "Ransomware-as-a-Service (RaaS)",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/Ransomware_as_a_service"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH5injD-38pjVPIt425PWZQgCKQ4WceOgfiSvQ633YJhjP9QAacPC5quIilJRGI8EwqKplUsaHFFfVLyeB1WML4sA7wcdcHGd68Ftvtql6gIYAz_dzmpn12cYGgS7Ymm5vi5Su0iG0RH4PXY_116xeUR9MKTTRgrjmdZEA=",
+      "title": "Sedgwick Acknowledges Data Breach Linked to TridentLocker Ransomware Attack",
+      "date": "2026-01-04",
+      "website": "vertexaisearch.cloud.google.com"
+    },
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHipj00LcYWzDJkQ_wkgCWJOrj0rC6kQWqaxBhDpp0jDNklVCfR8Eo8S5TGaqhhQvthURBpGCRsjPdktngv2xsWvtXF5C-7yFmT2uLbQ5kCv-X8nuSXZmqc7kd8JaRQ5tpUpt5FC6roasT3CCDSoIiXJKig7hp3ZRXavdn6yvCNCkFYRlfMlYM9wjH_rCghuy4FDlIMjmClqWsMyyXNOpp06RDYVDqnuZnZT_zQZdAopDV6oA==",
+      "title": "Sedgwick discloses data breach after TridentLocker ransomware attack - Security Affairs",
+      "date": "2026-01-05",
+      "friendly_name": "Security Affairs",
+      "website": "vertexaisearch.cloud.google.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-11-30T00:00:00Z",
+      "summary": "TridentLocker ransomware group first emerges."
+    },
+    {
+      "datetime": "2025-12-31T00:00:00Z",
+      "summary": "TridentLocker claims the attack on Sedgwick Government Solutions on its dark web leak site."
+    },
+    {
+      "datetime": "2026-01-04T00:00:00Z",
+      "summary": "Sedgwick publicly acknowledges the cybersecurity incident."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        },
+        {
+          "id": "D3-ET",
+          "name": "Encrypted Tunnels",
+          "url": "https://d3fend.mitre.org/technique/d3f:EncryptedTunnels"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Isolating critical systems to prevent lateral movement. Sedgwick's use of segmentation was effective in limiting the blast radius of this attack.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforcing MFA on all internet-facing systems, especially administrative portals and file transfer systems, can prevent attacks based on compromised credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Ensuring public-facing applications and appliances are patched promptly to prevent exploitation of known vulnerabilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Implementing comprehensive logging and monitoring to detect anomalous access patterns and data movements.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "In the context of the Sedgwick breach, Network Isolation proved to be a critical and effective control. Organizations should emulate this by implementing strict network segmentation between different business units and between corporate IT and specialized, internet-facing systems like file transfer portals. For SGS, this meant the compromise of their 'isolated file transfer system' did not cascade into the core claims management servers or the broader Sedgwick corporate network. A practical implementation involves using firewalls and VLANs to create distinct security zones. Default-deny rules should be enforced, allowing only explicitly permitted traffic between zones. For a file transfer system, this means it should only be able to communicate with necessary internal storage and specific, authorized external IP ranges, while being completely isolated from sensitive internal networks like HR, finance, or domain controllers. Regular network architecture reviews and penetration tests are essential to validate that segmentation controls remain effective and have not been weakened by misconfigurations.",
+      "mitre_mitigation_id": "M1035"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To prevent data exfiltration as seen in the TridentLocker attack, organizations must implement robust Outbound Traffic Filtering. This goes beyond simple port blocking. For the compromised file transfer system, egress traffic should be restricted at the network perimeter to only allow connections to known, trusted destinations on specific ports and protocols. For example, if the system is only meant to exchange files with specific government agencies, firewall rules should enforce this. Furthermore, deep packet inspection (DPI) and proxy servers can be used to block connections to known malicious domains, anonymizing services, and consumer-grade cloud storage providers that are commonly abused for exfiltration. Implementing alerts for high-volume data transfers to new or uncategorized domains can provide early warning of an attack in progress, enabling security teams to intervene before 3.4 GB of data leaves the network.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "The initial vector was an 'isolated file transfer system,' which points to a likely failure in application hardening. To defend against this, organizations must secure such public-facing applications by following vendor hardening guides, disabling unnecessary features, and changing default credentials. Specifically for a file transfer system, this includes enforcing strong password policies and account lockout rules, implementing MFA for all administrative and user accounts, restricting file types that can be uploaded, and running the application with the least possible service account privileges. Regular vulnerability scanning and penetration testing of these high-risk applications are crucial to identify and remediate weaknesses before they are exploited by groups like TridentLocker. Had stronger authentication and configuration controls been in place, the attackers may have been prevented from gaining their initial foothold.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "File Transfer Appliance Logs",
+      "description": "Logs from file transfer systems should be monitored for signs of compromise, such as anomalous logins or large data transfers.",
+      "context": "SIEM, Log Management",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous outbound data transfer > 1GB",
+      "description": "Monitor for large outbound data flows from sensitive systems to untrusted destinations, a key indicator of data exfiltration.",
+      "context": "Network Intrusion Detection System (NIDS), Netflow Analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "rclone.exe",
+      "description": "A legitimate command-line tool often abused by threat actors for exfiltrating data to various cloud storage providers.",
+      "context": "Endpoint Detection and Response (EDR), Process Monitoring",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "TridentLocker",
+    "Ransomware",
+    "Data Breach",
+    "Supply Chain Attack",
+    "Double Extortion",
+    "Federal Contractor"
+  ],
+  "extract_datetime": "2026-01-05T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Government",
+      "Critical Infrastructure",
+      "Legal Services"
+    ],
+    "other_affected": [
+      "Federal contractors",
+      "U.S. government agencies"
+    ]
+  },
+  "pub_date": "2026-01-05",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-05T15:00:00.000Z",
+  "updatedAt": "2026-01-05T15:00:00.000Z"
+}

@@ -1,0 +1,49 @@
+title: Suspicious Modification of GitHub Workflow File
+id: 2b9c1a8e-5d7f-4b1a-9c8d-3e4f5a6b7c8d
+status: experimental
+description: Detects modification of GitHub Actions workflow files (.github/workflows/*.yml), which could indicate a CI/CD poisoning attempt like the Megalodon campaign.
+references:
+  - https://thehackernews.com/2026/05/megalodon-github-attack-targets-5561.html
+author: cyber.netsecops.io
+date: 2026-05-24
+tags:
+  - attack.t1195.001
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|contains: '/.github/workflows/'
+    TargetFilename|endswith: '.yml'
+  condition: selection
+---
+title: Potential Secret Exfiltration via cURL in CI/CD Pipeline
+id: 8e2d2b17-d44c-4bf9-38f9-8ee46b3cd3f8
+status: experimental
+description: Detects the use of 'curl' to potentially exfiltrate environment variables, a technique used in CI/CD supply chain attacks like Megalodon to steal secrets.
+references:
+  - https://thehackernews.com/2026/05/megalodon-github-attack-targets-5561.html
+author: cyber.netsecops.io
+date: 2026-05-24
+tags:
+  - attack.t1041
+  - attack.t1059.004
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/curl'
+    CommandLine|contains:
+      - ' -d '
+      - ' --data '
+      - ' -X POST '
+  selection_url:
+    CommandLine|contains:
+      - 'http://'
+      - 'https://'
+  filter_github:
+    CommandLine|contains: 'api.github.com'
+  condition: selection and selection_url and not filter_github

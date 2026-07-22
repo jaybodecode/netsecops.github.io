@@ -1,0 +1,356 @@
+{
+  "id": "a2583597-6a88-4c03-991d-495095d184da",
+  "slug": "teampcp-supply-chain-attack-compromises-trivy-litellm",
+  "headline": "TeamPCP's Sophisticated Supply Chain Attack on Trivy and LiteLLM Hits 1,000+ SaaS Environments",
+  "title": "Massive Supply Chain Attack by TeamPCP Compromises Trivy Scanner, Spreads to LiteLLM and Checkmarx",
+  "summary": "A multi-stage supply chain attack by the threat group TeamPCP has caused a significant security crisis, beginning with the compromise of the popular open-source scanner Trivy and expanding to other developer tools, including Checkmarx KICS and LiteLLM. The attackers exploited a previously stolen GitHub token to poison official software releases and CI/CD pipelines, injecting credential-stealing malware. The campaign has already compromised over 1,000 SaaS environments, exfiltrating cloud credentials, SSH keys, and other secrets. The attack, tracked under CVE-2026-33634, highlights the systemic risk in modern software supply chains, with experts warning the full impact could affect up to 10,000 organizations.",
+  "full_report": "## Executive Summary\n\nA sophisticated and widespread supply chain attack, attributed to the threat actor group **[TeamPCP](https://malpedia.caad.fkie.fraunhofer.de/actor/teampcp)**, has compromised multiple open-source projects, including Aqua Security's Trivy scanner, Checkmarx KICS, and the LiteLLM Python library. The attack, which began on March 19, 2026, leveraged a stolen GitHub Personal Access Token (PAT) to poison CI/CD pipelines through a technique known as tag poisoning. The attackers replaced legitimate software releases with malicious versions containing an infostealer payload designed to harvest credentials from development environments. The campaign, assigned **CVE-2026-33634**, has already impacted over 1,000 SaaS environments, with potential downstream effects for thousands more. The incident underscores the critical vulnerability of automated software delivery pipelines and the cascading impact of a single compromised credential.\n\n---\n\n## Threat Overview\n\nThe campaign was initiated by **TeamPCP**, a group known for aggressive tactics and collaboration with extortion groups like **[Lapsus$](https://attack.mitre.org/groups/G1004/)**. The attack's root cause was an incompletely remediated security incident from February 2026, where a bot stole a GitHub PAT. Despite a credential rotation on March 1, the attackers retained residual access.\n\nOn March 19, **TeamPCP** used this access to execute a multi-pronged attack:\n1.  **Tag Poisoning**: The attackers force-pushed 76 tags in the `aquasecurity/trivy-action` repository and 7 in `aquasecurity/setup-trivy`. This redirected CI/CD pipelines using these trusted version tags to malicious commits, causing them to execute attacker-controlled code.\n2.  **Malicious Binary Distribution**: A trojanized version of Trivy (`v0.69.4`) was published via official GitHub Releases and container registries.\n3.  **Expansion**: The attack pattern was replicated on March 23 against Checkmarx KICS and AST tools. On March 24, the campaign pivoted to the Python Package Index (PyPI), publishing malicious versions of LiteLLM (`1.82.7` and `1.82.8`).\n\nThe injected payload was a potent infostealer that harvested environment variables, SSH keys, cloud credentials (AWS, GCP, Azure), Kubernetes tokens, and cryptocurrency wallets from CI/CD runners. Stolen data was exfiltrated to the attacker-controlled domain `scan.aquasecurtiy[.]org`.\n\n## Technical Analysis\n\nThe attack demonstrates a deep understanding of modern development practices and CI/CD vulnerabilities. The core TTPs map to several MITRE ATT&CK techniques.\n\n### Attack Chain\n1.  **Initial Access ([T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078/))**: The attackers used a stolen GitHub PAT obtained in a prior incident.\n2.  **Execution & Persistence ([T1195.001 - Compromise Software Supply Chain](https://attack.mitre.org/techniques/T1195/001/))**: By poisoning Git tags and publishing malicious binaries, the attackers compromised the software build and release process. This is a classic example of compromising a trusted software supply chain.\n3.  **Defense Evasion ([T1562.007 - Impair Defenses: Disable or Modify Cloud Firewall](https://attack.mitre.org/techniques/T1562/007/))**: While not explicit, the payload's design to run within a trusted CI/CD runner inherently bypasses many traditional perimeter defenses.\n4.  **Credential Access ([T1552.006 - Cloud Credentials](https://attack.mitre.org/techniques/T1552/006/))**: The primary goal of the infostealer was to harvest cloud credentials, SSH keys, and other secrets stored in environment variables.\n5.  **Exfiltration ([T1048 - Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/))**: Data was exfiltrated to `scan.aquasecurtiy[.]org` or, as a fallback, uploaded as a release file to a newly created public GitHub repository within the victim's own account.\n\n> The use of tag poisoning is particularly insidious. Many CI/CD pipelines are configured to pull specific version tags (e.g., `v1`) for stability. By force-pushing and overwriting these tags, the attackers ensured their malicious code was automatically pulled and executed by thousands of downstream systems without any change to the victim's pipeline configuration.\n\n## Impact Assessment\n\nThe business impact of this attack is severe and multi-faceted. **[Mandiant](https://www.mandiant.com)** reports over 1,000 SaaS environments are already confirmed compromised, with a potential for 10,000 victims. The impact includes:\n\n*   **Widespread Credential Compromise**: The theft of AWS, GCP, and Azure credentials from CI/CD environments provides attackers with high-privilege access to cloud infrastructure, potentially leading to data breaches, resource hijacking for crypto-mining, or further lateral movement.\n*   **Loss of Trust**: The compromise of a major security tool like Trivy erodes trust in the open-source ecosystem. Organizations that relied on Trivy to secure their software are now faced with the reality that the tool itself was the vector of compromise.\n*   **Operational Disruption**: Remediation is a massive undertaking. Security teams must assume all credentials and secrets exposed in CI/CD environments are compromised. This requires rotating thousands of keys, rebuilding CI/CD runners from a known-good state, and auditing all cloud resources for signs of unauthorized access.\n*   **Financial Loss**: Direct financial losses can occur from fraudulent use of cloud resources, extortion demands from **TeamPCP** and its affiliates, and the significant cost of incident response and remediation.\n\n## IOCs\n\n| Type   | Value                      | Description                                                                 |\n| :----- | :------------------------- | :-------------------------------------------------------------------------- |\n| domain | `scan.aquasecurtiy[.]org`    | C2 and data exfiltration domain. Note the misspelling of 'security'.        |\n| domain | `models.litellm[.]cloud`   | Infrastructure related to the LiteLLM compromise.                           |\n| other  | `tpcp-docs` GitHub repos   | Repositories used by the threat actor for hosting malicious code or tools.  |\n\n## Cyber Observables for Detection\n\n| Type                   | Value                                                              | Description                                                                                                       | Context                                                              |\n| :--------------------- | :----------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------- |\n| `url_pattern`          | `aquasecurity/trivy-action`                                        | Monitor CI/CD logs for pulls of this GitHub Action, especially if versions were not explicitly pinned to a commit hash. | GitHub Actions logs, CI/CD pipeline execution logs.                  |\n| `url_pattern`          | `aquasecurity/setup-trivy`                                         | Monitor CI/CD logs for pulls of this GitHub Action.                                                               | GitHub Actions logs, CI/CD pipeline execution logs.                  |\n| `file_name`            | `proxy_server.py`                                                  | For LiteLLM users, check for modifications to this file, especially in versions 1.82.7 and 1.82.8.               | File Integrity Monitoring (FIM), source code repository history.     |\n| `network_traffic_pattern` | Egress traffic from CI/CD runners to non-standard domains.         | Attackers exfiltrated data to `scan.aquasecurtiy[.]org`. Hunt for any unusual outbound connections from build agents. | VPC flow logs, firewall logs, network monitoring tools.              |\n| `command_line_pattern` | `git push --force`                                                 | Monitor for force pushes to protected branches or tags in critical repositories.                                  | Git server audit logs, GitHub Enterprise audit logs.                 |\n| `api_endpoint`         | `api.github.com/repos/{org}/{repo}/releases` with `POST` method. | Monitor for CI/CD processes creating new public repositories and uploading release assets, a fallback C2 method.  | GitHub audit logs, CloudTrail for API calls from build agents.       |\n\n## Detection & Response\n\nSecurity teams must act immediately. Assume compromise if your organization uses Trivy, Checkmarx, or LiteLLM in automated CI/CD pipelines.\n\n1.  **Inventory & Identification**: Identify all CI/CD pipelines that use the compromised tools (`trivy-action`, `setup-trivy`, LiteLLM versions `1.82.7`/`1.82.8`).\n2.  **Log Analysis**: Scour CI/CD execution logs, network flow logs, and cloud audit logs (CloudTrail, Azure Activity Logs, GCP Audit Logs) for connections to the IOC domain `scan.aquasecurtiy[.]org` or any other suspicious outbound traffic from build runners dating back to March 19, 2026.\n3.  **Credential Rotation**: Initiate an immediate and full rotation of all secrets, keys, and credentials accessible within your CI/CD environment. This includes cloud IAM roles, SSH keys, database passwords, and API tokens. Prioritize credentials with high privileges.\n4.  **Rebuild Infrastructure**: Do not trust existing CI/CD runners. Destroy and rebuild all runner infrastructure from a known-clean, verified image.\n5.  **Threat Hunting**: Proactively hunt for signs of lateral movement or persistence originating from the time of the potential compromise. Look for new IAM users/roles, unexpected EC2 instances, or changes to security group configurations.\n\nFor detection, **[D3-NTA: Network Traffic Analysis](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** is critical. Egress traffic from CI/CD environments should be heavily restricted and monitored. Any connection to a new or uncategorized domain should be an immediate red flag.\n\n## Mitigation\n\nThis attack highlights critical gaps in modern software development security. Long-term mitigation requires a strategic shift.\n\n*   **Pin Dependencies to Hashes**: Do not rely on mutable tags (e.g., `v1`, `latest`). Pin all third-party dependencies, including GitHub Actions and container images, to their immutable commit SHA or image digest. This prevents tag poisoning.\n*   **Implement Stricter CI/CD Egress Controls**: CI/CD runners should operate in a least-privilege network environment. Deny all outbound network access by default and explicitly allowlist only the necessary domains (e.g., package registries, code repositories). This would have blocked the exfiltration to `scan.aquasecurtiy[.]org`.\n*   **Enforce Credential Best Practices**: Use short-lived credentials wherever possible (e.g., OIDC for cloud access in GitHub Actions). Avoid storing long-lived static credentials in environment variables. Use a dedicated secrets management solution.\n*   **Protect Code Repositories**: Enable branch and tag protection rules on critical repositories to prevent force pushes. Enforce **[D3-MFA: Multi-factor Authentication](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication)** for all developers.\n*   **Vendor Software Vetting**: Before integrating a new open-source tool, perform security due diligence. Review its release process, security policies, and historical incidents. Consider using tools that can verify software provenance using frameworks like SLSA.",
+  "twitter_post": "🚨 MASSIVE SUPPLY CHAIN ATTACK: Threat actor TeamPCP compromises popular Trivy scanner & LiteLLM library. Malicious updates injected into CI/CD pipelines to steal cloud credentials. Over 1,000 SaaS environments impacted. ⚠️ #SupplyChain #Trivy #CVE202633634",
+  "meta_description": "Detailed analysis of the sophisticated supply chain attack by TeamPCP on Trivy, LiteLLM, and Checkmarx, leading to widespread compromise of cloud environments via CVE-2026-33634.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/teampcp"
+    },
+    {
+      "name": "Lapsus$",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1004/"
+    },
+    {
+      "name": "Aqua Security",
+      "type": "vendor",
+      "url": "https://www.aquasec.com/"
+    },
+    {
+      "name": "Trivy",
+      "type": "product"
+    },
+    {
+      "name": "LiteLLM",
+      "type": "product"
+    },
+    {
+      "name": "Checkmarx",
+      "type": "vendor",
+      "url": "https://www.checkmarx.com/"
+    },
+    {
+      "name": "Mandiant",
+      "type": "security_organization",
+      "url": "https://www.mandiant.com/"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Amazon Web Services",
+      "type": "company",
+      "url": "https://aws.amazon.com/"
+    },
+    {
+      "name": "Google Cloud Platform",
+      "type": "product",
+      "url": "https://cloud.google.com/"
+    },
+    {
+      "name": "Microsoft Azure",
+      "type": "product",
+      "url": "https://azure.microsoft.com/"
+    },
+    {
+      "name": "PyPI",
+      "type": "other"
+    },
+    {
+      "name": "FutureSearch",
+      "type": "company"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-33634",
+      "cvss_score": 9.4,
+      "cvss_version": "4.0",
+      "kev": false,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.paloaltonetworks.com/blog/2026/03/trivy-supply-chain-attack/",
+      "title": "When Security Scanners Become the Weapon: Breaking Down the Trivy Supply Chain Attack",
+      "date": "2026-03-24",
+      "friendly_name": "Palo Alto Networks",
+      "website": "paloaltonetworks.com"
+    },
+    {
+      "url": "https://www.securityboulevard.com/2026/03/trivys-march-supply-chain-attack-shows-where-secret-exposure-hurts-most/",
+      "title": "Trivy's March Supply Chain Attack Shows Where Secret Exposure Hurts Most",
+      "date": "2026-03-24",
+      "friendly_name": "Security Boulevard",
+      "website": "securityboulevard.com"
+    },
+    {
+      "url": "https://www.scmagazine.com/brief/cloud-security/widespread-cloud-environment-compromise-facilitated-by-trivy-supply-chain-hack",
+      "title": "Widespread cloud environment compromise facilitated by Trivy supply chain hack",
+      "date": "2026-03-25",
+      "friendly_name": "SC Magazine",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://www.helpnetsecurity.com/2026/03/25/litellm-supply-chain-attack-team-pcp/",
+      "title": "LiteLLM PyPI packages compromised in expanding TeamPCP supply chain attacks",
+      "date": "2026-03-25",
+      "friendly_name": "Help Net Security",
+      "website": "helpnetsecurity.com"
+    },
+    {
+      "url": "https://www.aquasec.com/blog/update-ongoing-investigation-and-continued-remediation/",
+      "title": "Update: Ongoing Investigation and Continued Remediation",
+      "date": "2026-03-25",
+      "friendly_name": "Aqua Security",
+      "website": "aquasec.com"
+    },
+    {
+      "url": "https://www.kaspersky.com/blog/trivy-checkmarx-litellm-supply-chain-attack/49943/",
+      "title": "Trojanization of Trivy, Checkmarx, and LiteLLM solutions",
+      "date": "2026-03-25",
+      "friendly_name": "Kaspersky",
+      "website": "kaspersky.com"
+    },
+    {
+      "url": "https://www.cyberscoop.com/trivy-supply-chain-attack-mandiant-aqua-security/",
+      "title": "Experts warn of a 'loud and aggressive' extortion wave following Trivy hack",
+      "date": "2026-03-24",
+      "friendly_name": "CyberScoop",
+      "website": "cyberscoop.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02",
+      "summary": "A bot named 'hackerbot-claw' steals a GitHub Personal Access Token (PAT) from Aqua Security."
+    },
+    {
+      "datetime": "2026-03-01",
+      "summary": "Aqua Security rotates credentials, but the remediation is incomplete, leaving attackers with residual access."
+    },
+    {
+      "datetime": "2026-03-19T17:43:00Z",
+      "summary": "TeamPCP uses the stolen PAT to poison Git tags for trivy-action and setup-trivy, initiating the supply chain attack."
+    },
+    {
+      "datetime": "2026-03-23",
+      "summary": "The attack expands to target Checkmarx KICS and AST tools."
+    },
+    {
+      "datetime": "2026-03-24",
+      "summary": "The campaign pivots to PyPI, publishing malicious versions of the LiteLLM library."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1554",
+      "name": "Compromise Infrastructure",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Cloud Credentials",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1613",
+      "name": "Container and Resource Discovery",
+      "tactic": "Discovery"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Verifying the signatures of software dependencies can help detect tampering, although this attack also compromised the release process itself.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "While updating is crucial, this incident shows that updates must be verified. Pinning dependencies to immutable hashes is a more robust approach than using mutable tags.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Implement comprehensive auditing of CI/CD pipelines, GitHub actions, and network egress from build environments to detect anomalous behavior.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Apply strict egress filtering on CI/CD runners to block connections to unauthorized domains, which would have prevented data exfiltration.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Regularly audit and rotate high-privilege credentials like PATs. Use short-lived, dynamically-generated tokens instead of static PATs where possible.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforce MFA on all developer and service accounts to prevent takeover via single-factor credential theft.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "In the context of the Trivy supply chain attack, implementing strict outbound traffic filtering on all CI/CD runners is the most critical defense. The attackers' primary method of data exfiltration relied on the build agent's ability to connect to an external, attacker-controlled domain (`scan.aquasecurtiy[.]org`). A default-deny egress policy should be enforced on the network level for all build environments. Create an explicit allowlist of required domains, such as `*.github.com`, `pypi.org`, and other necessary package registries. Any attempt by a build process to connect to a domain not on this list should be blocked and trigger a high-severity alert. This single control would have rendered the infostealer's primary exfiltration channel useless, significantly mitigating the impact of the compromise. For environments in AWS, this can be implemented using NACLs and Security Groups combined with a NAT Gateway and a proxy that filters based on a domain allowlist.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "This attack weaponized the software update process itself through tag poisoning. To counter this, organizations must evolve their update strategy. Instead of relying on mutable version tags like `v1` or `latest` in CI/CD configurations, all dependencies (GitHub Actions, Docker images, software packages) must be pinned to immutable identifiers. For GitHub Actions, this means using the full commit SHA. For Docker images, use the image digest (SHA256 hash). This ensures that the build process always pulls the exact, verified version of the dependency, making it immune to tag poisoning where the underlying code pointed to by the tag is changed. This practice should be enforced via policy-as-code (e.g., OPA Gatekeeper) to scan CI/CD configurations and block any builds that use mutable tags.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "The attack was initiated with a compromised GitHub PAT. Organizations must treat service accounts and PATs as high-value assets and monitor their usage for anomalies. For GitHub, this involves ingesting audit logs into a SIEM and creating alerts for suspicious activities. Key events to monitor include: a PAT being used from an unexpected IP address or geographic location; a PAT being used to perform sensitive actions like force-pushing to a protected branch or changing repository settings; or a PAT showing an unusual frequency of API calls. The fallback C2 method involved creating a new public repository, which is a highly anomalous action for an automated build process and should trigger an immediate alert. By baselining normal PAT activity, security teams can detect deviations that indicate a compromise.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "scan.aquasecurtiy[.]org",
+      "description": "C2 and data exfiltration domain"
+    },
+    {
+      "type": "domain",
+      "value": "models.litellm[.]cloud",
+      "description": "Infrastructure related to the LiteLLM compromise"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "aquasecurity/trivy-action",
+      "description": "Monitor CI/CD logs for pulls of this GitHub Action, especially if versions were not explicitly pinned to a commit hash.",
+      "context": "GitHub Actions logs, CI/CD pipeline execution logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "aquasecurity/setup-trivy",
+      "description": "Monitor CI/CD logs for pulls of this GitHub Action.",
+      "context": "GitHub Actions logs, CI/CD pipeline execution logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "proxy_server.py",
+      "description": "For LiteLLM users, check for modifications to this file, especially in versions 1.82.7 and 1.82.8.",
+      "context": "File Integrity Monitoring (FIM), source code repository history.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Egress traffic from CI/CD runners to non-standard domains.",
+      "description": "Attackers exfiltrated data to scan.aquasecurtiy[.]org. Hunt for any unusual outbound connections from build agents.",
+      "context": "VPC flow logs, firewall logs, network monitoring tools.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "git push --force",
+      "description": "Monitor for force pushes to protected branches or tags in critical repositories.",
+      "context": "Git server audit logs, GitHub Enterprise audit logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "api.github.com/repos/{org}/{repo}/releases",
+      "description": "Monitor for CI/CD processes creating new public repositories and uploading release assets, a fallback C2 method.",
+      "context": "GitHub audit logs, CloudTrail for API calls from build agents.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "CI/CD Security",
+    "Tag Poisoning",
+    "Infostealer",
+    "GitHub Actions",
+    "PyPI",
+    "Cloud Security"
+  ],
+  "extract_datetime": "2026-03-25T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "SaaS environments",
+      "open-source software users",
+      "AI developers"
+    ],
+    "people_affected_estimate": "Over 1,000 organizations compromised, potential for 10,000"
+  },
+  "pub_date": "2026-03-25",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-03-25T15:00:00.000Z",
+  "updatedAt": "2026-04-08T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-04-08T12:00:00Z",
+      "datetime": "2026-04-08T12:00:00Z",
+      "title": "Update 1",
+      "summary": "Cisco confirmed as victim of Trivy supply chain attack, leading to source code and AWS key theft from internal development environments.",
+      "sources": [
+        {
+          "title": "The Week in Breach News: April 08, 2026 | Kaseya",
+          "url": "https://www.kaseya.com/resource/the-week-in-breach-news-april-08-2026/"
+        },
+        {
+          "title": "Cisco Reportedly Hit By Cyberattack Via Trivy Supply Chain Compromise",
+          "url": "https://www.crn.com/news/security/cisco-reportedly-hit-by-cyberattack-via-trivy-supply-chain-compromise"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+title: Suspicious Jscrambler NPM Package Installation
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the installation of specific malicious versions of the 'jscrambler' npm package via command line arguments.
+author: cyber.netsecops.io
+date: 2026-07-12
+references:
+  - https://socket.dev/blog/jscrambler-supply-chain-attack
+tags:
+  - attack.t1195.002
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_base:
+    Image|endswith:
+      - '\npm.cmd'
+      - '\node.exe'
+    CommandLine|contains|all:
+      - 'install'
+      - 'jscrambler@'
+  selection_versions:
+    CommandLine|contains:
+      - '8.14.0'
+      - '8.16.0'
+      - '8.17.0'
+      - '8.18.0'
+      - '8.20.0'
+  condition: all of selection_*
+---
+title: Suspicious Scheduled Task Creation by Node Process
+id: 6f7a8b9c-0d1e-4f2a-b3c4-d5e6f7a8b9c0
+status: experimental
+description: Detects a scheduled task being created by a node.js or npm process, which could indicate persistence from a malicious npm package.
+author: cyber.netsecops.io
+date: 2026-07-12
+references:
+  - https://socket.dev/blog/jscrambler-supply-chain-attack
+tags:
+  - attack.t1053.005
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\node.exe'
+      - '\npm.cmd'
+    Image|endswith: '\schtasks.exe'
+    CommandLine|contains: '/create'
+  condition: selection
+---
+title: Suspicious LaunchAgent Creation by Node Process
+id: 7a8b9c0d-1e2f-4a3b-b4c5-d6e7f8a9b0c1
+status: experimental
+description: Detects a LaunchAgent .plist file being created by a node.js process, which could indicate persistence from a malicious npm package on macOS.
+author: cyber.netsecops.io
+date: 2026-07-12
+references:
+  - https://socket.dev/blog/jscrambler-supply-chain-attack
+tags:
+  - attack.t1543.001
+level: medium
+logsource:
+  category: file_event
+  product: macos
+detection:
+  selection:
+    TargetFilename|contains: '/Library/LaunchAgents/'
+    TargetFilename|endswith: '.plist'
+    Image|endswith: '/node'
+  condition: selection
+---
+title: Jscrambler Supply Chain Attack Payload
+id: 4f5a6b7c-8d9e-4f1a-b2c3-d4e5f6a7b8c9
+status: experimental
+description: Detects the creation of the malicious 'intro.js' payload from the compromised jscrambler npm package.
+author: cyber.netsecops.io
+date: 2026-07-12
+references:
+  - https://socket.dev/blog/jscrambler-supply-chain-attack
+tags:
+  - attack.t1195.002
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\node_modules\jscrambler\intro.js'
+  condition: selection

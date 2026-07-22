@@ -1,0 +1,87 @@
+title: GCP Storage Bucket Deletion
+id: 7f1b2c3d-4e5f-4a90-8bcd-ef1234567890
+status: experimental
+description: Detects the deletion of a Google Cloud Storage bucket, which could be a precursor to a bucket hijacking attack.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-bucket-hijacking-risks/
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1485
+level: high
+logsource:
+  product: gcp
+  service: gcp.audit
+detection:
+  selection:
+    gcp.audit.method_name: 'storage.buckets.delete'
+  condition: selection
+---
+title: AWS S3 Bucket Deletion
+id: 8a2c3d4e-5f6a-4891-8cde-f12345678901
+status: experimental
+description: Detects the deletion of an AWS S3 bucket via the DeleteBucket API call, which could be a precursor to a bucket hijacking attack.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-bucket-hijacking-risks/
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1485
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: 's3.amazonaws.com'
+    eventName: 'DeleteBucket'
+  condition: selection
+---
+title: Azure Blob Container Deletion
+id: 9b3d4e5f-6a7b-4012-8def-123456789012
+status: experimental
+description: Detects the deletion of an Azure Blob Storage container, which could be a precursor to a bucket hijacking attack.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-bucket-hijacking-risks/
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1485
+level: high
+logsource:
+  product: azure
+  service: activitylogs
+detection:
+  selection:
+    operationName|endswith: 'Microsoft.Storage/storageAccounts/blobServices/containers/delete'
+    category: 'Administrative'
+  condition: selection
+---
+title: Cloud Storage Bucket Deletion via CLI
+id: ad4e5f6a-7b8c-4123-8ef0-234567890123
+status: experimental
+description: Detects command-line execution of tools used to delete cloud storage buckets.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-bucket-hijacking-risks/
+author: cyber.netsecops.io
+date: 2026-06-23
+tags:
+  - attack.t1485
+  - attack.t1059
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_gcloud:
+    Image|endswith: '\gcloud.exe'
+    CommandLine|contains|all:
+      - 'storage'
+      - 'buckets'
+      - 'delete'
+  selection_aws:
+    Image|endswith: '\aws.exe'
+    CommandLine|contains|all:
+      - 's3api'
+      - 'delete-bucket'
+  condition: 1 of them

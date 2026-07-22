@@ -1,0 +1,133 @@
+{
+  "id": "07b54465-a59f-4def-84f5-21ed420787f6",
+  "slug": "asyncapi-npm-supply-chain-attack-delivers-miasma-rat",
+  "headline": "AsyncAPI Supply Chain Attack on NPM Deploys Miasma RAT",
+  "title": "AsyncAPI Supply Chain Attack Delivers Miasma RAT via NPM",
+  "summary": "A sophisticated supply chain attack has compromised several official AsyncAPI npm packages. Attackers gained push access to the project's GitHub 'next' branch, using the legitimate CI/CD pipeline to publish malicious versions containing the Miasma RAT. This technique bypassed typical defenses by using valid npm OIDC provenance attestations, highlighting significant risks in modern software development workflows. The Miasma RAT payload affects Windows, macOS, and Linux systems, posing a threat to developer environments and downstream applications.",
+  "full_report": "## Executive Summary\nA sophisticated supply chain attack has targeted the **[AsyncAPI](https://www.asyncapi.com/)** open-source project, resulting in the publication of malicious versions of several popular **[npm](https://www.npmjs.com/)** packages. The threat actor compromised the project's **[GitHub](https://github.com/)** repositories to inject a multi-stage malware loader that deploys the **Miasma RAT**. The attack is notable for its method: by committing malicious code to a development branch, the attackers abused the project's legitimate CI/CD workflow, powered by **[GitHub Actions](https://github.com/features/actions)**, to automatically publish the poisoned packages. This tactic allowed the malicious packages to be signed with valid provenance attestations, making them appear authentic and difficult to detect. The incident exposes critical security gaps in modern, automated software supply chains.\n\n---\n\n## Threat Overview\nOn July 14, 2026, security researchers identified a coordinated attack against the AsyncAPI ecosystem. The threat actor did not steal npm publishing tokens directly. Instead, they gained write access to the `next` branch of two official AsyncAPI GitHub repositories. By pushing malicious commits to this branch, they triggered the project's automated release pipeline.\n\nThe CI/CD process, believing the code to be legitimate, built and published new versions of the following packages to the npm registry:\n- `@asyncapi/generator@3.3.1`\n- `@asyncapi/generator-helpers@1.1.1`\n- `@asyncapi/generator-components@0.7.1`\n- `@asyncapi/specs@6.11.1`\n\nThe malicious payload was a dropper that executed upon the library being loaded in an application (`require` or `import`), not during the `npm install` phase. This delayed execution is a deliberate evasion technique. The dropper's ultimate goal was to install the Miasma RAT, a cross-platform Remote Access Trojan.\n\n## Technical Analysis\nThe attack chain demonstrates a deep understanding of modern development practices:\n1.  **Initial Access**: The method used to gain push access to the GitHub repositories is currently unknown but is the root cause of the compromise.\n2.  **CI/CD Abuse ([T1195.002](https://attack.mitre.org/techniques/T1195/002/))**: The attacker leveraged the trusted, automated CI/CD pipeline as a distribution mechanism. This is a form of Living-off-the-Land, but within the development infrastructure.\n3.  **Payload Delivery**: The malicious code was embedded within the packages and designed to activate post-installation, evading static analysis tools that only scan during install.\n4.  **Malware**: The final payload, **Miasma RAT**, is a potent botnet framework. Its cross-platform nature (Windows, macOS, Linux) is particularly dangerous in developer environments, which are often heterogeneous. It enables attackers to achieve persistence, exfiltrate sensitive data (such as API keys, credentials, and proprietary code), and move laterally within a network.\n\n> This attack highlights a critical flaw in relying solely on publisher identity verification, like OIDC provenance. While provenance proves *who* published a package, it cannot prove the *integrity* of the code within it. If the publisher's build process is compromised, it will simply sign and attest to malicious code.\n\n## Impact Assessment\nThe impact of this attack is significant and multi-faceted:\n- **Developer Compromise**: Any developer who downloaded and used the malicious package versions could have their machine compromised by the Miasma RAT.\n- **Downstream Risk**: Applications and services built using the compromised packages could be affected. The Miasma RAT could be active in production environments if the malicious packages were deployed.\n- **Data Exfiltration**: Compromised systems are at risk of having source code, environment variables, cloud credentials, and other sensitive developer secrets stolen.\n- **Erosion of Trust**: This attack undermines trust in the open-source ecosystem and the security of automated package management and CI/CD pipelines.\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| NPM Package | `@asyncapi/generator@3.3.1` | Malicious version |\n| NPM Package | `@asyncapi/generator-helpers@1.1.1` | Malicious version |\n| NPM Package | `@asyncapi/generator-components@0.7.1` | Malicious version |\n| NPM Package | `@asyncapi/specs@6.11.1` | Malicious version |\n\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect potential compromise:\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `package-lock.json`, `yarn.lock` | Search for the specific malicious package versions listed in the IOCs. |\n| Network Traffic Pattern | Outbound connections from build agents | Monitor for unexpected network connections from CI/CD runners or developer machines to unknown IP addresses, especially shortly after a build process. |\n| Process Name | `node` | Look for `node` processes that spawn unexpected child processes or make unusual network connections, particularly in the context of a CI/CD job. |\n| Command-line Pattern | `npm install` or `npm ci` | While the payload doesn't run on install, logs of these commands can establish a timeline for when the malicious packages might have been introduced. |\n\n\n## Detection & Response\n1.  **Dependency Scanning**: Immediately scan all projects for the presence of the malicious package versions. Tools like `npm audit` may help, but manual inspection of lock files is recommended.\n2.  **Log Review**: Review CI/CD logs for build jobs that used the compromised packages. Analyze network logs from build runners for any anomalous outbound traffic.\n3.  **Endpoint Analysis**: On developer machines, use EDR to hunt for persistence mechanisms, unusual network connections from `node` processes, or the presence of the Miasma RAT.\n4.  **Credential Rotation**: If a compromise is suspected or confirmed, assume all secrets, API keys, and credentials on affected developer machines and CI/CD environments have been stolen. Initiate a full credential rotation.\n\n## Mitigation\n1.  **Secure CI/CD Pipelines**: Implement the principle of least privilege for CI/CD jobs. Restrict network access for build runners and ensure they cannot access sensitive production environments. This aligns with D3FEND's **[Network Isolation (D3-NI)](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**.\n2.  **Protect Source Code Repositories**: Enforce mandatory **[Multi-factor Authentication (MFA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)** for all developers. Protect critical branches (e.g., `main`, `release`) with branch protection rules, requiring signed commits and multiple reviewers.\n3.  **Dependency Pinning**: Use lock files (`package-lock.json`, `yarn.lock`) to ensure that builds are reproducible and use specific, vetted package versions. This is a form of **[Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**.\n4.  **Outbound Traffic Filtering**: Implement egress filtering on developer workstations and CI/CD runners to block connections to unknown or malicious destinations, which could prevent malware like Miasma RAT from connecting to its C2 server. This is a direct application of **[Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)**.",
+  "twitter_post": "A sophisticated supply chain attack hit the AsyncAPI project. Malicious npm packages were published via a compromised GitHub CI/CD pipeline, distributing the Miasma RAT. This attack bypassed OIDC provenance checks. #SupplyChain #npm #infosec",
+  "meta_description": "A supply chain attack on the AsyncAPI project used a compromised GitHub CI/CD pipeline to publish malicious npm packages, delivering the cross-platform Miasma RAT.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "AsyncAPI",
+      "type": "product"
+    },
+    {
+      "name": "GitHub",
+      "type": "vendor"
+    },
+    {
+      "name": "GitHub Actions",
+      "type": "product"
+    },
+    {
+      "name": "Miasma RAT",
+      "type": "malware"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act",
+      "title": "Active Exploitation Alert: AsyncAPI npm Supply Chain Attack Delivers Multi-Stage Miasma Botnet via Compromised GitHub Actions",
+      "date": "2026-07-15",
+      "website": null
+    },
+    {
+      "url": "https://www.stepsecurity.io/blog/compromised-next-branch-pushes-malicious-asyncapi-generator-generator-helpers-and-generator-components-to-npm",
+      "title": "Coordinated AsyncAPI Supply Chain Attack: Miasma RAT Delivered via Compromised CI/CD Pipelines in Two Repositories",
+      "date": "2026-07-14",
+      "website": null
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-14T00:00:00Z",
+      "summary": "Coordinated supply chain attack targeting AsyncAPI is identified."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": null
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": null
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": null
+    },
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "CI/CD",
+    "GitHub Actions",
+    "Miasma RAT",
+    "Open Source",
+    "Supply Chain",
+    "npm"
+  ],
+  "extract_datetime": "2026-07-15",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "open-source software users",
+      "software developers"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "CI/CD",
+    "GitHub Actions",
+    "Miasma RAT",
+    "Open Source",
+    "Supply Chain",
+    "npm"
+  ],
+  "pub_date": "2026-07-15",
+  "reading_time_minutes": null,
+  "createdAt": "2026-07-15T15:00:00.000Z",
+  "updatedAt": "2026-07-16T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-07-16T00:00:00Z",
+      "summary": "Unit 42 report details Miasma RAT's multi-stage payload, IPFS use, and persistence. Attackers stole NPM_TOKEN from AsyncAPI's CI/CD, bypassing code review on pre-production branches. New IOCs provided.",
+      "content": "A Unit 42 report provides extensive new technical details on the AsyncAPI supply chain attack. It reveals the Miasma RAT payload is multi-stage, heavily obfuscated, and fetches its second stage from IPFS. Persistence is established via `systemd` services on Linux/macOS and registry Run keys on Windows. The attack exploited unprotected pre-production branches (`next`, `schema`) in AsyncAPI's GitHub, allowing attackers to bypass code reviews and steal `NPM_TOKEN` and `GITHUB_TOKEN` from the CI runner. The report also contextualizes this incident within broader npm supply chain attacks by TeamPCP, including a Red Hat compromise. Numerous new IOCs, including IPFS CIDs, file paths, and the malicious commit hash, have been identified, significantly enhancing detection capabilities.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/",
+          "title": "The npm Threat Landscape: Attack Surface and Mitigations (Updated July 15)",
+          "website": "",
+          "date": "2026-07-16T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

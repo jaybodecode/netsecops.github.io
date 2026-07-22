@@ -1,0 +1,150 @@
+{
+  "id": "f96889a2-a1d8-4511-8a1c-b340644c4871",
+  "slug": "massive-snowflake-cloud-breach-impacts-165-organizations-including-ticketmaster",
+  "headline": "Snowflake Cloud Platform Breach Hits 165 Customers, Including Ticketmaster and Santander",
+  "title": "Massive Snowflake Data Breach Impacts 165 Organizations After Attackers Bypass MFA with Stolen Credentials",
+  "summary": "A major security incident has struck cloud data platform Snowflake, affecting at least 165 of its customers. Attackers leveraged stolen customer credentials to gain access to their Snowflake instances, in some cases bypassing multi-factor authentication. High-profile victims include Ticketmaster and Santander Bank, with massive amounts of customer data reportedly exfiltrated. The incident highlights the persistent threat of credential-based attacks against cloud environments and raises questions about the effectiveness of current MFA implementations.",
+  "full_report": "## Executive Summary\n\nA widespread and damaging security breach has occurred involving the cloud data platform **[Snowflake](https://www.snowflake.com/en/)**, leading to the compromise of sensitive data for at least 165 of its customers. The attack was not a breach of Snowflake's core platform but rather a targeted campaign against its customers using stolen credentials. Threat actors used credentials, likely harvested from infostealer malware infections on non-corporate systems, to log into customer Snowflake instances. High-profile victims confirmed to be affected include **Ticketmaster** and **Santander Bank**. The incident is a stark illustration of the catastrophic impact of credential compromise in the cloud and underscores the limitations of certain forms of multi-factor authentication (MFA) when not properly configured or enforced.\n\n---\n\n## Threat Overview\n\nThe attack campaign appears to be focused and systematic. Threat actors have been purchasing large volumes of stolen credentials from infostealer malware logs available on the dark web. They then automated the process of testing these credentials against Snowflake login endpoints. The key failure point was that many of the compromised accounts were not protected by MFA. For accounts that were, some reports suggest the attackers were able to bypass it, though the mechanism is not yet fully clear—it may involve session hijacking or the use of stolen cookies.\n\nOnce logged in, the attackers had the same level of access as the legitimate user, allowing them to query databases, access sensitive customer data, and exfiltrate it to their own storage. This incident is part of a broader, alarming trend, with cloud breaches accounting for 45% of all cybersecurity incidents this year. The average cost of such a breach has reached $4.88 million, and with an average containment time of 207 days, attackers have a long window to operate undetected.\n\n---\n\n## Technical Analysis\n\nThe attack chain is straightforward but devastatingly effective:\n\n1.  **Credential Acquisition**: Attackers acquire credentials (username/password pairs) from third-party sources, primarily logs from infostealer malware like Vidar, Lumma, or Redline ([`T1589.002`](https://attack.mitre.org/techniques/T1589/002/)). These are often stolen from employees' personal or unmanaged devices.\n2.  **Initial Access**: The attackers use automated scripts to perform credential stuffing attacks against Snowflake's login interface ([`T1110.003`](https://attack.mitre.org/techniques/T1110/003/)). They successfully log in to accounts that reuse passwords and are not protected by MFA.\n3.  **Defense Evasion (MFA Bypass)**: For some accounts, attackers may have bypassed MFA. This could be through session token theft ([`T1539`](https://attack.mitre.org/techniques/T1539/)) from the same infostealer logs, or by exploiting poorly configured MFA policies that did not apply to all access methods.\n4.  **Discovery**: Once inside, attackers perform reconnaissance to understand the data available, listing databases, tables, and schemas ([`T1087.004`](https://attack.mitre.org/techniques/T1087/004/)).\n5.  **Exfiltration**: The attackers exfiltrate large volumes of sensitive data from the customer's Snowflake instance to attacker-controlled storage ([`T1537`](https://attack.mitre.org/techniques/T1537/)).\n\n> **Critical Insight**: Snowflake has stated its platform was not breached. The vulnerability lies in customer-side security practices: lack of MFA, poor credential hygiene, and failure to monitor for anomalous access patterns. The incident highlights the shared responsibility model in cloud security.\n\n### MITRE ATT&CK Mapping\n| Tactic | Technique ID | Technique Name | Description |\n|---|---|---|---|\n| Resource Development | `T1589.002` | Gather Victim Identity Information: Credentials | Attackers purchase credentials stolen by infostealer malware. |\n| Initial Access | `T1078.004` | Valid Accounts: Cloud Accounts | Attackers log in using the stolen, legitimate customer credentials. |\n| Initial Access | `T1110.003` | Brute Force: Password Spraying | The automated testing of stolen credentials against the login portal is a form of credential stuffing/spraying. |\n| Defense Evasion | `T1539` | Steal Web Session Cookie | A possible method for bypassing MFA if session cookies were stolen along with passwords. |\n| Discovery | `T1087.004` | Account Discovery: Cloud Account | After logging in, attackers enumerate resources and data available to the compromised account. |\n| Exfiltration | `T1537` | Transfer Data to Cloud Account | Attackers exfiltrate data from the victim's Snowflake instance to their own cloud storage. |\n\n---\n\n## Impact Assessment\n\nThe impact on the 165 affected organizations is catastrophic. They face massive data breaches, involving the personal and financial information of potentially millions of their own customers (as seen with Ticketmaster). The consequences include enormous regulatory fines (e.g., under GDPR or CCPA), costly incident response and forensic efforts, customer lawsuits, and severe, long-lasting reputational damage. For Santander Bank, a financial institution, the breach could undermine customer trust in its security. The incident serves as a wake-up call for all companies using cloud data warehouses, demonstrating that simply migrating data to the cloud without a corresponding uplift in security posture and monitoring is a recipe for disaster.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific IOCs were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams using Snowflake should hunt for the following activity:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| `log_source` | `Snowflake Access History` | Look for logins from unusual IP addresses, user agents, or geographic locations not associated with your workforce. | Snowflake Query History, SIEM |\n| `string_pattern` | `CLIENT_IP` | Correlate login IPs against a list of known malicious IPs or non-corporate VPN/proxy services. | Snowflake `LOGIN_HISTORY` view |\n| `command_line_pattern` | `COPY INTO @...` | Monitor for large data copy operations to external stages, especially newly created ones. | Snowflake Query History |\n| `user_account_pattern` | `(multiple failures, one success)` | A classic sign of credential stuffing: multiple failed login attempts from one IP across many users, followed by a successful login. | Snowflake `LOGIN_HISTORY` view, SIEM alerts |\n\n---\n\n## Detection & Response\n\n**Detection:**\n1.  **Monitor Login History**: Continuously analyze Snowflake's `LOGIN_HISTORY` and `QUERY_HISTORY` views. Ingest these logs into a SIEM and build alerts for:\n    *   Logins from unexpected IP ranges or ASNs.\n    *   Logins from users who have been inactive for a long time.\n    *   A user logging in from multiple, geographically impossible locations in a short time.\n2.  **Behavioral Analytics (UEBA)**: Implement User and Entity Behavior Analytics to baseline normal user query patterns. Alert on deviations, such as a user who normally queries small marketing tables suddenly attempting to download an entire customer database.\n3.  **Data Exfiltration Alerts**: Monitor for the creation of new external stages or large `COPY INTO` commands that indicate mass data exfiltration.\n\n**Response:**\n1.  **Force Logout and Reset**: If a compromise is suspected, immediately force a logout of the user session and reset their password.\n2.  **Isolate and Disable**: Disable the compromised user account to prevent further access.\n3.  **Review Query History**: Analyze the query history for the compromised user to determine exactly what data was accessed and exfiltrated.\n4.  **Engage Snowflake Support**: Contact Snowflake support to report the incident and request assistance in the investigation.\n\n---\n\n## Mitigation\n\n**Strategic Mitigation:**\n*   **[Multi-factor Authentication (M1032)](https://attack.mitre.org/mitigations/M1032/)**: Enforce phishing-resistant MFA for ALL users, including service accounts. This is the single most critical mitigation. Do not rely on MFA that can be bypassed by session cookie theft.\n*   **[Network Segmentation (M1030)](https://attack.mitre.org/mitigations/M1030/)**: Implement network policies in Snowflake to restrict access to a specific allowlist of corporate IP addresses. This would have blocked logins from the attackers' infrastructure.\n*   **[Privileged Account Management (M1026)](https://attack.mitre.org/mitigations/M1026/)**: Apply the principle of least privilege. User accounts should only have access to the specific data they need to perform their job. Avoid granting broad access to entire databases.\n\n**Tactical Mitigation:**\n1.  **Disable Inactive Users**: Regularly review and disable accounts for users who have left the company or no longer require access.\n2.  **Credential Hygiene**: Educate users on the importance of not reusing passwords and using a password manager.\n3.  **Monitor for Leaked Credentials**: Use a service to monitor the dark web for credentials belonging to your organization and force password resets when they are found.",
+  "twitter_post": "🚨 MASSIVE BREACH: Snowflake customers hit by widespread attack using stolen credentials. 165+ orgs, including Ticketmaster & Santander, affected. Attackers bypassed MFA in some cases. A huge blow for cloud security. ☁️💥 #DataBreach #Snowflake",
+  "meta_description": "A major security incident at cloud data platform Snowflake has impacted at least 165 customers, including Ticketmaster, after attackers used stolen credentials to bypass MFA and exfiltrate data.",
+  "category": [
+    "Data Breach",
+    "Cloud Security",
+    "Cyberattack"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "AT&T",
+      "type": "company"
+    },
+    {
+      "name": "Loan Depot",
+      "type": "company"
+    },
+    {
+      "name": "Santander Bank",
+      "type": "company"
+    },
+    {
+      "name": "Snowflake",
+      "type": "company"
+    },
+    {
+      "name": "Ticketmaster",
+      "type": "company"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cloudwize.io/blog/cloud-data-breaches-in-2024-a-year-in-review/",
+      "title": "Cloud Data Breaches in 2024: A Year in Review",
+      "date": null,
+      "website": null
+    },
+    {
+      "url": "https://www.hyve.com/en-us/insights/the-cloud-effect-security-incidents-that-shaped-2024/",
+      "title": "The Cloud Effect: Security Incidents That Shaped 2024",
+      "date": null,
+      "website": null
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1078.004",
+      "name": "Valid Accounts: Cloud Accounts",
+      "tactic": null
+    },
+    {
+      "id": "T1110.003",
+      "name": "Brute Force: Password Spraying",
+      "tactic": null
+    },
+    {
+      "id": "T1537",
+      "name": "Transfer Data to Cloud Account",
+      "tactic": null
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": null
+    },
+    {
+      "id": "T1589.002",
+      "name": "Gather Victim Identity Information: Credentials",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "MFA",
+    "Santander",
+    "Snowflake",
+    "Ticketmaster",
+    "cloud security",
+    "credential stuffing",
+    "data breach"
+  ],
+  "extract_datetime": "2026-06-07",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Media and Entertainment",
+      "Telecommunications"
+    ],
+    "companies_affected": [
+      "Ticketmaster",
+      "Santander Bank"
+    ],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [],
+    "people_affected_estimate": "Data of 165 organizations' customers"
+  },
+  "keywords": [
+    "MFA",
+    "Santander",
+    "Snowflake",
+    "Ticketmaster",
+    "cloud security",
+    "credential stuffing",
+    "data breach"
+  ],
+  "pub_date": "2026-06-07",
+  "reading_time_minutes": null,
+  "createdAt": "2026-06-07T15:00:00.000Z",
+  "updatedAt": "2026-06-21T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-06-21T12:00:00Z",
+      "summary": "Threat actor UNC5537 now issuing $300k-$5M extortion demands to Snowflake breach victims, with QuoteWizard confirmed as a new affected party.",
+      "content": "The Snowflake customer breach has escalated with threat actor UNC5537 (tracked by Mandiant) now issuing extortion demands ranging from $300,000 to $5 million to prevent the public sale of stolen data. The campaign, which exploited weak or stolen credentials via a custom tool named 'Frostbite,' has added QuoteWizard (a LendingTree subsidiary) to its list of confirmed victims. This reinforces that the breaches stemmed from credential stuffing attacks, not a vulnerability in Snowflake's platform, highlighting the critical need for strong MFA and identity management.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.bankinfosecurity.com/snowflake-data-breach-customers-hit-by-ransom-demands-a-25576",
+          "title": "Victims of Snowflake Data Breach Receive Ransom Demands",
+          "website": "",
+          "date": "2026-06-21T12:00:00Z"
+        },
+        {
+          "url": "https://www.pymnts.com/cybersecurity/2024/report-consumer-data-from-snowflake-hack-being-sold-to-cybercriminals/",
+          "title": "Report: Consumer Data From Snowflake Hack Being Sold to Cybercriminals",
+          "website": "",
+          "date": "2026-06-21T12:00:00Z"
+        },
+        {
+          "url": "https://www.cm-alliance.com/cybersecurity-blog/snowflake-ticketmaster-santander-breaches-a-live-timeline",
+          "title": "Snowflake, Ticketmaster & Santander Breaches - A Live Timeline",
+          "website": "",
+          "date": "2026-06-21T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

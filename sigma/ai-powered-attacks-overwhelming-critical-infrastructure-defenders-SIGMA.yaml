@@ -1,0 +1,82 @@
+title: Anomalous IT to OT Network Traffic
+id: 2b1a9b8f-3d4c-4e5f-8a1b-9c8d7e6f5a4b
+status: experimental
+description: |
+  Detects potentially anomalous network traffic from an IT network segment to an OT (Operational Technology) network segment.
+  This rule is a template and requires customization of the source and destination IP ranges for IT and OT zones.
+references:
+  - https://industrialcyber.co/news/ai-powered-cyber-threats-overwhelm-human-defenders-forcing-critical-infrastructure-operators-toward-automated-security/
+author: cyber.netsecops.io
+date: 2026-05-19
+tags:
+  - attack.t0886
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip: '192.168.1.0/24' # Placeholder for IT Zone
+    dst_ip: '10.10.0.0/16'   # Placeholder for OT Zone
+    dst_port:
+      - 135
+      - 139
+      - 445 # SMB/RPC
+      - 3389 # RDP
+  condition: selection
+---
+title: Potential Unauthorized PLC Logic Modification
+id: 5e8f1a2b-3c4d-4e5f-8a1b-9c8d7e6f5a4c
+status: experimental
+description: |
+  Detects modification of common PLC (Programmable Logic Controller) project files on engineering workstations.
+  Unauthorized changes to these files could indicate an adversary attempting to manipulate physical control processes.
+references:
+  - https://industrialcyber.co/news/ai-powered-cyber-threats-overwhelm-human-defenders-forcing-critical-infrastructure-operators-toward-automated-security/
+author: cyber.netsecops.io
+date: 2026-05-19
+tags:
+  - attack.t0840
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.ACD'  # Rockwell/Allen-Bradley
+      - '.ap16' # Siemens STEP 7
+      - '.pro'  # Schneider Electric
+      - '.prz'  # Omron
+  filter_legit_process:
+    Image|endswith:
+      - '\RsLogix.exe'
+      - '\Studio5000.exe'
+      - '\S7.exe'
+      - '\UnityPro.exe'
+  condition: selection and not filter_legit_process
+---
+title: Non-Standard Protocol or Command on OT Network
+id: 8a1b9c8d-7e6f-4a5b-3c4d-2b1a9b8f5e8f
+status: experimental
+description: |
+  Detects network connections on common OT ports (e.g., Modbus/502) originating from processes not typically associated with industrial control operations.
+  This could indicate an adversary using custom tools to interact with OT devices.
+references:
+  - https://industrialcyber.co/news/ai-powered-cyber-threats-overwhelm-human-defenders-forcing-critical-infrastructure-operators-toward-automated-security/
+author: cyber.netsecops.io
+date: 2026-05-19
+tags:
+  - attack.t0855
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 502 # Modbus
+    Initiated: true
+  filter:
+    Image|endswith: # Add legitimate HMI/SCADA/Engineering software here
+      - '\Kepware.exe'
+      - '\FactoryTalk.exe'
+  condition: selection and not filter

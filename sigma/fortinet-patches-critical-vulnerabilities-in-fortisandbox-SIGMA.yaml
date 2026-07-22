@@ -1,0 +1,80 @@
+title: FortiSandbox JRPC API Path Traversal Attempt (CVE-2026-39813)
+id: 3b8c1a2d-f9e0-4b1a-8c7d-6e5f4d3c2b1a
+status: experimental
+description: |
+  Detects suspicious requests to the FortiSandbox JRPC API containing path traversal sequences, which could indicate an attempt to exploit CVE-2026-39813.
+references:
+  - https://www.securityweek.com/fortinet-patches-critical-fortisandbox-vulnerabilities/
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: webserver
+detection:
+  selection_api:
+    cs-uri-stem|contains: '/json-rpc'
+  selection_traversal:
+    cs-uri-query|contains:
+      - '../'
+      - '..%2f'
+      - '..\\' # Escaped for YAML
+      - '..%5c'
+  condition: all of selection_*
+falsepositives:
+  - Unlikely, but legitimate but poorly-formed API requests could trigger this.
+---
+title: FortiSandbox Command Injection Attempt (CVE-2026-39808)
+id: 9e8d7c6b-5a4f-4e3d-2c1b-0a9f8e7d6c5b
+status: experimental
+description: |
+  Detects potential command injection attempts against FortiSandbox, as described in CVE-2026-39808. This rule looks for shell metacharacters in web request logs associated with the appliance's management interface.
+references:
+  - https://www.helpnetsecurity.com/2026/04/16/cve-2026-39813-cve-2026-39808/
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1059
+level: high
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-query|contains:
+      - '|'
+      - ';'
+      - '&'
+      - '`'
+      - '$('
+  condition: selection
+falsepositives:
+  - Legitimate but unusual characters in API requests.
+---
+title: Suspicious Outbound Connection from FortiSandbox
+id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: |
+  Detects suspicious outbound network connections from a FortiSandbox appliance to the internet. A compromised sandbox may be used to establish a C2 channel.
+references:
+  - https://www.fortiguard.com/psirt/FG-IR-26-061
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.command_and_control
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip: # IP address of the FortiSandbox management interface
+      - '192.168.1.99' # Placeholder, replace with actual FortiSandbox IP
+  filter:
+    dst_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter
+falsepositives:
+  - Legitimate connections for updates, threat intelligence feeds, or other cloud services used by FortiSandbox.

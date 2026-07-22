@@ -1,0 +1,80 @@
+title: Akira Encrypted File Extension
+id: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Detects files being created or renamed with the .akira extension, which is indicative of Akira ransomware activity.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/alkegen-july-2026
+author: cyber.netsecops.io
+date: 2026-07-22
+tags:
+  - attack.t1486
+  - attack.impact
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.akira'
+  condition: selection
+falsepositives:
+  - Legitimate files with the same extension, if any exist.
+level: critical
+---
+title: Akira Volume Shadow Copy Deletion
+id: 9a0b1c2d-3e4f-4a5b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the command used by Akira ransomware to delete Volume Shadow Copies to inhibit system recovery.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/alkegen-july-2026
+author: cyber.netsecops.io
+date: 2026-07-22
+tags:
+  - attack.t1490
+  - attack.impact
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+      - '/all'
+      - '/quiet'
+  condition: selection
+falsepositives:
+  - Legitimate administrative activity, though this specific combination is highly suspicious.
+level: high
+---
+title: Akira Ransomware Associated File Activity
+id: 7c5b9d3a-1f8e-4b2c-9a1d-6f8e7b4a2c1d
+status: experimental
+description: Detects file creation or process execution involving filenames associated with Akira ransomware activity, including ransom notes and known remote access tools.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/alkegen-july-2026
+author: cyber.netsecops.io
+date: 2026-07-22
+tags:
+  - attack.t1486
+  - attack.t1219
+  - attack.impact
+  - attack.command_and_control
+logsource:
+  product: windows
+  service: security
+detection:
+  selection_notes:
+    EventID: 11 # Sysmon file creation
+    TargetFilename|endswith:
+      - '\akira.log'
+      - '\akira_readme.txt'
+  selection_tools:
+    EventID: 4688 # Process Creation
+    NewProcessName|endswith:
+      - '\AnyDesk.exe'
+      - '\Radmin.exe'
+  condition: 1 of them
+falsepositives:
+  - Legitimate use of AnyDesk or Radmin.
+level: high

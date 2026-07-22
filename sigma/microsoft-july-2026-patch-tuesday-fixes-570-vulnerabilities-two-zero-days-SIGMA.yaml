@@ -1,0 +1,70 @@
+title: Suspicious Child Process from SharePoint Worker Process
+id: 9b2d5c8a-1b3e-4f6d-8c7a-9f8e7d6c5b4a
+status: experimental
+description: Detects suspicious child processes such as cmd.exe or powershell.exe spawning from the SharePoint worker process (w3wp.exe), which could indicate exploitation of vulnerabilities like CVE-2026-56164.
+references:
+  - https://www.forbes.com/sites/daveywinder/2026/07/15/microsoft-warns-2-zero-days-already-exploited-in-attacks-update-now/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1190
+  - attack.t1068
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\w3wp.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: selection
+---
+title: Suspicious Child Process from AD FS Service Host
+id: 8c1b4a9f-2d5e-4f8d-9b7a-8f7e6d5c4b3a
+status: experimental
+description: Detects suspicious child processes such as cmd.exe or powershell.exe spawning from the AD FS service host process (Microsoft.IdentityServer.ServiceHost.exe), which could indicate exploitation of vulnerabilities like CVE-2026-56155.
+references:
+  - https://www.forbes.com/sites/daveywinder/2026/07/15/microsoft-warns-2-zero-days-already-exploited-in-attacks-update-now/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1068
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\Microsoft.IdentityServer.ServiceHost.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: selection
+---
+title: Anomalous SharePoint API POST Request
+id: 7a0a398e-3c4d-4e7c-8a69-7e6d5c4b3a29
+status: experimental
+description: Detects unusual POST requests to SharePoint API endpoints, which may indicate attempts to exploit vulnerabilities like CVE-2026-56164.
+references:
+  - https://www.forbes.com/sites/daveywinder/2026/07/15/microsoft-warns-2-zero-days-already-exploited-in-attacks-update-now/
+author: cyber.netsecops.io
+date: 2026-07-15
+falsepositives:
+  - Legitimate application traffic may use these API endpoints. Further analysis of source IP and request body is recommended.
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-method: 'POST'
+    cs-uri-stem|startswith: '/_api/web/'
+  filter_internal:
+    c-ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal

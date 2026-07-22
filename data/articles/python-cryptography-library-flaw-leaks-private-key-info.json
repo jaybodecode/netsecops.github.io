@@ -1,0 +1,140 @@
+{
+  "id": "d1a0e53c-ad62-4100-9e5e-07668bc4388f",
+  "slug": "python-cryptography-library-flaw-leaks-private-key-info",
+  "headline": "Python 'cryptography' Library Flaw (CVE-2026-26007) Leaks Private Key Information",
+  "title": "Vulnerability in Popular Python 'cryptography' Library Allows Private Key Information Leak",
+  "summary": "A significant vulnerability, CVE-2026-26007, has been disclosed in the widely-used Python 'cryptography' package. The flaw, which affects versions prior to 46.0.5, is due to improper input validation on public keys. An attacker can supply a specially crafted weak public key, causing cryptographic operations like ECDH to leak bits of the victim's private key. This also weakens signature forging defenses. Users are urged to update to the patched version immediately.",
+  "full_report": "## Executive Summary\n\nOn February 14, 2026, a high-severity vulnerability, **[CVE-2026-26007](https://nvd.nist.gov/)**, was disclosed in the `cryptography` package, one of Python's most fundamental libraries for cryptographic operations. The flaw, present in versions prior to 46.0.5, allows for the leakage of private key information through a side-channel attack. The root cause is a failure to validate that a public key point resides on the correct prime-order subgroup of an elliptic curve. An attacker can exploit this by providing a malicious, small-subgroup public key. When a victim uses this key, operations like Elliptic Curve Diffie-Hellman (ECDH) key exchange can reveal bits of their static private key. A patch has been released in version 46.0.5, and all users are strongly advised to upgrade.\n\n---\n\n## Vulnerability Details\n\n**CVE-2026-26007** is a subtle but critical cryptographic implementation flaw. The vulnerability exists in functions responsible for loading elliptic curve public keys, including `public_key_from_numbers()`, `load_der_public_key()`, and `load_pem_public_key()`.\n\nNormally, when performing cryptographic operations, a public key should be validated to ensure it belongs to the large prime-order group defined by the elliptic curve parameters. The vulnerable versions of the `cryptography` library fail to perform this check for certain curves (specifically SECT curves with a cofactor greater than one).\n\nThis allows for a small subgroup attack:\n1.  **Attacker's Action:** An attacker creates a public key corresponding to a point in a small, known subgroup of the elliptic curve group, instead of the main prime-order group.\n2.  **Victim's Action:** The victim's application loads this malicious public key using one of the vulnerable functions. The library fails to reject the invalid key.\n3.  **Information Leak:** The victim then uses their own long-term private key (`d_v`) and the attacker's malicious public key (`Q_a`) to compute a shared secret, for example, in an ECDH key exchange (`S = d_v * Q_a`). Because `Q_a` is in a small subgroup, the resulting shared secret `S` will also be in that small subgroup. The value of `S` will depend on the least significant bits of the victim's private key `d_v`. By observing the resulting secret (or its effect on the protocol), the attacker can learn information about the victim's private key.\n\nThis attack effectively reduces the private key's security from its full length to just a few bits at a time, allowing an attacker to iteratively recover the key.\n\n## Affected Systems\n\n- **Product:** Python `cryptography` package\n- **Affected Versions:** All versions prior to `46.0.5`.\n- **Impacted Curves:** SECT curves (e.g., `SECT283k1`, `SECT409r1`, `SECT571k1`) with a cofactor greater than one.\n\nAny application using Python and the `cryptography` library for ECDH or ECDSA with the affected curves is potentially vulnerable.\n\n## Impact Assessment\n\nThe primary impact is the **potential compromise of private keys**. While the attack only leaks a few bits at a time, a determined attacker in a position to repeatedly interact with the victim's system could eventually recover the entire private key. A compromised private key leads to a total loss of confidentiality and authenticity for any protocol relying on it.\n\n- **Confidentiality:** An attacker with the private key can decrypt any messages encrypted to the corresponding public key.\n- **Authenticity:** An attacker can forge signatures, allowing them to impersonate the victim, authorize fraudulent transactions, or sign malicious code.\n- **Forward Secrecy:** In protocols like TLS, a compromised static ECDH key could allow an attacker to decrypt past recorded sessions.\n\n## Cyber Observables for Detection\n\nDetecting this attack is extremely difficult as it happens within the mathematical operations of the cryptographic library. Detection efforts should focus on identifying the prerequisite: the presence of the vulnerable library.\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| `file_name` | `requirements.txt` or `Pipfile.lock` | Scan developer environments and CI/CD pipelines for dependency files that specify `cryptography < 46.0.5`. |\n| `command_line_pattern` | `pip list` or `conda list` | On running systems, execute package listing commands to check the installed version of the `cryptography` library. |\n| `log_source` | Software Composition Analysis (SCA) Tool Logs | Use SCA tools to scan code repositories and build artifacts for vulnerable versions of the `cryptography` package. |\n\n## Detection & Response\n\n**Detection:**\n- The most effective detection method is not at runtime but during development and deployment. Implement **Software Composition Analysis (SCA)** tools to scan your codebase and dependencies for vulnerable libraries like this one. This is a form of **[File Analysis (D3-FA)](https://d3fend.mitre.org/technique/d3f:FileAnalysis)**.\n- Configure your SCA scanner to fail CI/CD builds if a critical vulnerability like **CVE-2026-26007** is detected in a dependency.\n\n**Response:**\n- If a vulnerable version is found, the immediate response is to follow the remediation steps to update the package.\n- If a compromise is suspected, all private keys used by the affected application must be considered compromised. They should be revoked immediately and replaced with new keys generated after the library has been patched.\n\n## Remediation Steps\n\nRemediation is straightforward: update the `cryptography` package to the patched version.\n\n1.  **Update the package:**\n    ```bash\n    pip install --upgrade cryptography\n    ```\n2.  **Verify the version:** Ensure the installed version is `46.0.5` or newer.\n    ```bash\n    pip show cryptography\n    ```\n3.  **Pin the dependency:** Update your `requirements.txt` or other dependency management files to require the patched version to prevent accidental downgrades.\n    `cryptography>=46.0.5`\n\n4.  **Key Rotation:** As a precautionary measure, rotate any long-term elliptic curve private keys that were used by applications with the vulnerable library. This is the only way to be certain they cannot be compromised by an attacker who may have already extracted information from them. This is a form of **[Credential Eviction](https://d3fend.mitre.org/technique/d3f:CredentialEviction)**.",
+  "twitter_post": "⚠️ SECURITY ALERT: A flaw (CVE-2026-26007) in the popular Python 'cryptography' library can leak private key information. Affects versions before 46.0.5. Update immediately to prevent key compromise! #Python #Cryptography #CVE #CyberSecurity",
+  "meta_description": "A critical vulnerability, CVE-2026-26007, in the Python 'cryptography' package allows attackers to leak private key information via a small subgroup attack. Update to version 46.0.5 or later.",
+  "category": [
+    "Vulnerability",
+    "Patch Management",
+    "Supply Chain Attack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Python",
+      "type": "technology"
+    },
+    {
+      "name": "cryptography",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-26007"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://docs.bell-sw.com/alpaquita-linux/security-advisory/cve-2026-26007/",
+      "title": "CVE-2026-26007 - Bellsoft Docs",
+      "date": "2026-02-14",
+      "friendly_name": "BellSoft",
+      "website": "bell-sw.com"
+    },
+    {
+      "url": "https://versatrust.com/security/cyber-threat-intelligence-reports/february-14-2026",
+      "title": "Versa Cyber - Threat Intelligence Reports",
+      "date": "2026-02-14",
+      "friendly_name": "VersaTrust",
+      "website": "versatrust.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02-14T00:00:00Z",
+      "summary": "CVE-2026-26007 was publicly disclosed."
+    },
+    {
+      "datetime": "2026-02-14T00:00:00Z",
+      "summary": "Version 46.0.5 of the 'cryptography' package was released to fix the vulnerability."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1606.002",
+      "name": "Impair Command and Control",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1588.006",
+      "name": "Obtain Capabilities: Vulnerabilities",
+      "tactic": "Resource Development"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "The only effective mitigation is to update the 'cryptography' library to a non-vulnerable version (>=46.0.5).",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1043",
+      "name": "Credential Access Protection",
+      "description": "Rotate private keys that were used with the vulnerable library as a precaution against prior compromise.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The primary and most effective countermeasure against CVE-2026-26007 is to promptly update the 'cryptography' package to version 46.0.5 or newer. This action directly remediates the vulnerability by incorporating the necessary public key validation checks that were missing. Organizations must leverage Software Composition Analysis (SCA) tools within their CI/CD pipelines to automatically detect the vulnerable library version. Build processes should be configured to fail if a vulnerable dependency is detected, preventing insecure code from ever reaching production. For existing systems, a systematic patch management process should be initiated to identify all hosts with the vulnerable library and deploy the update. This is a fundamental aspect of security hygiene that directly prevents exploitation.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-CE",
+      "technique_name": "Credential Eviction",
+      "url": "https://d3fend.mitre.org/technique/d3f:CredentialEviction",
+      "recommendation": "Due to the nature of this vulnerability—leaking private key information over time—it is impossible to know if a key has already been partially or fully compromised. Therefore, as a critical secondary step after patching the library, organizations must assume that any long-term private keys used by the vulnerable application are compromised. A comprehensive key rotation policy must be enacted. This involves generating new key pairs for all affected services, deploying the new public keys, and revoking the old ones via Certificate Revocation Lists (CRLs) or OCSP. This 'evicts' the potentially compromised credential, ensuring that even if an attacker has gathered information about the old key, it is no longer valid for decryption or signing.",
+      "mitre_mitigation_id": "M1043"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "requirements.txt",
+      "description": "Dependency file used in Python projects. Scan for lines like 'cryptography<46.0.5' to identify vulnerable applications.",
+      "context": "Source code repositories, developer workstations",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Software Composition Analysis (SCA) tool",
+      "description": "SCA tools are designed to find vulnerable dependencies. A finding for CVE-2026-26007 is a high-confidence indicator of a vulnerable system.",
+      "context": "CI/CD pipeline, security scanning reports",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Python",
+    "cryptography",
+    "CVE-2026-26007",
+    "Vulnerability",
+    "Private Key",
+    "ECDH",
+    "Information Leak"
+  ],
+  "extract_datetime": "2026-02-15T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Python developers"
+    ]
+  },
+  "pub_date": "2026-02-15",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-02-15T15:00:00.000Z",
+  "updatedAt": "2026-02-15T15:00:00.000Z"
+}

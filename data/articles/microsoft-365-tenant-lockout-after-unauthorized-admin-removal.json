@@ -1,0 +1,165 @@
+{
+  "id": "ee9033d1-6155-427b-a9e0-e7cc5eed8130",
+  "slug": "microsoft-365-tenant-lockout-after-unauthorized-admin-removal",
+  "headline": "Microsoft 365 Admins Locked Out of Tenant After Attacker Removes All Global Admin Roles",
+  "title": "Business-Critical Incident: Attacker Achieves Tenant Lockout by Removing All Microsoft 365 Global Administrators",
+  "summary": "An organization has reported a 'business-critical security incident' after a malicious actor gained access to their Microsoft 365 tenant and systematically removed the 'Global Administrator' role from all assigned user accounts. This action resulted in a complete administrative lockout, preventing legitimate administrators from accessing the Microsoft 365 Admin Center and Microsoft Entra ID. The attack highlights a potent technique where attackers, after compromising a single privileged account, can cement their control and prevent remediation by decapitating the tenant's administrative structure. The organization is now reliant on Microsoft's Data Protection team to verify ownership and restore access.",
+  "full_report": "## Executive Summary\nAn organization has suffered a complete administrative lockout from its **[Microsoft 365](https://docs.microsoft.com/en-us/microsoft-365)** tenant after a threat actor compromised an administrative account and then maliciously removed the 'Global Administrator' role from all other privileged users. This devastating attack left the organization's IT staff unable to access critical management portals, including the Microsoft 365 Admin Center and **[Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/microsoft-entra)**. The incident, described by the victim as a \"business-critical security incident,\" effectively paralyzes identity management, security, and compliance functions. This scenario, known as a 'tenant lockout,' is a worst-case scenario for cloud administrators and underscores the critical need for emergency access controls and robust monitoring of privileged role assignments.\n\n## Threat Overview\nThe attack is a simple but highly effective method for an attacker to escalate and maintain control after an initial compromise.\n\n**Attack Chain:**\n1.  **Initial Compromise:** The attacker first gains access to a single account with the Global Administrator role. This is typically achieved through phishing, password spraying, or exploiting the lack of Multi-Factor Authentication (MFA).\n2.  **Privilege Escalation / Defense Evasion:** The attacker logs into the Microsoft Entra ID portal.\n3.  **Execution:** The attacker navigates to the 'Roles and administrators' section and systematically removes the Global Administrator role assignment from every other user account, including the one they originally compromised to cover their tracks.\n4.  **Impact:** The organization is now completely locked out. No legitimate user has the permissions necessary to manage the tenant, reset passwords, or restore the removed roles. The attacker may retain access through a backdoor account they created or may simply leave the organization in a state of chaos.\n\nThe organization's only recourse is to contact the Microsoft Data Protection team via phone, a process that involves a lengthy identity and tenant ownership verification procedure before access can be restored.\n\n## Technical Analysis\nThis attack abuses legitimate administrative functionality. The key TTPs are:\n- **Valid Accounts: Cloud Accounts:** [`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/) - The entire attack hinges on first obtaining access to a legitimate Global Admin account.\n- **Cloud Administration Command:** [`T1098.001 - Cloud Administration Command`](https://attack.mitre.org/techniques/T1098/001/) - The attacker uses standard Entra ID portal functions or PowerShell commands (`Remove-MsolRoleMember` or similar) to modify role assignments.\n- **Impair Defenses: Disable or Modify Tools:** [`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/) - By removing all other administrators, the attacker is impairing the organization's primary defensive tool: its own IT staff.\n\n## Impact Assessment\n- **Business Paralysis:** Without administrative access, the organization cannot manage user accounts, respond to security alerts, configure applications, or manage compliance. Business operations can grind to a halt.\n- **Significant Downtime:** The process of regaining access through Microsoft support can be slow and arduous, leading to extended periods of administrative downtime and lost productivity.\n- **High Risk of Further Damage:** During the lockout period, the attacker may have free rein within the tenant to exfiltrate data, deploy malware via SharePoint, or send phishing emails from trusted internal accounts.\n- **Loss of Confidence:** Such an incident severely undermines confidence in the IT department's ability to secure critical cloud infrastructure.\n\n## Cyber Observables for Detection\nDetection must be real-time, as the attack can be executed in minutes.\n| Type | Value | Description |\n|---|---|---|\n| log_source | Microsoft Entra ID Audit Logs | The critical log event is `Remove member from role`. Monitor for this action, especially when it targets the 'Global Administrator' role. |\n| event_id | `Directory-Role-Member-Removed` | This is the specific activity name in the audit logs that corresponds to the malicious action. |\n| user_account_pattern | Anomalous login to a Global Admin account | A Global Admin account logging in from an unfamiliar IP, country, or device is a precursor and a critical alert. |\n\n## Detection & Response\n- **D3FEND: Domain Account Monitoring:** This is the most critical defense. Configure a high-priority, non-ignorable alert in your SIEM or Microsoft Sentinel that triggers *immediately* whenever a member is removed from the Global Administrator role. The alert should be sent to multiple people via multiple channels (email, SMS, Teams). This is a direct application of [`D3-DAM: Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring).\n- **Real-Time Alerts:** The alert rule should be something like: `AzureActivity | where OperationNameValue == 'Microsoft.Directory/roleManagement/directory/roleAssignments/delete' and properties_roleDefinitionId_g == '62e90394-69f5-4237-9190-012177145e10'`. This rule specifically targets the removal of the Global Admin role.\n- **Automated Response:** If possible, use a SOAR playbook to respond to the alert by attempting to re-add the user to the role or by temporarily disabling the account that performed the action.\n\n## Mitigation\n> **CRITICAL MITIGATION:** Implement Emergency Access or 'Break-Glass' accounts.\n\n- **Break-Glass Accounts:** Create two or more emergency access accounts that are excluded from all standard policies (like MFA requirements, conditional access). These accounts should have the Global Administrator role. Their credentials should be extremely complex and stored securely offline (e.g., in a physical safe). They are to be used *only* in an emergency, like this lockout scenario. This is the single most important mitigation and is a core part of [`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/).\n- **Enforce MFA on All Admins:** All standard administrative accounts (and all users) must have phishing-resistant MFA enforced. This would have likely prevented the initial compromise.\n- **Privileged Identity Management (PIM):** Use Microsoft Entra ID PIM. This feature ensures that administrators do not have standing, persistent access. They must request and justify temporary elevation to the Global Admin role (Just-In-Time access), which is logged and can require approval. This dramatically reduces the window of opportunity for an attacker.\n- **Limit Number of Global Admins:** Adhere to the principle of least privilege. Most administrators do not need standing Global Admin rights. Use more granular roles (e.g., Exchange Admin, Teams Admin) for daily tasks and keep the number of Global Admins to a bare minimum (e.g., 2-4 plus break-glass accounts).",
+  "twitter_post": "🔒 Tenant Lockout! Attacker compromises a Microsoft 365 admin account, then removes ALL other Global Admins, locking the org out of its own tenant. A critical reminder to use break-glass accounts & PIM. #Microsoft365 #EntraID #CyberAttack",
+  "meta_description": "An organization reports a complete Microsoft 365 tenant lockout after a malicious actor compromised an admin account and removed all Global Administrator role assignments, highlighting the need for break-glass accounts.",
+  "category": [
+    "Security Operations",
+    "Cyberattack",
+    "Cloud Security"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365"
+    },
+    {
+      "name": "Microsoft Entra ID",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/security/business/microsoft-entra"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://learn.microsoft.com/en-us/answers/questions/1709403/security-incident-global-administrator-access-com",
+      "title": "Security Incident – Global Administrator Access Compromised / Removed",
+      "date": "2026-04-13",
+      "friendly_name": "Microsoft Learn",
+      "website": "learn.microsoft.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-365-admins-locked-out-of-tenants-after-all-global-admins-removed/",
+      "title": "Microsoft 365 admins locked out of tenants after all Global Admins removed",
+      "date": "2026-04-14",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04-13T00:00:00Z",
+      "summary": "User reports the tenant lockout incident on a Microsoft technical support forum."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078.004",
+      "name": "Valid Accounts: Cloud Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1098.001",
+      "name": "Cloud Administration Command",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Implement emergency access ('break-glass') accounts and use Privileged Identity Management (PIM) for just-in-time access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforce phishing-resistant MFA on all administrative accounts to prevent the initial compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Configure and monitor high-priority, real-time alerts for any changes to Global Administrator role assignments.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "To prevent a tenant lockout, real-time Domain Account Monitoring is non-negotiable. Organizations must configure a high-severity, real-time alert in their SIEM (like Microsoft Sentinel) that triggers the instant a user is removed from the 'Global Administrator' role in Microsoft Entra ID. This is not a routine event and should be treated as a critical security incident until proven otherwise. The alert should not just be an email; it should trigger multiple notification channels (SMS, phone calls, dedicated Teams/Slack channel) to a distribution list of security personnel and IT leadership. This ensures that even if the attack happens at 3 AM, key personnel are woken up and can respond immediately. The alert provides the crucial, time-sensitive signal needed to intervene before an attacker can remove all admins and achieve a full lockout.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-PIM",
+      "technique_name": "Privileged Identity Management",
+      "url": "https://d3fend.mitre.org/technique/d3f:PrivilegedIdentityManagement",
+      "recommendation": "The most effective proactive control against this attack is implementing Microsoft Entra Privileged Identity Management (PIM). PIM shifts from a model of 'standing access' to 'just-in-time' (JIT) access. Instead of having accounts that are always Global Admins, administrators are made 'eligible' for the role. To become a Global Admin, they must go through an activation process in PIM, which can require providing a justification, getting approval from another manager, and passing an MFA challenge. The role is then granted only for a limited time (e.g., 4 hours). This dramatically shrinks the window of opportunity for an attacker. If they compromise an account, it likely won't have standing Global Admin rights. And if they try to activate PIM, it creates a clear, auditable trail and can be subject to an approval workflow, giving defenders a chance to stop the attack before it even starts.",
+      "mitre_mitigation_id": "M1026"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Microsoft Entra ID Audit Logs",
+      "description": "The primary source for detecting this activity. Specifically, filtering for 'Remove member from role' operations.",
+      "context": "Microsoft Sentinel, Azure Monitor, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "Directory-Role-Member-Removed",
+      "description": "The specific activity name in Entra ID audit logs to monitor. An alert should fire if this activity targets the Global Administrator role.",
+      "context": "SIEM alert rule",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "Anomalous sign-in to a Global Admin account",
+      "description": "A sign-in to a highly privileged account from a non-corporate IP, unfamiliar location, or using a non-compliant device is a critical precursor event that must be investigated.",
+      "context": "Entra ID Identity Protection, SIEM",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Microsoft 365",
+    "Entra ID",
+    "Azure AD",
+    "Tenant Lockout",
+    "Cloud Security",
+    "Incident Response",
+    "Global Administrator"
+  ],
+  "extract_datetime": "2026-04-14T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Healthcare",
+      "Finance",
+      "Energy",
+      "Government",
+      "Technology",
+      "Manufacturing",
+      "Retail",
+      "Education",
+      "Transportation",
+      "Telecommunications",
+      "Critical Infrastructure",
+      "Defense"
+    ]
+  },
+  "pub_date": "2026-04-14",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-04-14T15:00:00.000Z",
+  "updatedAt": "2026-04-14T15:00:00.000Z"
+}

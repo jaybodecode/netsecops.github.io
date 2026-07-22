@@ -1,0 +1,71 @@
+title: Suspicious Modification of Google Chrome Configuration Files on macOS
+id: 48a89550-364f-4e88-bf3d-a63f3df0f84f
+status: experimental
+description: Detects file modification events within the Google Chrome application support directory on macOS by a process other than Chrome itself, which could indicate browser hijacking by malware like FlutterShell.
+references:
+  - https://unit42.paloaltonetworks.com/flutterbridge-new-fluttershell-backdoor/
+author: cyber.netsecops.io
+date: '2026-06-02'
+tags:
+  - attack.t1555.003
+level: medium
+logsource:
+  category: file_event
+  product: macos
+detection:
+  selection:
+    TargetFilename|startswith: '/Users/'
+    TargetFilename|contains: '/Library/Application Support/Google/Chrome/'
+  filter_chrome:
+    Image|endswith: '/Google Chrome.app/Contents/MacOS/Google Chrome'
+  condition: selection and not filter_chrome
+---
+title: FlutterShell Spawning Shell Process on macOS
+id: e03067d7-bea1-4812-8936-e72d507c4051
+status: experimental
+description: Detects a shell process (sh, bash) being spawned by a known FlutterShell trojanized application on macOS.
+references:
+  - https://unit42.paloaltonetworks.com/flutterbridge-new-fluttershell-backdoor/
+author: cyber.netsecops.io
+date: '2026-06-02'
+tags:
+  - attack.t1059.004
+level: high
+logsource:
+  category: process_creation
+  product: macos
+detection:
+  selection_child:
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+  selection_parent:
+    ParentImage|endswith:
+      - '/PodcastsLounge'
+      - '/PDFViewerPro'
+  condition: all of selection_*
+---
+title: Anomalous Outbound Traffic to AI Service APIs
+id: d7bebede-06b6-442a-b392-a8b07128af1d
+status: experimental
+description: Detects outbound network traffic to known AI service API endpoints from non-sanctioned or unusual desktop applications. This could indicate data exfiltration by malware like FlutterShell.
+references:
+  - https://unit42.paloaltonetworks.com/flutterbridge-new-fluttershell-backdoor/
+author: cyber.netsecops.io
+date: '2026-06-02'
+tags:
+  - attack.t1048
+level: low
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host|endswith:
+      - 'api.openai.com'
+      - 'api.anthropic.com'
+  filter_legit:
+    c-useragent|contains:
+      - 'Chrome/'
+      - 'Firefox/'
+      - 'Safari/'
+  condition: selection and not filter_legit

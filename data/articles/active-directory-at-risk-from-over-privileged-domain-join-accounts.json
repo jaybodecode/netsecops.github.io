@@ -1,0 +1,199 @@
+{
+  "id": "34b335bc-0f57-4cc5-b073-e9ac48203cd2",
+  "slug": "active-directory-at-risk-from-over-privileged-domain-join-accounts",
+  "headline": "Over-Privileged Active Directory Domain-Join Accounts Create Major Security Risk",
+  "title": "Misconfigured Active Directory Domain-Join Accounts Provide Reliable Path to Domain Compromise",
+  "summary": "A new security analysis reveals that Active Directory (AD) domain-join accounts, even when configured according to official guidance, often inherit excessive privileges that create a reliable pathway for attackers to achieve full domain compromise. These specialized accounts, used for automated machine provisioning, can have their credentials exposed during deployment. Attackers can then abuse the account's powerful default permissions, such as object ownership and rights related to Resource-Based Constrained Delegation (RBCD), to escalate privileges and take over computer objects.",
+  "full_report": "## Executive Summary\nA security analysis published on October 28, 2025, details a systemic weakness in **[Microsoft](https://www.microsoft.com/security)** **Active Directory** environments related to the use of domain-join accounts. These accounts, designed to automate the process of joining computers to a domain at scale, are frequently over-privileged by default. Even when following official guidance, these accounts inherit powerful permissions that threat actors can abuse for privilege escalation and full domain compromise. The risk is twofold: the credentials for these accounts are often exposed in plaintext during deployment processes, and their default rights allow for the takeover of the computer objects they create, creating a reliable vector for attackers to expand their foothold within a network.\n\n---\n\n## Vulnerability Details\nThe issue is not a single CVE but a systemic configuration weakness in how Active Directory handles permissions for accounts delegated the right to join computers to the domain.\n\n1.  **Credential Exposure:** During automated OS deployments using tools like Microsoft Configuration Manager (MCM) or PXE boot processes, the credentials for the domain-join account are often stored in plaintext within configuration files like `unattend.xml` or in deployment scripts. An attacker with initial access to the network can often easily recover these credentials.\n\n2.  **Excessive Inherited Privileges:** Once an attacker has the credentials, they can abuse the permissions the domain-join account holds over the computer objects it creates:\n    -   **Object Ownership:** The domain-join account automatically becomes the 'owner' of the computer object it creates. This grants it powerful rights, including `Read` access to all attributes, which can expose sensitive information like the LAPS password (`ms-Mcs-AdmPwd`).\n    -   **Resource-Based Constrained Delegation (RBCD) Abuse:** The account also gains `Write` permission to the `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute on the computer object. This allows an attacker to configure RBCD, effectively granting them the ability to impersonate any user and authenticate to that computer, leading to a full takeover of the machine ([`T1558.003 - Kerberoasting`](https://attack.mitre.org/techniques/T1558/003/)).\n\nThis creates a repeatable attack path: obtain domain-join credentials -> use them to create a new computer object -> abuse ownership and RBCD rights to take over that computer -> escalate privileges further.\n\n## Affected Systems\nThis is a configuration and architectural weakness affecting virtually all **Active Directory Domain Services** environments that use dedicated accounts for automated domain joins, a common practice in medium to large enterprises.\n\n## Exploitation Status\nThis attack path has been known in the security community for some time, with initial reports dating back to 2021. It is a well-documented technique used by penetration testers and likely by advanced threat actors. Microsoft acknowledged the complexity and risks in official guidance published in August 2025.\n\n## Impact Assessment\nThe impact of this misconfiguration is severe, as it provides a direct and often easy path to privilege escalation.\n-   **Privilege Escalation:** An attacker with a low-privileged domain-join account can escalate to `SYSTEM` privileges on any machine they are able to create.\n-   **Lateral Movement:** By taking over computer objects, attackers can move laterally across the network.\n-   **Domain Compromise:** If the compromised computer has privileged users logged in, the attacker can harvest their credentials and potentially escalate to full Domain Admin, leading to a complete network takeover.\n\n## Cyber Observables for Detection\n\n| Type                   | Value                                                | Description                                                                                                                                   |\n|:-----------------------|:-----------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|\n| event_id               | `4741`                                               | A new computer account was created. Monitor for creation by the designated domain-join account, especially outside of normal provisioning hours. |\n| event_id               | `5136`                                               | A directory service object was modified. Look for modifications to the `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute.                  |\n| command_line_pattern   | `PowerView.ps1`, `Add-DomainComputer`                | Use of common offensive security tools or PowerShell cmdlets to add computer accounts or modify their delegation rights.                      |\n| log_source             | `unattend.xml`, `cct-provisioning-data.xml`          | Scan network shares and deployment servers for these files containing plaintext credentials.                                                  |\n\n## Detection Methods\n-   **Audit AD Permissions:** Regularly audit the permissions of your domain-join accounts. Use tools like `BloodHound` or PowerShell scripts to identify accounts with excessive rights.\n-   **Monitor AD Events:** In your SIEM, create alerts for the modification of the `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute (Event ID 5136), especially when performed by a service account or outside of expected administrative activity.\n-   **Hunt for Exposed Credentials:** Proactively search deployment shares and configuration files for plaintext credentials.\n-   **D3FEND Techniques:**\n    -   [`D3-DAM: Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring) is key to detecting abuse of these accounts.\n    -   [`D3-AZET: Authorization Event Thresholding`](https://d3fend.mitre.org/technique/d3f:AuthorizationEventThresholding) can help detect when an account performs an unusual number of privileged actions.\n\n## Remediation Steps\nMicrosoft and security researchers recommend a layered defense to mitigate this risk.\n1.  **Secure Credentials:** Treat domain-join account credentials as highly sensitive. Avoid storing them in plaintext. Use Group Managed Service Accounts (gMSAs) or other secure methods where possible.\n2.  **Reassign Object Ownership:** After a computer is joined to the domain, run an automated script to reassign the ownership of the computer object from the domain-join account to a protected group like 'Domain Admins'.\n3.  **Implement Deny Permissions:** Explicitly add a 'Deny' ACE (Access Control Entry) on the `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute for the domain-join account on the OU where computer objects are created. This directly blocks the RBCD attack vector.\n4.  **Principle of Least Privilege:** Ensure the domain-join account has only the specific permissions needed to create and configure a computer object, and nothing more.\n5.  **D3FEND Countermeasures:**\n    -   [`D3-UAP: User Account Permissions`](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions) is the core principle for hardening these accounts.\n    -   [`D3-ACH: Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening) applies to securing the deployment tools that use these credentials.",
+  "twitter_post": "Security analysis reveals over-privileged Active Directory domain-join accounts are a reliable path to domain compromise. 🔓 Exposed credentials + default permissions allow attackers to escalate privileges via RBCD attacks. #ActiveDirectory #CyberSecurity",
+  "meta_description": "A security analysis highlights how over-privileged Active Directory domain-join accounts, whose credentials are often exposed, create a significant risk for privilege escalation and domain compromise via RBCD attacks.",
+  "category": [
+    "Security Operations",
+    "Vulnerability",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Active Directory Domain Services",
+      "type": "product"
+    },
+    {
+      "name": "Windows Server",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft Configuration Manager",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://gbhackers.com/active-directory-at-risk-due-to-domain-join-account-misconfigurations/",
+      "title": "Active Directory at Risk Due to Domain-Join Account Misconfigurations",
+      "date": "2025-10-28",
+      "friendly_name": "GBHackers",
+      "website": "gbhackers.com"
+    },
+    {
+      "url": "https://cyberpress.com/misconfigured-domain-join-accounts-enable-active-directory-exploitation/",
+      "title": "Misconfigured Domain-Join Accounts Enable Active Directory Exploitation",
+      "date": "2025-10-28",
+      "friendly_name": "Cyberpress",
+      "website": "cyberpress.com"
+    },
+    {
+      "url": "https://dirkjanm.io/active-directory-domain-join-accounts-revisited-2025/",
+      "title": "Active Directory domain (join)own accounts revisited 2025",
+      "date": "2025-10-11",
+      "friendly_name": "Dirk-jan Mollema's Blog",
+      "website": "dirkjanm.io"
+    },
+    {
+      "url": "https://techcommunity.microsoft.com/t5/security-compliance-and-identity/secure-configuration-and-hardening-of-active-directory/ba-p/4259837",
+      "title": "Secure Configuration and Hardening of Active Directory Certificate Services",
+      "date": "2025-10-21",
+      "friendly_name": "Microsoft Tech Community",
+      "website": "techcommunity.microsoft.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2021-10-01T00:00:00Z",
+      "summary": "Initial security research on the risks of domain-join accounts begins to be published."
+    },
+    {
+      "datetime": "2025-08-01T00:00:00Z",
+      "summary": "Microsoft publishes official guidance acknowledging the complexity of securing these accounts."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078.002",
+      "name": "Domain Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1558.003",
+      "name": "Kerberoasting",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1021.002",
+      "name": "SMB/Windows Admin Shares",
+      "tactic": "Lateral Movement"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UAP",
+          "name": "User Account Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions"
+        }
+      ],
+      "description": "Properly configuring permissions, such as reassigning object ownership and using Deny ACEs, is the core mitigation strategy.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Treating the domain-join account as a privileged account and securing its credentials is a key part of the solution.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        }
+      ],
+      "description": "Auditing for modifications to sensitive AD attributes like msDS-AllowedToActOnBehalfOfOtherIdentity is a critical detection control.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "To break the attack chain involving domain-join accounts, administrators must proactively harden their permissions in Active Directory. The most effective step is to apply an explicit 'Deny' Access Control Entry (ACE) for the 'Write to msDS-AllowedToActOnBehalfOfOtherIdentity' permission for the domain-join account. This ACE should be set on the Organizational Unit (OU) where new computer objects are created. This single change directly blocks the Resource-Based Constrained Delegation (RBCD) abuse vector. Additionally, an automated process should be created to run after a machine is provisioned; this process should change the owner of the new computer object from the domain-join account to a protected group like 'Domain Admins'. These two permission changes remove the excessive inherited privileges and neutralize this well-known privilege escalation path.",
+      "mitre_mitigation_id": "M1015"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "For detection, robust Domain Account Monitoring is essential. Security teams must configure detailed auditing on their Domain Controllers to log directory service changes (Event ID 5136). Create a high-priority alert in your SIEM that triggers whenever the `msDS-AllowedToActOnBehalfOfOtherIdentity` attribute is modified by any account other than a highly privileged, designated administrator. Since this attribute is the cornerstone of the RBCD attack, monitoring its modification is a high-fidelity way to detect an attack in progress. Correlate this alert with the account that performed the change; if it's a service account or a standard user, it is a major red flag that requires immediate investigation.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "event_id",
+      "value": "4741",
+      "description": "A computer account was created. Monitor for creation by the designated domain-join account, especially outside of normal provisioning hours.",
+      "context": "Windows Security Event Log on Domain Controllers",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "5136",
+      "description": "A directory service object was modified. Look for modifications to the 'msDS-AllowedToActOnBehalfOfOtherIdentity' attribute, which is indicative of an RBCD attack setup.",
+      "context": "Windows Security Event Log on Domain Controllers (requires advanced audit policy)",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "unattend.xml",
+      "description": "This OS deployment configuration file often contains plaintext credentials for the domain-join account.",
+      "context": "File Integrity Monitoring on deployment servers, network shares",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Active Directory",
+    "Privilege Escalation",
+    "RBCD",
+    "Misconfiguration",
+    "Kerberos",
+    "Security Operations"
+  ],
+  "extract_datetime": "2025-10-28T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "other_affected": [
+      "Organizations using Microsoft Active Directory at scale"
+    ]
+  },
+  "pub_date": "2025-10-28",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-28T15:00:00.000Z",
+  "updatedAt": "2025-10-28T15:00:00.000Z"
+}

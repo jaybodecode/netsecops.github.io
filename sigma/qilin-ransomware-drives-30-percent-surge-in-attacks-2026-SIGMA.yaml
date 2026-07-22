@@ -1,0 +1,90 @@
+title: Qilin-Affiliated PowerShell Download Cradle
+id: 2b9e1c4a-8f7d-4b1e-9c6a-3d2e5f8a7b9c
+status: experimental
+description: Detects a common PowerShell pattern used to download second-stage malware, as seen in Qilin affiliate activity.
+references:
+  - https://thecyberexpress.com/qilin-inc-ransom-drive-2026-ransomware-surge/
+author: cyber.netsecops.io
+date: 2026-06-03
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - 'IEX (New-Object Net.WebClient).DownloadString'
+      - 'IEX(New-Object Net.WebClient).DownloadString'
+  condition: selection
+---
+title: Anomalous Large Outbound Transfer to Cloud Storage
+id: 5d8c3a9b-1e4f-4a7b-8d6c-9f0a1b2c3d4e
+status: experimental
+description: Detects large outbound data transfers to common cloud storage providers, which may indicate data exfiltration by groups like Qilin.
+references:
+  - https://thecyberexpress.com/qilin-inc-ransom-drive-2026-ransomware-surge/
+author: cyber.netsecops.io
+date: 2026-06-03
+tags:
+  - attack.t1567.002
+  - attack.exfiltration
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host|endswith:
+      - 'mega.nz'
+      - 'dropbox.com'
+  # This rule would ideally be a correlation rule checking for bytes_out > threshold, but as an atomic rule, this is a starting point.
+  condition: selection
+---
+title: Anomalous LSASS Process Access for Credential Dumping
+id: 9e1c4a8f-7d4b-4e1b-9c6a-3d2e5f8a7b9d
+status: experimental
+description: Detects non-system processes accessing the LSASS process memory, a common technique for credential dumping used by tools like Mimikatz.
+references:
+  - https://thecyberexpress.com/qilin-inc-ransom-drive-2026-ransomware-surge/
+author: cyber.netsecops.io
+date: 2026-06-03
+tags:
+  - attack.t1003.001
+  - attack.credential_access
+level: high
+logsource:
+  category: process_access
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith: '\lsass.exe'
+  filter:
+    SourceImage|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+  condition: selection and not filter
+---
+title: VSSAdmin Shadow Copy Deletion
+id: 1c4a8f7d-4b1e-4b9c-9c6a-3d2e5f8a7b9e
+status: experimental
+description: Detects the use of vssadmin.exe to delete volume shadow copies, a common ransomware TTP to inhibit system recovery.
+references:
+  - https://thecyberexpress.com/qilin-inc-ransom-drive-2026-ransomware-surge/
+author: cyber.netsecops.io
+date: 2026-06-03
+tags:
+  - attack.t1490
+  - attack.impact
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains:
+      - 'delete'
+      - 'shadows'
+  condition: selection

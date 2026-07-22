@@ -1,0 +1,81 @@
+title: Suspicious MSBuild Child Process
+id: 4f8a1b2c-3d4e-4f5a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects the MSBuild process spawning network-related utilities or other suspicious tools. This is anomalous behavior for a compiler process and may indicate a compromised build environment, such as the one targeted by the Visual Studio Supply Chain Trojan.
+references:
+  - https://cybersecuritynews.com/new-trojan-turns-visual-studio-projects-into-a-software-supply-chain-attack-vector/
+author: cyber.netsecops.io
+date: 2026-07-12
+tags:
+  - attack.t1195.002
+  - attack.t1127.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\msbuild.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\bitsadmin.exe'
+      - '\certutil.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+      - '\curl.exe'
+      - '\wget.exe'
+  condition: selection
+---
+title: MSBuild Initiating Outbound Network Connections
+id: 9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+status: experimental
+description: Detects the MSBuild process initiating outbound network connections. This is highly anomalous behavior for a compiler process and may indicate a compromised build environment, such as one targeted by the Visual Studio Supply Chain Trojan.
+references:
+  - https://cybersecuritynews.com/new-trojan-turns-visual-studio-projects-into-a-software-supply-chain-attack-vector/
+author: cyber.netsecops.io
+date: 2026-07-12
+tags:
+  - attack.t1195.002
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\msbuild.exe'
+    Initiated: true
+  filter_local:
+    DestinationIp:
+      - '127.0.0.1'
+      - '::1'
+  condition: selection and not filter_local
+---
+title: Suspicious MSBuild Project File Modification
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Monitors for modifications to MSBuild project files (.csproj, .vbproj) by processes other than common developer tools. This can be a vector for supply chain attacks like the Visual Studio Supply Chain Trojan.
+references:
+  - https://cybersecuritynews.com/new-trojan-turns-visual-studio-projects-into-a-software-supply-chain-attack-vector/
+author: cyber.netsecops.io
+date: 2026-07-12
+tags:
+  - attack.t1195.002
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.csproj'
+      - '.vbproj'
+      - 'Directory.Build.props'
+  filter_legit_procs:
+    Image|endswith:
+      - '\devenv.exe'
+      - '\msbuild.exe'
+      - '\git.exe'
+      - '\Code.exe'
+  condition: selection and not filter_legit_procs
