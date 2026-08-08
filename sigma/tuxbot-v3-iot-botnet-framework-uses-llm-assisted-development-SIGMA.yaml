@@ -1,0 +1,108 @@
+title: TuxBot Telnet Brute-Force Scanning
+id: 4a5b6c7d-8e9f-4a1b-8c3d-4e5f6a7b8c9d
+status: experimental
+description: Detects a high volume of outbound connection attempts on TCP port 23 (Telnet), which is indicative of TuxBot's primary infection vector.
+references:
+  - https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1110.001
+  - attack.credential_access
+level: medium
+logsource:
+  category: network_connection
+detection:
+  selection:
+    DestinationPort: 23
+    Protocol: 'tcp'
+  condition: selection | count() > 50 by SourceIp within 1 minute
+---
+title: TuxBot C2 Communication Ports
+id: 9f0a1b2c-3d4e-4f5a-b6c7-d8e9f0a1b2c3
+status: experimental
+description: Detects outbound TCP connections on ports 1999 or 31337 from IoT devices, which are used for TuxBot C2 communication.
+references:
+  - https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+detection:
+  selection:
+    DestinationPort:
+      - 1999
+      - 31337
+    Protocol: 'tcp'
+  condition: selection
+---
+title: TuxBot C2 Fallback via Web Services
+id: 5b6c7d8e-9f0a-4b2c-8d4e-5f6a7b8c9d0e
+status: experimental
+description: Detects DNS queries from IoT devices to Telegram or Pastebin, which are used by TuxBot as C2 fallback mechanisms.
+references:
+  - https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1102
+  - attack.command_and_control
+level: medium
+logsource:
+  category: dns_query
+detection:
+  selection:
+    QueryName|endswith:
+      - '.api.telegram.org'
+      - '.pastebin.com'
+  filter_legit:
+    Image|endswith:
+      - 'telegram.exe'
+  condition: selection and not filter_legit
+---
+title: TuxBot v3 C2 Communication
+id: 7c8d1e2f-3a4b-4c5d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects network connections to IP addresses and DNS queries for domains associated with the TuxBot v3 IoT botnet C2 infrastructure.
+references:
+  - https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_ip:
+    DestinationIp:
+      - '185.10.68.127'
+  condition: selection_ip
+--- 
+title: TuxBot v3 C2 DNS Query
+id: 8f9a0b1c-2d3e-4f5a-b6c7-d8e9f0a1b2c3
+status: experimental
+description: Detects DNS queries for domains associated with the TuxBot v3 IoT botnet C2 infrastructure.
+references:
+  - https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: high
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection_domain:
+    QueryName|contains:
+      - 'newtuxdev.sevielw.digikalas.online'
+      - 'digikalas.online'
+  condition: selection_domain

@@ -1,0 +1,263 @@
+{
+  "id": "0284a739-6dcd-423d-bd86-34f8e11c2087",
+  "slug": "notepad-plus-plus-supply-chain-attack-lotus-blossom-apt",
+  "headline": "Notepad++ Update Mechanism Hijacked in 6-Month Supply Chain Attack by Chinese APT",
+  "title": "Chinese State-Sponsored Group Lotus Blossom Compromises Notepad++ Update Infrastructure",
+  "summary": "The maintainers of the widely-used Notepad++ text editor have disclosed a major supply chain attack that compromised their update infrastructure for six months in 2025. The attack, attributed to the Chinese espionage group Lotus Blossom (Billbug), involved hijacking update requests to selectively deliver a custom backdoor named 'Chrysalis' and other malware like Cobalt Strike to a targeted set of organizations. Victims were primarily located in Southeast Asia and included government and financial entities, highlighting a sophisticated, long-running espionage campaign.",
+  "full_report": "## Executive Summary\nOn February 2, 2026, the developers of **[Notepad++](https://notepad-plus-plus.org/)** revealed that its update infrastructure was compromised in a sophisticated supply chain attack lasting from June to December 2025. Security researchers attribute the operation with high confidence to **[Lotus Blossom](https://attack.mitre.org/groups/G0054/)** (also known as Billbug), a Chinese state-sponsored threat actor. The attackers compromised a shared hosting server, allowing them to intercept and redirect update requests from the Notepad++ client. This enabled the selective delivery of malicious payloads to a small, targeted set of victims, primarily for espionage purposes. The campaign utilized a previously undocumented backdoor called 'Chrysalis' and leveraged complex execution chains involving legitimate but vulnerable software to deploy payloads like **[Cobalt Strike](https://attack.mitre.org/software/S0154/)**.\n\n---\n\n## Threat Overview\nThe attack did not compromise the Notepad++ source code but instead targeted the distribution mechanism. By gaining control of the hosting server, Lotus Blossom could manipulate the update process. When a targeted user's Notepad++ instance checked for updates via the `GUP.exe` utility, the request was redirected to an attacker-controlled server. This server then delivered a malicious `update.exe` file instead of the legitimate update. The campaign was highly targeted, with victims identified in the Philippines, Vietnam, El Salvador, and Australia. Affected organizations included a government entity and a financial institution, underscoring the espionage focus of the operation. The breach was first detected and stopped on December 2, 2025, but the attackers demonstrated persistence by retaining access to some internal services even after their initial server access was revoked in September 2025.\n\n## Technical Analysis\nThe attack chain showcases the actor's sophistication and ability to adapt. Forensic analysis by **[Rapid7](https://www.rapid7.com/)** indicates that the legitimate execution of `notepad++.exe` and `GUP.exe` was followed by the execution of the malicious `update.exe` downloaded from an attacker-controlled IP address. This led to the deployment of the 'Chrysalis' backdoor.\n\nResearchers at **[Kaspersky](httpss://www.kaspersky.com)** observed multiple, distinct execution chains, indicating the attackers rotated their TTPs to evade detection:\n1.  **Chain 1 (NSIS Installer):** A malicious NSIS installer was used to drop a vulnerable version of the legitimate 'ProShow' software. A DLL side-loading technique was then used against this vulnerable software to trigger an exploit, which in turn decrypted and executed a Metasploit downloader. The final payload was a Cobalt Strike Beacon.\n2.  **Chain 2 (Lua Script):** Another observed chain utilized a malicious Lua script to achieve a similar outcome, demonstrating the use of varied toolsets.\n\n### MITRE ATT&CK Techniques\n- **[`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/):** The core of the attack involved compromising the Notepad++ update distribution infrastructure.\n- **[`T1588.002 - Tool`](https://attack.mitre.org/techniques/T1588/002/):** The attackers acquired and used tools like Cobalt Strike and Metasploit.\n- **[`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/):** Used for command and control (C2) communications and downloading malicious payloads.\n- **[`T1204.002 - Malicious File`](https://attack.mitre.org/techniques/T1204/002/):** The malicious `update.exe` was presented to the user as a legitimate update, requiring execution.\n- **[`T1574.002 - DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/):** A vulnerable version of 'ProShow' was exploited to load a malicious DLL.\n- **[`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/):** Payloads were downloaded from attacker-controlled servers.\n- **[`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/):** The final payload was decrypted before execution.\n\n## Impact Assessment\nThe primary impact of this campaign was espionage against targeted government and financial organizations. For the affected entities, the breach could lead to the loss of sensitive state or commercial secrets, intellectual property, and internal financial data. Although the number of victims was small, the impact on them is severe. For the wider user base of Notepad++, the incident erodes trust in the software's update mechanism and highlights the significant risks associated with software supply chains, even for popular open-source projects. Organizations that use Notepad++ must now consider the possibility of compromise and perform forensic analysis if they match the victim profile.\n\n## Cyber Observables for Detection\n| Type | Value | Description |\n|---|---|---|\n| Process Name | `update.exe` | Suspicious update process executed from a temporary or user-writable directory, not the standard Notepad++ program folder. |\n| Network Traffic Pattern | Outbound connections from `GUP.exe` or `notepad++.exe` to non-official Notepad++ domains. | Monitor for connections to unusual IP addresses or domains during the update check process. |\n| File Path | `%TEMP%\\update.exe` | A common location for downloaded malicious updaters. |\n| Process Chain | `GUP.exe` -> `cmd.exe` -> `update.exe` | Unusual process creation chain originating from the Notepad++ updater. |\n\n## Detection & Response\nSecurity teams should proactively hunt for signs of this activity. \n1.  **Log Analysis:** Review proxy, DNS, and firewall logs for connections from endpoints running `notepad++.exe` or `GUP.exe` to suspicious or known malicious IP addresses between June and December 2025. Correlate this with process execution logs (e.g., Windows Event ID 4688) on those endpoints.\n2.  **EDR Queries:** Use Endpoint Detection and Response (EDR) solutions to search for historical process execution chains where `GUP.exe` spawns unexpected child processes like `cmd.exe` or `powershell.exe`, or writes an `update.exe` file to a temporary directory.\n3.  **File System Search:** Scan for vulnerable versions of `ProShow` software in unexpected locations, as this was used as part of an execution chain.\n4.  **D3FEND Techniques:** Implement **[`D3-NTA - Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** to baseline normal update traffic and detect anomalies. Use **[`D3-FA - File Analysis`](https://d3fend.mitre.org/technique/d3f:FileAnalysis)** to inspect downloaded update packages for malicious characteristics before execution.\n\n## Mitigation\n> This attack highlights the importance of defense-in-depth, as compromising a single server led to a significant breach.\n\n**Immediate Actions:**\n- Organizations fitting the target profile (government/finance in Southeast Asia) that use Notepad++ should immediately initiate a forensic investigation.\n- Manually update Notepad++ from the official website after verifying the download's integrity. Disable the automatic update feature temporarily.\n\n**Strategic Recommendations:**\n1.  **Application Control:** Implement application control solutions, such as **[Windows Defender Application Control (WDAC)](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/windows-defender-application-control)**, to restrict the execution of unauthorized binaries. This could prevent the malicious `update.exe` from running. This relates to D3FEND's **[`D3-EAL - Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)**.\n2.  **Network Egress Filtering:** Restrict outbound traffic from endpoints to only known-good domains and IP addresses. This can block C2 communications and the download of additional payloads. This is a form of D3FEND's **[`D3-OTF - Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)**.\n3.  **Software Bill of Materials (SBOM):** For developers and large enterprises, maintaining an SBOM helps track all components and dependencies, enabling faster response when a component like Notepad++ is implicated in an attack.\n4.  **User Training:** While this attack was sophisticated, reinforcing user awareness about unexpected update prompts remains a valuable layer of defense.",
+  "twitter_post": "⚠️ Major Supply Chain Attack! Chinese APT 'Lotus Blossom' hijacked Notepad++ updates for 6 months, selectively deploying malware to government & financial targets. A custom backdoor 'Chrysalis' & Cobalt Strike were used. #SupplyChain #CyberSecurity",
+  "meta_description": "A sophisticated, six-month supply chain attack on Notepad++ attributed to the Chinese APT group Lotus Blossom has been disclosed. Learn how the attackers hijacked updates to deliver malware.",
+  "category": [
+    "Supply Chain Attack",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Notepad++",
+      "type": "product",
+      "url": "https://notepad-plus-plus.org/"
+    },
+    {
+      "name": "Lotus Blossom",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0054/"
+    },
+    {
+      "name": "Billbug",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Chrysalis",
+      "type": "malware"
+    },
+    {
+      "name": "Cobalt Strike",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0154/"
+    },
+    {
+      "name": "Metasploit",
+      "type": "product",
+      "url": "https://www.metasploit.com/"
+    },
+    {
+      "name": "Rapid7",
+      "type": "vendor",
+      "url": "https://www.rapid7.com/"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "vendor",
+      "url": "https://www.kaspersky.com"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.grandpinnacletribune.com/news/notepad-updates-hijacked-by-suspected-chinese-hackers",
+      "title": "Notepad++ Updates Hijacked By Suspected Chinese Hackers - Grand Pinnacle Tribune",
+      "date": "2026-02-02",
+      "friendly_name": "Grand Pinnacle Tribune",
+      "website": "grandpinnacletribune.com"
+    },
+    {
+      "url": "https://securelist.com/the-notepad-supply-chain-attack-unnoticed-execution-chains-and-new-iocs/111835",
+      "title": "The Notepad++ supply chain attack – unnoticed execution chains and new IoCs",
+      "date": "2026-02-03",
+      "friendly_name": "Kaspersky Securelist",
+      "website": "securelist.com"
+    },
+    {
+      "url": "https://www.helpnetsecurity.com/2026/02/03/notepad-supply-chain-attack-targets/",
+      "title": "Notepad++ supply chain attack: Researchers reveal details, IoCs, targets",
+      "date": "2026-02-03",
+      "friendly_name": "Help Net Security",
+      "website": "helpnetsecurity.com"
+    },
+    {
+      "url": "https://www.rapid7.com/blog/post/2026/02/02/the-chrysalis-backdoor-a-deep-dive-into-lotus-blossoms-toolkit/",
+      "title": "The Chrysalis Backdoor: A Deep Dive into Lotus Blossom's toolkit - Rapid7",
+      "date": "2026-02-02",
+      "friendly_name": "Rapid7",
+      "website": "rapid7.com"
+    },
+    {
+      "url": "https://www.csoonline.com/article/1297893/notepad-infrastructure-hijacked-by-chinese-apt-in-sophisticated-supply-chain-attack.html",
+      "title": "Notepad++ infrastructure hijacked by Chinese APT in sophisticated supply chain attack",
+      "date": "2026-02-03",
+      "friendly_name": "CSO Online",
+      "website": "csoonline.com"
+    },
+    {
+      "url": "https://cyberscoop.com/china-apt-lotus-blossom-notepad-plus-plus/",
+      "title": "China-based espionage group compromised Notepad++ for six - CyberScoop",
+      "date": "2026-02-02",
+      "friendly_name": "CyberScoop",
+      "website": "cyberscoop.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-06-01T00:00:00Z",
+      "summary": "The supply chain attack on Notepad++ infrastructure begins."
+    },
+    {
+      "datetime": "2025-09-01T00:00:00Z",
+      "summary": "Attackers lose initial server access but maintain persistence on some internal services."
+    },
+    {
+      "datetime": "2025-12-02T00:00:00Z",
+      "summary": "The breach is detected and terminated by Notepad++ maintainers."
+    },
+    {
+      "datetime": "2026-02-02T00:00:00Z",
+      "summary": "Notepad++ and security firms publicly disclose the supply chain attack."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application control policies to prevent the execution of unauthorized updaters like the malicious 'update.exe'.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering to block outbound connections to unknown C2 servers, preventing payload delivery and data exfiltration.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Enable detailed process and network logging to detect anomalous behavior from legitimate applications like GUP.exe.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "While the code itself wasn't compromised, enforcing that all executables must be signed by trusted publishers can help mitigate the execution of unsigned malicious files.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Implement Network Traffic Analysis (NTA) solutions to monitor outbound connections from all endpoints, with a specific focus on traffic originating from software update utilities like Notepad++'s `GUP.exe`. Establish a baseline of normal update behavior, including destination domains (e.g., `notepad-plus-plus.org`) and typical data volumes. Configure alerts for any deviation from this baseline, such as connections to newly observed domains, IP addresses with poor reputation, or traffic patterns indicative of C2 communication. This technique is critical for detecting the initial redirection of the update request, which was the pivotal point in this supply chain attack. By flagging the anomalous connection before the malicious payload is downloaded, security teams can intervene early in the kill chain.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Deploy a robust application allowlisting policy, such as Windows Defender Application Control (WDAC), across all endpoints, especially servers and workstations handling sensitive data. In the context of this attack, a properly configured allowlisting rule would have prevented the malicious `update.exe` from executing, as it would be an unsigned or improperly signed binary originating from an untrusted location (e.g., a temporary user folder). The policy should enforce that only digitally signed executables from trusted publishers are allowed to run. This moves beyond simple hash-based allowlisting and provides a resilient defense against attackers dropping novel malicious files onto a system, effectively breaking the execution chain after the malicious download.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "GUP.exe",
+      "description": "The legitimate Notepad++ updater process. Monitoring its network connections and child processes is key to detection.",
+      "context": "EDR, Process execution logs (Event ID 4688)",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "update.exe",
+      "description": "The malicious payload masquerading as a legitimate update. Its presence in temporary directories is a strong indicator of compromise.",
+      "context": "File integrity monitoring, EDR queries",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "/update",
+      "description": "Monitor network logs for HTTP requests from GUP.exe to non-standard domains containing update-related paths.",
+      "context": "Web proxy logs, Firewall logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "ProShow",
+      "description": "The legitimate but vulnerable ProShow software was used for DLL side-loading. Its presence on non-media workstations is suspicious.",
+      "context": "Asset inventory, EDR",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "supply chain",
+    "espionage",
+    "APT",
+    "backdoor",
+    "code signing",
+    "open source"
+  ],
+  "extract_datetime": "2026-02-03T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "Philippines",
+      "Vietnam",
+      "El Salvador",
+      "Australia"
+    ],
+    "industries_affected": [
+      "Government",
+      "Finance"
+    ],
+    "other_affected": [
+      "open-source software users"
+    ]
+  },
+  "pub_date": "2026-02-03",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-02-03T15:00:00.000Z",
+  "updatedAt": "2026-02-03T15:00:00.000Z"
+}

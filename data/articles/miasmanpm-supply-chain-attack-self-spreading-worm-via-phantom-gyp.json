@@ -1,0 +1,213 @@
+{
+  "id": "30880d7d-dbf2-4423-b104-f36ad83be5be",
+  "slug": "miasmanpm-supply-chain-attack-self-spreading-worm-via-phantom-gyp",
+  "headline": "\"Miasma\" Worm Spreads Through npm via \"Phantom Gyp\" Technique, Stealing Dev Secrets",
+  "title": "Self-Spreading \"Miasma\" Worm Hits npm Registry Using Novel \"Phantom Gyp\" Attack",
+  "summary": "A sophisticated, self-replicating worm named \"Miasma\" is actively compromising the npm registry in a widespread software supply chain attack. The malware utilizes a novel technique dubbed \"Phantom Gyp,\" which abuses `binding.gyp` files to execute malicious code during the `npm install` process, bypassing standard security checks. The campaign has already compromised dozens of packages, including some in the `@redhat-cloud-services` namespace, and is designed to steal a vast array of developer credentials, including cloud service keys, GitHub tokens, and SSH keys.",
+  "full_report": "## Executive Summary\n\nA highly sophisticated and self-spreading worm, dubbed **Miasma**, is actively compromising packages within the **[npm](https://www.npmjs.com/)** registry, presenting a severe threat to the software supply chain. The attack leverages a novel technique called \"Phantom Gyp,\" which bypasses common security measures by embedding malicious commands within a `binding.gyp` file instead of the more frequently monitored `package.json` scripts. This allows the malware to execute during the standard `npm install` process. The worm's primary objective is large-scale credential theft from developer environments and CI/CD pipelines, targeting secrets for GitHub, major cloud providers, Kubernetes, and more. The campaign has already impacted dozens of packages, including those published by **[Red Hat](https://www.redhat.com/)**, and demonstrates a significant evolution in supply chain attack methodology.\n\n---\n\n## Threat Overview\n\nThe Miasma worm represents a new iteration of the Mini Shai-Hulud malware family. Its most recent wave, observed on June 3, 2026, compromised 57 npm packages with over 286 malicious versions in just two hours. This followed an earlier attack on June 1, 2026, where a Miasma variant compromised 32 packages in the `@redhat-cloud-services` npm namespace.\n\nThe core of the attack is the \"Phantom Gyp\" technique. `node-gyp` is a tool used to compile native addon modules for Node.js. It uses a `binding.gyp` file to define build configurations. Attackers are abusing this legitimate build process by inserting malicious commands into the `binding.gyp` file. Because security scanners often focus on `preinstall` and `postinstall` scripts in `package.json`, this method allows the malware to evade detection and gain execution on a developer's machine or in a CI/CD environment during a routine package installation.\n\n---\n\n## Technical Analysis\n\nThe Miasma worm is a credential harvester with a broad target scope. Once executed via the `binding.gyp` file, it systematically searches for and exfiltrates sensitive information.\n\n*   **Execution**: The `binding.gyp` file contains a malicious entry that executes a script when `npm install` is run.\n*   **Credential Theft**: The malware is designed to steal:\n    *   GitHub Actions secrets and npm tokens\n    *   Cloud credentials for **[AWS](https://aws.amazon.com/)**, **[GCP](https://cloud.google.com/)**, and **[Azure](https://azure.microsoft.com/)**\n    *   **[Kubernetes](https://kubernetes.io/)** configurations (`kubeconfig`)\n    *   **[HashiCorp Vault](https://www.hashicorp.com/products/vault)** tokens\n    *   SSH keys and Git credentials\n*   **Exfiltration**: Stolen data is exfiltrated to a **[GitHub](https://github.com/)** account, `liuende501`, which acts as a dead-drop location.\n\nThis attack maps to several **[MITRE ATT&CK](https://attack.mitre.org/)** techniques:\n*   [`T1195.002 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/002/): The core of the attack involves poisoning npm packages.\n*   [`T1059.007 - Command and Scripting Interpreter: JavaScript/Node.js`](https://attack.mitre.org/techniques/T1059/007/): The malware executes within the Node.js environment.\n*   [`T1552 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1552/): The malware actively searches for stored credentials for various services.\n*   [`T1048 - Exfiltration Over Alternative Protocol`](https://attack.mitre.org/techniques/T1048/): Using GitHub as a dead-drop for exfiltrated data.\n\n---\n\n## Impact Assessment\n\nThe impact of the Miasma worm is critical and far-reaching:\n\n*   **Widespread Compromise**: The worm's self-spreading nature means it can rapidly infect a large number of packages and, consequently, a vast number of downstream projects and applications.\n*   **Developer and CI/CD Pipeline Takeover**: Stolen credentials can give attackers full access to source code repositories, cloud infrastructure, and deployment pipelines, enabling further malicious activities like injecting backdoors into production code.\n*   **Erosion of Trust**: Such attacks undermine trust in the open-source ecosystem, forcing development teams to invest heavily in vetting and securing their software dependencies.\n*   **Financial and Data Loss**: Compromised cloud and service credentials can lead to significant financial loss and massive data breaches.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| Other | `liuende501` | GitHub account used as a dead-drop for exfiltrated data. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns to detect Miasma or similar attacks:\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `binding.gyp` | The presence of this file in unexpected dependencies, especially those that shouldn't have native modules. |\n| Command Line Pattern | `npm install` spawning unexpected child processes or making network connections. | Monitor process execution trees during package installation. |\n| Network Traffic Pattern | Outbound connections to `github.com` or other unexpected domains from CI/CD runners during a build process. | Could indicate data exfiltration. |\n\n---\n\n## Detection & Response\n\n1.  **Dependency Scanning**: Use advanced dependency scanners that inspect not only `package.json` but also other build-related files like `binding.gyp` for suspicious commands or scripts.\n2.  **Behavioral Analysis**: In CI/CD environments, use sandboxing and behavioral analysis ([D3-DA: Dynamic Analysis](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis)) to monitor `npm install` commands for anomalous activity, such as unexpected file system access or network connections.\n3.  **Credential Rotation**: If a compromise is suspected, immediately revoke and rotate all potentially exposed credentials, including npm tokens, GitHub keys, and cloud service credentials.\n4.  **Audit Logs**: Review CI/CD build logs and developer workstation process logs for any signs of compromise related to recent `npm install` operations.\n\n---\n\n## Mitigation\n\n1.  **Pin Dependencies**: Use lockfiles (`package-lock.json`, `yarn.lock`) to pin dependencies to specific, vetted versions. This prevents the automatic installation of newly published malicious versions.\n2.  **Scoped Tokens**: Use fine-grained access tokens for CI/CD pipelines. Tokens should have the minimum permissions necessary and be short-lived.\n3.  **Vet Dependencies**: Before adding a new dependency, inspect its health, popularity, and maintainers. Scrutinize its build scripts, including `binding.gyp` files.\n4.  **CI/CD Hardening**: Implement strict egress filtering on CI/CD runners to block unauthorized outbound network connections, preventing data exfiltration ([D3-OTF: Outbound Traffic Filtering](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)).",
+  "twitter_post": "🚨 A self-spreading worm named 'Miasma' is hitting the npm registry! It uses a novel 'Phantom Gyp' technique to bypass security and steal developer secrets for AWS, GCP, GitHub & more. Check your dependencies now! 🐛 #SupplyChainAttack #npm #Miasma",
+  "meta_description": "A new self-spreading worm called 'Miasma' is compromising npm packages using a novel 'Phantom Gyp' technique to steal developer credentials and CI/CD secrets. Learn how to protect your software supply chain.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Miasma",
+      "type": "malware"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "Red Hat",
+      "type": "vendor",
+      "url": "https://www.redhat.com/"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "AWS",
+      "type": "product"
+    },
+    {
+      "name": "GCP",
+      "type": "product"
+    },
+    {
+      "name": "Azure",
+      "type": "product"
+    },
+    {
+      "name": "Kubernetes",
+      "type": "technology"
+    },
+    {
+      "name": "HashiCorp Vault",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm",
+      "title": "Miasma npm Supply Chain Attack: Self-Spreading Worm via Phantom Gyp",
+      "date": "2026-06-03",
+      "friendly_name": "StepSecurity",
+      "website": "stepsecurity.io"
+    },
+    {
+      "url": "https://www.zdnet.com/article/red-hat-hit-by-npm-supply-chain-attack-how-to-stay-safe/",
+      "title": "Red Hat hit by npm supply-chain attack - here's how to stay safe",
+      "date": "2026-06-03",
+      "friendly_name": "ZDNet",
+      "website": "zdnet.com"
+    },
+    {
+      "url": "https://www.invisirisk.com/blog/red-hat-npm-supply-chain-attack-miasma-hits-redhat-cloud-services/",
+      "title": "Red Hat npm Supply Chain Attack: Miasma Hits @redhat-cloud-services",
+      "date": "2026-06-03",
+      "friendly_name": "Invisirisk",
+      "website": "invisirisk.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-01T00:00:00Z",
+      "summary": "A variant of Miasma compromises 32 packages within the @redhat-cloud-services npm namespace."
+    },
+    {
+      "datetime": "2026-06-03T00:00:00Z",
+      "summary": "A new wave of the Miasma worm compromises 57 npm packages across 286 malicious versions in two hours."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.007",
+      "name": "Command and Scripting Interpreter: JavaScript/Node.js",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1552",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Running build processes in isolated, ephemeral environments can limit the blast radius of a compromised dependency.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Auditing build logs for anomalous behavior, such as unexpected network connections or file system access, can help detect this type of attack.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Using egress filtering to block outbound connections from CI/CD runners to non-essential destinations can prevent data exfiltration.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Implement dynamic analysis and sandboxing for all CI/CD build processes, specifically for the `npm install` step. This involves running the package installation in a controlled, instrumented environment that monitors for suspicious behavior like unexpected network calls, file system modifications outside the project directory, or execution of sensitive commands. By establishing a baseline of normal behavior for package installations, you can create alerts for any deviations, which would be indicative of a malicious package like Miasma. This can catch novel threats that signature-based scanners might miss.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Configure strict egress firewall rules for all developer workstations and CI/CD environments. By default, block all outbound traffic and only allow connections to known, trusted endpoints such as your company's official artifact repository, the official npm registry (`registry.npmjs.org`), and required source code repositories. This 'allowlist' approach would prevent the Miasma worm from successfully exfiltrating stolen credentials to an arbitrary GitHub account like `liuende501`, rendering the attack far less effective even if the initial execution succeeds.",
+      "mitre_mitigation_id": "M1021"
+    },
+    {
+      "technique_id": "D3-LAM",
+      "technique_name": "Local Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
+      "recommendation": "Deploy EDR agents on developer workstations to monitor for suspicious processes and file access patterns. Specifically, configure rules to detect when a process spawned by `npm` or `node` attempts to access sensitive files like `~/.ssh/id_rsa`, `~/.aws/credentials`, or `~/.kube/config`. The Miasma worm's primary goal is to harvest these files. Alerting on any access to these credential stores by a package manager or its child processes can provide an early warning of a compromise and allow for rapid response.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "other",
+      "value": "liuende501",
+      "description": "GitHub account used as a dead-drop for exfiltrated data."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "binding.gyp",
+      "description": "The presence of this file in JavaScript/TypeScript packages that do not have a clear reason to compile native code is highly suspicious.",
+      "context": "Source code repository scanning, dependency analysis tools",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install",
+      "description": "Monitor for `npm install` processes that spawn unexpected child processes (e.g., `curl`, `wget`) or make outbound network connections to non-registry domains.",
+      "context": "Endpoint Detection and Response (EDR), process monitoring logs (Event ID 4688)",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound POST requests to api.github.com from CI/CD runners",
+      "description": "Unexpected API calls to GitHub from a build process, especially those not related to code checkouts, could indicate data exfiltration.",
+      "context": "Web proxy logs, network firewalls, SIEM",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "npm",
+    "Miasma",
+    "Phantom Gyp",
+    "Supply Chain Attack",
+    "Red Hat",
+    "Credential Theft",
+    "Worm"
+  ],
+  "extract_datetime": "2026-06-04T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "open-source software users"
+    ]
+  },
+  "pub_date": "2026-06-04",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-06-04T15:00:00.000Z",
+  "updatedAt": "2026-06-04T15:00:00.000Z"
+}

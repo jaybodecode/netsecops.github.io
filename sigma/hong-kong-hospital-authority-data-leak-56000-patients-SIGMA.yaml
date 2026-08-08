@@ -1,0 +1,48 @@
+title: Suspicious Bulk Patient Data Query
+id: 2b1c8e9f-a3d4-4f5e-8b6a-9c7d0e1f2a3b
+status: experimental
+description: Detects a database query that attempts to select all records from a table commonly containing patient data, which could indicate a bulk data exfiltration attempt as seen in the Hong Kong Hospital Authority breach.
+references:
+  - https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEFMR5Tavhb_6Yot4fVTcT3ynkI_HsNW6D4O6nVRCwcBcKOtgv-erFkoolEctmh2JvJ-nGBD9MAzZAZjIKo_2X3qQMlCFFOgrZ_PnObyIDm6S0pnHW8aYAeJRiJW25CgY4MbBcMNvxatrVRjVOtzPxQ79Br0B2AHFNtbpdrhCnNuao1DCmrJNK2lMoApjSB83u-AQiCcjsUBIfaQ1hJumPWVkc0Ark-GOJ89CCUj9Sccttu7kHnHJUzIX0qlIo3HqsvrhNHSnwkyjdZ
+author: cyber.netsecops.io
+date: 2026-04-05
+tags:
+  - attack.t1213
+  - attack.collection
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains:
+      - 'SELECT * FROM patients'
+      - 'SELECT * FROM patient_records'
+  condition: selection
+falsepositives:
+  - Legitimate administrative, reporting, or backup tasks.
+---
+title: Anomalous Data Access by Vendor Account
+id: 8e9f0a1b-2c3d-4e5f-6a7b-8c9d0e1f2a3b
+status: experimental
+description: Detects when an account associated with a vendor accesses an anomalously high number of records, which could indicate abuse of privileged access for data exfiltration. This is a conceptual rule for UEBA or advanced audit log monitoring systems.
+references:
+  - https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEFMR5Tavhb_6Yot4fVTcT3ynkI_HsNW6D4O6nVRCwcBcKOtgv-erFkoolEctmh2JvJ-nGBD9MAzZAZjIKo_2X3qQMlCFFOgrZ_PnObyIDm6S0pnHW8aYAeJRiJW25CgY4MbBcMNvxatrVRjVOtzPxQ79Br0B2AHFNtbpdrhCnNuao1DCmrJNK2lMoApjSB83u-AQiCcjsUBIfaQ1hJumPWVkc0Ark-GOJ89CCUj9Sccttu7kHnHJUzIX0qlIo3HqsvrhNHSnwkyjdZ
+author: cyber.netsecops.io
+date: 2026-04-05
+tags:
+  - attack.t1078
+  - attack.initial_access
+level: high
+logsource:
+  category: audit
+detection:
+  selection:
+    user.group: 'vendors'
+    action: 'read'
+    object.type: 'patient_record'
+  aggregation:
+    c_records: count(distinct object.id) by user.name
+    # This conceptual aggregation requires a UEBA system. The condition would be c_records > 1000 over a short time window.
+  condition: selection
+falsepositives:
+  - Legitimate large-scale maintenance or data migration activities by vendors.

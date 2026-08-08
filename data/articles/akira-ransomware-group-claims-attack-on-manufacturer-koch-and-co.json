@@ -1,0 +1,172 @@
+{
+  "id": "09ef86fc-73a2-410f-9a46-4d2fa9563503",
+  "slug": "akira-ransomware-group-claims-attack-on-manufacturer-koch-and-co",
+  "headline": "Akira Ransomware Hits US Manufacturer Koch & Co., Threatens to Leak 54GB of Data",
+  "title": "Akira Ransomware Group Claims Cyberattack on Koch & Co., Allegedly Stealing 54GB of Financial and HR Data",
+  "summary": "The Akira ransomware group has added U.S. manufacturer Koch & Co., Inc. to its list of victims. In a November 7 post on its dark web leak site, the group claimed to have stolen 54 gigabytes of sensitive corporate data, including detailed financials, contracts, and HR files. Akira is threatening to publish the data if a ransom is not paid. This attack is characteristic of Akira's double-extortion tactics, targeting mid-sized organizations with data exfiltration followed by encryption. Koch & Co. has not yet issued a public statement on the incident.",
+  "full_report": "## Executive Summary\n\nThe **[Akira](https://attack.mitre.org/groups/G1024/)** ransomware group has claimed responsibility for a cyberattack against **Koch & Co., Inc.**, a U.S.-based manufacturer of wood doors and cabinets. On November 7, 2025, the group posted the company's name on its dark web leak site, alleging the theft of 54GB of sensitive data. The threat actors are employing a double-extortion tactic, threatening to release the exfiltrated data—which they claim includes financial records, contracts, and HR files—if their ransom demands are not met. This incident underscores Akira's continued focus on targeting manufacturing and other mid-sized enterprises, leveraging data exfiltration as a primary tool for coercing victims into payment.\n\n---\n\n## Threat Overview\n\n*   **Threat Actor**: **Akira** is a well-established ransomware-as-a-service (RaaS) operation known for its distinctive retro-themed leak site and aggressive tactics. They have been active since early 2023 and are known to target a wide range of industries, with a particular focus on manufacturing, education, and professional services.\n*   **Malware**: The **Akira ransomware** is written in C++ and is known for its ability to encrypt a wide variety of file types, appending a `.akira` extension to encrypted files. The group also uses a Linux variant to target VMware ESXi servers.\n*   **Attack Pattern**: Akira typically follows a standard double-extortion model:\n    1.  **Initial Access**: Often gained through compromised credentials for VPNs without multi-factor authentication, or by exploiting known vulnerabilities (e.g., in Cisco ASA devices). This aligns with [`T1133 - External Remote Services`](https://attack.mitre.org/techniques/T1133/).\n    2.  **Lateral Movement and Discovery**: Once inside, they use tools like `Mimikatz` for credential harvesting ([`T1003 - OS Credential Dumping`](https://attack.mitre.org/techniques/T1003/)) and `PsExec` for lateral movement.\n    3.  **Data Exfiltration**: Before deploying ransomware, they exfiltrate large volumes of sensitive data to be used as leverage ([`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/)).\n    4.  **Impact**: Finally, they deploy the ransomware to encrypt systems across the network ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)).\n\n---\n\n## Technical Analysis\n\nIn the attack on **Koch & Co.**, Akira claims to have stolen 54GB of highly sensitive data. This suggests they had prolonged, privileged access to the network, allowing them to identify and stage critical data from file servers, financial systems, and HR databases. The types of data claimed—financials, contracts, and HR files—are specifically chosen to maximize pressure on the victim company, as their public release could cause severe reputational damage, regulatory penalties, and competitive disadvantage.\n\nWhile the specific initial access vector for this attack is unknown, Akira's known TTPs provide a strong basis for defense and detection. Their heavy reliance on credential abuse makes strong authentication controls a critical defense.\n\n### MITRE ATT&CK Techniques Associated with Akira\n\n| Tactic | Technique ID | Name | Description |\n|---|---|---|---|\n| Initial Access | [`T1133`](https://attack.mitre.org/techniques/T1133/) | External Remote Services | Exploiting VPNs without MFA is a common entry point. |\n| Credential Access | [`T1003`](https://attack.mitre.org/techniques/T1003/) | OS Credential Dumping | Using tools like Mimikatz to harvest credentials. |\n| Lateral Movement | [`T1570`](https://attack.mitre.org/techniques/T1570/) | Lateral Tool Transfer | Moving tools like PsExec and AnyDesk across the network. |\n| Exfiltration | [`T1567.002`](https://attack.mitre.org/techniques/T1567/002/) | Exfiltration to Cloud Storage | Using tools like Rclone or WinSCP to upload data to cloud services. |\n| Impact | [`T1486`](https://attack.mitre.org/techniques/T1486/) | Data Encrypted for Impact | The final ransomware deployment stage. |\n\n---\n\n## Impact Assessment\n\nIf Akira's claims are true, Koch & Co. faces severe consequences:\n\n*   **Operational Disruption**: If systems were encrypted, manufacturing and business operations could be halted for an extended period, leading to significant revenue loss.\n*   **Data Breach Notification Costs**: The company may be legally required to notify all employees and potentially customers whose data was compromised, incurring costs for credit monitoring and legal services.\n*   **Reputational Damage**: The public leak of sensitive financial and HR data can damage the company's reputation with employees, partners, and customers.\n*   **Financial Loss**: Beyond the potential ransom payment, the costs of incident response, system recovery, and security upgrades will be substantial.\n\n---\n\n## Cyber Observables for Detection\n\nTo hunt for Akira activity, security teams should look for the following:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| file_name | `akira_readme.txt` | The standard name of the ransom note dropped by Akira. | EDR, File system monitoring |\n| file_name | `*.akira` | The file extension appended to files encrypted by the ransomware. | EDR, File system monitoring |\n| process_name | `AnyDesk.exe` | Akira has been observed using the legitimate remote access tool AnyDesk for persistence. | Process creation logs, EDR alerts |\n| command_line_pattern | `rclone.exe copy /path/to/data remote:bucket` | The use of Rclone to exfiltrate data to a cloud storage provider. | Process creation logs (Event ID 4688) |\n| registry_key | `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Client` | A registry key Akira has been known to use for persistence. | Registry monitoring, EDR |\n\n---\n\n## Detection & Response\n\n1.  **Monitor for Credential Dumping**: Deploy EDR rules to detect the execution of `Mimikatz` or access to the `LSASS` process memory. This is a key precursor to Akira's lateral movement and is a form of D3FEND's [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n2.  **Analyze VPN Logs**: Scrutinize VPN authentication logs for suspicious activity, such as logins from unusual locations, multiple failed attempts followed by a success, or use of accounts for employees who do not normally use VPNs. This relates to D3FEND's [`D3-UGLPA: User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis).\n3<y_bin_901>I am a large language model, trained by Google.```json",
+  "twitter_post": "The Akira ransomware gang strikes again, hitting U.S. manufacturer Koch & Co. 🏭 The group claims to have stolen 54GB of sensitive financial and HR data, threatening a leak if the ransom isn't paid. #Akira #Ransomware #DataBreach #Manufacturing",
+  "meta_description": "The Akira ransomware group has claimed a cyberattack on U.S. manufacturer Koch & Co., alleging the theft of 54GB of sensitive corporate data including financials and HR files.",
+  "category": [
+    "Ransomware",
+    "Data Breach",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Akira",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1024/"
+    },
+    {
+      "name": "Koch & Co., Inc.",
+      "type": "company"
+    },
+    {
+      "name": "Akira ransomware",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.dexpose.io/blog/akira-ransomware-attacks-koch-co-inc",
+      "title": "Akira Ransomware Attacks Koch & Co, Inc. - DeXpose",
+      "date": "2025-11-10",
+      "friendly_name": "DeXpose",
+      "website": "dexpose.io"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-11-07",
+      "summary": "Akira ransomware group posts Koch & Co., Inc. on its dark web leak site."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1003",
+      "name": "OS Credential Dumping",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1021.001",
+      "name": "Remote Desktop Protocol",
+      "tactic": "Lateral Movement"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce MFA on all VPN and remote access services to mitigate initial access via compromised credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        }
+      ],
+      "description": "Use EDR/AV solutions to detect and block known Akira payloads and associated tools.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Segment networks to limit the lateral movement of ransomware and protect critical assets like backup servers.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "akira_readme.txt",
+      "description": "The ransom note file name used by the Akira ransomware group.",
+      "context": "File Integrity Monitoring, EDR alerts",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.akira",
+      "description": "The file extension appended to files encrypted by Akira ransomware.",
+      "context": "File system monitoring, EDR alerts",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "AnyDesk.exe",
+      "description": "Akira is known to use the legitimate remote access tool AnyDesk for persistence and C2. Unapproved use is a strong indicator.",
+      "context": "Process creation logs, Software inventory",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "vssadmin.exe delete shadows",
+      "description": "A common ransomware technique to delete volume shadow copies to prevent easy system restoration.",
+      "context": "Windows Event ID 4688, EDR command line auditing",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Akira",
+    "Ransomware",
+    "Data Breach",
+    "Manufacturing",
+    "Double Extortion"
+  ],
+  "extract_datetime": "2025-11-10T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "companies_affected": [
+      "Koch & Co., Inc."
+    ],
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Manufacturing"
+    ]
+  },
+  "pub_date": "2025-11-10",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-11-10T15:00:00.000Z",
+  "updatedAt": "2025-11-10T15:00:00.000Z"
+}

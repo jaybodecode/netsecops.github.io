@@ -1,0 +1,222 @@
+{
+  "id": "949e75f3-1ce2-4956-9ba5-d50c847da1d2",
+  "slug": "broadside-botnet-targets-maritime-sector-via-dvr-flaw",
+  "headline": "New 'Broadside' Botnet Exploits DVRs to Target Maritime Logistics",
+  "title": "'Broadside' Botnet Exploits DVR Flaw, Posing Significant Threat to Maritime Logistics Sector",
+  "summary": "A new, sophisticated variant of the Mirai botnet, dubbed \"Broadside,\" is actively exploiting a command injection vulnerability (CVE-2024-3721) in TBK Digital Video Recorder (DVR) devices. According to research from Cydome, the campaign specifically targets the maritime logistics sector, where these DVRs are common. Broadside is more advanced than typical Mirai variants, using stealthier techniques and a custom C2 protocol. Crucially, its goals extend beyond DDoS to include credential harvesting and lateral movement, turning compromised DVRs into strategic footholds on vessel networks.",
+  "full_report": "## Executive Summary\nA new variant of the **[Mirai](https://attack.mitre.org/software/S0268/)** botnet, named **Broadside**, is targeting the maritime sector by exploiting a critical vulnerability in TBK Vision Digital Video Recorders (DVRs). According to research from cybersecurity firm **[Cydome](https://www.cydome.io/)**, the botnet spreads by exploiting **CVE-2024-3721**, an OS command injection flaw, to compromise vulnerable DVRs commonly used on ships for security surveillance. Broadside demonstrates a significant evolution from its predecessors, incorporating advanced features for stealth, persistence, and C2 communication. More alarmingly, its capabilities go beyond traditional DDoS attacks; the malware actively harvests credentials, seeks to terminate competing malware, and prepares for lateral movement within the ship's network. This transforms a simple IoT device into a dangerous pivot point, posing a severe risk to both the IT and Operational Technology (OT) systems of maritime vessels.\n\n---\n\n## Threat Overview\nBroadside's initial access vector is the exploitation of **CVE-2024-3721**, a command injection vulnerability in the `/device.rsp` endpoint of TBK DVRs and their many rebranded versions (including CeNova, QSee, and Night Owl). This allows an unauthenticated remote attacker to take full control of the device.\n\nOnce compromised, the Broadside malware exhibits several advanced features:\n- **Stealthy Monitoring**: It uses Netlink kernel sockets for process monitoring, a less noisy method than the filesystem polling used by older Mirai variants.\n- **Custom C2 Protocol**: It communicates with its C2 servers using a custom protocol identified by a unique \"Magic Header\" (`0x36694201`), designed to evade signature-based network detection.\n- **Anti-Competition Module**: A \"Judge, Jury, and Executioner\" function actively seeks and terminates other malware processes on the device, ensuring its exclusive control.\n- **Credential Harvesting**: The malware attempts to read and exfiltrate sensitive files like `/etc/passwd` and `/etc/shadow`, indicating an intent to escalate privileges and move laterally across the network.\n\n## Technical Analysis\nThe botnet's operation can be mapped to the MITRE ATT&CK framework:\n- **Initial Access**: [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/) by exploiting CVE-2024-3721 on the DVR's web interface.\n- **Execution**: [`T1059.004 - Unix Shell`](https://attack.mitre.org/techniques/T1059/004/) is used as part of the initial command injection exploit.\n- **Defense Evasion**: [`T1562.001 - Impair Defenses: Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/) by terminating competing malware processes. The custom C2 protocol is a form of [`T1071.004 - Application Layer Protocol: DNS`](https://attack.mitre.org/techniques/T1071/004/) (if over DNS) or [`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/) if over HTTP, but more generally [`T1573.002 - Encrypted Channel: Asymmetric Cryptography`](https://attack.mitre.org/techniques/T1573/002/) if encrypted.\n- **Credential Access**: [`T1003.008 - OS Credential Dumping: /etc/passwd and /etc/shadow`](https://attack.mitre.org/techniques/T1003/008/).\n- **Impact**: While capable of participating in DDoS attacks ([`T1498 - Network Denial of Service`](https://attack.mitre.org/techniques/T1498/)), its primary threat in this context is as a foothold for further intrusion.\n\n## Impact Assessment\nThe targeting of the maritime sector is particularly concerning. A compromised DVR on a ship's network is not just a bot for DDoS attacks; it's a pivot point into a sensitive and isolated environment. The potential impact includes:\n- **Espionage**: Attackers could gain access to live CCTV feeds of sensitive areas like the bridge, engine room, or cargo holds.\n- **Network Disruption**: A DDoS attack launched from within the ship's network could overwhelm its satellite communication link, cutting it off from shore-based support.\n- **Lateral Movement to OT Systems**: The greatest risk is the attacker pivoting from the IT network (where the DVR resides) to the Operational Technology (OT) network, which controls the ship's navigation, propulsion, and safety systems. A compromise here could have catastrophic physical consequences.\n- **Credential Theft**: Harvested credentials could be used to access other systems on the vessel's network, including crew accounts or administrative systems.\n\n## Cyber Observables for Detection\n| Type | Value | Description |\n|---|---|---|\n| `url_pattern` | `*/device.rsp` | HTTP requests to this vulnerable endpoint are a key indicator of scanning or exploitation attempts. |\n| `network_traffic_pattern` | `0x36694201` | The \"Magic Header\" used in Broadside's C2 communication. Detectable with deep packet inspection. |\n| `port` | `1026` | One of the TCP ports used for C2 communication. |\n| `port` | `6969` | A second TCP port observed being used for C2 communication. |\n| `file_path` | `/etc/passwd`, `/etc/shadow` | Monitor for anomalous access to these files by processes associated with the DVR software. |\n\n## Detection & Response\n- **Network Segmentation**: Ensure that IoT devices like DVRs are on a segregated network segment, isolated from critical IT and OT systems. Monitor and restrict all traffic between these segments. This is a core principle of D3FEND's [`D3-NI: Network Isolation`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation).\n- **Network Traffic Analysis**: Use an IDS/IPS to monitor for exploitation attempts against CVE-2024-3721. Create rules to detect the unique Broadside C2 \"Magic Header\" in network traffic. This is an application of [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n- **Log Monitoring**: Monitor DVR device logs for signs of compromise, such as unexpected reboots, configuration changes, or outbound network connections to unusual ports or IP addresses.\n- **Asset Inventory**: Maintain a comprehensive inventory of all connected devices on vessels, including the make, model, and software version of all DVRs, to quickly identify vulnerable systems.\n\n## Mitigation\n1.  **Patch or Replace**: The primary mitigation is to patch the firmware of vulnerable TBK DVRs. If a patch is not available, the devices should be replaced with secure alternatives and disconnected from the network immediately. This is an application of [`D3-SU: Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate).\n2.  **Restrict Network Access**: If the device cannot be patched or replaced immediately, restrict all internet access to and from the DVR. If remote access is required, it should be done via a secure, multi-factor authenticated VPN connection.\n3.  **Change Default Credentials**: Always change the default administrative passwords on DVRs and other IoT devices. While not the primary vector here, it is a critical security hygiene step that prevents simple brute-force attacks.\n4.  **Implement IT/OT Separation**: For maritime operators, enforcing strict network separation between the Information Technology (IT) network and the Operational Technology (OT) network is paramount to prevent a DVR compromise from escalating into a physical safety incident.",
+  "twitter_post": "New 'Broadside' botnet, a Mirai variant, targets the maritime sector by exploiting a critical DVR flaw (CVE-2024-3721). 🚢 Beyond DDoS, it harvests credentials, posing a risk to vessel OT systems. #Botnet #Mirai #Maritime #IoT #CyberSecurity",
+  "meta_description": "A new Mirai botnet variant named 'Broadside' is exploiting CVE-2024-3721 in TBK DVRs, specifically targeting the maritime sector for credential harvesting and lateral movement.",
+  "category": [
+    "Malware",
+    "Industrial Control Systems",
+    "IoT Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Broadside",
+      "type": "malware"
+    },
+    {
+      "name": "Mirai",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0268/"
+    },
+    {
+      "name": "Cydome",
+      "type": "security_organization"
+    },
+    {
+      "name": "TBK Vision",
+      "type": "vendor"
+    },
+    {
+      "name": "CeNova",
+      "type": "product"
+    },
+    {
+      "name": "QSee",
+      "type": "product"
+    },
+    {
+      "name": "Night Owl",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2024-3721",
+      "kev": false,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/new-broadside-botnet-poses-risk-to-shipping-companies/",
+      "title": "New 'Broadside' Botnet Poses Risk to Shipping Companies",
+      "date": "2025-12-09",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://www.cydome.io/blog/broadside-a-new-variant-of-the-mirai-botnet-targeting-maritime/",
+      "title": "Broadside - a new variant of the Mirai botnet targeting maritime",
+      "date": "2025-12-09",
+      "friendly_name": "Cydome",
+      "website": "cydome.io"
+    },
+    {
+      "url": "https://gbhackers.com/mirai-botnet-broadside/",
+      "title": "New Variant of Mirai Botnet 'Broadside' Launches Active Attacks on Users",
+      "date": "2025-12-09",
+      "friendly_name": "GBHackers",
+      "website": "gbhackers.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1003.008",
+      "name": "OS Credential Dumping: /etc/passwd and /etc/shadow",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Impair Defenses: Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1498",
+      "name": "Network Denial of Service",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Isolate IoT devices like DVRs on a separate network segment away from critical IT and OT systems to contain any potential compromise.",
+      "domain": "ics"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Patch vulnerable DVRs or replace them if patches are unavailable.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Block inbound access to the DVR's web interface from the internet and use an IDS to monitor for exploit signatures.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "For maritime operators, the most critical defense against the Broadside botnet is strict network isolation. The vulnerable DVRs should be placed on a dedicated, untrusted network segment (e.g., a 'Crew Welfare' or 'Surveillance' VLAN) that is completely isolated from both the corporate IT network and, most importantly, the ship's Operational Technology (OT) network. Implement firewall rules that deny all traffic from the surveillance VLAN to the IT and OT networks by default. Any required data transfer (e.g., video footage backup) should transit through a DMZ and be subject to inspection. This containment strategy ensures that even if a DVR is compromised by Broadside, the malware cannot pivot to more critical systems like navigation or engine control, thus mitigating the risk of a physical incident.",
+      "mitre_mitigation_id": "M1030"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Deploy a network intrusion detection system (NIDS) with deep packet inspection capabilities to monitor traffic to and from the DVRs. Create a custom signature to detect the unique Broadside C2 'Magic Header' (`0x36694201`). Additionally, configure alerts for any HTTP requests to the vulnerable `/device.rsp` endpoint, which indicates scanning or active exploitation of CVE-2024-3721. Also, baseline normal traffic from these devices and alert on any deviations, such as outbound connections on non-standard ports like TCP/1026 and TCP/6969, or any attempt by a DVR to access internal resources. This allows for the rapid detection of a compromised device, enabling incident responders to isolate it before lateral movement occurs.",
+      "mitre_mitigation_id": "M1031"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/device.rsp",
+      "description": "The vulnerable endpoint in TBK DVRs targeted for OS command injection.",
+      "context": "Web server logs, WAF/IPS logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "hex_pattern",
+      "value": "36 69 42 01",
+      "description": "The unique 'Magic Header' signature for Broadside's C2 protocol.",
+      "context": "Network Intrusion Detection Systems (NIDS), deep packet inspection.",
+      "confidence": "high"
+    },
+    {
+      "type": "port",
+      "value": "1026",
+      "description": "One of the C2 communication ports used by the Broadside botnet.",
+      "context": "Firewall logs, NetFlow analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "port",
+      "value": "6969",
+      "description": "A second C2 communication port used by the Broadside botnet.",
+      "context": "Firewall logs, NetFlow analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "cat /etc/passwd",
+      "description": "Command executed by the malware to harvest credentials.",
+      "context": "Device shell logs (if available), EDR monitoring on the embedded device.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Botnet",
+    "Mirai",
+    "Broadside",
+    "Maritime Security",
+    "IoT",
+    "DVR",
+    "ICS",
+    "OT"
+  ],
+  "extract_datetime": "2025-12-09T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Transportation",
+      "Critical Infrastructure",
+      "Manufacturing"
+    ],
+    "other_affected": [
+      "Maritime logistics and shipping companies"
+    ]
+  },
+  "pub_date": "2025-12-09",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-12-09T15:00:00.000Z",
+  "updatedAt": "2025-12-09T15:00:00.000Z"
+}

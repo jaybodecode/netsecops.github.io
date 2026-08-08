@@ -1,0 +1,214 @@
+{
+  "id": "5d0a33a5-76f7-43e4-9930-0111a32151d1",
+  "slug": "microsoft-july-2026-patch-tuesday-fixes-570-vulnerabilities-two-zero-days",
+  "headline": "Microsoft's July 2026 Patch Tuesday Fixes 570+ Flaws, Two Zero-Days",
+  "title": "Microsoft July 2026 Patch Tuesday: 2 Zero-Days Exploited",
+  "summary": "Microsoft's July 2026 Patch Tuesday is its largest to date, addressing over 570 vulnerabilities. Two zero-day flaws are under active attack: an elevation of privilege bug in Active Directory Federation Services (CVE-2026-56155) and another in SharePoint Server (CVE-2026-56164). Both have been added to CISA's Known Exploited Vulnerabilities (KEV) catalog, mandating urgent patching for federal agencies. The update also includes fixes for numerous critical Remote Code Execution (RCE) vulnerabilities, making immediate assessment and patching a top priority for all organizations.",
+  "full_report": "## Executive Summary\nMicrosoft's July 2026 Patch Tuesday release is the largest in the company's history, addressing between 570 and 622 vulnerabilities across its product ecosystem. The update is critically important for defenders, as it includes patches for two zero-day vulnerabilities confirmed to be under active exploitation in the wild. The first, **[CVE-2026-56155](https://www.cve.org/CVERecord?id=CVE-2026-56155)**, is a privilege escalation flaw in **[Active Directory Federation Services (AD FS)](https://www.microsoft.com/en-us/security/business/identity-access/active-directory-federation-services)**. The second, **[CVE-2026-56164](https://www.cve.org/CVERecord?id=CVE-2026-56164)**, is a privilege escalation vulnerability in **[Microsoft SharePoint Server](https://www.microsoft.com/en-us/microsoft-365/sharepoint/sharepoint-server)**. Both have been added to the **[CISA](https://www.cisa.gov)** Known Exploited Vulnerabilities (KEV) catalog, signifying a high and immediate risk. Organizations are strongly urged to prioritize the patching of these two vulnerabilities, followed by the numerous other critical flaws addressed in this historic update.\n\n---\n\n## Vulnerability Details\nThe two actively exploited zero-days present significant risks to enterprise environments.\n\n### CVE-2026-56155: Active Directory Federation Services (AD FS) Elevation of Privilege\n- **CVSS Score**: 7.8 (High)\n- **Description**: This vulnerability allows a locally authenticated attacker with low privileges to escalate to administrator rights on an AD FS server. The flaw stems from insufficient access control checks. A successful exploit could lead to a full compromise of an organization's identity infrastructure, enabling attackers to issue malicious tokens, access connected applications, and facilitate widespread lateral movement and data theft.\n- **Exploitation**: Microsoft has confirmed active exploitation. The discovery by **[Mandiant](https.www.mandiant.com)** and **[Google](https://cloud.google.com/security)**'s FLARE team suggests it was found during incident response to sophisticated attacks.\n\n### CVE-2026-56164: Microsoft SharePoint Server Elevation of Privilege\n- **CVSS Score**: 5.3 (Medium)\n- **Description**: This vulnerability allows an unauthenticated attacker to elevate privileges over the network with no user interaction. The flaw is caused by a missing authentication check for a critical function. While its CVSS score is moderate, its active exploitation and low attack complexity make it a high-priority threat for organizations using on-premises SharePoint servers.\n- **Mitigation**: Microsoft advises that enabling the Antimalware Scan Interface (AMSI) integration with SharePoint and setting the Request Body Scan mode to \"Full\" can help mitigate exploitation attempts.\n\n### Other Notable Vulnerabilities\n- **[CVE-2026-50661](https://www.cve.org/CVERecord?id=CVE-2026-50661)**: A publicly disclosed but not yet exploited security feature bypass in Windows BitLocker that requires physical access.\n- **[CVE-2026-50522](https://www.cve.org/CVERecord?id=CVE-2026-50522)**: A critical (CVSS 9.8) remote code execution vulnerability in SharePoint Server due to deserialization flaws.\n- **[CVE-2026-57092](https://www.cve.org/CVERecord?id=CVE-2026-57092)**: A critical (CVSS 9.9) RCE in Hyper-V VMSwitch, potentially allowing a guest VM to compromise the host.\n\n## Affected Systems\nThe patches cover a vast range of Microsoft products, including but not limited to:\n- Windows Operating Systems (Client and Server)\n- Microsoft Office and Office Components\n- Microsoft SharePoint Server\n- Active Directory Federation Services (AD FS)\n- Microsoft Exchange Server\n- Hyper-V\n- Azure\n- .NET and Visual Studio\n- Microsoft Edge (Chromium-based)\n\n## Exploitation Status\n**[Microsoft](https://www.microsoft.com/security)** has confirmed that both `CVE-2026-56155` (AD FS) and `CVE-2026-56164` (SharePoint) are being actively exploited in the wild. CISA has added both to its KEV catalog, with patching deadlines of July 28, 2026, for the AD FS flaw and a more urgent July 17, 2026, for the SharePoint flaw, underscoring the imminent threat.\n\n## Impact Assessment\nA successful exploit of `CVE-2026-56155` could be catastrophic for an organization. Compromise of AD FS is equivalent to handing over the \"keys to the kingdom,\" allowing an attacker to impersonate any user and access any federated service, including cloud resources in Azure AD. This could facilitate ransomware deployment, widespread data exfiltration, and persistent, hard-to-detect access.\n\nExploitation of `CVE-2026-56164` on an internet-facing SharePoint server provides an attacker with an initial foothold and elevated privileges within the corporate network. This access can be used to steal sensitive data stored on SharePoint or serve as a launchpad for further lateral movement and attacks on other internal systems.\n\n## Cyber Observables — Hunting Hints\nThe following patterns may help identify vulnerable or compromised systems:\n\n| Type | Value | Description |\n|---|---|---|\n| Log Source | `AD FS Tracing/Debug Logs` | Monitor for anomalous events, particularly Event ID 501, which can indicate unexpected process behavior. |\n| Log Source | `SharePoint ULS Logs` | Hunt for unexpected or malformed requests, especially those that result in errors or access denied messages followed by successful access. |\n| Network Traffic Pattern | `POST /_api/web/` | Analyze web server logs for SharePoint servers for unusual POST requests, especially from untrusted external IP addresses. |\n| Process Name | `w3wp.exe` | On SharePoint servers, monitor the `w3wp.exe` worker process for unusual child processes, network connections, or file modifications. |\n\n\n## Detection Methods\nSecurity teams should focus on both identifying vulnerable systems and detecting active exploitation.\n\n1.  **Vulnerability Scanning**: Use vulnerability management tools to scan for missing patches related to the July 2026 update, prioritizing `CVE-2026-56155` and `CVE-2026-56164`.\n2.  **Log Analysis**: Ingest and analyze AD FS and SharePoint logs in a SIEM. For AD FS, look for unusual authentication patterns or privilege escalations. For SharePoint, monitor IIS logs for suspicious requests to API endpoints and check ULS logs for errors that might indicate exploitation attempts. D3FEND's **[Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** is a key technique here.\n3.  **Endpoint Detection and Response (EDR)**: Deploy EDR agents on AD FS and SharePoint servers. Monitor for suspicious command-line activity, process spawning (`powershell.exe`, `cmd.exe`) from the `w3wp.exe` (SharePoint) or `Microsoft.IdentityServer.ServiceHost.exe` (AD FS) processes. Utilize **[Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)** to baseline normal behavior.\n\n## Remediation Steps\n1.  **Prioritize and Patch**: Immediately apply the July 2026 security updates, prioritizing internet-facing systems and Tier 0 assets like AD FS servers. The SharePoint zero-day (`CVE-2026-56164`) has the tightest CISA deadline and should be addressed first.\n2.  **Apply Workarounds**: For SharePoint, if patching is delayed, enable the AMSI integration and set the Request Body Scan mode to \"Full\" as a temporary mitigation. This is a form of **[Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**.\n3.  **Verify Patch Installation**: After deployment, use scanners to verify that the patches have been successfully applied and the vulnerabilities are remediated.\n4.  **Hunt for Compromise**: Assume compromise and proactively hunt for signs of exploitation using the observables and detection methods outlined above. Pay close attention to any anomalous activity on AD FS and SharePoint servers dating back several weeks.",
+  "twitter_post": "Microsoft's record-breaking July 2026 Patch Tuesday addresses 570+ vulnerabilities. Two zero-days are actively exploited: CVE-2026-56155 (AD FS) and CVE-2026-56164 (SharePoint). Both are in CISA's KEV catalog. Patch now. #PatchTuesday #ZeroDay",
+  "meta_description": "Microsoft's July 2026 Patch Tuesday fixes a record 570+ vulnerabilities, including two actively exploited zero-days in AD FS (CVE-2026-56155) and SharePoint (CVE-2026-56164).",
+  "category": [
+    "Patch Management",
+    "Vulnerability",
+    "Cyberattack"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Active Directory Federation Services",
+      "type": "product"
+    },
+    {
+      "name": "CISA",
+      "type": "government_agency"
+    },
+    {
+      "name": "Google",
+      "type": "vendor"
+    },
+    {
+      "name": "Hyper-V",
+      "type": "product"
+    },
+    {
+      "name": "Mandiant",
+      "type": "security_organization"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor"
+    },
+    {
+      "name": "Microsoft SharePoint Server",
+      "type": "product"
+    },
+    {
+      "name": "Windows BitLocker",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-50522",
+      "cvss_score": 9.8,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-50661",
+      "cvss_score": 6.1,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": "medium"
+    },
+    {
+      "id": "CVE-2026-56155",
+      "cvss_score": 7.8,
+      "cvss_version": null,
+      "kev": 1,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2026-56164",
+      "cvss_score": 5.3,
+      "cvss_version": null,
+      "kev": 1,
+      "severity": "medium"
+    },
+    {
+      "id": "CVE-2026-57092",
+      "cvss_score": 9.9,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.forbes.com/sites/daveywinder/2026/07/15/microsoft-warns-2-zero-days-already-exploited-in-attacks-update-now/",
+      "title": "Microsoft Warns 2 Zero-Days Already Exploited In Attacks: Update Now",
+      "date": "2026-07-15",
+      "website": null
+    },
+    {
+      "url": "https://thehackernews.com/2026/07/microsoft-patches-record-622-flaws.html",
+      "title": "Microsoft Patches Record 622 Flaws, Including Two Zero-Days Under Active Attack",
+      "date": "2026-07-14",
+      "website": null
+    },
+    {
+      "url": "https://www.tenable.com/blog/microsofts-july-2026-patch-tuesday-addresses-569-cves-cve-2026-56155-cve-2026-56164",
+      "title": "Microsoft's July 2026 Patch Tuesday Addresses 569 CVEs (CVE-2026-56155, CVE-2026-56164)",
+      "date": "2026-07-14",
+      "website": null
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-14T00:00:00Z",
+      "summary": "Microsoft releases its July 2026 Patch Tuesday update."
+    },
+    {
+      "datetime": "2026-07-14T00:00:00Z",
+      "summary": "CISA adds CVE-2026-56155 and CVE-2026-56164 to its KEV catalog."
+    },
+    {
+      "datetime": "2026-07-17",
+      "summary": "CISA deadline for federal agencies to patch CVE-2026-56164."
+    },
+    {
+      "datetime": "2026-07-28",
+      "summary": "CISA deadline for federal agencies to patch CVE-2026-56155."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": null
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": null
+    },
+    {
+      "id": "T1210",
+      "name": "Exploitation of Remote Services",
+      "tactic": null
+    },
+    {
+      "id": "T1552.004",
+      "name": "Credentials In Files",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "AD FS",
+    "KEV",
+    "Patch Tuesday",
+    "Privilege Escalation",
+    "RCE",
+    "SharePoint",
+    "Zero-Day"
+  ],
+  "extract_datetime": "2026-07-15",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Government",
+      "Finance",
+      "Healthcare",
+      "Critical Infrastructure"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "AD FS",
+    "KEV",
+    "Patch Tuesday",
+    "Privilege Escalation",
+    "RCE",
+    "SharePoint",
+    "Zero-Day"
+  ],
+  "pub_date": "2026-07-15",
+  "reading_time_minutes": null,
+  "createdAt": "2026-07-15T15:00:00.000Z",
+  "updatedAt": "2026-07-16T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-07-16T12:00:00Z",
+      "summary": "New details on Microsoft's record July Patch Tuesday, including AI-driven bug discovery, explicit mention of a third zero-day (BitLocker), and enhanced detection/remediation guidance.",
+      "content": "The July 2026 Patch Tuesday update is further detailed, noting the record 622 CVEs are partly due to AI-driven bug discovery. The BitLocker flaw (CVE-2026-50661) is explicitly classified as a third zero-day, though not actively exploited. The article also provides more granular hunting hints, detection methods (e.g., AD FS Auditing Logs, Event ID 4624, D3FEND User Behavior Analysis), and enhanced remediation steps, including AD FS hardening best practices like HSM and MFA implementation. These additions offer a more comprehensive understanding of the vulnerabilities and their mitigation.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://www.forbes.com/sites/daveywinder/2026/07/15/microsoft-warns-2-zero-days-already-exploited-in-attacks-update-now/",
+          "title": "Microsoft Warns 2 Zero-Days Already Exploited In Attacks: Update Now",
+          "website": "",
+          "date": "2026-07-16T12:00:00Z"
+        },
+        {
+          "url": "https://www.malwarebytes.com/blog/bugs/2026/07/july-2026-patch-tuesday-fixes-622-microsoft-cves-including-three-zero-days",
+          "title": "July 2026 Patch Tuesday fixes 622 Microsoft CVEs, including three zero-days",
+          "website": "",
+          "date": "2026-07-16T12:00:00Z"
+        },
+        {
+          "url": "https://orca.security/resources/blog/microsoft-july-2026-patch-tuesday-sharepoint-zero-day/",
+          "title": "Microsoft's Record 622-CVE July 2026 Patch Tuesday Ships an Actively Exploited SharePoint Zero-Day",
+          "website": "",
+          "date": "2026-07-16T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

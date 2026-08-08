@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-12T16:38:17.887Z",
+    "article_slug": "novo-nordisk-confirms-data-breach-affecting-clinical-trial-participants",
+    "article_date": "2026-06-12",
+    "token_usage": {
+      "input_tokens": 143285,
+      "output_tokens": 1653,
+      "cached_tokens": 137782,
+      "total_tokens": 144938,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.040632
+    }
+  },
+  "report_name": "Novo Nordisk Confirms Data Breach Affecting Clinical Trial Participants",
+  "threat_actors": [],
+  "attack_patterns": [],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Novo Nordisk",
+      "identity_class": "organization",
+      "sectors": [
+        "pharmaceuticals",
+        "healthcare"
+      ],
+      "description": "Danish pharmaceutical company that suffered a cybersecurity incident on June 11, 2026, resulting in unauthorized access to internal IT systems and the personal data of some clinical trial participants."
+    },
+    {
+      "name": "Clinical Trial Participants",
+      "identity_class": "class",
+      "sectors": [],
+      "description": "A group of individuals participating in Novo Nordisk's clinical trials whose pseudonymized data, including sex, year of birth, and biomarkers, was accessed by attackers."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Denmark",
+      "region": "northern-europe"
+    }
+  ],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Anomalous Cloud Storage Access to Clinical Trial Data",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Cloud Storage Access to Clinical Trial Data\nid: 2b1f8c3a-9e4d-4f8a-b1c3-d2e4f6a8b0c1\nstatus: experimental\ndescription: |\n  Monitors for anomalous access to cloud storage locations (e.g., S3 buckets, Azure Blob Storage) containing sensitive clinical trial data. This rule is a general template and should be adapted with specific bucket names and known-good IP ranges.\nreferences:\n  - https://www.globenewswire.com/news-release/2026/06/11/3310660/0/en/novo-nordisk-a-s-it-security-incident-at-novo-nordisk.html\nauthor: cyber.netsecops.io\ndate: 2026-06-12\ntags:\n  - attack.t1530\nlevel: medium\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventName: GetObject\n    requestParameters.bucketName|contains:\n      - 'clinical-trial'\n      - 'patient-data'\n  filter:\n    sourceIPAddress:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n      # Add known corporate IP ranges here\n  condition: selection and not filter",
+      "description": "Detects anomalous access to cloud storage buckets likely containing clinical trial data, based on hunting hints from the Novo Nordisk breach report."
+    },
+    {
+      "name": "Dormant Account Logon Activity",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Dormant Account Logon Activity\nid: 5d9e8f7a-1b3c-4d6e-8f9a-0b2c4d6e8f0a\nstatus: experimental\ndescription: |\n  Detects logon activity from accounts that have been inactive for an extended period (e.g., > 90 days). This requires a SIEM to correlate logon events with a baseline of historical user activity.\nreferences:\n  - https://www.globenewswire.com/news-release/2026/06/11/3310660/0/en/novo-nordisk-a-s-it-security-incident-at-novo-nordisk.html\nauthor: cyber.netsecops.io\ndate: 2026-06-12\ntags:\n  - attack.t1078\nlevel: medium\nlogsource:\n  product: windows\n  category: logon\ndetection:\n  selection:\n    EventID: 4624\n    LogonType:\n      - 2\n      - 10 # Interactive, RemoteInteractive\n  filter:\n    AccountName|endswith: '$' # Exclude machine accounts\n  condition: selection and not filter",
+      "description": "Detects logon activity from user accounts that have been inactive for an extended period, which could indicate a compromised account is being used, as suggested by hunting hints in the article."
+    },
+    {
+      "name": "Anomalous High-Volume API Data Read",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous High-Volume API Data Read\nid: 9e8f7a6b-5c4d-4e3f-8a9b-0c2d4e6f8a9b\nstatus: experimental\ndescription: |\n  Monitors for API calls that read large volumes of patient or trial data, especially if originating from an unexpected source system. This rule is a general template for detecting unusual data access patterns.\nreferences:\n  - https://www.globenewswire.com/news-release/2026/06/11/3310660/0/en/novo-nordisk-a-s-it-security-incident-at-novo-nordisk.html\nauthor: cyber.netsecops.io\ndate: 2026-06-12\ntags:\n  - attack.t1119\nlevel: medium\nlogsource:\n  category: webserver\ndetection:\n  selection:\n    cs-uri-stem|contains:\n      - '/api/v1/patient_data/'\n      - '/api/v1/trial_records/'\n    sc-bytes|gt: 1000000 # Threshold for large data volume (e.g., 1MB)\n  condition: selection",
+      "description": "Detects API calls reading an unusually large volume of data from endpoints related to patient or trial information, based on hunting hints in the article."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Novo Nordisk",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "Denmark",
+      "target_type": "location"
+    }
+  ]
+}

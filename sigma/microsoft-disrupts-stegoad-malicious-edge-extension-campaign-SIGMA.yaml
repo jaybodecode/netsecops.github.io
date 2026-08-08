@@ -1,0 +1,60 @@
+title: StegoAd-like Anomalous Outbound Connections from Browser
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects potentially malicious browser extensions making unexpected outbound network connections to domains not associated with normal browsing activity, similar to the TTPs of the StegoAd campaign.
+references:
+  - https://thehackernews.com/2026/06/microsoft-removes-119-edge-extensions.html
+author: cyber.netsecops.io
+date: 2026-06-30
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_browser:
+    Image|endswith:
+      - '\msedge.exe'
+      - '\chrome.exe'
+      - '\firefox.exe'
+    Initiated: true
+  filter_known_good:
+    DestinationHostname|endswith:
+      - .microsoft.com
+      - .google.com
+      - .mozilla.org
+      - .live.com
+      - .office.com
+      - .windowsupdate.com
+      - .msn.com
+      - .bing.com
+  condition: selection_browser and not filter_known_good
+---
+title: StegoAd-like Suspicious File Creation in Edge Extension Directory
+id: a3b4c5d6-e7f8-4a9b-8cde-f1234567890a
+status: experimental
+description: Detects the creation of image or font files in Microsoft Edge extension directories by non-browser processes, which could indicate steganographic payload delivery as seen in the StegoAd campaign.
+references:
+  - https://thehackernews.com/2026/06/microsoft-removes-119-edge-extensions.html
+author: cyber.netsecops.io
+date: 2026-06-30
+tags:
+  - attack.t1564.001
+  - attack.t1189
+  - attack.defense_evasion
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains: '\Microsoft\Edge\User Data\Default\Extensions\'
+    TargetFilename|endswith:
+      - '.png'
+      - '.jpg'
+      - '.woff'
+  filter_browser:
+    Image|endswith: '\msedge.exe'
+  condition: selection and not filter_browser

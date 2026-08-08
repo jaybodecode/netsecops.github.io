@@ -1,0 +1,214 @@
+{
+  "id": "1fb6bcb6-3065-40fd-8287-e63ecbbb6700",
+  "slug": "honeymyte-apt-evolves-with-kernel-mode-rootkit-to-deploy-toneshell-backdoor",
+  "headline": "HoneyMyte APT (Mustang Panda) Deploys New Kernel-Mode Rootkit to Hide Backdoor",
+  "title": "HoneyMyte (Mustang Panda) APT Evolves with Kernel-Mode Rootkit to Conceal ToneShell Backdoor",
+  "summary": "The Chinese cyber-espionage group HoneyMyte (also known as Mustang Panda) has significantly upgraded its toolkit by incorporating a kernel-mode rootkit, according to research from December 26, 2025. The rootkit is used to protect and conceal a new variant of its exclusive ToneShell backdoor. The malicious driver, often signed with a stolen certificate, registers itself as a mini-filter to hide the malware's files, processes, and registry keys from security tools. This advanced technique, observed in attacks against government targets in Myanmar and Thailand, dramatically increases the malware's stealth and persistence.",
+  "full_report": "## Executive Summary\n\nResearch published on December 26, 2025, reveals a significant evolution in the tactics of the **[HoneyMyte](https://attack.mitre.org/groups/G0139/)** APT group (also known as **Mustang Panda** and Bronze President). This China-linked cyber-espionage actor has integrated a custom kernel-mode rootkit into its attack chain to achieve unparalleled stealth and persistence. The rootkit's primary function is to protect a new variant of the group's proprietary **ToneShell** backdoor. By operating in kernel space, the malware can effectively hide its own files, processes, and registry entries from user-mode security solutions like antivirus and EDR agents. This new capability has been deployed in targeted attacks against government organizations in Southeast Asia, particularly Myanmar and Thailand, representing a marked increase in the group's sophistication.\n\n## Threat Overview\n\nHoneyMyte is a well-known threat actor focused on intelligence gathering, historically targeting government and non-governmental organizations in Asia. This latest campaign demonstrates a clear investment in developing more advanced capabilities to bypass modern defenses. The use of a kernel-mode rootkit is a complex technique that provides the attacker with deep control over the compromised operating system. The initial access vector for deploying the rootkit is unconfirmed, but it is suspected that the group leverages its existing access on previously compromised machines, where tools like the **[PlugX](https://attack.mitre.org/software/S0013/)** RAT and ToneDisk USB worm have been found.\n\n## Technical Analysis\n\nThe attack employs a sophisticated, multi-component architecture:\n\n1.  **Rootkit Deployment**: The attack begins with the deployment of a malicious driver on the target system. This driver is often signed with a stolen or leaked digital certificate to appear legitimate and bypass driver signature enforcement policies.\n\n2.  **Kernel-Mode Persistence**: The driver registers itself as a mini-filter driver using [`T1547.006 - Kernel Modules and Extensions`](https://attack.mitre.org/techniques/T1547/006/). This allows it to intercept and manipulate file system and registry operations. This is a form of [`T1014 - Rootkit`](https://attack.mitre.org/techniques/T1014/).\n\n3.  **Malware Concealment**: The rootkit's main purpose is to act as a cloaking device. When a security tool or system utility attempts to list files, processes, or registry keys, the rootkit intercepts the request and filters out any entries related to the HoneyMyte malware, making it invisible to the user and many security products.\n\n4.  **Backdoor Injection**: The rootkit deploys a small user-mode component. This component is responsible for injecting the final payload, the **ToneShell** backdoor, into a legitimate system process. This [`T1055 - Process Injection`](https://attack.mitre.org/techniques/T1055/) allows the backdoor's shellcode to execute entirely in memory, further evading file-based detection.\n\n5.  **C2 Communication**: The ToneShell backdoor communicates with C2 servers that were registered in September 2024, indicating a planned operation. It provides the attackers with remote control over the system for long-term espionage.\n\n## Impact Assessment\n\nThe use of a kernel-mode rootkit significantly raises the bar for detection and remediation. Standard incident response procedures may fail because the malware's artifacts are hidden from view. A compromised system can remain under attacker control for extended periods, allowing for deep and persistent intelligence gathering. For the targeted government entities, this means a high risk of sustained exfiltration of sensitive state secrets, diplomatic communications, and strategic plans. Remediation is also more complex, often requiring offline analysis and potentially a complete OS re-installation to ensure the rootkit is fully removed.\n\n## Cyber Observables for Detection\n\n| Type | Value | Description |\n|---|---|---|\n| `log_source` | Windows System Event Log (ID 7045) | Monitor for the installation of new, unexpected services, which could be the malicious driver. |\n| `command_line_pattern` | `fltmc drivers` | Running this command can list loaded mini-filter drivers. The presence of an unknown or suspicious driver is a key indicator. |\n| `other` | Stolen Digital Certificates | The malicious driver may be signed with a known-stolen certificate. Maintain a list of revoked or suspicious certs. |\n| `network_traffic_pattern` | Anomalous outbound traffic | Monitor for C2 communications from processes that typically do not make external connections. |\n\n## Detection & Response\n\n*   **Driver Load Monitoring**: Closely monitor the loading of new kernel drivers. Scrutinize any newly installed mini-filter drivers, especially those that are not from well-known security or storage vendors.\n*   **Memory Forensics**: Since the ToneShell backdoor runs in memory, memory analysis is a critical detection technique. Tools like Volatility can be used to dump process memory and identify injected code or suspicious memory regions.\n*   **Advanced EDR**: Use EDR solutions with capabilities to detect rootkit behavior, such as hooking of system calls or direct kernel object manipulation (DKOM).\n*   **Patching and Hardening**: Ensure systems are fully patched, as vulnerabilities are often used to gain the initial privileges needed to load a malicious driver.\n\n## Mitigation\n\n*   **Driver Signature Enforcement**: Enforce strict driver signature policies. While HoneyMyte used signed drivers, this can prevent the loading of unsigned or illegitimately signed drivers.\n*   **Application Control**: Use application control to prevent the execution of the initial dropper that installs the rootkit, aligning with [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n*   **Virtualization-Based Security (VBS)**: On modern Windows systems, enable VBS and Hypervisor-Protected Code Integrity (HVCI). These features can prevent the loading of malicious kernel-mode drivers.\n*   **Boot Integrity**: Utilize Secure Boot to ensure that the OS bootloader and kernel have not been tampered with. This aligns with D3FEND's [`D3-TBI: TPM Boot Integrity`](https://d3fend.mitre.org/technique/d3f:TPMBootIntegrity).",
+  "twitter_post": "🐼 APT group HoneyMyte (Mustang Panda) has a new toy: a kernel-mode rootkit. The group is using it to hide its ToneShell backdoor while targeting governments in Southeast Asia. #HoneyMyte #MustangPanda #APT #Rootkit",
+  "meta_description": "The HoneyMyte (Mustang Panda) APT group is now using a sophisticated kernel-mode rootkit to protect its malware and deploy the ToneShell backdoor in espionage campaigns.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "HoneyMyte",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0139/"
+    },
+    {
+      "name": "Mustang Panda",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0129/"
+    },
+    {
+      "name": "Bronze President",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ToneShell",
+      "type": "malware"
+    },
+    {
+      "name": "PlugX",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0013/"
+    },
+    {
+      "name": "ToneDisk",
+      "type": "malware"
+    },
+    {
+      "name": "China",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securelist.com/the-honeymyte-apt-now-protects-malware-with-a-kernel-mode-rootkit/111539/",
+      "title": "The HoneyMyte APT evolves with a kernel-mode rootkit and a ToneShell backdoor",
+      "date": "2025-12-26",
+      "friendly_name": "Kaspersky Securelist",
+      "website": "securelist.com"
+    },
+    {
+      "url": "https://www.kaspersky.com/about/press-releases/2025_honeymyte-apt-enhances-stealth-with-new-kernel-mode-rootkit",
+      "title": "HoneyMyte APT Enhances Stealth with New Kernel-Mode Rootkit",
+      "date": "2025-12-26",
+      "friendly_name": "Kaspersky",
+      "website": "kaspersky.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2024-09-01T00:00:00Z",
+      "summary": "Command-and-control (C2) servers for the new ToneShell variant were registered."
+    },
+    {
+      "datetime": "2025-02-01T00:00:00Z",
+      "summary": "Attacks using the new kernel-mode rootkit are believed to have commenced."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1014",
+      "name": "Rootkit",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1547.006",
+      "name": "Kernel Modules and Extensions",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1055",
+      "name": "Process Injection",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1573.002",
+      "name": "Asymmetric Cryptography",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1046",
+      "name": "Boot Integrity",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BA",
+          "name": "Bootloader Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:BootloaderAuthentication"
+        },
+        {
+          "id": "D3-TBI",
+          "name": "TPM Boot Integrity",
+          "url": "https://d3fend.mitre.org/technique/d3f:TPMBootIntegrity"
+        }
+      ],
+      "description": "Use technologies like Secure Boot to ensure the integrity of the boot process and prevent the loading of unauthorized kernel-level components.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        }
+      ],
+      "description": "Implement strict policies for kernel driver loading, such as HVCI, to prevent malicious or illegitimately signed drivers from being loaded.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        }
+      ],
+      "description": "Enforce strict code signing requirements for all drivers. While this attack used a signed driver, this policy raises the bar for attackers.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DLIC",
+      "technique_name": "Driver Load Integrity Checking",
+      "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking",
+      "recommendation": "To combat the kernel-mode rootkit used by HoneyMyte, organizations must implement robust Driver Load Integrity Checking. On modern Windows systems, this is best achieved by enabling Virtualization-Based Security (VBS) and Hypervisor-Protected Code Integrity (HVCI), also known as Memory Integrity. HVCI uses the hypervisor to verify the digital signature of any code attempting to run in the kernel, making it significantly harder for an attacker to load a malicious or illegitimately signed driver. While HoneyMyte was observed using a stolen certificate, HVCI, combined with an up-to-date certificate revocation list, provides a strong defense. This moves security checks out of the kernel, which the rootkit aims to control, and into a more protected, hardware-assisted environment.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-TBI",
+      "technique_name": "TPM Boot Integrity",
+      "url": "https://d3fend.mitre.org/technique/d3f:TPMBootIntegrity",
+      "recommendation": "TPM Boot Integrity, commonly implemented via UEFI Secure Boot, is a foundational countermeasure against rootkits like the one used by HoneyMyte. Secure Boot ensures that every component of the boot process, from the firmware to the OS kernel and boot-start drivers, is signed by a trusted authority. This prevents an attacker from modifying the boot chain to load their malicious driver before the operating system's own defenses are active. By enforcing a chain of trust from the hardware up, Secure Boot provides a high degree of assurance that the kernel has not been tampered with, making it a critical mitigation for preventing the installation and persistence of kernel-mode threats.",
+      "mitre_mitigation_id": "M1046"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "fltmc drivers",
+      "description": "The output of this command should be audited for any unknown or unauthorized mini-filter drivers, which is how the rootkit persists.",
+      "context": "Live system analysis, EDR query.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Windows System Event Log - Event ID 7045",
+      "description": "This event ID indicates a new service was installed. The rootkit driver may be installed as a service.",
+      "context": "Windows Event Logs, SIEM.",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Anomalous driver signing certificate",
+      "description": "The driver may be signed with a stolen or leaked certificate. Checking the signer against a list of known-good vendors is crucial.",
+      "context": "Driver properties analysis, code signing verification tools.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "HoneyMyte",
+    "Mustang Panda",
+    "APT",
+    "Rootkit",
+    "Kernel",
+    "ToneShell",
+    "Cyber Espionage"
+  ],
+  "extract_datetime": "2025-12-26T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Myanmar",
+      "Thailand"
+    ],
+    "industries_affected": [
+      "Government"
+    ]
+  },
+  "pub_date": "2025-12-26",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-12-26T15:00:00.000Z",
+  "updatedAt": "2025-12-26T15:00:00.000Z"
+}

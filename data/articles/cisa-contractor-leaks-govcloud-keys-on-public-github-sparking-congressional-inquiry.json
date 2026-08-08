@@ -1,0 +1,174 @@
+{
+  "id": "66b2f5e0-bb3a-4017-99a3-db11a4b9510c",
+  "slug": "cisa-contractor-leaks-govcloud-keys-on-public-github-sparking-congressional-inquiry",
+  "headline": "CISA Contractor Leaks AWS GovCloud Keys and Internal System Credentials on Public GitHub Repo",
+  "title": "Major Security Lapse at CISA: Contractor Exposes GovCloud Keys and Internal Credentials on Public GitHub Repository",
+  "summary": "The U.S. Cybersecurity and Infrastructure Security Agency (CISA) is under congressional investigation after a contractor exposed highly sensitive credentials on a public GitHub repository. The repository, named 'Private-CISA,' contained plaintext credentials for AWS GovCloud accounts, SSH keys, and access tokens for internal CISA systems like Artifactory. The data, totaling 844 MB, was reportedly exposed for months, having been active since November 2025. It was used by the contractor to sync files between work and home. Researchers from GitGuardian discovered the leak and noted that the contractor appeared to have deliberately disabled GitHub's secret-scanning protections. While CISA states there is no evidence of compromise, the incident raises severe concerns about the agency's vendor management and internal data handling policies.",
+  "full_report": "## Executive Summary\n\nThe U.S. **[Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov)**, the nation's lead agency for cyber defense, is facing a significant security incident and congressional inquiry after a contractor exposed a trove of sensitive data on a public **[GitHub](https://github.com/)** repository. The repository, ironically named \"Private-CISA,\" contained plaintext credentials, including keys for **[AWS GovCloud](https://aws.amazon.com/govcloud/)** accounts, SSH keys, and access tokens for internal CISA systems. The leak, discovered by researchers at **[GitGuardian](https://www.gitguardian.com/)**, persisted for several months and appears to have been caused by a contractor using the public repository to synchronize work files. The incident highlights a critical failure in both operational security (OpSec) by the contractor and oversight by **[CISA](https://www.cisa.gov)**, undermining the agency's credibility and creating a potential goldmine for nation-state adversaries.\n\n## Threat Overview\n\nThe incident was not a sophisticated hack but a case of gross negligence. A contractor with administrative access created a public **[GitHub](https://github.com/)** repository in November 2025 to sync files between different computers. This repository contained 844 MB of highly sensitive data, including:\n-   Plaintext credentials for three separate **[AWS GovCloud](https://aws.amazon.com/govcloud/)** accounts.\n-   SSH keys granting network access.\n-   Access tokens for CISA's internal **[Artifactory](https://jfrog.com/artifactory/)** instance, a repository for software build packages.\n-   CI/CD build logs, Kubernetes manifests, and infrastructure-as-code files.\n-   An RSA private key for a **[GitHub](https://github.com/)** app with full access to CISA's repositories.\n\nResearchers noted that the contractor seemed to have intentionally disabled **[GitHub](https://github.com/)'s** built-in secret scanning protections, exacerbating the risk. The leak was discovered on May 14, 2026, and the repository was taken down shortly after. However, the exposure of these credentials for months provides a large window of opportunity for malicious actors to have discovered and copied the data.\n\n## Technical Analysis\n\nThe root cause is a fundamental failure of data handling and security policy.\n- **Attack Vector**: Accidental exposure via a public source code repository. This is a common but highly dangerous mistake, categorized by MITRE as [`T1537 - Transfer Data to Cloud Account`](https://attack.mitre.org/techniques/T1537/).\n- **Exposed Assets**: The leaked credentials provided potential access to the crown jewels of a cybersecurity agency's infrastructure. Access to **[AWS GovCloud](https://aws.amazon.com/govcloud/)** could allow an attacker to disrupt systems, steal more data, or establish persistence. Access to **[Artifactory](https://jfrog.com/artifactory/)** is particularly dangerous, as it could enable a supply chain attack by poisoning software packages used by **[CISA](https://www.cisa.gov)** and other government agencies.\n- **Attacker Opportunity**: An adversary who discovered this repository could have easily cloned it, gaining all the secrets within minutes. The fact that a private key for a powerful **[GitHub](https://github.com/)** app was not immediately invalidated post-discovery is a major concern.\n\n### MITRE ATT&CK Techniques\n- [`T1552.005 - Cloud Credentials`](https://attack.mitre.org/techniques/T1552/005/): The incident involves the exposure of cloud credentials, which an attacker could use for subsequent access.\n- [`T1526 - Cloud Service Discovery`](https://attack.mitre.org/techniques/T1526/): An attacker with the leaked credentials could perform reconnaissance within CISA's cloud environment.\n- [`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/): Access to Artifactory could facilitate a devastating supply chain attack.\n- [`T1537 - Transfer Data to Cloud Account`](https://attack.mitre.org/techniques/T1537/): This technique describes the action of moving data to a cloud account, which in this case was a public GitHub repository, making it an exfiltration/exposure vector.\n\n## Impact Assessment\n\nWhile **[CISA](https.www.cisa.gov)** claims no evidence of compromise, the potential impact is severe.\n- **National Security Risk**: The exposure of credentials for a top cybersecurity agency like **[CISA](https://www.cisa.gov)** poses a direct risk to U.S. national security. Nation-state actors could leverage this access to conduct espionage, disrupt critical infrastructure monitoring, or launch further attacks against government systems.\n- **Reputational Damage**: For an agency whose mission is to lead national cybersecurity efforts, this incident is deeply embarrassing and damaging to its credibility. It undermines the trust that other government agencies and private sector partners place in **[CISA](https://www.cisa.gov)**.\n- **Operational Impact**: **[CISA](https://www.cisa.gov)** must now undertake a massive and costly effort to rotate every exposed credential, audit all related systems for signs of compromise, and overhaul its contractor security policies. The congressional inquiry will consume significant time and resources.\n\n## IOCs — Directly from Articles\n\nThe repository was named `Private-CISA`, but no URL or other specific IOCs were provided in the articles.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams should proactively hunt for similar exposures:\n\n| Type | Value | Description |\n|---|---|---|\n| `string_pattern` | `AKIA[0-9A-Z]{16}` | Regular expression for AWS Access Key IDs, which should never be in public code. |\n| `string_pattern` | `-----BEGIN RSA PRIVATE KEY-----` | Header for an RSA private key. Its presence in a public repository is a critical finding. |\n| `process_name` | `git` | Monitor for `git push` commands containing large binary files or directories with names like `.aws`, `.ssh`, or `credentials`. |\n| `log_source` | `GitHub Audit Logs` | Review logs for repository creation, changes from public to private (or vice-versa), and alerts from secret scanning. |\n| `url_pattern` | `github.com/[company-name]*/` | Use automated tools to scan public GitHub for repositories accidentally created under personal accounts but containing company code or data. |\n\n## Detection & Response\n\n- **Detection**: Implement automated secret scanning across all public and private code repositories. Services like **[GitGuardian](https://www.gitguardian.com/)** or **[GitHub](https://github.com/)'s** own Advanced Security can detect leaked credentials in real-time. Monitor for the creation of new public repositories by employees or contractors that contain company-related keywords. D3FEND's [`D3-SFA - System File Analysis`](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis) can be applied to code repositories to hunt for sensitive patterns.\n- **Response**: The immediate response to a leaked credential is to **revoke it**. This includes rotating API keys, invalidating tokens, and removing SSH keys from authorized lists. The system or account associated with the credential must be audited for any unauthorized access. In this case, a full audit of the affected **[AWS GovCloud](https://aws.amazon.com/govcloud/)** accounts and **[Artifactory](https://jfrog.com/artifactory/)** instance is non-negotiable.\n\n## Mitigation\n\n- **Policy and Training**: Enforce a strict policy that prohibits the use of public repositories for storing any internal code or data. All employees and contractors must receive regular training on secure coding practices and data handling.\n- **Technical Controls**: Block `git push` operations to public repositories from corporate networks unless explicitly authorized. Use Data Loss Prevention (DLP) tools to scan outbound traffic and code commits for sensitive patterns.\n- **Vendor Management**: Implement stringent security requirements for all contractors. This includes mandatory use of company-managed devices, prohibiting data transfer to personal machines, and regular audits of contractor activity.\n- **Credential Management**: Eliminate long-lived static credentials wherever possible. Use short-lived tokens and identity federation (e.g., IAM roles) for accessing cloud resources. This aligns with [`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/).",
+  "twitter_post": "‼️ MAJOR LAPSE: A CISA contractor leaked plaintext AWS GovCloud keys & internal system credentials on a public GitHub repo for months. The incident has sparked a congressional inquiry into the agency's security practices. #CISA #DataBreach #GovCloud",
+  "meta_description": "A CISA contractor exposed sensitive AWS GovCloud credentials and internal system keys on a public GitHub repository, prompting a congressional investigation into the major security lapse.",
+  "category": [
+    "Data Breach",
+    "Policy and Compliance",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "AWS GovCloud",
+      "type": "product"
+    },
+    {
+      "name": "Artifactory",
+      "type": "product"
+    },
+    {
+      "name": "CISA",
+      "type": "government_agency"
+    },
+    {
+      "name": "GitGuardian",
+      "type": "vendor"
+    },
+    {
+      "name": "GitHub",
+      "type": "vendor"
+    },
+    {
+      "name": "House Homeland Security Committee",
+      "type": "government_agency"
+    },
+    {
+      "name": "Maggie Hassan",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://krebsonsecurity.com/2026/05/lawmakers-demand-answers-as-cisa-tries-to-contain-data-leak/",
+      "title": "Lawmakers Demand Answers as CISA Tries to Contain Data Leak",
+      "date": "2026-05-23",
+      "website": "krebsonsecurity.com"
+    },
+    {
+      "url": "https://krebsonsecurity.com/2026/05/cisa-admin-leaked-aws-govcloud-keys-on-github/",
+      "title": "CISA Admin Leaked AWS GovCloud Keys on Github",
+      "date": "2026-05-18",
+      "website": "krebsonsecurity.com"
+    },
+    {
+      "url": "https://dev.to/gitguardian/how-we-got-a-cisa-github-leak-taken-down-in-under-a-day-4g3f",
+      "title": "How We Got a CISA GitHub Leak Taken Down in Under a Day",
+      "date": "2026-05-20",
+      "website": "dev.to"
+    },
+    {
+      "url": "https://www.nextgov.com/cybersecurity/2026/05/reported-exposure-federal-cybersecurity-agency-login-data-prompts-hill-scrutiny/80786/",
+      "title": "Reported exposure of federal cybersecurity agency login data prompts Hill scrutiny",
+      "date": "2026-05-20",
+      "website": "nextgov.com"
+    },
+    {
+      "url": "https://fedscoop.com/cisa-credentials-get-leaked-on-github/",
+      "title": "CISA credentials get leaked on GitHub",
+      "date": "2026-05-20",
+      "website": "fedscoop.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-11-01T00:00:00Z",
+      "summary": "Contractor reportedly creates the public 'Private-CISA' GitHub repository, beginning the data exposure."
+    },
+    {
+      "datetime": "2026-05-14T00:00:00Z",
+      "summary": "Security researchers at GitGuardian discover the public repository and the leaked credentials."
+    },
+    {
+      "datetime": "2026-05-18T00:00:00Z",
+      "summary": "The CISA data leak is first publicly reported by Krebs on Security."
+    },
+    {
+      "datetime": "2026-05-23T00:00:00Z",
+      "summary": "U.S. lawmakers send letters to CISA demanding a briefing and answers regarding the security lapse."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1537",
+      "name": "Transfer Data to Cloud Account",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1552.005",
+      "name": "Cloud Credentials",
+      "tactic": "Credential Access"
+    }
+  ],
+  "tags": [
+    "AWS GovCloud",
+    "CISA",
+    "Credential Leak",
+    "Data Leak",
+    "GitHub",
+    "Government",
+    "Insider Threat"
+  ],
+  "extract_datetime": "2026-05-24",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "industries_affected": [
+      "Government"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States"
+    ],
+    "other_affected": [
+      "federal agencies"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "AWS GovCloud",
+    "CISA",
+    "Credential Leak",
+    "Data Leak",
+    "GitHub",
+    "Government",
+    "Insider Threat"
+  ],
+  "pub_date": "2026-05-24",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-24T15:00:00.000Z",
+  "updatedAt": "2026-05-30T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-30T00:00:00Z",
+      "summary": "New details emerge on CISA contractor leak: administrative AWS GovCloud credentials, plaintext passwords in 'importantAWStokens' file, and RSA key for all CISA repos were exposed. Contractor identified as Nightwing employee.",
+      "content": "Further investigation into the CISA contractor data leak reveals more critical details. The exposed data included administrative credentials for three AWS GovCloud accounts and plaintext passwords for internal CISA systems, specifically found in a file named 'importantAWStokens'. The private RSA key provided access to all CISA code repositories, not just a single GitHub app. The contractor was identified as an employee of defense firm Nightwing. Additionally, the AWS GovCloud keys remained valid for 48 hours after the GitHub repository was taken down on May 18, 2026, extending the window of vulnerability. The credentials reportedly followed a weak, predictable pattern, highlighting significant security failures.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHC2k08oNmc3D-CVcayzq2vtnLKCUWLy66ME-NQGdzMB7QyxSfrM4kY75WScrGaMbKr49yRdk97qyXan0k48SoyVEMa_1So4GoHL5P1jxOmQF-6Rjd3myBwGfAmhtWBbwQ9DyAJK6-jBGvd9VRrSbRHtOTZOXYnorlUvJyUlKSrkGeO7w==",
+          "title": "Top 5 Cybersecurity News Stories May 29, 2026 - DIESEC",
+          "website": "",
+          "date": "2026-05-30T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

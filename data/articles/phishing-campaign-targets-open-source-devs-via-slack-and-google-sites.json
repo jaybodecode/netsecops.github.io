@@ -1,0 +1,207 @@
+{
+  "id": "87848c07-ecfd-4ba0-afd2-fcb71f2390fe",
+  "slug": "phishing-campaign-targets-open-source-devs-via-slack-and-google-sites",
+  "headline": "Open-Source Devs Targeted in Sophisticated Phishing Attack Using Slack and Google Sites",
+  "title": "Phishing Campaign Impersonates Linux Foundation on Slack to Steal Developer Credentials and Install Malicious Certificates",
+  "summary": "A sophisticated social engineering campaign is targeting open-source developers on Slack, with attackers impersonating a Linux Foundation official to gain trust. Victims are lured to a fake login page hosted on Google Sites to harvest their credentials. The attack then escalates by tricking the developer into installing a fake 'security certificate,' which is a malicious root certificate enabling the attacker to intercept encrypted traffic. The campaign, which targets members of prominent projects like CNCF, highlights the increasing focus of threat actors on compromising developers as a gateway into the software supply chain.",
+  "full_report": "## Executive Summary\nA highly targeted and sophisticated social engineering campaign is actively targeting developers in the open-source community. Attackers are using a combination of **[Slack](https://slack.com/)** impersonation and malicious pages hosted on **[Google Sites](https://sites.google.com)** to steal credentials and trick developers into installing malicious root certificates. The attackers pose as a known representative from the **[Linux Foundation](https://www.linuxfoundation.org/)** to build trust with members of communities like the **[Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/)**. This attack is particularly dangerous because successfully compromising a developer can provide a foothold for a much broader software supply chain attack. The Open Source Security Foundation (**[OpenSSF](httpshttps://openssf.org/)**) has issued warnings, advising developers to be extremely vigilant.\n\n## Threat Overview\nThe attack flow is a multi-stage social engineering effort designed to exploit trust within the open-source community.\n\n**Attack Chain:**\n1.  **Impersonation & Contact:** The attacker, posing as a Linux Foundation official, initiates a direct message conversation with a target developer on Slack.\n2.  **Lure:** The attacker provides a link, likely under the guise of collaboration or project verification, which directs the victim to a page created with Google Sites.\n3.  **Credential Theft:** The Google Sites page is a convincing replica of a Google Workspace login portal. The developer is prompted to enter their credentials, which are harvested by the attacker.\n4.  **Certificate Installation:** After stealing the credentials, the attack proceeds to a second stage. The user is prompted to install a \"security certificate\" to gain access. This is the most critical part of the attack.\n5.  **Man-in-the-Middle:** The installed \"certificate\" is a malicious root CA. With this installed on the developer's machine, the attacker can perform Man-in-the-Middle (MitM) attacks, intercepting and decrypting all of the victim's network traffic, including access to private code repositories, internal services, and other sensitive information.\n\nThe attack's payload varies by OS, with macOS versions downloading and executing additional malicious binaries.\n\n## Technical Analysis\nThis campaign masterfully combines several TTPs to bypass both technical and human defenses.\n- **Social Engineering:** [`T1649 - Social Engineering`](https://attack.mitre.org/techniques/T1649/) - The entire operation is built on impersonation and manipulation.\n- **Phishing: Spearphishing Link:** [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/) - A targeted link is delivered via a trusted communication platform (Slack).\n- **Man-in-the-Middle: Rogue CA Certificate:** [`T1557.002 - Rogue CA Certificate`](https://attack.mitre.org/techniques/T1557/002/) - The ultimate goal is to install a malicious root certificate to intercept encrypted traffic. This is a highly effective and dangerous technique.\n- **Credentials from Web Browsers:** [`T1555.003 - Credentials from Web Browsers`](https://attack.mitre.org/techniques/T1555/003/) - The fake login page is designed to steal credentials stored in or entered into the browser.\n- **Command and Scripting Interpreter:** [`T1059 - Command and Scripting Interpreter`](https://attack.mitre.org/techniques/T1059/) - The macOS variant uses scripting to download and execute further payloads.\n\n## Impact Assessment\n- **Software Supply Chain Compromise:** The primary risk is a full-scale supply chain attack. A compromised developer could unknowingly commit malicious code to a widely used open-source project, affecting thousands or millions of downstream users.\n- **Intellectual Property Theft:** Attackers can steal proprietary code, API keys, and other sensitive data from the developer's machine and the organizations they work for.\n- **Wider Network Compromise:** The compromised developer's machine can be used as a beachhead to pivot into their employer's corporate network.\n- **Erosion of Trust:** Attacks like this can damage the collaborative and trust-based nature of the open-source community, making developers more hesitant to engage with new contacts.\n\n## Cyber Observables for Detection\nDetection focuses on identifying the installation of untrusted certificates and suspicious process chains.\n| Type | Value | Description |\n|---|---|---|\n| log_source | Certificate Store Logs | Monitor for the installation of new root Certificate Authorities on endpoints. This is a rare and highly privileged event. |\n| process_name | `security` (macOS) | On macOS, look for the `security add-trusted-cert` command being executed, especially by scripts or from a browser process. |\n| log_source | Browser History | Look for redirects to suspicious Google Sites URLs, especially if they are followed by a certificate download prompt. |\n| command_line_pattern | `curl ... | bash` | Monitor for shell commands that download and execute scripts from the internet, a common infection vector on Linux/macOS. |\n\n## Detection & Response\n- **D3FEND: Certificate Analysis:** Use endpoint security tools to continuously monitor the system's trusted root certificate store. Any addition should trigger a high-severity alert for immediate investigation. This is a direct application of [`D3-CA: Certificate Analysis`](https://d3fend.mitre.org/technique/d3f:CertificateAnalysis).\n- **D3FEND: Process Analysis:** On endpoints, monitor for suspicious process parent-child relationships. A browser process should not be spawning a shell script that then calls `security` or `certutil` commands to install a certificate. This is a key part of [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n- **Network Level:** While the malicious certificate allows decryption, outbound connections to the attacker's C2 server can still be detected. Use network traffic analysis to look for connections to newly registered domains or known malicious IP addresses.\n\n## Mitigation\n- **User Training:** This is paramount. Developers must be educated about the specific risks of social engineering within their community. They should be taught to be skeptical of unsolicited DMs, even from apparently trusted individuals, and to verify requests through out-of-band channels. This aligns with [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n- **Endpoint Hardening:** Use Mobile Device Management (MDM) or other endpoint management tools to restrict the ability of standard users to install new root certificates. This action should be reserved for administrators and heavily audited.\n- **Phishing-Resistant MFA:** Encourage or enforce the use of phishing-resistant MFA (like FIDO2/WebAuthn) for critical services like code repositories (GitHub, GitLab) and corporate logins. This would have prevented the initial credential theft.\n- **D3FEND: Executable Denylisting:** While not directly applicable to the certificate itself, for the macOS variant, application control policies could prevent the execution of the unsigned binary downloaded by the script. This relates to [`D3-EDL: Executable Denylisting`](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting).",
+  "twitter_post": "⚠️ Devs BEWARE: A new phishing campaign on Slack impersonates the Linux Foundation to steal creds via Google Sites & install malicious root certs. The goal: full traffic interception. #Phishing #OpenSource #InfoSec #SupplyChainAttack",
+  "meta_description": "A sophisticated phishing campaign is targeting open-source developers on Slack and Google Sites, using social engineering to install malicious root certificates for man-in-the-middle attacks.",
+  "category": [
+    "Phishing",
+    "Supply Chain Attack",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Linux Foundation",
+      "type": "security_organization",
+      "url": "https://www.linuxfoundation.org/"
+    },
+    {
+      "name": "Cloud Native Computing Foundation (CNCF)",
+      "type": "security_organization",
+      "url": "https://www.cncf.io/"
+    },
+    {
+      "name": "TODO (Talk Openly, Develop Openly)",
+      "type": "security_organization"
+    },
+    {
+      "name": "Google Sites",
+      "type": "product"
+    },
+    {
+      "name": "Slack",
+      "type": "product"
+    },
+    {
+      "name": "Open Source Security Foundation (OpenSSF)",
+      "type": "security_organization",
+      "url": "https://openssf.org/"
+    },
+    {
+      "name": "Google",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.techzine.eu/2026/04/14/attackers-are-targeting-developers-via-slack-and-google-sites/",
+      "title": "Attackers are targeting developers via Slack and Google Sites",
+      "date": "2026-04-14",
+      "friendly_name": "Techzine",
+      "website": "techzine.eu"
+    },
+    {
+      "url": "https://www.theregister.com/2026/04/13/linux_foundation_impersonation_phishing/",
+      "title": "Fake Linux Foundation leader using Slack to phish devs",
+      "date": "2026-04-13",
+      "friendly_name": "The Register",
+      "website": "theregister.com"
+    },
+    {
+      "url": "https://www.helpnetsecurity.com/2026/04/08/social-engineering-attacks-open-source-developers/",
+      "title": "Social engineering attacks on open source developers are escalating",
+      "date": "2026-04-08",
+      "friendly_name": "Help Net Security",
+      "website": "helpnetsecurity.com"
+    },
+    {
+      "url": "https://malware.news/t/social-engineering-attack-targets-open-source-developers-via-slack-impersonation/83287",
+      "title": "Social Engineering Attack Targets Open Source Developers via Slack Impersonation",
+      "date": "2026-04-09",
+      "friendly_name": "Malware News",
+      "website": "malware.news"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1557.002",
+      "name": "Rogue CA Certificate",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1649",
+      "name": "Social Engineering",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate developers on the specific social engineering tactics used against them, including impersonation on community platforms like Slack.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Implement phishing-resistant MFA (FIDO2) to protect accounts even if credentials are stolen.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1022",
+      "name": "Restrict File and Directory Permissions",
+      "description": "Use endpoint management to restrict users' ability to install new root certificates, a high-privilege action.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Use web filtering to block access to known malicious domains and potentially categorize and warn on access to uncategorized hosting sites.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-CA",
+      "technique_name": "Certificate Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:CertificateAnalysis",
+      "recommendation": "The core of this attack is the installation of a malicious root certificate. Therefore, continuous monitoring of the trusted certificate stores on developer endpoints is the most direct and effective detective control. EDR (Endpoint Detection and Response) solutions or specialized configuration management tools should be configured to generate a high-priority, non-ignorable alert whenever a new root or intermediate certificate is added to any machine's trust store. This is not a normal user activity and should be treated as a potential compromise until proven otherwise. The alert should trigger an automated incident response workflow, which could include isolating the affected machine from the network and collecting forensic data. Security teams should maintain a 'golden image' or allowlist of approved root CAs for their environment, and any deviation should be investigated immediately. This proactive analysis turns a stealthy persistence mechanism into a loud alarm.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "To detect the attack before the certificate is even installed, security teams should leverage Process Analysis on developer workstations. A key anomalous behavior in this attack is the process chain. A web browser (e.g., `chrome.exe`, `firefox.exe`) should not be the parent process for a command-line utility that modifies system security settings, such as `certutil.exe` on Windows or `security` on macOS. EDR tools should be configured with detection rules that specifically look for these suspicious parent-child process relationships. For example: `ParentProcess: chrome.exe -> ChildProcess: cmd.exe -> GrandchildProcess: certutil.exe -addstore root...`. This type of behavioral detection is highly effective at catching the execution phase of the attack, regardless of the specific malware or script being used. It focuses on the attacker's actions on the objective, providing a robust defense against this class of social engineering attacks.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "event_id",
+      "value": "Any change to Trusted Root Certificate Authorities store",
+      "description": "The installation of a new root certificate is a very rare and highly suspicious event on a user endpoint and should be investigated immediately.",
+      "context": "Windows Event Logs (CAPI2), EDR alerts, MDM audit logs",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "security add-trusted-cert",
+      "description": "On macOS, this command is used to add a certificate to the trusted store. Its execution by a non-administrator or via a script is highly suspect.",
+      "context": "EDR, command-line logging",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "certutil -addstore root",
+      "description": "On Windows, this command adds a certificate to the root store. Its execution, especially from a browser or script process, is a major red flag.",
+      "context": "EDR, PowerShell logging, command-line logging (Event ID 4688)",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "sites.google.com/view/[long-random-string]",
+      "description": "Attackers are abusing Google Sites for hosting. While the domain is legitimate, traffic to unfamiliar or suspicious-looking Google Sites pages from corporate environments warrants scrutiny.",
+      "context": "Web proxy logs, DNS logs",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Phishing",
+    "Social Engineering",
+    "Open Source",
+    "Linux Foundation",
+    "Slack",
+    "Google Sites",
+    "Man-in-the-Middle",
+    "Root Certificate"
+  ],
+  "extract_datetime": "2026-04-14T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "open-source software users"
+    ]
+  },
+  "pub_date": "2026-04-14",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-04-14T15:00:00.000Z",
+  "updatedAt": "2026-04-14T15:00:00.000Z"
+}

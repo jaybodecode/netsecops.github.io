@@ -1,0 +1,382 @@
+{
+  "id": "ce9ec1b6-dfc6-4f74-9ebf-2dd33541f7e4",
+  "slug": "tuxbot-v3-iot-botnet-framework-uses-llm-assisted-development",
+  "headline": "TuxBot v3: New IoT Botnet Framework Developed with LLM Assistance",
+  "title": "TuxBot v3 IoT Botnet Uses LLMs for Code Generation",
+  "summary": "Security researchers have uncovered TuxBot v3 Evolution, a modular Internet of Things (IoT) botnet framework partially developed using a large language model (LLM). The malware, analyzed by Unit 42, is derived from the AISURU and Wuhan botnet families and targets IoT devices for Distributed Denial of Service (DDoS) attacks. Its primary infection vector is brute-forcing Telnet credentials. While the LLM-assisted development introduced several non-functional components and bugs, the core infection and DDoS capabilities are operational. The framework's source code indicates a connection to an Iranian developer and shared infrastructure with the Keksec/Kaitori malware family, highlighting a significant and evolving threat to IoT device security.",
+  "full_report": "## Executive Summary\nSecurity researchers have identified a new modular Internet of Things (IoT) botnet framework named **[TuxBot v3 Evolution](https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/)**. This malware is notable for its development process, which leveraged a large language model (LLM) to generate code. While this approach introduced several functional bugs that were not corrected by the developer, the core components of the botnet remain viable. **[Unit 42](https://unit42.paloaltonetworks.com/)** analysis reveals that the framework is designed to compromise IoT devices through Telnet brute-force attacks and incorporate them into a network capable of launching Distributed Denial of Service (DDoS) attacks. The botnet's source code suggests origins with an Iranian developer and shows lineage from other known botnets like **[AISURU](https://malpedia.caad.fkie.fraunhofer.de/details/elf.aisuru)** and the previously unknown Wuhan botnet. The potential for adversaries to easily fix the existing bugs and deploy a fully functional version makes TuxBot v3 a significant threat to insecure IoT devices globally.\n\n---\n\n## Threat Overview\n**TuxBot v3 Evolution** is a multi-component botnet framework designed to infect a wide range of IoT devices. Its primary objective is to build a network of compromised devices (a botnet) to perform DDoS attacks. The framework was discovered through internal telemetry which yielded its full source code, compiled binaries for 17 different architectures, and performance testing reports.\n\nThe malware's development is a key point of interest. The author utilized an LLM for code generation, which, while successful in creating the botnet's structure, also introduced significant flaws. The developer failed to remove an AI-generated safety disclaimer and shipped code with non-functional cryptographic implementations and broken exploit modules. This indicates a reliance on automated tooling without proper manual validation.\n\nThe primary infection vector is a Telnet scanner that brute-forces access using a list of 1,496 hard-coded credential pairs. While the framework includes exploit code for over 30 IoT device families, these modules were found to be non-functional in the analyzed version. The bot communicates with a Command and Control (C2) server over an encrypted TCP channel and includes fallback mechanisms such as a Domain Generation Algorithm (DGA), **[Pastebin](https://pastebin.com/)**, and **[Telegram](https://telegram.org/)**.\n\nAttribution evidence within the code, including a Git log, points to a developer using an Iranian-hosted workstation. A developer domain, `newtuxdev.sevielw.digikalas[.]online`, resolves to a parent domain hosted on Iran's **[Arvan Cloud](https://www.arvancloud.com/)** CDN. Furthermore, a hard-coded IP address links the botnet's infrastructure to the **[Keksec](https://malpedia.caad.fkie.fraunhofer.de/actor/keksec)**/**[Kaitori](https://malpedia.caad.fkie.fraunhofer.de/details/elf.kaiten)** malware ecosystem.\n\n---\n\n## Technical Analysis\nThe TuxBot v3 Evolution framework is approximately 70% functional in its recovered state. The core infection and attack flow is operational, posing a tangible threat.\n\n### Components and Architecture\n*   **Bot Agent:** A cross-compiled binary that infects target devices. It contains modules for scanning, brute-forcing (Telnet, SSH, HTTP, ADB), persistence, and C2 communication. Upon successful infection, it displays the console banner “Infected By Akiru.”\n*   **C2 Server:** Written in the **[Go](https://en.wikipedia.org/wiki/Go_(programming_language))** programming language, the C2 server uses multiple TCP listeners for bot communication (`TCP/1999` or `TCP/31337`), an admin panel, and other services.\n*   **Development Environment:** The source code includes a **[Docker](https://www.docker.com/)** configuration for automated deployment and a **[QEMU](https://www.qemu.org/)** test directory, indicating a structured development process.\n\n### Infection and Propagation\nThe bot's primary propagation method relies on [`T1110.001 - Password Guessing`](https://attack.mitre.org/techniques/T1110/001/) against Telnet services on exposed IoT devices. The large list of 1,496 default and weak credential pairs makes this a potent threat against misconfigured devices. While the framework contains code for [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/), the exploit modules themselves are currently broken.\n\n### Command and Control (C2)\n*   **Primary C2:** The bot communicates with its C2 server over an encrypted TCP channel, typically on port `1999`.\n*   **Fallback Mechanisms:** To ensure resilience, TuxBot v3 can use several fallback methods if the primary C2 is unavailable:\n    1.  [`T1568.002 - Dynamic Resolution`](https://attack.mitre.org/techniques/T1568/002/): A Domain Generation Algorithm (DGA) to find new C2 servers.\n    2.  [`T1132.002 - Web Service`](https://attack.mitre.org/techniques/T1132/002/): The bot can retrieve C2 information from public web services like Pastebin and Telegram.\n\n### Payload\nThe ultimate goal of the botnet is to launch [`T1498 - Network Denial of Service`](https://attack.mitre.org/techniques/T1498/) attacks. The framework is partially ported from the open-source **[MHDDoS](https://github.com/MatrixTM/MHDDoS)** Python DDoS toolkit, giving it a range of attack methods.\n\n### MITRE ATT&CK Mapping\n*   **[T1046 - Network Service Discovery](https://attack.mitre.org/techniques/T1046/)**: The bot scans for open Telnet, SSH, HTTP, and ADB ports.\n*   **[T1110.001 - Password Guessing](https://attack.mitre.org/techniques/T1110/001/)**: The bot uses a large list of credentials to brute-force Telnet access.\n*   **[T1190 - Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/)**: Although non-functional in the analyzed samples, the framework is designed to exploit vulnerabilities in IoT devices.\n*   **[T1059.004 - Unix Shell](https://attack.mitre.org/techniques/T1059/004/)**: The bot likely uses shell commands for execution and persistence on the compromised Linux-based IoT devices.\n*   **[T1071.001 - Web Protocols](https://attack.mitre.org/techniques/T1071/001/)**: Used for C2 communication and potentially for retrieving payloads or updates.\n*   **[T1132.002 - Web Service](https://attack.mitre.org/techniques/T1132/002/)**: The bot uses Pastebin and Telegram as a C2 fallback mechanism.\n*   **[T1568.002 - Dynamic Resolution](https://attack.mitre.org/techniques/T1568/002/)**: The bot employs a DGA for resilient C2 communication.\n*   **[T1498 - Network Denial of Service](https://attack.mitre.org/techniques/T1498/)**: The primary function of the botnet is to conduct DDoS attacks.\n\n---\n\n## Impact Assessment\nDespite its developmental flaws, TuxBot v3 Evolution poses a high potential threat. The core functionality for infection via Telnet brute-force and conducting DDoS attacks is operational. Given that the full source code is available, it is highly probable that the developer or other threat actors could easily fix the bugs and create a more polished, fully functional version. The use of an LLM in its creation demonstrates a low barrier to entry for developing complex malware, a trend that will likely continue. Organizations deploying IoT devices are at risk, especially if they fail to change default credentials. A successful infection could lead to the devices being used in large-scale DDoS attacks, potentially causing service disruptions for targeted victims and consuming significant network bandwidth for the device owner.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| IP Address | `185.10.68.127` | Shared infrastructure linked to Keksec/Kaitori ecosystems. |\n| Domain | `newtuxdev.sevielw.digikalas[.]online` | Developer domain found in source code (inactive). |\n| Domain | `digikalas[.]online` | Active parent domain resolving to Arvan Cloud CDN in Iran. |\n| String | `Infected By Akiru` | Console banner displayed on infected devices. |\n| Port | `31337` | C2 port used in the development build. |\n| Port | `1999` | Default bot protocol C2 port. |\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns, which could indicate related activity:\n\n| Type | Value/Pattern | Context for Detection |\n|---|---|---|\n| Network Traffic | High-volume outbound connection attempts on `TCP/23` (Telnet) | Network flow data or firewall logs, indicating brute-force scanning. |\n| Network Traffic | Outbound connections to `185.10.68.127` | Firewall or proxy logs, indicating communication with known malicious infrastructure. |\n| DNS Queries | DNS lookups for `digikalas.online` or subdomains | DNS logs, indicating potential C2 activity. |\n| Network Traffic | Outbound TCP connections on ports `1999` or `31337` from IoT devices | Network traffic analysis, indicating primary C2 communication. |\n| API Calls | Connections from IoT devices to `api.telegram.org` or `pastebin.com` | Egress traffic filtering logs, indicating C2 fallback activity. |\n| File System | Presence of new, unexpected executable files in `/tmp` on IoT devices | File integrity monitoring or manual inspection on devices. |\n\n---\n\n## Detection & Response\nDetecting TuxBot v3 requires monitoring network traffic and device behavior. \n\n1.  **Network Monitoring:**\n    *   Implement rules to detect and alert on a high rate of failed or successful Telnet logins from a single source or to multiple devices on your network. This is a strong indicator of the initial brute-force scan.\n    *   Monitor egress traffic from IoT devices for connections to known malicious IPs like `185.10.68.127` or unusual destinations like Pastebin and Telegram.\n    *   Use **[Network Traffic Analysis](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** to baseline normal traffic from IoT devices and alert on anomalies, such as connections on non-standard ports (`1999`, `31337`) or sudden spikes in outbound bandwidth indicative of a DDoS attack.\n\n2.  **Endpoint/Device Level:**\n    *   Where possible, enable logging on IoT devices and forward logs to a central SIEM for correlation. Look for unexpected processes or shell commands.\n    *   Use **[File Analysis](https://d3fend.mitre.org/technique/d3f:FileAnalysis)** on suspicious binaries found on devices. The VirusTotal submission of a development build shows that components may be identifiable through hash lookups.\n\n3.  **Incident Response:**\n    *   If a device is suspected to be compromised, immediately isolate it from the network to prevent lateral movement and its participation in DDoS attacks.\n    *   Perform a forensic analysis to identify the infection vector and IOCs. Since the bot achieves persistence, a simple reboot may not be sufficient.\n    *   Re-flash the device with a factory firmware image to ensure complete removal of the malware.\n    *   Immediately change the default credentials and apply other mitigation steps before reconnecting the device to the network.\n\n---\n\n## Mitigation\nPreventing TuxBot v3 infection relies on fundamental security hygiene for IoT devices.\n\n1.  **Credential Hardening:**\n    *   The most critical step is to change default usernames and passwords on all IoT devices. Implement a **[Strong Password Policy](https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy)** for all device accounts.\n    *   Disable or remove any unused default accounts.\n\n2.  **Network Controls:**\n    *   Implement **[Network Isolation](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**. Place IoT devices on a separate network segment that is isolated from critical corporate or personal networks. \n    *   Apply **[Outbound Traffic Filtering](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)** on the IoT network segment. Deny all outbound connections by default and only allow traffic necessary for the device's function. This can block C2 communication.\n    *   Disable Telnet (`TCP/23`) completely. If remote management is required, use SSH (`TCP/22`) with key-based authentication instead of passwords.\n\n3.  **Device Hardening:**\n    *   Regularly check for and apply firmware updates (**[Software Update](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**). While the analyzed TuxBot exploits were broken, future versions will likely have functional exploits.\n    *   Disable any unnecessary services on the device to reduce the attack surface. This includes ADB, SSH, and web interfaces if they are not needed.",
+  "twitter_post": "Unit 42 details TuxBot v3, a new modular IoT botnet framework. Developed with LLM assistance, it features Telnet brute-forcing, DDoS capabilities, and C2 fallbacks via DGA & Pastebin. Shows evolution of AI in malware creation. #TuxBot #IoT #Botnet #Malware",
+  "meta_description": "Analysis of TuxBot v3 Evolution, a new IoT botnet framework. Researchers found its code was partly generated by an LLM, leading to both novel features and bugs.",
+  "category": [
+    "Malware",
+    "Threat Intelligence",
+    "IoT Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TuxBot v3 Evolution",
+      "type": "malware"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "AISURU",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/elf.aisuru"
+    },
+    {
+      "name": "Wuhan botnet",
+      "type": "malware"
+    },
+    {
+      "name": "MHDDoS",
+      "type": "malware"
+    },
+    {
+      "name": "VirusTotal",
+      "type": "security_organization",
+      "url": "https://www.virustotal.com/"
+    },
+    {
+      "name": "Keksec",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/keksec"
+    },
+    {
+      "name": "Kaitori",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/elf.kaiten"
+    },
+    {
+      "name": "Mirai",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0602/"
+    },
+    {
+      "name": "Gafgyt",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0089/"
+    },
+    {
+      "name": "Arvan Cloud",
+      "type": "company"
+    },
+    {
+      "name": "Telegram",
+      "type": "product",
+      "url": "https://telegram.org/"
+    },
+    {
+      "name": "Pastebin",
+      "type": "product",
+      "url": "https://pastebin.com/"
+    },
+    {
+      "name": "Go",
+      "type": "technology"
+    },
+    {
+      "name": "Python",
+      "type": "technology"
+    },
+    {
+      "name": "Docker",
+      "type": "technology",
+      "url": "https://www.docker.com/"
+    },
+    {
+      "name": "QEMU",
+      "type": "technology",
+      "url": "https://www.qemu.org/"
+    },
+    {
+      "name": "Chris Navarrete",
+      "type": "person"
+    },
+    {
+      "name": "Asher Davila",
+      "type": "person"
+    },
+    {
+      "name": "Doel Santos",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/tuxbot-v3-evolution-iot-botnet/",
+      "title": "TuxBot v3: Inside an IoT Botnet Framework With LLM-Assisted Development",
+      "date": "2026-07-14",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-01",
+      "summary": "Developer conducts 254 benchmark tests, indicating a late-stage development push."
+    },
+    {
+      "datetime": "2026-01-20",
+      "summary": "A compiled development build of the TuxBot bot binary is submitted to VirusTotal."
+    },
+    {
+      "datetime": "2026-07-14",
+      "summary": "Unit 42 publishes its in-depth analysis of the TuxBot v3 Evolution framework."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1046",
+      "name": "Network Service Discovery",
+      "tactic": "Discovery"
+    },
+    {
+      "id": "T1110.001",
+      "name": "Password Guessing",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.004",
+      "name": "Unix Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1132.002",
+      "name": "Web Service",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1568.002",
+      "name": "Dynamic Resolution",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1498",
+      "name": "Network Denial of Service",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1027",
+      "name": "Password Policies",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SPP",
+          "name": "Strong Password Policy",
+          "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy"
+        },
+        {
+          "id": "D3-OTP",
+          "name": "One-time Password",
+          "url": "https://d3fend.mitre.org/technique/d3f:One-timePassword"
+        }
+      ],
+      "description": "Counteracts the Telnet brute-force vector by replacing default or weak credentials with strong, unique passwords.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        },
+        {
+          "id": "D3-ET",
+          "name": "Encrypted Tunnels",
+          "url": "https://d3fend.mitre.org/technique/d3f:EncryptedTunnels"
+        },
+        {
+          "id": "D3-ISVA",
+          "name": "Inbound Session Volume Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundSessionVolumeAnalysis"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Isolates IoT devices onto their own network segment to prevent compromised devices from accessing critical systems and to simplify traffic monitoring.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Apply strict egress filtering rules to the IoT network segment to block outbound connections to C2 servers, Pastebin, and Telegram.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Disable the Telnet service on all IoT devices to completely remove the primary attack vector used by TuxBot.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Regularly patch device firmware to mitigate vulnerabilities that could be targeted by future, more functional versions of TuxBot.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "185.10.68.127",
+      "description": "Shared infrastructure linked to Keksec/Kaitori ecosystems"
+    },
+    {
+      "type": "domain",
+      "value": "newtuxdev.sevielw.digikalas[.]online",
+      "description": "Developer domain (inactive)"
+    },
+    {
+      "type": "domain",
+      "value": "digikalas[.]online",
+      "description": "Parent domain resolving to Arvan Cloud in Iran"
+    },
+    {
+      "type": "string_pattern",
+      "value": "Infected By Akiru",
+      "description": "Console banner on infected device"
+    },
+    {
+      "type": "destination_port",
+      "value": "31337",
+      "description": "C2 port in development build"
+    },
+    {
+      "type": "destination_port",
+      "value": "1999",
+      "description": "Default bot protocol C2 port"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "High volume of outbound Telnet connection attempts on port 23",
+      "description": "Indicates the bot's Telnet brute-force scanning activity against potential targets.",
+      "context": "Firewall logs, network flow data (NetFlow/sFlow), IDS/IPS alerts",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound TCP connections to port 1999 or 31337",
+      "description": "Potential C2 communication from an infected IoT device to the TuxBot C2 server.",
+      "context": "Egress traffic logs from IoT network segment",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "api.telegram.org",
+      "description": "Connections from IoT devices to the Telegram API may indicate use of the C2 fallback mechanism.",
+      "context": "Web proxy logs, DNS query logs, firewall logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "url_pattern",
+      "value": "pastebin.com",
+      "description": "Connections from IoT devices to Pastebin may indicate use of the C2 fallback mechanism.",
+      "context": "Web proxy logs, DNS query logs, firewall logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "/tmp/",
+      "description": "The /tmp directory is a common location for malware to be downloaded and executed on Linux-based IoT devices.",
+      "context": "File integrity monitoring, endpoint detection on device",
+      "confidence": "medium"
+    },
+    {
+      "type": "domain",
+      "value": "digikalas.online",
+      "description": "DNS queries for the developer's parent domain could indicate an attempted C2 connection.",
+      "context": "DNS server logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "IoT",
+    "Botnet",
+    "DDoS",
+    "LLM",
+    "Malware Analysis",
+    "Telnet",
+    "Brute Force",
+    "C2"
+  ],
+  "extract_datetime": "2026-07-15T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "Iran"
+    ],
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "IoT device owners"
+    ]
+  },
+  "pub_date": "2026-07-15",
+  "reading_time_minutes": 23,
+  "createdAt": "2026-07-15T15:00:00.000Z",
+  "updatedAt": "2026-07-15T15:00:00.000Z"
+}

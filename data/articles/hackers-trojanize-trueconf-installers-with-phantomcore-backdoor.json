@@ -1,0 +1,211 @@
+{
+  "id": "ccccdc54-b505-49e9-bec9-fe4a0c8c169b",
+  "slug": "hackers-trojanize-trueconf-installers-with-phantomcore-backdoor",
+  "headline": "Hackers Trojanize TrueConf Installers with PhantomCore Backdoor",
+  "title": "TrueConf Installers Trojanized with Backdoors",
+  "summary": "The hacktivist group 'Head Mare' is actively targeting unpatched TrueConf video conferencing servers to swap legitimate client installers with trojanized versions. The attack chain exploits two vulnerabilities (KLCERT-26-057, KLCERT-26-058) to gain SYSTEM-level privileges on the server. Attackers then deploy a web shell and replace the official client software with a version containing the PhantomCore backdoor. When users download the client from the compromised server, their systems are infected. A second backdoor, PhantomGraph, is also used for C2 via Microsoft OneDrive.",
+  "full_report": "## Executive Summary\n\nThe hacktivist group **Head Mare** is conducting an active supply chain attack campaign targeting unpatched **[TrueConf](https://trueconf.com/)** video conferencing servers, which are widely used by enterprise and government entities in Russia. According to research from **[Kaspersky](https://www.kaspersky.com)**, the attackers exploit a chain of two vulnerabilities to gain initial access, escape the application's sandbox, and elevate privileges to `NT AUTHORITY\\SYSTEM`. Once they have control, they deploy a web shell and replace the legitimate **TrueConf** Client installer on the server with a malicious version. This trojanized installer contains the **PhantomCore** backdoor. When unsuspecting users connect to the compromised server and download the client, they inadvertently infect their own machines. The attackers also deploy a second backdoor, **PhantomGraph**, which uses a **[Microsoft](https://www.microsoft.com/security)** OneDrive account for command and control (C2). **TrueConf** released patches in June, and organizations are urged to update immediately.\n\n---\n\n## Threat Overview\n\nThis is a sophisticated supply chain attack that turns a trusted internal server into a malware distribution point. The attack targets Russian organizations in critical sectors like electronics, transportation, and energy.\n\n### Attack Chain\n1.  **Initial Access:** The attackers connect to the **TrueConf** server on TCP port `4307`, which is open by default without authentication.\n2.  **Vulnerability Exploitation:** They exploit two vulnerabilities, tracked by **Kaspersky** as `KLCERT-26-057` and `KLCERT-26-058`.\n    - The first (`KLCERT-26-057`) allows for malicious script execution within the **TrueConf** isolated environment.\n    - The second (`KLCERT-26-058`) allows the attackers to escape the sandbox and execute commands on the underlying Windows OS.\n3.  **Privilege Escalation & Persistence:** The attackers escalate privileges to `NT AUTHORITY\\SYSTEM` and deploy a web shell for persistent remote access.\n4.  **Weaponization of Server:** Using the web shell, they access the **TrueConf** database and replace the legitimate `TrueConfClient.exe` installer with a trojanized version.\n5.  **Malware Delivery:** When legitimate users or external partners connect to the compromised server, they are prompted to download the infected client, which installs the **PhantomCore** backdoor on their system.\n6.  **Secondary Payload:** The attackers also deploy **PhantomGraph**, another backdoor that uses **Microsoft OneDrive** for C2, dumps credentials from `LSASS`, and can create reverse SSH tunnels.\n\n---\n\n## Technical Analysis\n\nThe attack leverages unpatched on-premise infrastructure to launch a supply chain attack against the users of that infrastructure. The use of two distinct backdoors suggests a multi-faceted approach to maintaining access and exfiltrating data.\n\n- **PhantomCore:** The primary backdoor delivered via the trojanized installer. Its specific capabilities were not detailed but it provides the initial foothold on client machines.\n- **PhantomGraph:** A more advanced backdoor consisting of two DLLs. Its use of a legitimate public service (**Microsoft OneDrive**) for C2 is a common technique to evade network-based detection. Its ability to dump `LSASS` credentials and create SSH tunnels indicates a focus on lateral movement and long-term access.\n\n### MITRE ATT&CK Mapping\n- **[`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/):** The initial attack vector is exploiting vulnerabilities in the internet-facing **TrueConf** server.\n- **[`T1610 - Deploy Container`](https://attack.mitre.org/techniques/T1610/):** The attackers abuse the isolated environment (conceptually similar to a container) before escaping it.\n- **[`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/):** Used to gain `SYSTEM` level privileges after the sandbox escape.\n- **[`T1505.003 - Web Shell`](https://attack.mitre.org/techniques/T1505/003/):** A web shell is installed for persistent access to the compromised server.\n- **[`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/):** The core of the attack is compromising the software (the client installer) distributed by the server.\n- **[`T1003.001 - LSASS Memory`](https://attack.mitre.org/techniques/T1003/001/):** The **PhantomGraph** backdoor is capable of dumping credentials from the LSASS process.\n- **[`T1102.002 - Bidirectional Communication`](https://attack.mitre.org/techniques/T1102/002/):** Using **Microsoft OneDrive** for C2 is a form of legitimate web service abuse.\n- **[`T1090.002 - External Proxy`](https://attack.mitre.org/techniques/T1090/002/):** The reverse SSH tunnel functionality creates a proxy into the compromised network.\n\n---\n\n## Impact Assessment\n\nThe impact of this campaign is severe for affected organizations:\n\n- **Compromise of Internal Network:** The server compromise gives attackers a strong foothold inside the corporate network.\n- **Widespread Client Infection:** Every user who downloads the client from the compromised server becomes infected, spreading the compromise across workstations.\n- **Third-Party Risk:** Counterparties and partners who join meetings hosted on the compromised server are also prompted to download the infected client, extending the breach to other organizations.\n- **Data Theft:** With `LSASS` dumping and reverse SSH tunnels, attackers can steal credentials, move laterally, and exfiltrate large amounts of sensitive data.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific file hashes or IP addresses were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams can hunt for signs of this activity:\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| port | 4307 | Monitor for unexpected or anomalous connection attempts to TCP port 4307 on **TrueConf** servers from external IPs. | Firewall logs, Netflow | high |\n| file_name | `TrueConfClient.exe` | Monitor the integrity of the `TrueConfClient.exe` file on the server. Any change to its hash is a major red flag. | File Integrity Monitoring (FIM) | high |\n| network_traffic_pattern | Network traffic to `onedrive.live.com` from servers | Server processes, especially from a video conferencing server, should not be communicating with consumer cloud storage like OneDrive. | Egress firewall logs, DNS query logs | high |\n| process_name | `w3wp.exe` | Monitor the `w3wp.exe` process (or equivalent web server process for **TrueConf**) for suspicious child processes, which could indicate web shell execution. | EDR, Windows Event ID 4688 | medium |\n| command_line_pattern | `ssh -R` | The presence of reverse SSH tunnel commands (`ssh -R`) indicates an attempt to create a persistent backdoor into the network. | EDR, Command line logging | high |\n\n---\n\n## Detection & Response\n\n### Detection\n1.  **Patch Level Verification:** The most straightforward detection method is to verify that all **TrueConf** servers are running a patched version (5.3.9, 5.4.9, 5.5.5 or later).\n2.  **File Integrity Monitoring (FIM):** Deploy FIM on the **TrueConf** server to monitor for any changes to the client installer files. This is a key D3FEND technique: **[`System File Analysis (D3-SFA)`](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis)**.\n3.  **Egress Traffic Analysis:** Analyze network logs for any connections from the **TrueConf** server to suspicious destinations, especially consumer cloud services like **OneDrive**.\n4.  **Endpoint Analysis:** On client machines, EDR tools may detect the malicious behavior of the **PhantomCore** or **PhantomGraph** backdoors, such as `LSASS` memory dumping.\n\n### Response\n1.  **Isolate and Patch:** Immediately isolate any unpatched **TrueConf** server from the network and apply the security updates.\n2.  **Rebuild from Trusted Source:** A compromised server should be completely rebuilt from a trusted source. Do not simply patch it.\n3.  **Incident Response on Endpoints:** Any endpoint that downloaded the client from a compromised server must be treated as fully compromised, isolated, and subjected to a full incident response process.\n4.  **Credential Reset:** Assume all credentials on compromised servers and endpoints are stolen. A full enterprise-wide password reset may be necessary.\n\n---\n\n## Mitigation\n\n1.  **Patch Immediately:** The primary mitigation is to update all **TrueConf** servers to a patched version (5.3.9, 5.4.9, 5.5.5, or later). This is a critical application of **[`Software Update (D3-SU)`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.\n2.  **Network Segmentation:** Do not expose the **TrueConf** server directly to the internet. Place it in a DMZ and use a reverse proxy or application delivery controller to filter traffic to it.\n3.  **Egress Filtering:** Implement strict egress filtering on the server to prevent it from making outbound connections to unauthorized locations like **OneDrive**. This aligns with **[`Outbound Traffic Filtering (D3-OTF)`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)**.\n4.  **Credential Guard:** On client endpoints, enable Windows Credential Guard to protect the `LSASS` process from credential dumping attempts.",
+  "twitter_post": "Hacktivist group 'Head Mare' is trojanizing TrueConf video conference installers with PhantomCore & PhantomGraph backdoors. Attackers exploit unpatched servers to swap legitimate client files, compromising users who download them. #SupplyChain #CyberAttack #Backdoor",
+  "meta_description": "The 'Head Mare' hacktivist group is exploiting unpatched TrueConf servers to replace client installers with backdoored versions containing PhantomCore malware.",
+  "category": [
+    "Cyberattack",
+    "Supply Chain Attack",
+    "Malware"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Head Mare",
+      "type": "threat_actor"
+    },
+    {
+      "name": "PhantomCore",
+      "type": "malware"
+    },
+    {
+      "name": "PhantomGraph",
+      "type": "malware"
+    },
+    {
+      "name": "TrueConf",
+      "type": "vendor",
+      "url": "https://trueconf.com/"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "security_organization",
+      "url": "https://www.kaspersky.com"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Microsoft OneDrive",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/",
+      "title": "Hackers breach TrueConf to trojanize client installers with backdoors",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://securelist.ru/tr/head-mare-targets-trueconf-server-with-phantomcore/116557/",
+      "title": "Head Mare доставляет бэкдоры PhantomCore и PhantomGraph через необновленный сервер TrueConf",
+      "friendly_name": "Securelist",
+      "website": "securelist.ru"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-18",
+      "summary": "TrueConf releases patches for the exploited vulnerabilities in versions 5.3.9, 5.4.9, and 5.5.5."
+    },
+    {
+      "datetime": "2026-07-01",
+      "summary": "Kaspersky first discovers the attacks targeting Russian organizations."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell"
+    },
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1003.001",
+      "name": "LSASS Memory"
+    },
+    {
+      "id": "T1102.002",
+      "name": "Bidirectional Communication"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "The most critical mitigation is to immediately apply the patches released by TrueConf to all vulnerable servers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering to prevent the server from connecting to unauthorized C2 channels like Microsoft OneDrive.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Use File Integrity Monitoring to audit the client installer files on the server and alert on any unauthorized changes.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1043",
+      "name": "Credential Access Protection",
+      "description": "Enable features like Windows Credential Guard on endpoints to protect the LSASS process and prevent credential dumping.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The primary and most urgent countermeasure against the Head Mare campaign is Software Update (D3-SU). Organizations using TrueConf must immediately identify all instances of the server software in their environment and verify their version numbers. Any server running a version prior to 5.3.9, 5.4.9, or 5.5.5 is vulnerable and must be patched immediately. Given that the vulnerabilities are the entry point for the entire attack chain, patching effectively closes the door. A robust patch management program that can quickly identify and remediate vulnerabilities in public-facing applications is non-negotiable. This incident underscores the danger of 'patch debt' on internet-exposed infrastructure.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "To detect the core of this supply chain attack, organizations should implement System File Analysis (D3-SFA) via File Integrity Monitoring (FIM) on their TrueConf servers. A FIM agent should be configured to monitor the specific directory containing the `TrueConfClient.exe` installer. The agent should calculate and store a known-good hash of this file after the server is confirmed to be clean and patched. The FIM policy must be configured to generate a critical, high-priority alert if the hash of `TrueConfClient.exe` ever changes. This provides a direct and high-fidelity detection of the attacker's primary objective: replacing the legitimate client with a trojanized one. This turns the attacker's own actions into a detection tripwire.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To disrupt the PhantomGraph backdoor's C2 communication, strict Outbound Traffic Filtering (D3-OTF) should be applied to the TrueConf server. A server dedicated to video conferencing has no legitimate reason to communicate with consumer cloud storage services. A firewall or proxy rule should be created to block all outbound connections from the TrueConf server's IP address to known domains for services like Microsoft OneDrive (`onedrive.live.com`), Dropbox, Google Drive, etc. This control would prevent the PhantomGraph backdoor from establishing its C2 channel, effectively neutralizing it. Furthermore, logging blocked attempts would provide a clear signal to the security team that the server is compromised and requires investigation. This containment strategy is effective against a wide range of malware that abuses legitimate web services for C2.",
+      "mitre_mitigation_id": "M1037"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "port",
+      "value": "4307",
+      "description": "The default port for TrueConf server which attackers use for initial access. Monitor for anomalous connections from external IPs.",
+      "context": "Firewall logs, Netflow, IDS/IPS",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "TrueConfClient.exe",
+      "description": "The legitimate client installer file that is replaced by attackers. Monitoring its file hash for changes is a key detection method.",
+      "context": "File Integrity Monitoring (FIM) on the TrueConf server",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound traffic to onedrive.live.com from a server",
+      "description": "The PhantomGraph backdoor uses Microsoft OneDrive for C2. Any server connecting to consumer cloud storage is highly suspicious.",
+      "context": "Egress firewall logs, DNS query logs, Proxy logs",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "ssh -R",
+      "description": "The PhantomGraph backdoor can create reverse SSH tunnels. Detection of this command line indicates a likely compromise.",
+      "context": "EDR, Command line logging, Process creation logs",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "lsass.exe",
+      "description": "Monitor for unauthorized processes attempting to access or read memory from lsass.exe, which indicates credential dumping.",
+      "context": "EDR, Windows Defender Attack Surface Reduction (ASR) rules",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "TrueConf",
+    "Head Mare",
+    "PhantomCore",
+    "PhantomGraph",
+    "Supply Chain Attack",
+    "Backdoor",
+    "Kaspersky",
+    "Russia"
+  ],
+  "extract_datetime": "2026-08-08T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Russia"
+    ],
+    "industries_affected": [
+      "Technology",
+      "Transportation",
+      "Energy",
+      "Government"
+    ]
+  },
+  "pub_date": "2026-08-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-08-08T15:00:00.000Z",
+  "updatedAt": "2026-08-08T15:00:00.000Z"
+}

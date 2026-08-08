@@ -1,0 +1,179 @@
+{
+  "id": "9ec829d0-429e-46b8-80bc-6e1268fd2ad6",
+  "slug": "north-korean-hackers-blamed-for-mastra-npm-supply-chain-attack",
+  "headline": "North Korea's Sapphire Sleet Blamed for Mastra AI Framework Supply Chain Attack on NPM",
+  "title": "Microsoft Attributes Mastra NPM Supply Chain Attack to North Korean Actor Sapphire Sleet",
+  "summary": "Microsoft has attributed a major software supply chain attack targeting the Mastra open-source AI framework to Sapphire Sleet, a North Korean state-sponsored threat actor also known as APT38. On June 17, the attackers compromised an NPM maintainer's account and published 141 malicious packages containing a typosquatted dependency named 'easy-day-js'. The campaign aimed to infect developers using the popular framework. Security experts recommend any developers who installed affected packages to assume their systems are compromised and take immediate remediation steps.",
+  "full_report": "## Executive Summary\n\n**[Microsoft](https://www.microsoft.com/security)** has attributed a sophisticated software supply chain attack against the **Mastra** open-source project to **[Sapphire Sleet](https://attack.mitre.org/groups/G1022/)**, a financially motivated North Korean state-sponsored threat actor. Also tracked as BlueNoroff and **[APT38](https://attack.mitre.org/groups/G0082/)**, the group executed the attack on June 17, 2026, by compromising a developer's **[NPM](https://www.npmjs.com/)** account and publishing 141 malicious versions of packages associated with the Mastra AI framework. The malicious packages included a dependency designed to compromise developer machines, highlighting the increasing threat to the open-source ecosystem. Organizations using Mastra are urged to audit their dependencies, scan for compromise, and rotate all developer credentials.\n\n---\n\n## Threat Overview\n\nThe attack targeted the Mastra project, a popular TypeScript framework for building AI agents that receives millions of weekly downloads. The threat actor, Sapphire Sleet, gained access to the 'ehindero' NPM maintainer account, which provided them with the necessary permissions to publish new versions of the official Mastra packages. \n\nThe attackers then published malicious updates for 141 packages. These updates were poisoned with a malicious dependency named `easy-day-js`, a deliberate typosquat of the widely used and legitimate `dayjs` library. This technique is designed to trick developers and automated systems into pulling in the malicious code. Microsoft's attribution to Sapphire Sleet was made with \"high confidence\" based on infrastructure and TTPs consistent with the group's previous financially motivated campaigns, such as the April 2026 Axios supply chain attack.\n\n---\n\n## Technical Analysis\n\nThe attack chain demonstrates a clear understanding of software development pipelines and open-source repository weaknesses.\n\n1.  **Account Compromise**: The initial vector was the compromise of the 'ehindero' NPM maintainer account. This likely occurred through phishing, credential stuffing, or malware. This action corresponds to **[`T1078` - Valid Accounts](https://attack.mitre.org/techniques/T1078/)**.\n2.  **Staging**: A day before the main attack, the threat actors published a 'clean' version of the malicious `easy-day-js` package from a separate, likely controlled account named 'sergey2016'. This may have been done to pre-populate the package in registries and bypass certain checks.\n3.  **Malicious Injection**: On June 17, the attackers used the compromised 'ehindero' account to publish updates to 141 Mastra packages, adding `easy-day-js` as a dependency. This is a classic example of **[`T1195.002` - Compromise Software Supply Chain](https://attack.mitre.org/techniques/T1195/002/)**.\n4.  **Payload Delivery**: When developers updated their Mastra packages or new developers installed them, NPM would automatically download and install the malicious `easy-day-js` dependency, leading to code execution on the developer's machine. This falls under **[`T1037` - Hijack Execution Flow](https://attack.mitre.org/techniques/T1037/)**.\n\nThe primary goal was to compromise developer systems, which are high-value targets as they often contain access tokens, API keys, SSH keys, and other secrets that provide access to sensitive cloud and corporate infrastructure.\n\n---\n\n## Impact Assessment\n\nThe compromise of a popular AI framework like Mastra has cascading effects throughout the software ecosystem. \n\n- **Direct Impact on Developers**: Developers who installed the malicious packages likely had their systems compromised, leading to the theft of sensitive credentials and intellectual property.\n- **Downstream Risk**: Malicious code could be unintentionally bundled into applications built by the compromised developers, extending the supply chain attack to the end-users of those applications.\n- **Erosion of Trust**: Such attacks erode trust in the open-source ecosystem, making developers more hesitant to adopt new tools or update existing ones, which can paradoxically lead to other security risks from unpatched software.\n- **Financial Motivation**: Given Sapphire Sleet's history, the ultimate goal was likely financial gain, either through direct theft of cryptocurrency from developers or by using the access to compromise corporate financial systems.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| `file_name` | `easy-day-js` | The name of the malicious typosquatted NPM package used as a dependency. |\n| `other` | `ehindero` | The compromised NPM maintainer account. |\n| `other` | `sergey2016` | The NPM account used to stage the malicious package. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams should hunt for evidence of this compromise within their development environments:\n\n| Type | Value | Description |\n|---|---|---|\n| `file_name` | `package-lock.json` | Search for the string `easy-day-js` within this file across all projects. |\n| `file_path` | `node_modules/` | Check for the existence of an `easy-day-js` directory. |\n| `command_line_pattern` | `npm ls easy-day-js` | Run this command within project directories to see if the malicious package is part of the dependency tree. |\n| `network_traffic_pattern` | Outbound connections from build agents | Monitor for suspicious outbound network connections from CI/CD runners or developer machines to domains not associated with legitimate package registries or corporate resources. |\n\n---\n\n## Detection & Response\n\nOrganizations should focus on securing their software development lifecycle (SDLC).\n\n1.  **Dependency Scanning**: Implement automated dependency scanning tools (like `npm audit`) in CI/CD pipelines to detect known malicious packages. Tools from **Socket**, **Sonatype**, and others offer advanced detection capabilities.\n2.  **Behavioral Analysis**: Monitor developer endpoints and build servers for anomalous behavior, such as unexpected network connections, file modifications, or process execution.\n3.  **Incident Response**: If a malicious package is detected, immediately isolate the affected systems, rotate all credentials (API keys, tokens, passwords) found on those systems, and perform a full security scan.\n\n**D3FEND Techniques:**\n- **[`File Analysis (D3-FA)`](https://d3fend.mitre.org/technique/d3f:FileAnalysis)**: Analyzing the contents of `package.json` and `package-lock.json` files for suspicious dependencies.\n- **[`Software Update (D3-SU)`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**: While the attack vector was an update, a proper defensive process involves verifying updates before application. Using tools that vet package sources and signatures is a key part of a secure update process.\n\n---\n\n## Mitigation\n\nTo prevent and mitigate similar supply chain attacks, organizations should:\n\n1.  **Enforce MFA on Code Repositories**: Mandate phishing-resistant MFA for all developer accounts on platforms like NPM, GitHub, and GitLab.\n2.  **Use Scoped Tokens**: Use fine-grained access tokens with limited permissions and short expiration times for CI/CD pipelines.\n3.  **Vet Dependencies**: Before adopting a new open-source dependency, vet its maintainers, popularity, and security posture. Use tools that analyze package metadata and behavior.\n4.  **Implement `npm-vet` or similar tools**: Use security tools that can detect typosquatting, dependency confusion, and other package-based threats.\n5.  **Educate Developers**: Train developers on the risks of supply chain attacks and best practices for securing their accounts and development environments.\n\n**D3FEND Techniques:**\n- **[`Multi-factor Authentication (D3-MFA)`](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication)**: To protect developer and maintainer accounts from takeover.\n- **[`Application Configuration Hardening (D3-ACH)`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**: Configuring package managers to use trusted, internal registries where packages are vetted before being made available to developers.",
+  "twitter_post": "🚨 North Korea's Sapphire Sleet behind Mastra AI supply chain attack! 141 malicious NPM packages published after maintainer account compromise. Developers, check for 'easy-day-js' dependency now! #SupplyChain #NPM #CyberAttack",
+  "meta_description": "Microsoft attributes a major supply chain attack on the Mastra AI framework to the North Korean threat actor Sapphire Sleet (APT38), involving malicious NPM packages.",
+  "category": [
+    "Supply Chain Attack",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "APT38",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Aikido",
+      "type": "company"
+    },
+    {
+      "name": "BlueNoroff",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Mastra",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor"
+    },
+    {
+      "name": "NPM",
+      "type": "technology"
+    },
+    {
+      "name": "Ox",
+      "type": "company"
+    },
+    {
+      "name": "Sapphire Sleet",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Socket",
+      "type": "company"
+    },
+    {
+      "name": "Sonatype",
+      "type": "company"
+    },
+    {
+      "name": "Stardust Chollima",
+      "type": "threat_actor"
+    },
+    {
+      "name": "StepSecurity",
+      "type": "company"
+    },
+    {
+      "name": "easy-day-js",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/north-korean-hackers-blamed-for-mastra-npm-supply-chain-attack/",
+      "title": "North Korean Hackers Blamed for Mastra NPM Supply Chain Attack - SecurityWeek",
+      "date": "2026-06-22",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/mastra-ai-supply-chain-attack/",
+      "title": "Microsoft Attributes Mastra AI Supply Chain Attack to North Korea - Infosecurity Magazine",
+      "date": "2026-06-22",
+      "website": "infosecurity-magazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-16T00:00:00Z",
+      "summary": "A clean version of the malicious 'easy-day-js' package was published from the 'sergey2016' account."
+    },
+    {
+      "datetime": "2026-06-17T00:00:00Z",
+      "summary": "Sapphire Sleet uses the compromised 'ehindero' NPM account to publish 141 malicious Mastra packages."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1559",
+      "name": "Inter-Process Communication",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1574.007",
+      "name": "Path Interception by Search Order Hijacking",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "tags": [
+    "APT38",
+    "Mastra",
+    "Microsoft",
+    "NPM",
+    "North Korea",
+    "Sapphire Sleet",
+    "Supply Chain Attack",
+    "easy-day-js"
+  ],
+  "extract_datetime": "2026-06-22",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "open-source software users",
+      "AI developers"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "APT38",
+    "Mastra",
+    "Microsoft",
+    "NPM",
+    "North Korea",
+    "Sapphire Sleet",
+    "Supply Chain Attack",
+    "easy-day-js"
+  ],
+  "pub_date": "2026-06-22",
+  "reading_time_minutes": null,
+  "createdAt": "2026-06-22T15:00:00.000Z",
+  "updatedAt": "2026-06-23T10:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-06-23T10:00:00Z",
+      "summary": "New details reveal the malicious 'easy-day-js' package specifically targeted over 160 cryptocurrency browser extensions to steal funds, executed in a swift 45-minute operation.",
+      "content": "Further analysis of the Mastra AI framework supply chain attack by Sapphire Sleet indicates the malicious 'easy-day-js' package contained a second-stage payload designed to steal sensitive data from over 160 cryptocurrency-related browser extensions across Windows, macOS, and Linux. The attack was executed with precision in a 45-minute window on June 17, following a pre-positioning phase on June 16. This clarifies the financial motivation, highlighting the direct targeting of crypto assets from affected developer systems.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.securityweek.com/north-korean-hackers-blamed-for-mastra-npm-supply-chain-attack/",
+          "title": "North Korean Hackers Blamed for Mastra NPM Supply Chain Attack",
+          "website": "",
+          "date": "2026-06-23T10:00:00Z"
+        },
+        {
+          "url": "https://www.stepsecurity.io/blog/mastra-npm-packages-compromised-using-easy-day-js",
+          "title": "Mastra npm Supply Chain Attack: 140+ Packages Backdoored via easy-day-js Typosquat",
+          "website": "",
+          "date": "2026-06-23T10:00:00Z"
+        }
+      ]
+    }
+  ]
+}

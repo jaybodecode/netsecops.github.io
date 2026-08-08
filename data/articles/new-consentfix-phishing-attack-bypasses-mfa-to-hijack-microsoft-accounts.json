@@ -1,0 +1,274 @@
+{
+  "id": "6405e8b7-bc8f-4075-a4d2-e2b8653ab17b",
+  "slug": "new-consentfix-phishing-attack-bypasses-mfa-to-hijack-microsoft-accounts",
+  "headline": "New 'ConsentFix' Phishing Attack Hijacks Microsoft Accounts, Bypassing MFA via Azure CLI Abuse",
+  "title": "Researchers Uncover 'ConsentFix' Phishing Technique that Abuses Trusted Azure CLI for MFA-Bypassing Account Takeover",
+  "summary": "A novel and sophisticated phishing attack dubbed 'ConsentFix' allows attackers to hijack Microsoft accounts without stealing passwords or bypassing multi-factor authentication (MFA). Discovered by Push Security, the browser-native attack tricks users into completing a fake verification process that involves copying a URL containing a sensitive OAuth authorization code from their browser's address bar and pasting it into the attacker's phishing page. The attacker then uses this code to authenticate as the user via the legitimate and trusted Microsoft Azure Command-Line Interface (CLI). Because the Azure CLI is a first-party app, it bypasses many consent restrictions, granting the attacker full account access. The technique is active and circumvents even phishing-resistant authentication like passkeys.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Push Security](https://www.pushsecurity.com/)** have identified a novel phishing technique named **ConsentFix** that enables attackers to perform a full account takeover of **[Microsoft](https://www.microsoft.com/security)** accounts without stealing credentials or bypassing Multi-Factor Authentication (MFA). The attack is a social engineering scheme that manipulates a user into copying a sensitive OAuth authorization code from their browser's address bar and pasting it into an attacker-controlled web page. This code is then used by the attacker to authenticate via the legitimate **[Microsoft Azure CLI](https://learn.microsoft.com/en-us/cli/azure/)**, a trusted first-party application. This abuse of a trusted application allows the attacker to gain an access token with the user's full permissions, effectively hijacking the session. The technique is particularly dangerous because it occurs entirely within the browser, evades many endpoint security controls, and works even against users with phishing-resistant MFA like passkeys.\n\n---\n\n## Threat Overview\n**ConsentFix** is an evolution of OAuth consent phishing that weaponizes the user's trust in legitimate login flows. The attack is browser-native, meaning it doesn't rely on traditional malware or executable files.\n\nThe attack flow is as follows:\n1.  **Lure**: A user is directed to a malicious website, often via poisoned search engine results or a standard phishing email.\n2.  **Social Engineering**: The site presents a fake challenge, such as a Cloudflare Turnstile CAPTCHA, asking the user to verify their identity with their Microsoft work account.\n3.  **Legitimate Login**: The user is redirected to the official Microsoft login page (`login.microsoftonline.com`) to authenticate. They complete their normal login process, including MFA.\n4.  **Token Capture**: After successful login, Microsoft redirects the browser to a `localhost` URL which contains the OAuth authorization code as a parameter. This is standard behavior for the Azure CLI login flow.\n5.  **The 'Fix'**: The attacker's phishing page then displays an instruction, telling the user to copy the entire URL from their browser's address bar (the one containing the `localhost` redirect and the code) and paste it into a form on the page to complete the 'verification'.\n6.  **Account Takeover**: When the user pastes the URL, they are unknowingly handing the authorization code to the attacker. The attacker uses this code on their own machine with the Azure CLI to request an access token and refresh token, giving them persistent access to the victim's account and all associated Microsoft 365 services.\n\n---\n\n## Technical Analysis\nThe core of the **ConsentFix** attack is the abuse of the OAuth 2.0 authorization code grant flow combined with social engineering. The key technical enabler is the implicit trust granted to the **Azure CLI** application within **[Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)**.\n\n*   **OAuth Abuse**: The attack targets the authorization code (`code`) which is a short-lived credential used to obtain a long-lived access token. This is part of [`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/).\n*   **Trusted Application**: Because the Azure CLI is a first-party Microsoft application, it is pre-consented in most tenants and is often exempt from conditional access policies or stricter consent settings that would apply to third-party apps. This allows the attacker to seamlessly gain access without triggering admin approval workflows.\n*   **Session Hijacking**: Once the attacker has the access token, they have effectively hijacked the user's session, corresponding to [`T1550.001 - Application Access Token`](https://attack.mitre.org/techniques/T1550/004/). They can then perform any action the user is permitted to do, such as reading emails, accessing SharePoint/OneDrive files, or modifying Azure resources.\n*   **Defense Evasion**: The attack bypasses many traditional defenses. No credentials are phished, so password managers and credential stuffing protections are ineffective. MFA is completed legitimately by the user, so it is not 'bypassed' in a technical sense. The activity happens in the browser, making it hard for some EDR tools to see the malicious context.\n\n---\n\n## Impact Assessment\nThe impact of a successful **ConsentFix** attack is equivalent to a full credential compromise:\n\n*   **Complete Account Takeover**: The attacker gains full access to the victim's Microsoft 365 account, including email (Outlook), file storage (SharePoint, OneDrive), and collaboration tools (Teams).\n*   **Data Breach**: Sensitive corporate data can be exfiltrated from the compromised account.\n*   **Business Email Compromise (BEC)**: The attacker can use the compromised mailbox to launch convincing BEC attacks against colleagues, partners, or customers.\n*   **Cloud Infrastructure Compromise**: If the user has administrative rights in Azure, the attacker can use their session to modify, delete, or create cloud resources, potentially leading to a much larger breach.\n*   **Persistence**: The attacker obtains a refresh token, allowing them to maintain access to the account even if the user changes their password.\n\n---\n\n## Detection & Response\nDetecting **ConsentFix** requires focusing on identity and browser-level events:\n\n*   **Monitor for Anomalous Token Issuance**: In Microsoft Entra ID sign-in logs, look for token issuance events for the Azure CLI application where the IP address of the token request does not match the IP address of the initial user authentication. This is a high-fidelity indicator of this attack.\n*   **Browser Security Tools**: Deploy browser security solutions that can detect and block malicious copy-and-paste events or warn users when they are on a known phishing page that uses this technique.\n*   **User-Reported Phishing**: Educate users to be suspicious of any website that asks them to copy and paste a URL from their address bar, especially one containing `localhost`.\n*   **Incident Response**: If an attack is detected, immediately revoke all refresh tokens for the affected user account in the Entra ID portal to terminate the attacker's session.\n\n---\n\n## Mitigation\n1.  **User Education**: The primary defense is user awareness. Train users to **never** copy and paste URLs from their address bar into a website, especially as part of a login or verification process. This is a **[D3FEND User Behavior Analysis (D3-UBA)](https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis)** related control.\n2.  **Restrict Application Consent**: While Azure CLI is trusted, review and restrict user consent for third-party applications. Configure Entra ID to require admin consent for any new application to limit the broader threat of consent phishing.\n3.  **Conditional Access Policies**: Implement strict Conditional Access policies in Entra ID that enforce location-based or device compliance checks for token issuance. A policy that flags or blocks token requests from untrusted locations or devices could disrupt the attacker's ability to use the stolen code.\n4.  **Browser Security Solutions**: Deploy advanced browser security platforms, like the one offered by **Push Security**, that are specifically designed to detect and block ClickFix and ConsentFix attack patterns at the browser level.",
+  "twitter_post": "⚠️ New 'ConsentFix' phishing attack hijacks Microsoft accounts by tricking users into pasting a URL with an OAuth token. It abuses the trusted Azure CLI to bypass MFA and gain full access. Be vigilant! #Phishing #CyberSecurity #MFA #OAuth",
+  "meta_description": "A new 'ConsentFix' phishing attack bypasses MFA to hijack Microsoft accounts by tricking users into pasting an OAuth authorization code, which is then used with the trusted Azure CLI.",
+  "category": [
+    "Phishing",
+    "Cloud Security",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "ConsentFix",
+      "type": "malware"
+    },
+    {
+      "name": "Push Security",
+      "type": "vendor",
+      "url": "https://www.pushsecurity.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Azure CLI",
+      "type": "product",
+      "url": "https://learn.microsoft.com/en-us/cli/azure/"
+    },
+    {
+      "name": "Microsoft Entra ID",
+      "type": "product"
+    },
+    {
+      "name": "OAuth",
+      "type": "technology"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.pushsecurity.com/blog/consentfix-browser-native-clickfix-hijacks-oauth-grants",
+      "title": "ConsentFix: Browser-native ClickFix hijacks OAuth grants",
+      "date": "2025-12-11",
+      "friendly_name": "Push Security",
+      "website": "pushsecurity.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/new-consentfix-attack-hijacks-microsoft-accounts-via-azure-cli/",
+      "title": "New ConsentFix attack hijacks Microsoft accounts via Azure CLI",
+      "date": "2025-12-11",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://www.esecurityplanet.com/threats/azure-cli-abuse-consentfix-account-takeovers/",
+      "title": "Azure CLI Trust Abused in ConsentFix Account Takeovers",
+      "date": "2025-12-16",
+      "friendly_name": "eSecurity Planet",
+      "website": "esecurityplanet.com"
+    },
+    {
+      "url": "https://www.csoonline.com/article/2099303/meet-consentfix-a-new-twist-on-the-clickfix-phishing-attack.html",
+      "title": "Meet ConsentFix, a new twist on the ClickFix phishing attack",
+      "date": "2025-12-12",
+      "friendly_name": "CSO Online",
+      "website": "csoonline.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-12-11",
+      "summary": "Push Security publishes research on the 'ConsentFix' attack technique."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1621",
+      "name": "Multi-Factor Authentication Request Generation",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1550.001",
+      "name": "Application Access Token",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "The most effective mitigation is training users to recognize the social engineering tactic and never copy-paste URLs from their address bar.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ANET",
+          "name": "Authentication Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding"
+        },
+        {
+          "id": "D3-AZET",
+          "name": "Authorization Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthorizationEventThresholding"
+        },
+        {
+          "id": "D3-JFAPA",
+          "name": "Job Function Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:JobFunctionAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-SDA",
+          "name": "Session Duration Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SessionDurationAnalysis"
+        },
+        {
+          "id": "D3-UDTA",
+          "name": "User Data Transfer Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserDataTransferAnalysis"
+        },
+        {
+          "id": "D3-UGLPA",
+          "name": "User Geolocation Logon Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis"
+        },
+        {
+          "id": "D3-WSAA",
+          "name": "Web Session Activity Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis"
+        }
+      ],
+      "description": "Utilize advanced browser security tools that can detect and block malicious copy-paste actions.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1036",
+      "name": "Account Use Policies",
+      "d3fend_techniques": [
+        {
+          "id": "D3-AL",
+          "name": "Account Locking",
+          "url": "https://d3fend.mitre.org/technique/d3f:AccountLocking"
+        },
+        {
+          "id": "D3-ANCI",
+          "name": "Authentication Cache Invalidation",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationCacheInvalidation"
+        },
+        {
+          "id": "D3-ANET",
+          "name": "Authentication Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding"
+        }
+      ],
+      "description": "Implement Conditional Access policies in Entra ID to block token issuance from non-compliant or untrusted locations.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-WSAA",
+      "technique_name": "Web Session Activity Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis",
+      "recommendation": "To combat the ConsentFix attack, organizations must implement Web Session Activity Analysis, focusing on the browser itself. This involves deploying a browser security solution capable of monitoring user actions in real-time. Specifically for this threat, the tool must be able to detect when a user copies content from the browser's address bar, analyze the content of that URL for sensitive information like an OAuth 'code' parameter, and understand the context of the destination page where the user is pasting. If the tool detects a user copying a localhost URL with an authorization code and attempting to paste it into a form on an untrusted website, it should block the action and alert both the user and the security team. This provides a high-fidelity, preventative control that stops the social engineering tactic at its source, before the token is ever compromised.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-ANET",
+      "technique_name": "Authentication Event Thresholding",
+      "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding",
+      "recommendation": "A key detective control for ConsentFix is to analyze the authentication events within Microsoft Entra ID. Security teams should configure their SIEM or identity threat detection platform to correlate two distinct events: the initial user authentication and the subsequent token request. For a legitimate Azure CLI login, the IP address for both the user's login to Microsoft and the CLI's token exchange request should be the same. In a ConsentFix attack, the user logs in from their IP, but the attacker uses the stolen code to request the token from their own, different IP. Creating a rule that alerts on 'Azure CLI token request from IP different than initial auth IP' provides a powerful, high-confidence indicator of this specific attack pattern. This allows for rapid incident response, including the immediate revocation of the attacker's session.",
+      "mitre_mitigation_id": "M1036"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "While ConsentFix abuses a trusted first-party application, organizations can still limit the blast radius by hardening permissions related to application consent. Configure Microsoft Entra ID to block users from consenting to new third-party applications and enforce an admin consent workflow. While this doesn't stop the Azure CLI abuse directly, it hardens the environment against the broader class of consent phishing attacks. Furthermore, regularly review permissions granted to all applications, including first-party ones, and ensure that Conditional Access policies (e.g., requiring compliant devices or trusted locations) are applied as broadly as possible. Reducing the overall number of applications with standing access and enforcing stricter conditions for token issuance makes the environment more resilient to token theft tactics like ConsentFix.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "localhost:*?code=0.",
+      "description": "The presence of a `code` parameter in a localhost redirect URL is a key part of the attack flow. Users should never be asked to copy this.",
+      "context": "Browser address bar, User education",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Microsoft Entra ID Sign-in logs",
+      "description": "Look for token issuance events for the 'Microsoft Azure CLI' application where the request IP is different from the original user authentication IP.",
+      "context": "SIEM, Azure Monitor",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+      "description": "The endpoint used to exchange an authorization code for an access token. Monitor for anomalous requests.",
+      "context": "API Gateway logs, Network Security Monitoring",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "ConsentFix",
+    "Phishing",
+    "OAuth",
+    "MFA Bypass",
+    "Account Takeover",
+    "Azure CLI",
+    "Microsoft Entra ID",
+    "Push Security",
+    "Social Engineering"
+  ],
+  "extract_datetime": "2025-12-17T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Retail",
+      "Government"
+    ],
+    "other_affected": [
+      "Any organization using Microsoft 365 / Entra ID"
+    ]
+  },
+  "keywords": [
+    "ConsentFix attack",
+    "ClickFix",
+    "OAuth phishing",
+    "Azure CLI exploit",
+    "MFA bypass",
+    "Microsoft account hijack",
+    "Push Security",
+    "browser-native attack"
+  ],
+  "pub_date": "2025-12-17",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-12-17T15:00:00.000Z",
+  "updatedAt": "2025-12-17T15:00:00.000Z"
+}

@@ -1,0 +1,188 @@
+{
+  "id": "d72344a6-139d-4fc6-931e-fe11e0ed4a7e",
+  "slug": "microsoft-365-aitm-phishing-campaign-targets-payroll-and-finance-data",
+  "headline": "AitM Phishing Campaign Targets Microsoft 365 Payroll Data",
+  "title": "AitM Phishing Targets M365 Payroll Data",
+  "summary": "A widespread adversary-in-the-middle (AitM) phishing campaign is targeting hundreds of organizations to compromise Microsoft 365 accounts. The attackers, linked to groups like Storm-2657 and 'Payroll Pirates', use voicemail-themed phishing emails and a complex redirection chain to lead victims to a decoy login page. This AitM setup captures credentials and MFA session tokens in real-time. Post-compromise, the attackers use residential proxies and automated tools to maintain access, enumerate users, and specifically search for and exfiltrate emails related to payroll and finance.",
+  "full_report": "## Executive Summary\n\nA large-scale and financially motivated adversary-in-the-middle (AitM) phishing campaign is actively targeting **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** accounts across hundreds of organizations. The attack is attributed to threat clusters tracked as **Storm-2657** and **Storm-2755** (also known as **Payroll Pirates**). The campaign begins with voicemail-themed phishing emails that lure victims through a multi-stage redirection chain, ultimately landing them on a sophisticated AitM phishing site. This site acts as a proxy, capturing the user's credentials and, critically, their multi-factor authentication (MFA) session token in real-time. After hijacking the account, the attackers use residential proxies to blend in with normal traffic and automated tooling to maintain the session. Their primary goal is to perform reconnaissance within the victim's mailbox, searching for and exfiltrating sensitive emails and documents related to payroll, invoices, and banking, with the ultimate aim of payroll diversion.\n\n---\n\n## Threat Overview\n\nThis campaign demonstrates a clear, financially motivated objective executed with sophisticated tools and techniques designed to bypass modern security controls.\n\n### Attack Chain\n1.  **Initial Lure:** The attack begins with a phishing email, often disguised as a voicemail notification.\n2.  **Redirection Chain:** The link in the email does not lead directly to the phishing site. Instead, it initiates a six-stage redirection chain that leverages legitimate services like **[Google Meet](https://meet.google.com/)** and **[Amazon S3](https://aws.amazon.com/s3/)** to evade email security filters.\n3.  **AitM Phishing:** The final destination is an AitM phishing page that perfectly mimics the **Microsoft** login portal. This page acts as a reverse proxy between the victim and **Microsoft**.\n4.  **Credential and Session Theft:** The AitM proxy captures the user's username, password, and the MFA session cookie after the user successfully authenticates.\n5.  **Evasion:** The attackers use residential proxies for their post-compromise activities, making their malicious sign-ins difficult to distinguish from legitimate remote user traffic.\n6.  **Automated Persistence:** Automated tools are used to maintain the hijacked session, refreshing it every eight hours to avoid expiration.\n7.  **Reconnaissance and Exfiltration:** The attackers use the **[Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview)** to search the compromised mailbox for keywords like \"payroll,\" \"invoice,\" \"payment,\" and \"banking.\" They also enumerate users to identify others in finance and HR departments for further targeting.\n\n---\n\n## Technical Analysis\n\nThe combination of AitM phishing, residential proxy usage, and API-based reconnaissance makes this a highly effective campaign.\n\n- **AitM Phishing:** This is the key technique for bypassing MFA. By proxying the entire login flow, the attackers can steal the session cookie, which is the 'key' that proves the user has already completed an MFA-protected login.\n- **Residential Proxies:** Using IP addresses from legitimate residential ISPs allows the attackers' traffic to blend in. Blocking an entire residential IP range is not feasible for most organizations, as it would block legitimate customers or remote employees.\n- **Microsoft Graph API Abuse:** Instead of manually browsing the mailbox, the attackers use the **Graph API** to programmatically and rapidly search for high-value information. This is faster, stealthier, and less likely to be noticed by the user.\n\n### MITRE ATT&CK Mapping\n\n- **[`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/):** The initial email with the malicious link.\n- **[`T1110.004 - Credential Stuffing`](https://attack.mitre.org/techniques/T1110/004/):** The use of an AitM proxy to defeat MFA and steal session tokens.\n- **[`T1539 - Steal Web Session Cookie`](https://attack.mitre.org/techniques/T1539/):** The primary goal of the AitM phishing page.\n- **[`T1090.002 - External Proxy`](https://attack.mitre.org/techniques/T1090/002/):** Use of residential proxies to obscure the origin of the attack.\n- **[`T1114.002 - Remote Email Collection`](https://attack.mitre.org/techniques/T1114/002/):** Using the **Graph API** to search for and exfiltrate emails.\n- **[`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/):** The attackers use the compromised cloud account to conduct their operations.\n\n---\n\n## Impact Assessment\n\nThe campaign has targeted hundreds of organizations across healthcare, education, manufacturing, and government, primarily in the U.S., Canada, and Europe.\n\n- **Payroll Diversion:** The ultimate goal of the \"Payroll Pirates\" is to use the information gathered to socially engineer HR/payroll staff into changing an employee's direct deposit information, diverting their salary to an attacker-controlled account.\n- **Business Email Compromise (BEC):** The stolen information about invoices and payments can be used to launch sophisticated BEC attacks, tricking the company or its clients into sending payments to fraudulent accounts.\n- **Data Breach:** The exfiltration of emails containing sensitive financial and employee PII constitutes a data breach, with associated regulatory and notification requirements.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific IOCs were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | Entra ID Sign-in Logs | Look for successful logins from residential ISP ASNs, especially if the user is not expected to be working from home. | Microsoft Entra ID Sign-in Logs | medium |\n| user_agent | `Microsoft Graph` | Correlate logins from suspicious IPs with subsequent high-volume API access using the Microsoft Graph User-Agent. | Entra ID Logs, Cloud App Security Logs | high |\n| command_line_pattern | `Search-Mailbox` or Graph API search queries | Monitor for mailbox searches with keywords like 'payroll', 'invoice', 'payment', 'direct deposit'. | Microsoft 365 Unified Audit Log | high |\n| network_traffic_pattern | Redirection through Google Meet/S3 | Analyze email headers and links for patterns involving legitimate services used as redirectors. | Email gateway logs, URL analysis tools | medium |\n\n---\n\n## Detection & Response\n\n### Detection\n1.  **Enhanced Email Filtering:** Use email security gateways that can perform sandboxing and analysis of URLs to detect the multi-stage redirection chain.\n2.  **Entra ID Identity Protection:** Enable and monitor alerts from **Entra ID Identity Protection**, which can detect risky sign-ins, impossible travel, and other anomalies associated with account takeover.\n3.  **Audit Log Monitoring:** Create specific detection rules in your SIEM to alert on suspicious **Graph API** usage, such as an application enumerating all users or performing keyword searches across many mailboxes. This is an application of D3FEND's **[`Domestic User Activity Analysis`](https://d3fend.mitre.org/technique/d3f:DomesticUserActivityAnalysis)**.\n\n### Response\n- Upon detecting a compromised account, immediately revoke all session tokens for the user, reset their password, and investigate all activity from the time of compromise. Check for changes to mailbox rules (e.g., forwarding rules) and MFA settings.\n\n---\n\n## Mitigation\n\n1.  **Phishing-Resistant MFA:** As with other AitM campaigns, the most effective technical mitigation is the adoption of phishing-resistant MFA, such as **[FIDO2](https://fidoalliance.org/)** security keys. This breaks the AitM attack chain.\n2.  **User Training:** Train users to be suspicious of voicemail-themed emails and to verify the authenticity of any login prompts, especially those that follow a series of redirects.\n3.  **Conditional Access Policies:** Implement Conditional Access policies that block sign-ins from legacy authentication protocols and require logins to come from trusted locations or compliant devices.\n4.  **Limit API Permissions:** Review permissions granted to third-party applications and scripts that use the **Graph API**. Enforce the principle of least privilege to limit what an attacker can do even if they gain control of an application.",
+  "twitter_post": "Widespread AitM phishing campaign 'Payroll Pirates' targets Microsoft 365 accounts to steal payroll & finance data. Attackers use voicemail lures & residential proxies to bypass MFA and hijack sessions. #Phishing #AitM #Microsoft365 #CyberSecurity",
+  "meta_description": "A widespread AitM phishing campaign linked to 'Payroll Pirates' is targeting Microsoft 365 accounts to steal session tokens and exfiltrate payroll data.",
+  "category": [
+    "Phishing",
+    "Threat Actor",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Storm-2657",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Storm-2755 (Payroll Pirates)",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365"
+    },
+    {
+      "name": "Microsoft Graph API",
+      "type": "technology",
+      "url": "https://learn.microsoft.com/en-us/graph/overview"
+    },
+    {
+      "name": "Google Meet",
+      "type": "product",
+      "url": "https://meet.google.com/"
+    },
+    {
+      "name": "Amazon S3",
+      "type": "product",
+      "url": "https://aws.amazon.com/s3/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html",
+      "title": "Microsoft 365 AitM Phishing Hijacks Accounts to Collect Payroll and Finance Emails",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://arcticwolf.com/resources/blog/payroll-pirates-strange-new-tides-in-business-email-compromise/",
+      "title": "Payroll Pirates: Strange New Tides in Business Email Compromise",
+      "friendly_name": "Arctic Wolf",
+      "website": "arcticwolf.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link"
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie"
+    },
+    {
+      "id": "T1090.002",
+      "name": "External Proxy"
+    },
+    {
+      "id": "T1114.002",
+      "name": "Remote Email Collection"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Deploy phishing-resistant MFA (FIDO2) to technically prevent session hijacking via AitM proxies.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to be suspicious of unexpected login prompts and voicemail-themed phishing emails.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Actively monitor Microsoft 365 and Entra ID audit logs for signs of account takeover and suspicious API usage.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The most effective technical countermeasure against the 'Payroll Pirates' AitM campaign is to implement phishing-resistant Multi-factor Authentication (D3-MFA). Specifically, organizations should migrate from phishable MFA methods like SMS and push notifications to FIDO2-based authenticators (e.g., YubiKeys, Windows Hello for Business). FIDO2 binds the authentication process to the specific domain, meaning a credential cannot be used on a lookalike phishing site. When a user is tricked into visiting the attacker's AitM proxy, the browser and security key will refuse to complete the authentication, technically breaking the attack chain. This moves the defense from relying on user vigilance to a robust, technical control that neutralizes the core of the threat.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-WSAA",
+      "technique_name": "Web Session Activity Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis",
+      "recommendation": "To detect a successful account takeover, security teams must perform continuous Web Session Activity Analysis (D3-WSAA), particularly for Microsoft 365. This involves creating SIEM rules to detect the attacker's post-compromise behavior. A high-fidelity alert should be triggered when a user session, especially one originating from a residential ISP or an anomalous location, begins making programmatic queries via the Microsoft Graph API. Specifically, monitor for API calls related to searching mailboxes (`/messages?$search=`) with financial keywords like 'payroll' or 'invoice'. A normal user interacts with their mailbox via a browser or Outlook client; they do not typically use the Graph API directly to perform keyword searches. This behavioral mismatch is a strong indicator of a compromised account being used for reconnaissance by the 'Payroll Pirates' group.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-UA",
+      "technique_name": "URL Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:URLAnalysis",
+      "recommendation": "To stop the attack at the initial email stage, organizations need advanced URL Analysis (D3-UA) capabilities in their email security gateway. The 'Payroll Pirates' campaign uses a multi-stage redirection chain involving legitimate services like Google Meet and Amazon S3 to evade simple URL blocklists. An effective email security solution must be able to 'detonate' or follow these links in a sandbox environment to their final destination. The system should analyze the entire chain and identify that it ultimately leads to a newly registered domain hosting a phishing kit. By analyzing the final landing page for credential fields and signs of an AitM proxy, the security gateway can block the email before it ever reaches the user's inbox, preventing the social engineering attempt from even beginning.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Entra ID Sign-in Logs",
+      "description": "Look for successful logins originating from residential ISP Autonomous System Numbers (ASNs), especially if the user is not expected to be working from home or the location is anomalous.",
+      "context": "Microsoft Entra ID Sign-in Logs, SIEM",
+      "confidence": "medium"
+    },
+    {
+      "type": "user_account_pattern",
+      "value": "Microsoft Graph",
+      "description": "Correlate logins from suspicious IPs with subsequent high-volume API access using the 'Microsoft Graph' User-Agent. This indicates programmatic access rather than user-driven activity.",
+      "context": "Entra ID Logs, Microsoft Defender for Cloud Apps Logs",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "Search-Mailbox or Graph API search queries with financial keywords",
+      "description": "Monitor for mailbox searches using keywords like 'payroll', 'invoice', 'payment', 'direct deposit', 'wire', 'bank statement'. This is a strong indicator of financial fraud preparation.",
+      "context": "Microsoft 365 Unified Audit Log",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "URL redirection through legitimate services",
+      "description": "Analyze email links that use legitimate services like Google Meet or Amazon S3 as intermediate hops in a redirection chain before landing on a final, unknown domain.",
+      "context": "Email gateway logs, URL sandboxing and analysis tools",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "AitM",
+    "Phishing",
+    "Microsoft 365",
+    "Payroll Pirates",
+    "Storm-2657",
+    "Storm-2755",
+    "BEC",
+    "Session Hijacking"
+  ],
+  "extract_datetime": "2026-08-08T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "United States",
+      "Canada"
+    ],
+    "industries_affected": [
+      "Healthcare",
+      "Education",
+      "Manufacturing",
+      "Government"
+    ],
+    "people_affected_estimate": "hundreds of organizations"
+  },
+  "pub_date": "2026-08-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-08-08T15:00:00.000Z",
+  "updatedAt": "2026-08-08T15:00:00.000Z"
+}

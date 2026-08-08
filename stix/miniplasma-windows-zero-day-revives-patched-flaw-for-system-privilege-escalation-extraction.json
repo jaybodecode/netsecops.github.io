@@ -1,0 +1,193 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-18T15:13:32.505Z",
+    "article_slug": "miniplasma-windows-zero-day-revives-patched-flaw-for-system-privilege-escalation",
+    "article_date": "2026-05-18",
+    "token_usage": {
+      "input_tokens": 143914,
+      "output_tokens": 2667,
+      "cached_tokens": 137731,
+      "total_tokens": 146581,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051615
+    }
+  },
+  "report_name": "New 'MiniPlasma' Windows Zero-Day Resurrects Patched Flaw for Full System Control",
+  "threat_actors": [
+    {
+      "name": "Chaotic Eclipse",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A security researcher who publicly disclosed the 'MiniPlasma' zero-day vulnerability and a proof-of-concept exploit, citing frustrations with Microsoft's bug bounty program.",
+      "goals": "Public disclosure of a zero-day vulnerability to prompt a vendor response.",
+      "primary_motivation": "revenge",
+      "secondary_motivations": [
+        "notoriety"
+      ],
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The MiniPlasma vulnerability allows a local attacker with low-level user access to exploit the cldflt.sys driver to escalate privileges to SYSTEM, gaining complete control over a Windows 11 machine."
+    }
+  ],
+  "malware": [
+    {
+      "name": "MiniPlasma PoC",
+      "mitre_id": "",
+      "type": "exploit-kit",
+      "is_family": false,
+      "aliases": [],
+      "description": "A proof-of-concept exploit for the MiniPlasma vulnerability that leverages a regression of CVE-2020-17103 to achieve local privilege escalation to SYSTEM on fully patched Windows 11 systems."
+    }
+  ],
+  "tools": [
+    {
+      "name": "Mimikatz",
+      "mitre_id": "S0002",
+      "aliases": [],
+      "description": "Mentioned as a tool an attacker could use to steal credentials from memory after successfully escalating privileges to SYSTEM using the MiniPlasma exploit.",
+      "tool_types": [
+        "credential-exploitation"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "MiniPlasma",
+      "cve": "",
+      "description": "An unpatched zero-day local privilege escalation (LPE) vulnerability in the Windows Cloud Files Mini Filter Driver (cldflt.sys) on modern Windows 11 systems. It is a regression of CVE-2020-17103, allowing an attacker to gain SYSTEM privileges by creating arbitrary registry keys in a restricted hive.",
+      "affected_products": [
+        "Windows 11",
+        "Windows Server 2022",
+        "Windows Server 2025"
+      ],
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2020-17103",
+      "cve": "CVE-2020-17103",
+      "description": "A previously patched privilege escalation vulnerability in the Windows Cloud Files Mini Filter Driver. The new MiniPlasma zero-day is a regression of this flaw, and the original PoC for this CVE now works again on updated systems.",
+      "cvss_score": 7
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Microsoft",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Vendor of the Windows operating systems affected by the MiniPlasma vulnerability."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "cldflt.sys"
+    },
+    {
+      "type": "windows-registry-key",
+      "value": "HKEY_USERS\\.DEFAULT"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Suspicious SYSTEM Process Creation by User Process",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious SYSTEM Process Creation by User Process\nid: 2b9e1f0a-7c8d-4b6e-9f0a-1b2c3d4e5f6a\nstatus: experimental\ndescription: Detects a process running with SYSTEM integrity being created by a parent process that is not a known system process or running with lower integrity. This is a strong indicator of local privilege escalation.\nreferences:\n  - https://thehackernews.com/2026/05/miniplasma-windows-0-day-enables-system.html\nauthor: cyber.netsecops.io\ndate: 2026-05-18\ntags:\n  - attack.t1068\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    IntegrityLevel: 'System'\n  filter_legit_parents:\n    ParentImage|endswith:\n      - '\\System32\\services.exe'\n      - '\\System32\\wininit.exe'\n      - '\\System32\\lsass.exe'\n      - '\\System32\\smss.exe'\n      - '\\System32\\csrss.exe'\n      - '\\System32\\winlogon.exe'\n      - '\\System32\\svchost.exe'\n  condition: selection and not filter_legit_parents",
+      "description": "Detects a process running as NT AUTHORITY\\SYSTEM being spawned by a non-system user process, a common pattern for local privilege escalation exploits like MiniPlasma."
+    },
+    {
+      "name": "Anomalous Write to .DEFAULT Registry Hive",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[windows-registry-key:key MATCHES 'HKEY_USERS\\\\.DEFAULT.*']",
+      "x_netsecio_sigma_rule": "title: Anomalous Write to .DEFAULT Registry Hive\nid: 9a8b7c6d-5e4f-3a2b-1c0d-9f8e7d6c5b4a\nstatus: experimental\ndescription: Detects write operations to the HKEY_USERS\\.DEFAULT registry hive by processes not running as SYSTEM. This is a key indicator for the MiniPlasma exploit.\nreferences:\n  - https://thehackernews.com/2026/05/miniplasma-windows-0-day-enables-system.html\nauthor: cyber.netsecops.io\ndate: 2026-05-18\ntags:\n  - attack.t1068\nlevel: high\nlogsource:\n  category: registry_event\n  product: windows\ndetection:\n  selection:\n    TargetObject|startswith: 'HKEY_USERS\\.DEFAULT\\'\n    EventType: 'SetValue'\n  filter_system:\n    User: 'NT AUTHORITY\\SYSTEM'\n  condition: selection and not filter_system",
+      "pattern": "",
+      "description": "Detects unauthorized or anomalous write operations to the .DEFAULT user registry hive by low-privileged user accounts, which is the core mechanism of the MiniPlasma exploit."
+    },
+    {
+      "name": "Anomalous cldflt.sys Interaction",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[file:name = 'cldflt.sys']",
+      "x_netsecio_sigma_rule": "title: Anomalous cldflt.sys Interaction\nid: 5d6e7f8a-9b0c-1d2e-3f4a-5b6c7d8e9f0a\nstatus: experimental\ndescription: Monitors for anomalous interactions with the cldflt.sys driver from unexpected processes, which could indicate exploitation of the MiniPlasma vulnerability.\nreferences:\n  - https://thehackernews.com/2026/05/miniplasma-windows-0-day-enables-system.html\nauthor: cyber.netsecops.io\ndate: 2026-05-18\ntags:\n  - attack.t1068\nlevel: medium\nlogsource:\n  category: image_load\n  product: windows\ndetection:\n  selection:\n    ImageLoaded|endswith: '\\cldflt.sys'\n  filter_legit:\n    Image|endswith:\n      - '\\svchost.exe'\n      - '\\explorer.exe'\n  condition: selection and not filter_legit",
+      "pattern": "",
+      "description": "Detects anomalous interactions with the cldflt.sys driver from unexpected processes, a potential indicator of MiniPlasma exploitation."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Chaotic Eclipse",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "MiniPlasma PoC",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "MiniPlasma PoC",
+      "source_type": "malware",
+      "relationship_type": "exploits",
+      "target_name": "MiniPlasma",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "MiniPlasma",
+      "source_type": "vulnerability",
+      "relationship_type": "related-to",
+      "target_name": "CVE-2020-17103",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "MiniPlasma PoC",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious SYSTEM Process Creation by User Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Write to .DEFAULT Registry Hive",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Write to .DEFAULT Registry Hive",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "HKEY_USERS\\.DEFAULT",
+      "target_type": "windows-registry-key"
+    },
+    {
+      "source_name": "Anomalous cldflt.sys Interaction",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "cldflt.sys",
+      "target_type": "file"
+    }
+  ]
+}

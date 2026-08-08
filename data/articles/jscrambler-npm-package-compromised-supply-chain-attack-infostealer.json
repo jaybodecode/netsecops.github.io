@@ -1,0 +1,233 @@
+{
+  "id": "c59f55ba-87c2-4b1b-a4ee-625f9affaadf",
+  "slug": "jscrambler-npm-package-compromised-supply-chain-attack-infostealer",
+  "headline": "Jscrambler NPM Package Hijacked in Supply Chain Attack, Deploys Infostealer Targeting Cloud & AI Dev Secrets",
+  "title": "Malicious 'jscrambler' NPM Package Versions Deploy Cross-Platform Infostealer in Sophisticated Supply Chain Attack",
+  "summary": "A supply chain attack hit the popular `jscrambler` npm package, with malicious versions published to the registry using a compromised maintainer credential. These versions contained a Rust-based infostealer designed to steal developer credentials from cloud services (AWS, Azure, GCP), cryptocurrency wallets, and a new class of AI coding tools like Claude and Cursor. The malware executed via `preinstall` hooks and later `require()`-time injection, demonstrating evolving evasion tactics. Jscrambler has since revoked the credential, deprecated the malicious versions, and urged users to upgrade to a clean version and rotate all secrets.",
+  "full_report": "## Executive Summary\nOn July 11, 2026, a sophisticated software supply chain attack was identified involving the popular `jscrambler` npm package. Multiple malicious versions were published to the npm registry using a compromised maintainer's publishing credential. These packages contained a cross-platform infostealer written in Rust, designed to harvest sensitive developer credentials. The malware targeted a wide range of secrets, including cloud provider credentials, cryptocurrency wallets, and configuration files for modern AI coding assistants. The incident highlights the significant risk of dependency confusion and credential compromise in the software development lifecycle. **[Jscrambler](https://jscrambler.com/)** has taken remedial action, but organizations are urged to audit their systems and rotate all potentially exposed secrets immediately.\n\n## Threat Overview\nThe attack began with the publication of `jscrambler` version `8.14.0` to the **[npm](https://www.npmjs.com/)** registry, followed by several other malicious versions (`8.16.0`, `8.17.0`, `8.18.0`, `8.20.0`). The threat actor leveraged a compromised npm publishing token to push these versions directly to the registry, bypassing the project's standard code review process on GitHub. The initial attack vector was an npm `preinstall` script, which automatically executed upon package installation (`npm install`). This script unpacked and ran a native binary infostealer. Later versions adapted to use `require()`-time injection to evade detection mechanisms that block installation scripts.\n\nThe primary goal of the attack was credential theft from developer workstations and CI/CD environments. The malware was specifically designed to be cross-platform, with executables for Windows, macOS, and Linux.\n\n## Technical Analysis\nThe attack chain demonstrates a clear understanding of developer workflows and security blind spots.\n\n1.  **Initial Access**: The attacker gained access to a valid npm publishing token for the `jscrambler` package, allowing them to publish new versions. This aligns with [`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/).\n2.  **Execution**: The malicious code was executed via a `preinstall` hook in the `package.json` file. This hook ran a setup script that deployed the infostealer payload. This is a form of [`T1059 - Command and Scripting Interpreter`](https://attack.mitre.org/techniques/T1059/).\n3.  **Payload**: The payload was a 7.8MB Rust-based infostealer disguised as a JavaScript file (`intro.js`). It contained compressed executables for Windows, macOS, and Linux.\n4.  **Credential Access**: The infostealer was programmed to search for and exfiltrate a wide array of sensitive data, including:\n    *   Cloud credentials for **[AWS](https://aws.amazon.com/)**, **[Azure](https://azure.microsoft.com/en-us/)**, and **[Google Cloud](https://cloud.google.com/)**. ([`T1552.005 - Cloud Credentials`](https://attack.mitre.org/techniques/T1552/005/))\n    *   Cryptocurrency wallet data from **[MetaMask](https://metamask.io/)**, Phantom, and Exodus. ([`T1552.001 - Credentials In Files`](https://attack.mitre.org/techniques/T1552/001/))\n    *   Configuration files and credentials for AI coding tools such as Claude Desktop, Cursor, and VS Code.\n5.  **Persistence**: On Windows, the malware attempted to establish persistence by creating a hidden scheduled task ([`T1053.005 - Scheduled Task/Job: Scheduled Task`](https://attack.mitre.org/techniques/T1053/005/)). On macOS, it used a LaunchAgent for persistence ([`T1543.001 - Create or Modify System Process: Launch Agent`](https://attack.mitre.org/techniques/T1543/001/)).\n\n## Impact Assessment\nThe impact of this attack is potentially severe. Any developer or CI/CD system that installed one of the malicious `jscrambler` versions could have had their credentials compromised. Stolen cloud credentials could lead to significant data breaches, unauthorized resource usage, and further lateral movement into corporate networks. The theft of AI coding tool credentials is a novel and concerning development, as it could allow attackers to access proprietary code, inject malicious code via the AI assistant, or abuse paid API quotas. The compromise of cryptocurrency wallets could result in direct financial loss for affected individuals.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or C2 domains were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify potentially related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| file_name | `intro.js` | The name of the malicious binary payload, though it is not a JS file. |\n| command_line_pattern | `npm install jscrambler@8.14.0` | Or any of the other compromised versions. |\n| log_source | `CI/CD build logs` | Look for installations of the malicious `jscrambler` versions. |\n| process_name | `node.exe` | Monitor for child processes spawning unexpected binaries or making outbound network connections to unusual destinations. |\n| registry_key | `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run` | Check for suspicious entries related to persistence on Windows. |\n| file_path | `~/Library/LaunchAgents/` | Check for new or suspicious `.plist` files on macOS. |\n\n## Detection & Response\nSecurity teams should focus on detecting the installation and execution of the malicious packages.\n\n*   **Dependency Scanning**: Implement tools that scan `package.json` and `package-lock.json` files for known malicious versions. Tools like **[Socket](https://socket.dev/)** can detect suspicious behaviors like `preinstall` scripts.\n*   **EDR/SIEM Monitoring**: Create detection rules for `npm` or `node` processes that spawn unexpected child processes or write executable files. Monitor for the creation of scheduled tasks or launch agents immediately following an `npm install` command. A relevant D3FEND technique is [`D3-PA - Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n*   **Network Monitoring**: Monitor for outbound connections from developer workstations and CI/CD runners to unknown or suspicious endpoints, especially after new packages are installed. This aligns with [`D3-NTA - Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n*   **Response**: If a malicious version is detected, immediately isolate the affected machine, revoke all credentials stored on it (cloud, SSH, API keys), and perform a full forensic analysis.\n\n## Mitigation\nPreventing and mitigating such supply chain attacks requires a multi-layered approach.\n\n1.  **Use Lockfiles**: Always use `package-lock.json` or `yarn.lock` to ensure that `npm install` uses a specific, vetted version of a dependency.\n2.  **Audit Dependencies**: Regularly run `npm audit` to check for known vulnerabilities. Use tools that analyze package behavior, not just known CVEs.\n3.  **Restrict Permissions**: Run `npm install` with the `--ignore-scripts` flag in environments where pre/post-install scripts are not expected or necessary. This is a form of [`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/).\n4.  **Credential Management**: Avoid storing plaintext credentials on developer machines. Use dedicated secret management solutions like HashiCorp Vault or cloud provider KMS. Enforce [`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/) on all developer accounts, especially for npm publishing.\n5.  **Secure Publishing Pipeline**: For package maintainers, protect publishing tokens as highly sensitive secrets and use 2FA for the npm registry. This falls under [`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/).",
+  "twitter_post": "⚠️ SUPPLY CHAIN ATTACK: Malicious versions of the popular `jscrambler` npm package deployed a Rust-based infostealer. The malware targets developer credentials for AWS, Azure, GCP, crypto wallets, and AI coding tools. #SupplyChain #NPM #Jscrambler #InfoSec",
+  "meta_description": "A critical supply chain attack compromised the 'jscrambler' npm package, distributing a Rust infostealer to steal developer credentials for cloud, crypto, and AI tools. Learn about the impact and mitigation.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Jscrambler",
+      "type": "vendor",
+      "url": "https://jscrambler.com/"
+    },
+    {
+      "name": "npm",
+      "type": "product",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "Rust",
+      "type": "technology"
+    },
+    {
+      "name": "Socket",
+      "type": "security_organization",
+      "url": "https://socket.dev/"
+    },
+    {
+      "name": "AWS",
+      "type": "vendor",
+      "url": "https://aws.amazon.com/"
+    },
+    {
+      "name": "Microsoft Azure",
+      "type": "product",
+      "url": "https://azure.microsoft.com/en-us/"
+    },
+    {
+      "name": "Google Cloud",
+      "type": "product",
+      "url": "https://cloud.google.com/"
+    },
+    {
+      "name": "MetaMask",
+      "type": "product",
+      "url": "https://metamask.io/"
+    },
+    {
+      "name": "Phantom",
+      "type": "product"
+    },
+    {
+      "name": "Exodus",
+      "type": "product"
+    },
+    {
+      "name": "Claude Desktop",
+      "type": "product"
+    },
+    {
+      "name": "Cursor",
+      "type": "product"
+    },
+    {
+      "name": "VS Code",
+      "type": "product"
+    },
+    {
+      "name": "Zed",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://socket.dev/blog/jscrambler-supply-chain-attack",
+      "title": "jscrambler npm Package Compromised in Supply Chain Attack",
+      "date": "2026-07-11",
+      "friendly_name": "Socket"
+    },
+    {
+      "url": "https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html",
+      "title": "Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install",
+      "date": "2026-07-11",
+      "friendly_name": "The Hacker News"
+    },
+    {
+      "url": "https://blog.gridinsoft.com/jscrambler-npm-package-compromised/",
+      "title": "Jscrambler npm Package Compromised: Check Five Malicious Versions",
+      "date": "2026-07-12",
+      "friendly_name": "Gridinsoft"
+    },
+    {
+      "url": "https://aiweekly.co/alerts/jscrambler-npm-hijack-sweeps-ai-coding-tool-config-keys",
+      "title": "jscrambler npm hijack sweeps AI coding tool config keys",
+      "date": "2026-07-12",
+      "friendly_name": "AI Weekly"
+    },
+    {
+      "url": "https://www.mallory.ai/stories/019f5225-a834-719b-9b66-c82edd147d7c",
+      "title": "Compromised jscrambler npm Release Executed Cross-Platform Rust Infostealer",
+      "date": "2026-07-11",
+      "friendly_name": "Mallory"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-11T00:00:00Z",
+      "summary": "Threat actor begins publishing malicious versions of the 'jscrambler' npm package, starting with version 8.14.0."
+    },
+    {
+      "datetime": "2026-07-11T00:06:00Z",
+      "summary": "Security firm Socket detects the first malicious version and begins investigation."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain: Compromise Software Development Tools"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter"
+    },
+    {
+      "id": "T1552.005",
+      "name": "Cloud Credentials"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials In Files"
+    },
+    {
+      "id": "T1053.005",
+      "name": "Scheduled Task/Job: Scheduled Task"
+    },
+    {
+      "id": "T1543.001",
+      "name": "Create or Modify System Process: Launch Agent"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Disabling the execution of install scripts via flags like `--ignore-scripts` can prevent this specific attack vector.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforcing MFA on developer accounts for services like npm can prevent credential compromise from leading to malicious package publication.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Treating publishing tokens as highly privileged credentials and rotating them regularly reduces the window of opportunity for attackers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly auditing dependencies and CI/CD logs for suspicious activity can help detect supply chain attacks early.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "npm install jscrambler@",
+      "description": "Installation of specific versions of the jscrambler package. The malicious versions were 8.14.0, 8.16.0, 8.17.0, 8.18.0, and 8.20.0.",
+      "context": "CI/CD build logs, developer shell history",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "node_modules/jscrambler/intro.js",
+      "description": "The disguised malicious binary payload within the compromised npm package.",
+      "context": "File system monitoring, EDR alerts on file creation",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "node.exe",
+      "description": "Monitor for node.exe (or 'node' on Linux/macOS) spawning unexpected child processes or making outbound network calls after an 'npm install' command.",
+      "context": "EDR logs, Process monitoring (Event ID 4688)",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "package-lock.json",
+      "description": "Audit lockfiles for the presence of malicious jscrambler versions.",
+      "context": "Version control systems, code scanning tools",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "supply chain attack",
+    "npm",
+    "jscrambler",
+    "infostealer",
+    "rust",
+    "credential theft",
+    "devsecops"
+  ],
+  "extract_datetime": "2026-07-12T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "software developers",
+      "open-source software users"
+    ]
+  },
+  "pub_date": "2026-07-12",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-12T15:00:00.000Z",
+  "updatedAt": "2026-07-12T15:00:00.000Z"
+}

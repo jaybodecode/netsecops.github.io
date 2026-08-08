@@ -1,0 +1,71 @@
+title: Execution from NTFS Alternate Data Stream
+id: 2b1a9c8d-4e5f-4a3b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects execution of scripts from NTFS alternate data streams, a technique used by Gamaredon's VBScript worm.
+references:
+  - https://www.infosecurity-magazine.com/news/fsb-gamaredon-hides-worm-windows/
+author: cyber.netsecops.io
+date: 2026-06-01
+tags:
+  - attack.t1564.004
+  - attack.t1059.005
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\wscript.exe'
+      - '\cscript.exe'
+    CommandLine|contains: ':'
+  filter_legit:
+    CommandLine|re: '^[a-zA-Z]:\\'
+  condition: selection and not filter_legit
+---
+title: Enumeration of NTFS Alternate Data Streams via Dir
+id: f8c7b6a5-4d3c-4b2a-9a8b-7c6d5e4f3a2b
+status: experimental
+description: 'Detects the use of ''dir /r'' to discover NTFS alternate data streams. This may be used by adversaries for reconnaissance or by defenders for hunting.'
+references:
+  - https://www.infosecurity-magazine.com/news/fsb-gamaredon-hides-worm-windows/
+author: cyber.netsecops.io
+date: 2026-06-01
+tags:
+  - attack.t1564.004
+level: low
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\dir.exe'
+    CommandLine|contains: ' /r'
+  condition: selection
+---
+title: Suspicious Parent for Windows Script Host
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Monitors for wscript.exe or cscript.exe being launched by suspicious parent processes like svchost.exe (for scheduled tasks) or WmiPrvSE.exe (for WMI), a TTP of Gamaredon.
+references:
+  - https://www.infosecurity-magazine.com/news/fsb-gamaredon-hides-worm-windows/
+author: cyber.netsecops.io
+date: 2026-06-01
+tags:
+  - attack.t1059.005
+  - attack.t1047
+  - attack.t1053.005
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_child:
+    Image|endswith:
+      - '\wscript.exe'
+      - '\cscript.exe'
+  selection_parent:
+    ParentImage|endswith:
+      - '\svchost.exe'
+      - '\WmiPrvSE.exe'
+  condition: all of selection_*

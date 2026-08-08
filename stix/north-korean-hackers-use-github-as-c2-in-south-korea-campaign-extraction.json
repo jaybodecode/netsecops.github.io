@@ -1,0 +1,317 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:23:01.515Z",
+    "article_slug": "north-korean-hackers-use-github-as-c2-in-south-korea-campaign",
+    "article_date": "2026-04-06",
+    "token_usage": {
+      "input_tokens": 141611,
+      "output_tokens": 3818,
+      "cached_tokens": 135916,
+      "total_tokens": 145429,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.062288
+    }
+  },
+  "report_name": "North Korean Hackers Abuse GitHub for C2 in Campaign Targeting South Korea",
+  "threat_actors": [
+    {
+      "name": "Kimsuky",
+      "mitre_id": "G0094",
+      "aliases": [],
+      "description": "A North Korean state-sponsored threat actor involved in a campaign targeting South Korean organizations using LNK files and GitHub for C2.",
+      "goals": "Espionage and long-term intelligence gathering against South Korean targets.",
+      "primary_motivation": "organizational-gain",
+      "sophistication": "advanced"
+    },
+    {
+      "name": "Lazarus Group",
+      "mitre_id": "G0032",
+      "aliases": [],
+      "description": "A North Korean state-sponsored threat actor suspected to be involved in a campaign targeting South Korean organizations using LNK files and GitHub for C2.",
+      "goals": "Espionage and long-term intelligence gathering against South Korean targets.",
+      "primary_motivation": "organizational-gain",
+      "sophistication": "advanced"
+    },
+    {
+      "name": "APT37",
+      "mitre_id": "G0067",
+      "aliases": [],
+      "description": "A North Korean state-sponsored threat actor suspected to be involved in a campaign targeting South Korean organizations using LNK files and GitHub for C2.",
+      "goals": "Espionage and long-term intelligence gathering against South Korean targets.",
+      "primary_motivation": "organizational-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Malicious File",
+      "mitre_id": "T1204.002",
+      "description": "Malicious Windows shortcut (.lnk) files, disguised with icons and names of common document types, were delivered via phishing to trick users into execution."
+    },
+    {
+      "name": "PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "A hidden PowerShell script was launched from a malicious LNK file to perform C2 communications and execute commands."
+    },
+    {
+      "name": "Bidirectional Communication",
+      "mitre_id": "T1102.002",
+      "description": "The malware abused the legitimate GitHub service as a C2 channel, posting stolen data to and pulling new commands from attacker-controlled repositories."
+    },
+    {
+      "name": "Obfuscated Files or Information",
+      "mitre_id": "T1027",
+      "description": "The malicious LNK file contained obfuscated commands that launched the PowerShell payload, and recent versions have shown increased obfuscation."
+    }
+  ],
+  "malware": [
+    {
+      "name": "PowerShell C2 Implant",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": false,
+      "aliases": [],
+      "description": "A PowerShell-based payload delivered by a malicious LNK file. It collects system information and uses GitHub for command and control, exfiltrating data and downloading further commands or payloads.",
+      "capabilities": [
+        "communicates-with-c2",
+        "installs-other-components",
+        "fingerprints-host"
+      ]
+    },
+    {
+      "name": "XenoRAT",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": true,
+      "aliases": [],
+      "description": "A Remote Access Trojan (RAT) that can be delivered as a secondary payload via the GitHub C2 channel for long-term control and extensive data theft."
+    }
+  ],
+  "tools": [
+    {
+      "name": "PowerShell",
+      "mitre_id": "S0194",
+      "aliases": [],
+      "description": "Used as the execution engine for the primary malware payload, which communicates with the GitHub C2 and executes received commands.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "South Korean Organizations",
+      "identity_class": "class",
+      "sectors": [
+        "government",
+        "defense",
+        "technology"
+      ],
+      "description": "A class of organizations in South Korea targeted by a North Korean espionage campaign for political, military, and economic intelligence."
+    }
+  ],
+  "locations": [
+    {
+      "name": "North Korea",
+      "country": "North Korea",
+      "region": "eastern-asia"
+    },
+    {
+      "name": "South Korea",
+      "country": "South Korea",
+      "region": "eastern-asia"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "GitHub C2 Repositories",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Attacker-controlled GitHub repositories used as a command-and-control channel. The malware posts stolen data to and pulls new commands from these repositories, camouflaging the traffic as legitimate web activity."
+    }
+  ],
+  "observables": [
+    {
+      "type": "domain-name",
+      "value": "api.github.com"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "GitHub C2 Domain api.github.com",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[domain-name:value = 'api.github.com']",
+      "x_netsecio_sigma_rule": "title: Anomalous Process Connecting to GitHub API\nid: 2b1d6a0f-8c7e-4b5a-9f1d-3c2e1b0a9f8d\nstatus: experimental\ndescription: Detects processes that are not common developer tools or browsers connecting to api.github.com, which could indicate abuse of GitHub for C2 communications.\nreferences:\n  - https://gbhackers.com/github-backed-malware-spread-via-lnk-files-in-south-korea/\nauthor: cyber.netsecops.io\ndate: 2026-04-06\ntags:\n  - attack.t1102.002\n  - attack.command_and_control\nfalsepositives:\n  - Legitimate developer tools, update clients, or scripts that interact with the GitHub API.\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    DestinationHostname: 'api.github.com'\n    Initiated: 'true'\n  filter:\n    Image|endswith:\n      - '\\git.exe'\n      - '\\gh.exe'\n      - '\\Code.exe'\n      - '\\chrome.exe'\n      - '\\firefox.exe'\n      - '\\msedge.exe'\n  condition: selection and not filter",
+      "pattern": "",
+      "description": "Detects network connections to api.github.com from processes other than common developer tools or browsers. This activity is associated with the North Korean campaign using GitHub for C2."
+    },
+    {
+      "name": "PowerShell Execution from LNK File",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: PowerShell Execution from LNK File\nid: 5e8f1c2a-3b4d-5e6f-7a8b-9c0d1e2f3a4b\nstatus: experimental\ndescription: Detects the execution of PowerShell launched from a Windows shortcut (LNK) file, a technique used in a recent North Korean campaign.\nreferences:\n  - https://gbhackers.com/github-backed-malware-spread-via-lnk-files-in-south-korea/\nauthor: cyber.netsecops.io\ndate: 2026-04-06\ntags:\n  - attack.t1204.002\n  - attack.t1059.001\n  - attack.execution\nfalsepositives:\n  - Legitimate administrative scripts launched via shortcuts, though this is uncommon.\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    ParentImage|endswith: '.lnk'\n    Image|endswith: '\\powershell.exe'\n  condition: selection",
+      "description": "Detects the execution of PowerShell from a malicious LNK file, which was the initial execution vector in this campaign."
+    },
+    {
+      "name": "PowerShell GitHub C2 Script Block",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: PowerShell Script Making Web Request to GitHub API\nid: 9a8b7c6d-5e4f-3a2b-1c0d-9f8e7d6c5b4a\nstatus: experimental\ndescription: 'Detects PowerShell script blocks (via Event ID 4104) containing web requests to api.github.com, indicating potential C2 activity.'\nreferences:\n  - https://gbhackers.com/github-backed-malware-spread-via-lnk-files-in-south-korea/\nauthor: cyber.netsecops.io\ndate: 2026-04-06\ntags:\n  - attack.t1102.002\n  - attack.t1059.001\n  - attack.command_and_control\nfalsepositives:\n  - Legitimate administrative or developer scripts that interact with the GitHub API.\nlevel: high\nlogsource:\n  product: windows\n  service: powershell\n  category: ps_script\ndetection:\n  selection:\n    ScriptBlockText|contains:\n      - 'api.github.com'\n      - 'Invoke-RestMethod'\n      - 'Invoke-WebRequest'\n  condition: all of selection\n",
+      "description": "Detects PowerShell script block logging events that show scripts making web requests to api.github.com, a key behavior of the C2 implant."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Kimsuky",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PowerShell C2 Implant",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Lazarus Group",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PowerShell C2 Implant",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "APT37",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PowerShell C2 Implant",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Kimsuky",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "South Korean Organizations",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Lazarus Group",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "South Korean Organizations",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "APT37",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "South Korean Organizations",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Kimsuky",
+      "source_type": "threat-actor",
+      "relationship_type": "originates-from",
+      "target_name": "North Korea",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Lazarus Group",
+      "source_type": "threat-actor",
+      "relationship_type": "originates-from",
+      "target_name": "North Korea",
+      "target_type": "location"
+    },
+    {
+      "source_name": "APT37",
+      "source_type": "threat-actor",
+      "relationship_type": "originates-from",
+      "target_name": "North Korea",
+      "target_type": "location"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Malicious File",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Bidirectional Communication",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Obfuscated Files or Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "GitHub C2 Repositories",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "PowerShell C2 Implant",
+      "source_type": "malware",
+      "relationship_type": "downloads",
+      "target_name": "XenoRAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "GitHub C2 Domain api.github.com",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "api.github.com",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "GitHub C2 Domain api.github.com",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PowerShell C2 Implant",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "PowerShell Execution from LNK File",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Malicious File",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell GitHub C2 Script Block",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Bidirectional Communication",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+title: Anomalous Large Data Transfer from R&D Segments
+id: 6d110b7f-90da-4a38-9755-3d2954803745
+status: experimental
+description: >
+  Detects unusually large data transfers originating from network segments designated for Research & Development (R&D) or source code repositories. This could indicate intellectual property theft.
+references:
+  - https://www.galaxywarden.com/blog/breach/quantinuum-com-incransom-2026-08
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: high
+logsource:
+  category: proxy
+falsepositives:
+  - Legitimate large data transfers, such as software updates or data backups.
+  - Requires tuning with knowledge of baseline traffic patterns and specific IP ranges for R&D segments.
+detection:
+  selection:
+    c-ip: '10.100.0.0/16' # Placeholder for R&D network segment
+    sc-bytes_out|gt: 100000000 # Example threshold: 100MB
+  condition: selection
+---
+title: Anomalous Mass Cloning from Source Code Repository
+id: 05c31273-5c82-446c-953b-48246d82f24a
+status: experimental
+description: >
+  Detects anomalous cloning of a large number of repositories by a single user account, especially outside of normal business hours. This requires logs from source code management systems (e.g., GitHub Enterprise, GitLab).
+references:
+  - https://www.galaxywarden.com/blog/breach/quantinuum-com-incransom-2026-08
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1119
+  - attack.collection
+level: medium
+logsource:
+  category: audit
+  service: git
+falsepositives:
+  - Legitimate developer activity, such as setting up a new development environment.
+  - Automated build systems.
+detection:
+  keywords:
+    - 'git-upload-pack'
+    - 'clone'
+  # This is a conceptual rule. A real implementation would require a SIEM with UEBA capabilities to aggregate clone events per user over a time window and alert on outliers.
+  condition: keywords
+---
+title: Potential Data Staging Tool Execution
+id: 9c5b1a3d-8e7f-4b2a-9c8d-6f5e4d3c2b1a
+status: experimental
+description: Detects the execution of 7z.exe or rclone.exe, which are legitimate tools often abused by ransomware groups to compress and exfiltrate data.
+references:
+  - https://www.galaxywarden.com/blog/breach/quantinuum-com-incransom-2026-08
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1560.001
+  - attack.collection
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\7z.exe'
+      - '\rclone.exe'
+  condition: selection

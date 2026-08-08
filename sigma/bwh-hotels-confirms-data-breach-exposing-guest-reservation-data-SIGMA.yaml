@@ -1,0 +1,88 @@
+title: Anomalous Web Application Administrative Login
+id: 2b3a1c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: |
+  Detects logins to common web application administrative panels from external sources, which could indicate unauthorized access as seen in the BWH Hotels breach.
+references:
+  - https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/
+author: cyber.netsecops.io
+date: 2026-05-20
+modified: 2026-05-20
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: webserver
+detection:
+  selection:
+    c_uri:
+      - '*/admin'
+      - '*/login'
+      - '*/wp-admin'
+      - '*/administrator'
+      - '*/admin.php'
+      - '*/login.php'
+    sc_status: 200
+  filter:
+    c_ip:
+      - '127.0.0.1'
+      - '::1'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter
+---
+title: Suspicious Bulk Database Query from Web Server
+id: 8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a
+status: experimental
+description: |
+  Detects database queries selecting a large number of records, such as 'SELECT * FROM reservations', which may indicate data exfiltration attempts as suggested in the BWH Hotels breach analysis.
+references:
+  - https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/
+author: cyber.netsecops.io
+date: 2026-05-20
+modified: 2026-05-20
+tags:
+  - attack.t1005
+  - attack.collection
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    keywords:
+      - 'SELECT * FROM reservations'
+      - 'SELECT * FROM guests'
+      - 'SELECT * FROM customers'
+  condition: selection
+---
+title: Data Staging with Compressed Files on Web Server
+id: 4c5d6e7f-8a9b-4c0d-1e2f-3a4b5c6d7e8f
+status: experimental
+description: |
+  Detects the creation of large compressed archive files on a web server, which could be a sign of data being staged for exfiltration, a technique relevant to the BWH Hotels breach.
+references:
+  - https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/
+author: cyber.netsecops.io
+date: 2026-05-20
+modified: 2026-05-20
+tags:
+  - attack.t1074.001
+  - attack.collection
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection_filenames:
+    TargetFilename|endswith:
+      - '.zip'
+      - '.tar.gz'
+      - '.rar'
+      - '.7z'
+  selection_paths:
+    TargetFilename|startswith:
+      - '/var/www/'
+      - '/srv/www/'
+      - '/usr/share/nginx/html/'
+  condition: all of selection_*

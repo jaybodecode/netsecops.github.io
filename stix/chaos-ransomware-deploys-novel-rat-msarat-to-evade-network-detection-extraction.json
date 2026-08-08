@@ -1,0 +1,231 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-24T15:39:23.721Z",
+    "article_slug": "chaos-ransomware-deploys-novel-rat-msarat-to-evade-network-detection",
+    "article_date": "2026-07-23",
+    "token_usage": {
+      "input_tokens": 146201,
+      "output_tokens": 2359,
+      "cached_tokens": 140179,
+      "total_tokens": 148560,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.04864
+    }
+  },
+  "report_name": "Chaos Ransomware Uses Browser-Based 'msaRAT' to Evade Detection",
+  "threat_actors": [
+    {
+      "name": "Chaos",
+      "mitre_id": "",
+      "aliases": [
+        "Chaos ransomware group"
+      ],
+      "description": "A ransomware group deploying the msaRAT to establish a stealthy foothold in victim networks and evade detection by routing C2 traffic through legitimate web browsers.",
+      "goals": "Financial extortion through ransomware deployment.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Phishing",
+      "mitre_id": "T1566",
+      "description": "The infection chain for msaRAT typically starts with vishing or spam emails containing a malicious MSI installer disguised as a Windows update."
+    },
+    {
+      "name": "Remote Access Software",
+      "mitre_id": "T1219",
+      "description": "msaRAT is a remote access trojan that abuses legitimate browser software (Chrome, Edge) to establish a command and control channel, effectively using the browser as a remote access tool."
+    },
+    {
+      "name": "Application Layer Protocol",
+      "mitre_id": "T1071",
+      "description": "msaRAT uses the WebRTC protocol, a standard web protocol, to establish its command and control data channel, making the traffic appear as legitimate browser activity."
+    },
+    {
+      "name": "Proxy",
+      "mitre_id": "T1090",
+      "description": "The C2 signaling process is obscured using legitimate cloud services as proxies, including Cloudflare Workers and a Twilio TURN relay server, to hide the true IP address of the attacker's C2 server."
+    },
+    {
+      "name": "Encrypted Channel",
+      "mitre_id": "T1573",
+      "description": "msaRAT uses a layered encryption approach for its C2 communications. The entire channel is wrapped in the standard DTLS encryption used by WebRTC, and an inner layer of ChaCha-Poly1305 encryption is used for the actual commands and data."
+    }
+  ],
+  "malware": [
+    {
+      "name": "msaRAT",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": false,
+      "aliases": [],
+      "description": "A Rust-based remote access trojan (RAT) that evades network detection by launching a headless instance of Chrome or Edge and routing its C2 communications through a WebRTC data channel established via the Chrome DevTools Protocol.",
+      "capabilities": [
+        "communicates-with-c2",
+        "hides-artifacts"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "Google Chrome",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Abused by msaRAT, which launches a headless instance of the browser to establish a WebRTC data channel for command and control.",
+      "tool_types": [
+        "remote-access"
+      ]
+    },
+    {
+      "name": "Microsoft Edge",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Abused by msaRAT, which launches a headless instance of the browser to establish a WebRTC data channel for command and control.",
+      "tool_types": [
+        "remote-access"
+      ]
+    },
+    {
+      "name": "Cloudflare Workers",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Used by msaRAT for initial C2 signaling, acting as a proxy to hide the true C2 infrastructure.",
+      "tool_types": [
+        "remote-access"
+      ]
+    },
+    {
+      "name": "Twilio",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A Twilio TURN relay server is used by msaRAT to further obscure C2 communications and prevent a direct peer-to-peer connection.",
+      "tool_types": [
+        "remote-access"
+      ]
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "msaRAT C2 Infrastructure",
+      "infrastructure_types": [
+        "command-and-control",
+        "proxy"
+      ],
+      "description": "C2 infrastructure for msaRAT that uses Cloudflare Workers for initial signaling and a Twilio TURN relay server to proxy communications and hide the true C2 server location."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Suspicious Headless Browser With Remote Debugging Port",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Headless Browser With Remote Debugging Port\nid: 2b8a1c9d-5e6f-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects Google Chrome or Microsoft Edge being launched in headless mode with the remote debugging port enabled. This is a TTP used by the msaRAT malware to evade network detection by routing C2 traffic through the browser.\nreferences:\n  - https://blog.talosintelligence.com/chaos-msarat-living-off-the-browser-to-build-covert-c2-channel/\nauthor: cyber.netsecops.io\ndate: 2026-07-23\ntags:\n  - attack.t1219\n  - attack.command_and_control\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith:\n      - '\\chrome.exe'\n      - '\\msedge.exe'\n    CommandLine|contains|all:\n      - '--headless'\n      - '--remote-debugging-port='\n  condition: selection",
+      "description": "Detects the execution of a web browser in headless mode with the remote debugging port enabled, a technique used by msaRAT to create a covert C2 channel."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Chaos",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "msaRAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Chaos",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Phishing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Remote Access Software",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Application Layer Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Proxy",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Encrypted Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Google Chrome",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Microsoft Edge",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Cloudflare Workers",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Twilio",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "msaRAT",
+      "source_type": "malware",
+      "relationship_type": "communicates-with",
+      "target_name": "msaRAT C2 Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Suspicious Headless Browser With Remote Debugging Port",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "msaRAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious Headless Browser With Remote Debugging Port",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Remote Access Software",
+      "target_type": "attack-pattern"
+    }
+  ]
+}
