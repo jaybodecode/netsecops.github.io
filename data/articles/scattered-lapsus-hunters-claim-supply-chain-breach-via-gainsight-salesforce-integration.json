@@ -1,0 +1,346 @@
+{
+  "id": "338455bb-a8d3-49ba-8027-640e5abe7254",
+  "slug": "scattered-lapsus-hunters-claim-supply-chain-breach-via-gainsight-salesforce-integration",
+  "headline": "Massive Supply Chain Attack Hits 200+ Companies via Salesforce App; Hacker Group Claims Breach",
+  "title": "Scattered Lapsus$ Hunters Claim Major Supply Chain Breach Abusing Gainsight OAuth Tokens in Salesforce",
+  "summary": "A hacking collective known as Scattered Lapsus$ Hunters has claimed responsibility for a large-scale supply chain attack that compromised the Salesforce data of over 200 organizations. The attack did not exploit a vulnerability in Salesforce itself, but rather abused OAuth tokens from the Gainsight customer-success application. The attackers gained unauthorized access to customer data, prompting Salesforce to revoke all tokens for the app. The group has named high-profile victims like Atlassian, Docusign, and Verizon, highlighting the significant risks of SaaS-to-SaaS integrations.",
+  "full_report": "## Executive Summary\n\nA sophisticated supply chain attack has compromised the **[Salesforce](https://www.salesforce.com/)** data of more than 200 organizations. The threat actor, a collective calling itself **[Scattered Lapsus$ Hunters](https://malpedia.caad.fkie.fraunhofer.de/actor/scattered_spider)**, exploited abused OAuth tokens associated with the **[Gainsight](https://www.gainsight.com/)** application, a popular tool on the Salesforce AppExchange. The incident was not a direct breach of Salesforce's platform but a classic example of a SaaS-to-SaaS attack, where the trusted connection between two cloud services is compromised. Salesforce has responded by revoking affected tokens and temporarily removing the Gainsight app. The attackers have publicly named numerous high-profile companies as victims, including Atlassian, Docusign, F5, and Verizon, creating a widespread security event with significant potential for data exposure across multiple industries.\n\n---\n\n## Threat Overview\n\nThe attack, detected by **[Google](https://www.google.com)** Threat Intelligence, involved the abuse of OAuth access and refresh tokens. These tokens, designed to allow Gainsight's application to interact with a customer's Salesforce instance, were compromised and used by the attackers to gain unauthorized access to sensitive customer data stored within Salesforce. The initial vector for the token theft appears to be a prior compromise of Gainsight itself, which the attackers claim was a result of another supply chain attack involving Salesloft/Drift.\n\n**[Scattered Lapsus$ Hunters](https://malpedia.caad.fkie.fraunhofer.de/actor/scattered_spider)**, a group reportedly composed of members from notorious crews like **[ShinyHunters](https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters)**, **[Scattered Spider](https://attack.mitre.org/groups/G1015/)**, and **[Lapsus$](https://attack.mitre.org/groups/G0139/)**, claimed the attack on their Telegram channel. They alleged the compromise of nearly 300 organizations and threatened to leak data from almost 1,000 organizations when combined with previous breaches. This incident highlights a dangerous trend where attackers pivot from one compromised SaaS provider to another, creating a cascading effect of breaches across the cloud ecosystem.\n\n## Technical Analysis\n\nThe attack chain leverages the inherent trust model of **[OAuth 2.0](https://en.wikipedia.org/wiki/OAuth)**, a standard widely used for delegated authorization between cloud services. \n\n1.  **Initial Compromise**: The threat actors first compromised a SaaS provider (Gainsight). The attackers claim this was achieved by leveraging credentials or tokens stolen from a previous breach of Salesloft/Drift, which counted Gainsight as a customer. This suggests a chained supply chain attack.\n2.  **Token Theft**: Once inside Gainsight's environment, the attackers located and exfiltrated OAuth tokens that Gainsight's application used to access its customers' Salesforce instances. These tokens are bearer tokens, meaning anyone possessing them can use them to access the associated resources.\n3.  **Unauthorized Access**: The attackers used the stolen OAuth tokens to make API calls directly to the Salesforce environments of Gainsight's customers. This allowed them to bypass traditional authentication methods like passwords and **[MFA](https://www.cisa.gov/mfa)**, as the tokens represented a legitimate, pre-authorized application.\n4.  **Data Exfiltration**: With authorized access, the attackers could query and exfiltrate any data the Gainsight application was permitted to access within the victim's Salesforce instance. This could include customer lists, sales data, internal communications, and other sensitive business information.\n\n### MITRE ATT&CK Techniques\n\n*   [`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/): The core of the attack, where adversaries stole OAuth tokens to impersonate the Gainsight application.\n*   [`T1111 - Two-Factor Authentication Interception`](https://attack.mitre.org/techniques/T1111/): While not a direct interception, the abuse of OAuth tokens effectively bypasses MFA protections on user accounts.\n*   [`T1078.004 - Valid Accounts: Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/): The attackers used the stolen tokens, which represent a valid (application) account, to access cloud resources.\n*   [`T1530 - Data from Cloud Storage Object`](https://attack.mitre.org/techniques/T1530/): The ultimate goal was to exfiltrate data stored within Salesforce cloud objects.\n*   [`T1625 - Hijack Session`](https://attack.mitre.org/techniques/T1625/): The use of stolen tokens is a form of session hijacking, allowing the attacker to take over an authorized application's session.\n*   [`T1199 - Trusted Relationship`](https://attack.mitre.org/techniques/T1199/): The attackers exploited the trusted relationship between organizations and their third-party SaaS providers (Salesforce and Gainsight).\n\n## Impact Assessment\n\nThe business impact of this breach is potentially massive and far-reaching. With over 200 organizations compromised, including Fortune 500 companies, the potential for data leakage is severe. The stolen data, originating from Salesforce CRMs, is highly valuable and could include:\n*   Customer Personally Identifiable Information (PII)\n*   Proprietary sales strategies and pipelines\n*   Confidential business contracts and pricing\n*   Internal employee information\n\nThe public naming of victims like **[Atlassian](https://www.atlassian.com/)**, **[Docusign](https://www.docusign.com/)**, **[F5](https://www.f5.com/)**, **[GitLab](https://about.gitlab.com/)**, **[LinkedIn](https://www.linkedin.com/)**, **[Malwarebytes](https://www.malwarebytes.com/)**, **[SonicWall](https://www.sonicwall.com/)**, and **[Verizon](https://www.verizon.com/)** causes significant reputational damage, regardless of the extent of data loss. For Gainsight, the incident is catastrophic, eroding customer trust and likely leading to significant financial and legal repercussions. For the affected organizations, the breach necessitates costly incident response efforts, customer notifications, and potential regulatory fines under laws like GDPR or CCPA.\n\n## IOCs\n\nNo specific file-based or network-based IOCs were provided in the source articles. The primary indicator is the abuse of OAuth tokens, which must be detected through log analysis.\n\n## Cyber Observables for Detection\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | Salesforce Event Monitoring | Look for `ApiTotalUsage` or `RestApi` events. | SIEM, Cloud Security Monitoring | high |\n| network_traffic_pattern | Anomalous source IPs for OAuth token usage | Correlate Salesforce API access logs with known corporate IP ranges. Any access from unexpected ASNs or geolocations is suspicious. | SIEM, Cloud Access Security Broker (CASB) | high |\n| api_endpoint | `/services/data/vXX.X/` | Monitor for unusual activity patterns against Salesforce REST API endpoints, especially from service accounts. | API Security Gateway, WAF, CASB | medium |\n| user_account_pattern | Gainsight service account | Monitor the service account associated with the Gainsight integration for anomalous behavior, such as accessing unusual objects or exfiltrating large volumes of data. | Salesforce Shield, CASB | high |\n\n## Detection & Response\n\nDetecting this type of attack requires a focus on API and cloud application security monitoring. \n\n1.  **Log Analysis**: Security teams must ingest and analyze logs from their SaaS platforms, particularly Salesforce's Event Monitoring logs. Look for anomalous patterns associated with service accounts or third-party applications. Key indicators include:\n    *   Access from unusual IP addresses, geolocations, or autonomous systems (ASNs).\n    *   A sudden spike in data access or download volume (`ApiTotalUsage` events).\n    *   Access to objects or records outside the application's normal operating parameters.\n\n2.  **CASB/SSPM**: A Cloud Access Security Broker (CASB) or SaaS Security Posture Management (SSPM) tool is crucial. These tools can baseline normal application behavior and alert on deviations. They can also provide visibility into OAuth permissions and help identify over-privileged applications. For detection, **[D3-RAPA: Resource Access Pattern Analysis](https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis)** is a key defensive technique to implement within these platforms.\n\n3.  **Token Lifecycle Management**: Regularly audit all authorized OAuth applications. Revoke tokens for unused or suspicious applications. Implement policies for short-lived refresh tokens where possible. **[D3-ANCI: Authentication Cache Invalidation](https://d3fend.mitre.org/technique/d3f:AuthenticationCacheInvalidation)** should be applied by immediately revoking sessions and tokens upon detection of suspicious activity.\n\n## Mitigation\n\nMitigating SaaS-to-SaaS supply chain attacks requires a multi-layered approach focusing on visibility, control, and incident readiness.\n\n*   **Immediate Action**: Salesforce has already revoked the tokens, which is the correct immediate response. Affected customers should assume their data was accessed and initiate their incident response plans.\n\n*   **Strategic Mitigation**:\n    1.  **Principle of Least Privilege**: Scrutinize the permissions granted to all third-party applications. Use SSPM tools to identify and remediate over-privileged OAuth grants. Applications should only have access to the specific data and API endpoints required for their function. This aligns with **[D3-UAP: User Account Permissions](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions)**.\n    2.  **Vendor Risk Management**: Enhance third-party risk management programs to include deep dives into the security posture of SaaS vendors, including their own supply chain dependencies.\n    3.  **Network Egress Controls**: While difficult with SaaS, where possible, restrict API access to known IP ranges to prevent stolen tokens from being used from unauthorized locations. This is a form of **[D3-ITF: Inbound Traffic Filtering](https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering)** applied to the SaaS provider.\n    4.  **Continuous Monitoring**: Implement continuous monitoring of SaaS application activity. Use CASB/SSPM solutions to detect anomalous behavior and enforce security policies automatically.",
+  "twitter_post": "🚨 MAJOR SUPPLY CHAIN ATTACK: Hacker group 'Scattered Lapsus$ Hunters' claims breach of 200+ companies by abusing Salesforce-Gainsight OAuth tokens. High-profile firms like Atlassian, Docusign & Verizon named. ⚠️ #SupplyChainAttack #Salesforce #OAuth",
+  "meta_description": "A major supply chain attack by the 'Scattered Lapsus$ Hunters' group has compromised over 200 companies by exploiting OAuth tokens from the Gainsight app integrated with Salesforce. Learn about the impact and mitigation.",
+  "category": [
+    "Supply Chain Attack",
+    "Data Breach",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Scattered Lapsus$ Hunters",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ShinyHunters",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters"
+    },
+    {
+      "name": "Scattered Spider",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1015/"
+    },
+    {
+      "name": "Lapsus$",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0139/"
+    },
+    {
+      "name": "Salesforce",
+      "type": "vendor",
+      "url": "https://www.salesforce.com/"
+    },
+    {
+      "name": "Gainsight",
+      "type": "vendor",
+      "url": "https://www.gainsight.com/"
+    },
+    {
+      "name": "Google",
+      "type": "company",
+      "url": "https://www.google.com/"
+    },
+    {
+      "name": "Mandiant",
+      "type": "security_organization"
+    },
+    {
+      "name": "Atlassian",
+      "type": "company",
+      "url": "https://www.atlassian.com/"
+    },
+    {
+      "name": "Docusign",
+      "type": "company",
+      "url": "https://www.docusign.com/"
+    },
+    {
+      "name": "F5",
+      "type": "vendor",
+      "url": "https://www.f5.com/"
+    },
+    {
+      "name": "GitLab",
+      "type": "company",
+      "url": "https://about.gitlab.com/"
+    },
+    {
+      "name": "LinkedIn",
+      "type": "company",
+      "url": "https://www.linkedin.com/"
+    },
+    {
+      "name": "Malwarebytes",
+      "type": "vendor",
+      "url": "https://www.malwarebytes.com/"
+    },
+    {
+      "name": "SonicWall",
+      "type": "vendor",
+      "url": "https://www.sonicwall.com/"
+    },
+    {
+      "name": "Thomson Reuters",
+      "type": "company"
+    },
+    {
+      "name": "Verizon",
+      "type": "company",
+      "url": "https://www.verizon.com/"
+    },
+    {
+      "name": "OAuth",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/OAuth"
+    },
+    {
+      "name": "Salesforce AppExchange",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.pcmag.com/news/hackers-claim-new-mega-breach-as-salesforce-investigates-data-thefts",
+      "title": "Hackers Claim New Mega Breach As Salesforce Investigates Data Thefts",
+      "date": "2025-11-21",
+      "friendly_name": "PCMag",
+      "website": "pcmag.com"
+    },
+    {
+      "url": "https://www.socradar.com/scattered-lapsus-hunters-escalate-with-new-channel-and-gainsight-breach/",
+      "title": "Scattered LAPSUS$ Hunters Escalate With New Channel and Gainsight Breach",
+      "date": "2025-11-21",
+      "friendly_name": "SOCRadar",
+      "website": "socradar.com"
+    },
+    {
+      "url": "https://maaal.com/google-says-hackers-stole-data-from-200-companies-following-gainsight-breach/",
+      "title": "Google says hackers stole data from 200 companies following Gainsight breach",
+      "date": "2025-11-22",
+      "friendly_name": "Maaal",
+      "website": "maaal.com"
+    },
+    {
+      "url": "https://www.coesecurity.com/when-oauth-tokens-turn-toxic-how-shinyhunters-exploited-gainsight-to-steal-data-from-200-companies/",
+      "title": "When OAuth Tokens Turn Toxic: How ShinyHunters Exploited Gainsight to Steal Data from 200+ Companies",
+      "date": "2025-11-22",
+      "friendly_name": "COE Security",
+      "website": "coesecurity.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Valid Accounts: Cloud Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage Object",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1027.005",
+      "name": "Obfuscated Files or Information: Indicator Removal from Tools",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LFP",
+          "name": "Local File Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalFilePermissions"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        },
+        {
+          "id": "D3-SCP",
+          "name": "System Configuration Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions"
+        }
+      ],
+      "description": "Routinely audit and enforce least privilege on service accounts, including those used for third-party application integrations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Implement comprehensive logging and auditing for all SaaS platforms to monitor for anomalous API usage and access patterns.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "If supported by the SaaS provider, restrict API access for third-party integrations to a known set of IP addresses.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "While token theft bypasses user MFA, enforcing MFA on the vendor's side (Gainsight) could have prevented the initial compromise.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "To specifically counter the abuse of the Gainsight application's OAuth token, organizations must implement Resource Access Pattern Analysis within their Salesforce environment. This involves using a SaaS Security Posture Management (SSPM) or advanced Cloud Access Security Broker (CASB) solution to establish a baseline of normal behavior for the Gainsight service account. The baseline should profile the types of Salesforce objects it accesses, the frequency of access, the volume of data queried, and the typical time-of-day for its operations. Once this baseline is established, configure real-time alerting for any significant deviations. For example, an alert should trigger if the service account suddenly starts accessing a large number of contact records it has never touched before, or if data export volumes spike unexpectedly. This technique moves beyond static permission checks and focuses on behavioral anomalies, which is essential for detecting the malicious use of a legitimate, authorized token. This provides a critical detection layer that could have identified the attacker's data collection activities.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "A critical preventative measure is a rigorous audit and hardening of OAuth application permissions. Organizations must treat application service accounts with the same scrutiny as privileged user accounts. For the Gainsight-Salesforce integration, this means reviewing the scope of the OAuth grant and reducing it to the absolute minimum required for the application to function. For instance, if Gainsight only needs to read 'Opportunity' objects and write to 'Task' objects, its permissions should be explicitly limited to those actions and objects. Any 'read all' or 'write all' permissions should be eliminated. This can be implemented within Salesforce's 'Connected Apps' settings. Regularly scheduled reviews (e.g., quarterly) of all third-party app permissions should be mandated. This 'least privilege' approach ensures that even if an application's token is stolen, the potential blast radius is significantly contained, limiting the amount and type of data an attacker can exfiltrate.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Salesforce Event Monitoring Logs",
+      "description": "Primary source for detecting anomalous API usage, login events, and data exfiltration related to the Salesforce platform.",
+      "context": "SIEM, Cloud Security Monitoring Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous IP/ASN for service account",
+      "description": "Detects when the Gainsight service account authenticates or makes API calls from an IP address or ASN not associated with Gainsight's infrastructure.",
+      "context": "CASB, SIEM log correlation",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "/services/data/",
+      "description": "Monitor for unusual volume or access patterns to Salesforce REST API endpoints, particularly from integrated application service accounts.",
+      "context": "API Security Gateway, WAF, CASB",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "High volume of 'sfdx force:data:soql:query'",
+      "description": "If attackers gain access to a system with Salesforce CLI tools, they may use bulk queries to exfiltrate data. Monitor for unusual usage.",
+      "context": "EDR, Command-line logging",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "OAuth",
+    "Supply Chain Attack",
+    "SaaS",
+    "Salesforce",
+    "Gainsight",
+    "Scattered Lapsus$ Hunters",
+    "Data Breach",
+    "Token Theft"
+  ],
+  "extract_datetime": "2025-11-22T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "companies_affected": [
+      "Atlassian",
+      "Docusign",
+      "F5",
+      "GitLab",
+      "LinkedIn",
+      "Malwarebytes",
+      "SonicWall",
+      "Thomson Reuters",
+      "Verizon"
+    ],
+    "industries_affected": [
+      "Technology",
+      "Telecommunications",
+      "Finance"
+    ],
+    "other_affected": [
+      "Over 200 organizations using Gainsight and Salesforce"
+    ]
+  },
+  "pub_date": "2025-11-22",
+  "reading_time_minutes": 6,
+  "createdAt": "2025-11-22T15:00:00.000Z",
+  "updatedAt": "2025-12-06T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2025-12-06T00:00:00Z",
+      "datetime": "2025-12-06T00:00:00Z",
+      "title": "Update 1",
+      "summary": "Scattered LAPSUS$ Hunters launched a dark web leak site, threatening to expose Salesforce customer data and demanding a ransom from Salesforce directly.",
+      "sources": [
+        {
+          "title": "10 cyber incidents that shook the world in 2025: Cloudflare, Colt, Salesforce",
+          "url": "https://www.capacitymedia.com/article/2d7e9k3l1v0x1f7z5w9o4/news/10-cyber-incidents-that-shook-the-world-in-2025-cloudflare-colt-salesforce"
+        },
+        {
+          "title": "Salesforce Extortion Accelerates With New Leak Site",
+          "url": "https://www.upguard.com/blog/salesforce-extortion-accelerates-with-new-leak-site"
+        }
+      ]
+    }
+  ]
+}

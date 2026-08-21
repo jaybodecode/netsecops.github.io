@@ -1,0 +1,200 @@
+{
+  "id": "12b0cef1-e3a6-4899-a45d-ae701550e5b2",
+  "slug": "pdfsider-backdoor-uses-dll-side-loading-to-evade-defenses",
+  "headline": "Stealthy 'PDFSIDER' Backdoor Uses DLL Side-Loading to Bypass EDR and AV",
+  "title": "New 'PDFSIDER' Backdoor Leverages DLL Side-Loading with Legitimate PDF App to Achieve Stealth and Evade Detection",
+  "summary": "Security researchers at Resecurity have uncovered a new stealthy backdoor, dubbed 'PDFSIDER,' that uses a DLL side-loading technique to evade EDR and antivirus solutions. The malware masquerades as a legitimate PDF application to load a malicious DLL, establishing an encrypted command-and-control channel for long-term, covert access. The backdoor is already being actively used by ransomware groups, including the notorious Qilin gang, for payload delivery.",
+  "full_report": "## Executive Summary\nA new and sophisticated malware backdoor named **PDFSIDER** has been identified by **[Resecurity](https://www.resecurity.com/)**, demonstrating advanced techniques for stealth and persistence. The malware's core tactic is DLL side-loading, where it exploits a legitimate, digitally signed PDF application to load a malicious DLL, effectively bypassing many endpoint security controls. PDFSIDER establishes a covert, encrypted command-and-control (C2) channel and provides attackers with remote shell access. Worryingly, this backdoor is not a theoretical threat; it is actively being used in the wild by ransomware affiliates, including the **[Qilin](https://malpedia.caad.fkie.fraunhofer.de/actor/qilin)** ransomware group, as a tool for initial access and payload deployment.\n\n## Threat Overview\nPDFSIDER represents a significant threat due to its focus on evasion and its adoption by established criminal groups. The primary infection vector is spear-phishing emails containing a ZIP archive. This archive holds a legitimate executable for the \"**PDF24 App**\" and a malicious DLL named `cryptbase.dll`. When the user runs the legitimate PDF program, it inadvertently loads the malicious DLL from the same directory, kicking off the infection. An alternative vector involves social engineering, where attackers convince a target to install **Microsoft Quick Assist**, giving them direct remote access to deploy the malware.\n\n## Technical Analysis\n- **Initial Access:** The primary method is spear-phishing with a malicious attachment ([`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/)).\n- **Defense Evasion & Execution:** The core of the attack is **DLL Side-Loading** ([`T1574.002`](https://attack.mitre.org/techniques/T1574/002/)). The legitimate `pdf24.exe` is vulnerable to this technique, loading the malicious `cryptbase.dll` from its local directory instead of the legitimate system version. This allows the malware's code to run within the trusted process space of a signed application, evading many EDR and AV heuristics.\n- **In-Memory Operation:** Most of the malware's activity occurs in memory, minimizing its footprint on the disk and making forensic analysis more difficult.\n- **Command and Control:** PDFSIDER establishes a secure C2 channel using the embedded Botan cryptographic library to implement AES-256-GCM authenticated encryption ([`T1573.002 - Asymmetric Cryptography`](https://attack.mitre.org/techniques/T1573/002/)). This strong encryption makes C2 traffic difficult to detect and analyze.\n- **Payload:** The backdoor provides an interactive command shell ([`T1059.003 - Windows Command Shell`](https://attack.mitre.org/techniques/T1059/003/)), allowing attackers to execute arbitrary commands, exfiltrate data, and deploy second-stage payloads like the Qilin ransomware.\n\n## Impact Assessment\nPDFSIDER provides a stealthy and persistent foothold into a target network. Its use by the Qilin ransomware group means that an initial PDFSIDER infection is a direct precursor to a full-blown ransomware attack. The impact can range from data theft and espionage to catastrophic business disruption and financial loss from ransomware. The attack on a Fortune 100 financial company highlights the serious risk this malware poses to high-value targets.\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| file_name | `cryptbase.dll` | The name of the malicious DLL used in the side-loading attack. |\n| file_name | `pdf24.exe` | The legitimate executable that is abused to load the malicious DLL. |\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| file_path | The presence of `cryptbase.dll` in the same directory as `pdf24.exe`. | The legitimate `cryptbase.dll` resides in `C:\\Windows\\System32`. Its presence elsewhere is a strong indicator of side-loading. | EDR, file system monitoring | high |\n| process_name | `pdf24.exe` | Monitor this process for making suspicious outbound network connections, especially to non-standard ports or unknown IPs. | EDR process monitoring, firewall logs | high |\n| command_line_pattern | `quickassist.exe` | Execution of Microsoft Quick Assist, especially if initiated by an unsolicited support call. | Windows Event ID 4688, EDR logs | medium |\n| registry_key | `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run` | Check for persistence entries related to `pdf24.exe` or other suspicious autorun locations. | Registry monitoring | medium |\n\n## Detection & Response\n- **D3FEND: System Call Analysis ([`D3-SCA`](https://d3fend.mitre.org/technique/d3f:SystemCallAnalysis))**: Deploy EDR solutions capable of detecting DLL side-loading. These tools monitor process memory and API calls to identify when a process loads a DLL from an anomalous path.\n- **Threat Hunting**: Proactively hunt for the presence of `cryptbase.dll` outside of the `System32` directory. Create a hunting query to find processes that have loaded DLLs from their own application directory.\n- **Network Traffic Analysis**: Even though the C2 traffic is encrypted, monitor for anomalous connections from processes that should not be communicating with the internet, such as `pdf24.exe`.\n\n## Mitigation\n- **Application Control**: Use application control solutions like AppLocker to prevent the execution of unauthorized executables, especially those arriving via email or downloaded from the internet.\n- **D3FEND: Local File Permissions ([`D3-LFP`](https://d3fend.mitre.org/technique/d3f:LocalFilePermissions))**: Configure file system permissions to prevent users from writing files to application directories. This can mitigate some forms of DLL side-loading.\n- **User Training**: Train users to be suspicious of unsolicited emails with attachments, even if they appear to be legitimate documents or applications. Also, train them to never grant remote access (e.g., via Quick Assist) to unverified IT support personnel.\n- **Software Vetting**: Vet all software before deployment. While PDF24 is legitimate, understanding its vulnerabilities (like susceptibility to side-loading) is key to securing it.",
+  "twitter_post": "New 'PDFSIDER' backdoor uses DLL side-loading with a legit PDF app to bypass EDR/AV. It creates an encrypted C2 channel for stealthy access and is already used by the Qilin ransomware group. 🛡️ #Malware #Backdoor #EDR #Qilin #ThreatIntel",
+  "meta_description": "Researchers have uncovered 'PDFSIDER', a new stealthy backdoor that uses DLL side-loading with a legitimate PDF application to evade EDR and AV defenses and establish persistent access.",
+  "category": [
+    "Malware",
+    "Ransomware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "PDFSIDER",
+      "type": "malware"
+    },
+    {
+      "name": "Qilin",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/qilin"
+    },
+    {
+      "name": "Resecurity",
+      "type": "security_organization",
+      "url": "https://www.resecurity.com/"
+    },
+    {
+      "name": "PDF24 App",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft Quick Assist",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.infosecurity-magazine.com/news/researchers-uncover-pdfsider/",
+      "title": "Researchers Uncover PDFSIDER Malware Built for Long-Term, Covert System Access",
+      "date": "2026-01-19",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    },
+    {
+      "url": "https://www.resecurity.com/blog/article/pdfsider-malware-exploitation-of-dll-side-loading-for-av-and-edr-evasion",
+      "title": "PDFSIDER Malware - Exploitation of DLL Side-Loading for AV and EDR Evasion",
+      "date": "2026-01-18",
+      "friendly_name": "Resecurity",
+      "website": "resecurity.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/01/weekly-recap-fortinet-exploits.html",
+      "title": "Weekly Recap: Fortinet Exploits, RedLine Clipjack, NTLM Crack, Copilot Attack & More",
+      "date": "2026-01-19",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.techzine.eu/news/security/123398/new-windows-backdoor-emerges-in-ransomware-attack/",
+      "title": "New Windows backdoor emerges in ransomware attack",
+      "date": "2026-01-20",
+      "friendly_name": "Techzine Global",
+      "website": "techzine.eu"
+    },
+    {
+      "url": "https://www.gbhackers.com/pdfsider-malware/",
+      "title": "PDFSIDER Malware Actively Used by Threat Actors to Bypass Antivirus and EDR Defenses",
+      "date": "2026-01-19",
+      "friendly_name": "GBHackers on Security",
+      "website": "gbhackers.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1573.002",
+      "name": "Asymmetric Cryptography",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1059.003",
+      "name": "Windows Command Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use EDR and application control to detect and block the patterns associated with DLL side-loading.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1044",
+      "name": "Restrict Library Loading",
+      "description": "Configure the operating system or use security tools to enforce secure library loading, preventing applications from loading DLLs from untrusted paths.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Regularly audit systems for indicators of compromise, such as misplaced system DLLs or suspicious processes making network connections.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an EDR solution with a specific focus on detecting DLL side-loading. Configure detection rules to alert when a process loads a DLL that has the same name as a well-known system DLL (like `cryptbase.dll`) but is loaded from a non-standard path (i.e., not `C:\\Windows\\System32`). For the PDFSIDER case, a high-fidelity alert would be `process: pdf24.exe` loads `module: cryptbase.dll` from `path: C:\\Users\\...`. This behavioral detection is crucial because signature-based AV will miss it, as both the executable and the DLL name (initially) appear legitimate. This moves detection from a simple signature match to a more robust contextual analysis of process behavior.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Implement application allowlisting using a technology like Windows Defender Application Control (WDAC). This can prevent the initial execution of the unauthorized `pdf24.exe` that arrives in the phishing email's ZIP file. By defining a policy that only allows execution of software installed by trusted administrators in standard locations (like `C:\\Program Files`), you can block the execution of executables from user-writable locations like `Downloads` or temporary folders. This countermeasure stops the attack chain at the very beginning, before the DLL side-loading can even be attempted.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "cryptbase.dll",
+      "description": "Malicious DLL used in the side-loading attack against PDF24 App."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "C:\\Program Files\\PDF24\\cryptbase.dll",
+      "description": "An example of the malicious DLL placed in the legitimate application's directory to be side-loaded. The legitimate version is in System32.",
+      "context": "File Integrity Monitoring (FIM) and EDR file event logging.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "pdf24.exe",
+      "description": "The legitimate process abused by PDFSIDER. Monitor for this process making outbound network connections or spawning child processes like cmd.exe.",
+      "context": "EDR process monitoring and firewall logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "Botan C++ Crypto Library",
+      "description": "PDFSIDER uses the Botan library for its encrypted C2. The presence of Botan library strings in an unexpected process could be an indicator.",
+      "context": "Memory scanning with YARA rules, static file analysis.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "backdoor",
+    "DLL side-loading",
+    "EDR evasion",
+    "Qilin",
+    "PDFSIDER",
+    "Resecurity"
+  ],
+  "extract_datetime": "2026-01-20T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Finance",
+      "Government"
+    ]
+  },
+  "pub_date": "2026-01-20",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-20T15:00:00.000Z",
+  "updatedAt": "2026-01-20T15:00:00.000Z"
+}

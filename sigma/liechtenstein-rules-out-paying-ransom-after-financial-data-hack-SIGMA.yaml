@@ -1,0 +1,82 @@
+title: Anomalous Large Outbound Data Transfer
+id: 2b1a987c-4f5e-4d6c-8a9b-3e2d1c0b9a8d
+status: experimental
+description: Detects an unusual volume of outbound data from a single host, which could indicate data exfiltration. This is a generic behavioral rule and requires tuning for the specific environment.
+author: cyber.netsecops.io
+date: 2026-08-17
+references:
+  - https://www.insurancejournal.com/news/international/2026/08/17/881801.htm
+tags:
+  - attack.t1041
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allow'
+  filter_internal:
+    dst_ip|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate large file transfers, software updates, or cloud backups.
+---
+title: Anomalous Privileged Account Login
+id: 8c7d6b5a-4f3e-4d2c-8a1b-9e8d7c6b5a4f
+status: experimental
+description: Detects a login to a privileged account from an unusual source or at an unusual time, which could indicate compromised credentials.
+author: cyber.netsecops.io
+date: 2026-08-17
+references:
+  - https://www.insurancejournal.com/news/international/2026/08/17/881801.htm
+tags:
+  - attack.t1078
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType: 3 # Network Logon
+    AccountName|contains:
+      - 'admin'
+      - 'svc_'
+      - 'root'
+  filter_known_source:
+    IpAddress:
+      - '127.0.0.1'
+      - '::1'
+      # Add known admin subnets here
+  condition: selection and not filter_known_source
+falsepositives:
+  - Legitimate remote administration.
+---
+title: Anomalous Database Query Activity
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects keywords related to large data dumps or enumeration in database audit logs, which could indicate data theft from a repository.
+author: cyber.netsecops.io
+date: 2026-08-17
+references:
+  - https://www.insurancejournal.com/news/international/2026/08/17/881801.htm
+tags:
+  - attack.t1213
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains:
+      - 'SELECT * FROM'
+      - 'DUMP'
+      - 'information_schema'
+  filter_legit_users:
+    user:
+      - 'backup_user'
+      - 'monitoring_agent'
+  condition: selection and not filter_legit_users
+falsepositives:
+  - Legitimate administrative queries or database maintenance tasks.

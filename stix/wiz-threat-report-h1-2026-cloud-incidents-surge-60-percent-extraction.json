@@ -1,0 +1,241 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-07T16:23:06.191Z",
+    "article_slug": "wiz-threat-report-h1-2026-cloud-incidents-surge-60-percent",
+    "article_date": "2026-08-07",
+    "token_usage": {
+      "input_tokens": 145979,
+      "output_tokens": 2716,
+      "cached_tokens": 140179,
+      "total_tokens": 148695,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051932
+    }
+  },
+  "report_name": "Wiz Report: Cloud Incidents Surge 60% in H1 2026",
+  "threat_actors": [
+    {
+      "name": "TeamPCP",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A financially motivated group observed conducting supply-chain attacks against npm and PyPI ecosystems by poisoning developer packages to achieve credential theft.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    },
+    {
+      "name": "North Korean actors",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "State-sponsored actors from North Korea engaged in software supply-chain attacks, including trojanizing the 'axios' package, with likely motives of espionage and financial gain.",
+      "primary_motivation": "organizational-gain",
+      "secondary_motivations": [
+        "personal-gain"
+      ],
+      "sophistication": "advanced"
+    },
+    {
+      "name": "JINX-0163",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A newly emerged cloud-native extortion gang that specializes in targeting and compromising non-human identities, such as cloud service accounts and IAM roles, to gain broad environmental access and demand a ransom.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Supply Chain",
+      "mitre_id": "T1195.002",
+      "description": "Used by threat actors like TeamPCP and North Korean actors to poison open-source packages in ecosystems like npm and PyPI. Malicious packages with names similar to legitimate ones were used to trick developers into installing them, leading to credential theft."
+    },
+    {
+      "name": "Cloud Accounts",
+      "mitre_id": "T1078.004",
+      "description": "Used by the JINX-0163 extortion group to compromise non-human cloud identities, such as service accounts and IAM roles, to gain an initial foothold in victim cloud environments."
+    },
+    {
+      "name": "Resource Hijacking",
+      "mitre_id": "T1496",
+      "description": "Attackers deployed cryptominers, such as xmrig and kinsing, after exploiting vulnerabilities in AI infrastructure to use the victim's compute resources."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Xmrig",
+      "mitre_id": "",
+      "type": "resource-exploitation",
+      "is_family": true,
+      "aliases": [],
+      "description": "A common cryptomining process observed running on compromised servers, particularly those hosting AI models like Langflow.",
+      "capabilities": [
+        "compromises-system-availability"
+      ]
+    },
+    {
+      "name": "Kinsing",
+      "mitre_id": "S0599",
+      "type": "resource-exploitation",
+      "is_family": true,
+      "aliases": [],
+      "description": "A common cryptomining process observed running on compromised servers, particularly those hosting AI models.",
+      "capabilities": [
+        "compromises-system-availability"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [
+    {
+      "name": "North Korea",
+      "country": "North Korea",
+      "region": "eastern-asia"
+    }
+  ],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "xmrig"
+    },
+    {
+      "type": "file",
+      "name": "kinsing"
+    },
+    {
+      "type": "file",
+      "name": ".npmrc"
+    },
+    {
+      "type": "file",
+      "name": ".pypirc"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Cryptominer Process Execution (Xmrig, Kinsing)",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name IN ('xmrig', 'kinsing')]",
+      "x_netsecio_sigma_rule": "title: Cryptominer Process Execution (Xmrig, Kinsing)\nid: 5e8b1c2a-9d3f-4e6a-8c1b-2d3e4f5a6b7c\nstatus: experimental\ndescription: Detects the execution of common cryptomining processes xmrig or kinsing, often deployed after exploiting cloud infrastructure.\nreferences:\n  - https://www.wiz.io/blog/cloud-threat-highlights-h1-2026\nauthor: cyber.netsecops.io\ndate: 2026-08-07\ntags:\n  - attack.t1496\nlevel: high\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|endswith:\n      - '/xmrig'\n      - '/kinsing'\n    OriginalFileName:\n      - 'xmrig'\n      - 'kinsing'\n  condition: selection\nfalsepositives:\n  - Unlikely, but could be legitimate if cryptomining is authorized.\n",
+      "pattern": "",
+      "description": "Detects the execution of common cryptomining processes xmrig or kinsing, which the report notes are deployed on compromised AI infrastructure."
+    },
+    {
+      "name": "Developer Credential File Access",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name IN ('.npmrc', '.pypirc')]",
+      "x_netsecio_sigma_rule": "title: Developer Credential File Access\nid: a1b2c3d4-e5f6-4a90-8bcd-ef1234567890\nstatus: experimental\ndescription: Detects access to developer credential files (.npmrc, .pypirc) which may indicate credential theft attempts by malicious packages.\nreferences:\n  - https://www.wiz.io/blog/cloud-threat-highlights-h1-2026\nauthor: cyber.netsecops.io\ndate: 2026-08-07\ntags:\n  - attack.t1195.002\n  - attack.t1552.001\nlevel: medium\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|endswith:\n      - '/.npmrc'\n      - '/.pypirc'\n  filter_legit:\n    Image|endswith:\n      - '/npm'\n      - '/pip'\n      - '/python'\n  condition: selection and not filter_legit\nfalsepositives:\n  - Legitimate developer tools or scripts reading configuration.\n",
+      "pattern": "",
+      "description": "Detects access to developer credential files like .npmrc and .pypirc, which is a sign of credential theft as conducted by groups like TeamPCP."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "North Korean actors",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "JINX-0163",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "North Korean actors",
+      "source_type": "threat-actor",
+      "relationship_type": "originates-from",
+      "target_name": "North Korea",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Xmrig",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Resource Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Kinsing",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Resource Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cryptominer Process Execution (Xmrig, Kinsing)",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Resource Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cryptominer Process Execution (Xmrig, Kinsing)",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Xmrig",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Cryptominer Process Execution (Xmrig, Kinsing)",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Kinsing",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Developer Credential File Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cryptominer Process Execution (Xmrig, Kinsing)",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "xmrig",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Cryptominer Process Execution (Xmrig, Kinsing)",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "kinsing",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Developer Credential File Access",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": ".npmrc",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Developer Credential File Access",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": ".pypirc",
+      "target_type": "file"
+    }
+  ]
+}

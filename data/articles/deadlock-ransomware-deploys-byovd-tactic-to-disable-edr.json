@@ -1,0 +1,217 @@
+{
+  "id": "e00b2b78-398b-4b3b-b7b5-bc3c78e2bcd3",
+  "slug": "deadlock-ransomware-deploys-byovd-tactic-to-disable-edr",
+  "headline": "DeadLock Ransomware Uses Vulnerable Baidu Driver to Blind EDRs",
+  "title": "DeadLock Ransomware Deploys New \"Bring Your Own Vulnerable Driver\" Tactic to Disable Security Tools",
+  "summary": "A new DeadLock ransomware campaign is leveraging a novel \"Bring Your Own Vulnerable Driver\" (BYOVD) loader to exploit a vulnerability (CVE-2024-51324) in a legitimate Baidu Antivirus driver, `BdApiUtil.sys`. This technique allows the threat actors to terminate any process, including endpoint detection and response (EDR) and antivirus solutions, from the kernel level. By blinding security tools, the attackers can deploy the ransomware unimpeded. The attack chain, analyzed by Cisco Talos, also involves PowerShell scripts to disable Windows Defender and delete volume shadow copies, severely hindering detection and recovery efforts.",
+  "full_report": "## Executive Summary\nResearchers at **[Cisco Talos](https://blog.talosintelligence.com/)** have uncovered a new campaign by the **DeadLock ransomware** group that employs a sophisticated \"Bring Your Own Vulnerable Driver\" (BYOVD) technique to neutralize security software before encryption. The threat actors are using a previously unknown loader to exploit **CVE-2024-51324**, a privilege management vulnerability in a legitimate (but outdated) **[Baidu](https://www.baidu.com/)** Antivirus driver named `BdApiUtil.sys`. This allows the attackers to gain kernel-level privileges and terminate any running process, including critical Endpoint Detection and Response (EDR) and antivirus (AV) services. This tactic effectively blinds security defenses, allowing the ransomware payload to execute without interference. The attack highlights the growing trend of ransomware operators using BYOVD methods to overcome modern endpoint protection.\n\n---\n\n## Threat Overview\nThe DeadLock ransomware, active since at least July 2025, is a financially motivated operation targeting Windows systems. This latest campaign demonstrates a significant evolution in their technical capabilities. The core of the new attack is the abuse of `BdApiUtil.sys`, a driver from Baidu Antivirus. The attackers drop this vulnerable driver onto the victim's system, often with a deceptive filename like `DriverGay.sys`, and then exploit **CVE-2024-51324** to gain the ability to terminate processes from the kernel. This method is highly effective because security products are often protected from termination by user-mode processes, but are vulnerable to kill signals originating from the kernel.\n\nOnce security tools are disabled, the attackers proceed with the final stages of the attack, which includes deleting backups and encrypting files. The group does not maintain a public leak site, instead requiring victims to negotiate via the **Session** messenger app.\n\n## Technical Analysis\nThe attack chain observed by Cisco Talos follows these steps:\n1.  **Initial Access**: The initial access vector was not detailed in the report, but the actor was observed with a five-day dwell time before ransomware deployment, suggesting a period of reconnaissance after an initial compromise.\n2.  **Defense Evasion**: The actor uses a PowerShell script to perform several actions:\n    - Bypass User Account Control (UAC).\n    - Disable Windows Defender through registry modifications.\n    - Terminate a list of security, backup, and database services.\n3.  **Privilege Escalation & Defense Evasion**: The BYOVD technique is executed.\n    - The malicious loader drops the vulnerable `BdApiUtil.sys` driver (renamed to `DriverGay.sys`).\n    - The loader exploits **CVE-2024-51324** to gain kernel-level process termination capabilities.\n    - It then terminates EDR and other security processes that survived the initial PowerShell script.\n    - This maps to MITRE ATT&CK [`T1562.001 - Impair Defenses: Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/) and [`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/).\n4.  **Impact**: \n    - Volume shadow copies are deleted using `vssadmin.exe delete shadows /all /quiet` to prevent easy recovery, mapping to [`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/).\n    - The **DeadLock ransomware** payload is executed. It uses a custom stream cipher with time-based keys to encrypt files on the system, mapping to [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/).\n\n## Impact Assessment\nThe use of a BYOVD technique significantly increases the success rate and impact of DeadLock ransomware attacks. By disabling EDR/AV solutions at the kernel level, the attackers can operate with near impunity on the compromised endpoint. This leads to:\n- **Guaranteed Encryption**: A higher likelihood of successful and widespread file encryption across the victim's network.\n- **Delayed Detection**: The disabling of security tools means the attack may go unnoticed until users report being unable to access files, increasing the attacker's dwell time and potential for data exfiltration.\n- **Difficult Recovery**: The deletion of volume shadow copies, combined with effective encryption, forces victims toward paying the ransom as the path of least resistance.\n\n## Cyber Observables for Detection\nSecurity teams should hunt for the following indicators:\n| Type | Value | Description |\n|---|---|---|\n| `file_name` | `BdApiUtil.sys` | The legitimate name of the vulnerable Baidu driver. |\n| `file_name` | `DriverGay.sys` | The specific name used by the threat actor for the vulnerable driver in this campaign. |\n| `file_hash_sha256` | (if available) | Hashes for the specific loader and driver files would be high-fidelity indicators. |\n| `command_line_pattern` | `vssadmin.exe delete shadows` | A classic indicator of ransomware attempting to inhibit system recovery. |\n| `event_id` | 7045 | A new service was installed. Monitor for services created to load suspicious drivers. |\n| `log_source` | EDR/AV Tamper Protection Alerts | Alerts indicating that security agent processes have been unexpectedly terminated. |\n\n## Detection & Response\n- **Driver Monitoring**: Implement rules to detect the loading of known vulnerable drivers. Maintain an allowlist of legitimate, signed drivers for your environment and alert on any deviations. This corresponds to D3FEND's [`D3-DLIC: Driver Load Integrity Checking`](https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking).\n- **PowerShell Logging**: Ensure PowerShell Script Block Logging and Module Logging are enabled. Analyze logs for commands related to disabling Windows Defender or terminating security services. This is an application of [`D3-SFA: System File Analysis`](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis).\n- **Tamper Protection**: Ensure that the tamper protection features of your EDR/AV solutions are enabled and configured to their highest settings. While BYOVD can bypass some of these, they can still provide valuable alerts.\n- **Behavioral Analysis**: Use behavioral detection rules to identify the sequence of activities common in this attack: PowerShell execution, followed by loading a new driver, followed by termination of security processes, and finally, mass file modification. This is an application of [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n\n## Mitigation\n1.  **Application Control**: Use application control solutions, such as Windows Defender Application Control (WDAC), to create policies that block the loading of known vulnerable drivers. This is a proactive measure against BYOVD attacks. This maps to D3FEND's [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n2.  **Secure Backups**: Maintain immutable, offline backups of critical data. Since DeadLock deletes local shadow copies, having backups that are inaccessible from the production network is the most effective way to recover without paying a ransom.\n3.  **Least Privilege**: Enforce the principle of least privilege for user accounts. While this attack escalates to kernel-level privileges, limiting the initial compromise to a low-privilege account can slow the attacker down and provide more opportunities for detection.\n4.  **Endpoint Hardening**: Harden endpoints by disabling or restricting PowerShell execution for standard users where not required for business purposes.",
+  "twitter_post": "DeadLock ransomware evolves, using a novel BYOVD attack to disable EDRs. 🛡️ The campaign exploits a vulnerable Baidu AV driver (CVE-2024-51324) to gain kernel-level control and kill security processes. #Ransomware #BYOVD #CyberSecurity #DeadLock",
+  "meta_description": "Learn how the DeadLock ransomware group is using a 'Bring Your Own Vulnerable Driver' (BYOVD) technique with a Baidu AV driver (CVE-2024-51324) to disable EDR and antivirus software before encryption.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "DeadLock",
+      "type": "malware"
+    },
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://blog.talosintelligence.com/"
+    },
+    {
+      "name": "Baidu",
+      "type": "vendor",
+      "url": "https://www.baidu.com/"
+    },
+    {
+      "name": "Baidu Antivirus",
+      "type": "product"
+    },
+    {
+      "name": "PowerShell",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/PowerShell"
+    },
+    {
+      "name": "Session",
+      "type": "product"
+    },
+    {
+      "name": "Windows Defender",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2024-51324",
+      "kev": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://blog.talosintelligence.com/new-byovd-loader-behind-deadlock-ransomware-attack/",
+      "title": "New BYOVD loader behind DeadLock ransomware attack",
+      "date": "2025-12-09",
+      "friendly_name": "Cisco Talos",
+      "website": "blog.talosintelligence.com"
+    },
+    {
+      "url": "https://thehackernews.com/2025/12/deadlock-ransomware-uses-vulnerable.html",
+      "title": "DeadLock Ransomware Uses Vulnerable Baidu AV Driver to Disable Security Tools",
+      "date": "2025-12-09",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1562.001",
+      "name": "Impair Defenses: Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1547.006",
+      "name": "Kernel Modules and Extensions",
+      "tactic": "Persistence, Privilege Escalation"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1059.001",
+      "name": "PowerShell",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application control policies like WDAC to block known vulnerable drivers from being loaded.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Ensure tamper protection is enabled on EDR/AV solutions to prevent or alert on termination attempts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Enable robust logging for driver loading events, service creation, and PowerShell command execution to detect components of the attack chain.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "To counter the 'Bring Your Own Vulnerable Driver' (BYOVD) technique used by DeadLock, implement a driver blocklist using a robust application control solution like Windows Defender Application Control (WDAC). Create a policy that explicitly denies the loading of the vulnerable `BdApiUtil.sys` driver by its hash. Expand this policy to include other known vulnerable drivers commonly abused in BYOVD attacks. This is a proactive defense that prevents the core of the attack—gaining kernel-level privileges—from succeeding. Deploy this policy in audit mode first to identify any potential business disruptions before moving to enforcement mode. Prioritize deployment on critical servers and privileged workstations, as these are high-value targets for ransomware.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Configure your security monitoring tools to detect the specific chain of events in this attack. Create a correlation rule in your SIEM or EDR that triggers an alert when the following sequence is observed on a single host within a short time frame: 1) A PowerShell script disables security features or terminates services. 2) A new driver file (e.g., `BdApiUtil.sys` or `DriverGay.sys`) is written to disk. 3) A new service is created to load this driver. 4) The primary process of your EDR/AV solution is terminated. This behavioral, sequence-based detection is more resilient than relying on single IOCs and can effectively identify the pre-encryption stage of the DeadLock attack, providing a critical window for automated response actions like host isolation.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "BdApiUtil.sys",
+      "description": "The legitimate (but vulnerable) Baidu Antivirus driver being abused in this BYOVD attack.",
+      "context": "File integrity monitoring, EDR file creation events, system-wide file searches.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "DriverGay.sys",
+      "description": "The specific filename used by the threat actor to disguise the vulnerable Baidu driver.",
+      "context": "File integrity monitoring, EDR file creation events.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "vssadmin.exe delete shadows /all /quiet",
+      "description": "Common ransomware command to delete Volume Shadow Copies and inhibit system recovery.",
+      "context": "Command line logging (Event ID 4688), EDR process monitoring.",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "7045",
+      "description": "Windows System Event Log ID for 'A service was installed in the system.' Monitor for services loading suspicious or unsigned drivers.",
+      "context": "Windows Event Logs (System).",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Termination of EDR/AV processes",
+      "description": "Unexpected termination of security agent processes (e.g., `MsMpEng.exe`, `carbonblack.exe`, `sentinel.exe`) is a strong indicator of compromise.",
+      "context": "EDR tamper protection alerts, Windows System Event Logs.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Ransomware",
+    "DeadLock",
+    "BYOVD",
+    "EDR Evasion",
+    "Kernel",
+    "Defense Evasion"
+  ],
+  "extract_datetime": "2025-12-09T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Financially motivated targets of opportunity"
+    ]
+  },
+  "pub_date": "2025-12-09",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-12-09T15:00:00.000Z",
+  "updatedAt": "2025-12-09T15:00:00.000Z"
+}

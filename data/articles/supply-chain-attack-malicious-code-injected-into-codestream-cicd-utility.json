@@ -1,0 +1,179 @@
+{
+  "id": "82111107-07cf-4f0a-bfa5-3f8d4ecc465c",
+  "slug": "supply-chain-attack-malicious-code-injected-into-codestream-cicd-utility",
+  "headline": "CodeStream CI/CD Utility Compromised in Supply Chain Attack, Developer Secrets Stolen",
+  "title": "Supply Chain Attack Hits 'CodeStream' CI/CD Tool; Malicious Version Steals Dev Secrets",
+  "summary": "The popular open-source CI/CD utility 'CodeStream' has been the target of a sophisticated supply chain attack. An unknown threat actor compromised the project's package registry, publishing a malicious version (3.4.1) on June 29, 2026. The tainted version, downloaded over 50,000 times, was designed to scan and exfiltrate sensitive credentials, API keys, and tokens from developer environments for services like AWS, GitHub, and Artifactory. The CodeStream team has released a clean version (3.4.2) and is urging all users to upgrade immediately, rotate all credentials, and audit their systems for compromise.",
+  "full_report": "## Executive Summary\n\nThe open-source CI/CD utility **CodeStream** has been compromised in a significant software supply chain attack. On June 29, 2026, an unauthorized actor published a malicious version, `3.4.1`, to the official package registry. This version contained code designed to steal sensitive environment variables, API keys, and other credentials from the systems it was running on. The malicious package was available for 36 hours and was downloaded an estimated 50,000 times before being removed. The developers have released a patched version, `3.4.2`, and are advising all users to upgrade immediately and begin rotating all potentially exposed secrets.\n\n---\n\n## Threat Overview\n\nThis incident is a classic software supply chain attack, where attackers compromise the build or distribution process of a trusted piece of software to push malicious code to downstream users. The attack on **CodeStream** is particularly dangerous because CI/CD systems are central to modern software development and are often configured with highly privileged access to other systems.\n\n*   **Attack Vector:** The threat actor gained access to the project's package registry credentials, allowing them to publish new versions of the software.\n*   **Malicious Payload:** The code injected into version `3.4.1` was specifically designed to be an info-stealer. It scans the environment variables of the machine it runs on, searching for patterns that match common credential formats for services like **[AWS](https://aws.amazon.com/)**, **[GitHub](https://github.com)**, and **Artifactory**.\n*   **Exfiltration:** The stolen credentials were exfiltrated using a DNS-over-HTTPS (DoH) tunnel. This is a stealthy technique that can blend in with legitimate DNS traffic, making it harder to detect on a network level.\n\n## Technical Analysis\n\nThe attack's sophistication lies in its targeting of the CI/CD pipeline. By compromising **CodeStream**, the attackers could potentially gain access to the 'crown jewels' of any organization using it: source code, private keys, and cloud infrastructure credentials. The choice to use DoH for exfiltration shows a level of technical competence aimed at evading network-based security controls.\n\nAnalysis by **GitHub Security Lab** confirmed the malicious behavior. The injected code would activate upon the execution of the CI/CD utility, perform its scan, and then send the collected data to an attacker-controlled server before continuing with its normal operations, making the malicious activity less obvious.\n\n### MITRE ATT&CK TTPs\n\n*   **Initial Access:** [`T1199 - Trusted Relationship`](https://attack.mitre.org/techniques/T1199/) - Attackers compromised the CodeStream project to attack its users.\n*   **Defense Evasion, Persistence, Privilege Escalation, Initial Access:** [`T1195.001 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/001/) - The core of the attack, compromising a software package to gain access to downstream systems.\n*   **Credential Access:** [`T1552.004 - Private Keys`](https://attack.mitre.org/techniques/T1552/004/) - The malware likely searched for SSH keys and other private keys.\n*   **Credential Access:** [`T1552.005 - Cloud Instance Metadata API`](https://attack.mitre.org/techniques/T1552/005/) - If running in a cloud environment, the malware could query the metadata service for credentials.\n*   **Exfiltration:** [`T1048.003 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1048/003/) - Using DoH as a C2 channel to exfiltrate data.\n\n## Impact Assessment\n\nThe potential impact for the 50,000+ downloads is severe. Any organization that downloaded and ran version `3.4.1` must assume that all secrets present in their CI/CD environment have been compromised. This includes:\n\n*   Cloud provider API keys (e.g., AWS, GCP, Azure).\n*   Source code repository tokens (e.g., GitHub, GitLab).\n*   Package registry credentials (e.g., Artifactory, npm, Docker Hub).\n*   Database passwords and other application secrets.\n\nWith these secrets, attackers could steal source code, deploy malicious code into production, run up huge cloud bills (e.g., for crypto mining), or pivot deeper into the victim's network.\n\n## IOCs — Directly from Articles\n\nNo specific Indicators of Compromise (e.g., file hashes, C2 domains) were mentioned in the source articles.\n\n## Detection & Response\n\n*   **Detection:**\n    *   **Version Check:** The first step is to identify any system that has or had **CodeStream** version `3.4.1` installed. This can be done via software inventory tools or by checking package manager logs.\n    *   **Network Logs:** Hunt for anomalous DNS traffic, particularly a high volume of DNS queries or DoH traffic to unknown domains from build servers or developer workstations. D3FEND's [`Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) can help here.\n    *   **Cloud Logs:** Review cloud audit logs (e.g., AWS CloudTrail) for any suspicious activity performed using CI/CD service account credentials, such as the creation of new users or access keys.\n*   **Response:**\n    *   **Upgrade Immediately:** All users must upgrade to version `3.4.2` or later.\n    *   **Rotate ALL Secrets:** This is the most critical response step. Assume all credentials in the CI/CD environment are compromised. This includes API keys, tokens, passwords, and SSH keys. This must be done comprehensively.\n    *   **Audit for Compromise:** Review logs for any signs of malicious activity dating back to the time the compromised version was installed.\n\n## Mitigation\n\n*   **Dependency Pinning and Verification:** Pin software dependencies to specific, known-good versions. Use checksums or signatures to verify the integrity of downloaded packages before they are used. This would have prevented the malicious version from being automatically pulled.\n*   **Least-Privilege for CI/CD:** Grant CI/CD systems only the minimum permissions they need to do their job. Use short-lived credentials where possible (e.g., via OIDC with cloud providers) instead of storing long-lived static secrets in the environment.\n*   **Secret Management:** Store secrets in a dedicated vault (e.g., HashiCorp Vault, AWS Secrets Manager) rather than in environment variables, which are easily scraped.\n*   **Egress Filtering:** Implement strict network egress filtering on build servers to control where they can send traffic. By default, deny all outbound traffic and only allow connections to known, required services. This would have blocked the DoH exfiltration.",
+  "twitter_post": "🚨 SUPPLY CHAIN ATTACK: Popular CI/CD tool 'CodeStream' compromised. Malicious v3.4.1, downloaded 50k+ times, steals dev secrets like AWS & GitHub keys. ‼️ Users must upgrade to v3.4.2 & rotate all credentials NOW. #SupplyChainAttack #DevSecOps",
+  "meta_description": "A supply chain attack on the CodeStream CI/CD utility resulted in a malicious version (3.4.1) that steals developer secrets. Users are urged to upgrade and rotate all credentials.",
+  "category": [
+    "Supply Chain Attack",
+    "Security Operations",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "CodeStream",
+      "type": "product"
+    },
+    {
+      "name": "AWS",
+      "type": "product",
+      "url": "https://aws.amazon.com/"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com"
+    },
+    {
+      "name": "Artifactory",
+      "type": "product"
+    },
+    {
+      "name": "GitHub Security Lab",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.theregister.com/2026/07/01/codestream_cicd_supply_chain_attack/",
+      "title": "CodeStream CI/CD tool hit by supply chain attack, malicious version steals dev secrets",
+      "date": "2026-07-01",
+      "friendly_name": "The Register",
+      "website": "theregister.com"
+    },
+    {
+      "url": "https://securityaffairs.co/wordpress/158394/malware/codestream-supply-chain-attack.html",
+      "title": "Popular CI/CD utility CodeStream compromised in a supply-chain attack",
+      "date": "2026-07-01",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.co"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-29T00:00:00Z",
+      "summary": "Malicious version 3.4.1 of CodeStream is published to the official package registry."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1552",
+      "name": "Unsecured Credentials"
+    },
+    {
+      "id": "T1048.003",
+      "name": "Exfiltration Over C2 Channel"
+    },
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Immediately updating to the clean version (3.4.2) removes the malicious code from the environment.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1027",
+      "name": "Password Policies",
+      "description": "Rotating all compromised credentials is a critical remediation step to revoke the attacker's access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implementing strict egress filtering on build servers to block unexpected outbound connections like DoH can prevent data exfiltration.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M0939",
+      "name": "Vulnerability Scanning",
+      "description": "While not a direct mitigation for this attack, using dependency scanning tools to verify the integrity (via checksums) of software packages can prevent the use of tampered components.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-RSC",
+      "technique_name": "Remote-controlled Software",
+      "url": "https://d3fend.mitre.org/technique/d3f:Remote-controlledSoftware",
+      "recommendation": "The most urgent action is to identify all instances of CodeStream v3.4.1 and immediately upgrade to the patched version, 3.4.2. Following the upgrade, a comprehensive credential rotation process must be initiated. Assume every secret, token, and key accessible by the CI/CD environment is compromised. This includes cloud provider keys, database passwords, and source control tokens. This is a painstaking but non-negotiable step to evict the attacker and remediate the breach. Use infrastructure-as-code to automate the rotation where possible.",
+      "mitre_mitigation_id": "M1027"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Implement strict egress filtering rules for all build agents and CI/CD infrastructure. By default, all outbound traffic should be denied. Create explicit allow-lists for only the necessary destinations, such as your package registry, source control provider, and cloud provider APIs. The CodeStream attack used DNS-over-HTTPS for exfiltration, which could be blocked by disallowing outbound connections on port 443 to any destination not on the allow-list. This turns the network into a 'walled garden', preventing data exfiltration even if a component is compromised.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-VSA",
+      "technique_name": "Verified Software Artifacts",
+      "url": "https://d3fend.mitre.org/technique/d3f:VerifiedSoftwareArtifacts",
+      "recommendation": "To prevent future supply chain attacks of this nature, implement a system of dependency verification. Pin dependencies to specific versions and verify their cryptographic hashes (e.g., SHA-256 checksums) against a known-good source during the build process. If a downloaded package's hash does not match the expected hash, the build should fail. This practice, often managed through lock files (e.g., `package-lock.json`, `poetry.lock`), would have prevented the malicious CodeStream v3.4.1 from being used, as its hash would not have matched the legitimate v3.4.0.",
+      "mitre_mitigation_id": "M0939"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "codestream-3.4.1.pkg",
+      "description": "The specific filename of the malicious package. Search software inventory and file systems for this artifact.",
+      "context": "Software Asset Management, Filesystem Scan",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "DNS-over-HTTPS (DoH) traffic from build servers",
+      "description": "CI/CD servers typically do not generate DoH traffic. Its presence could indicate the exfiltration technique used by the malware.",
+      "context": "Firewall Logs, Netflow Analysis",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "AWS CloudTrail",
+      "description": "Look for suspicious API calls (e.g., iam:CreateAccessKey, ec2:RunInstances) originating from the user agent or IP associated with the CodeStream CI/CD service.",
+      "context": "SIEM, Cloud Audit Logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "supply chain attack",
+    "ci/cd",
+    "devsecops",
+    "open source",
+    "credential theft",
+    "github"
+  ],
+  "extract_datetime": "2026-07-01T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "software developers"
+    ],
+    "people_affected_estimate": "Over 50,000 downloads"
+  },
+  "pub_date": "2026-07-01",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-01T15:00:00.000Z",
+  "updatedAt": "2026-07-01T15:00:00.000Z"
+}

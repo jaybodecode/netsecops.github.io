@@ -1,0 +1,91 @@
+title: Mistic Backdoor DLL Side-Loading Execution
+id: 5e8a1b3c-7d4f-4e9a-8b2c-1d6f0a8b4c5d
+status: experimental
+description: Detects the execution of a legitimate Microsoft executable (MpExtMs.exe) from a non-standard directory, which is a known TTP for the KongTuke IAB to side-load the Mistic backdoor (EndpointDlp.dll).
+references:
+  - https://www.bleepingcomputer.com/news/security/stealthy-mistic-backdoor-linked-to-ransomware-access-broker-kongtuke/
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1574.002
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\MpExtMs.exe'
+  filter:
+    Image|startswith: 'C:\Windows\System32\'
+  condition: selection and not filter
+---
+title: KongTuke Associated Squiblydoo Command-Line
+id: a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects the use of regsvr32 to execute remote scripts, a technique associated with KongTuke.
+references:
+  - https://www.bleepingcomputer.com/news/security/stealthy-mistic-backdoor-linked-to-ransomware-access-broker-kongtuke/
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1218.010
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\regsvr32.exe'
+    CommandLine|contains|all:
+      - '/s'
+      - '/n'
+      - '/i:'
+      - 'scrobj.dll'
+  condition: selection
+---
+title: Mistic Backdoor Persistence via Run Key
+id: f1e2d3c4-b5a6-4987-8654-321fedcba987
+status: experimental
+description: Detects the creation of a registry run key pointing to MpExtMs.exe, which is used by KongTuke for Mistic backdoor persistence.
+references:
+  - https://www.bleepingcomputer.com/news/security/stealthy-mistic-backdoor-linked-to-ransomware-access-broker-kongtuke/
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1547.001
+  - attack.persistence
+level: high
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    EventType: 'SetValue'
+    TargetObject|contains: '\Software\Microsoft\Windows\CurrentVersion\Run'
+    Details|contains: 'MpExtMs.exe'
+  condition: selection
+---
+title: Mistic Backdoor Associated File Creation
+id: 0b514baf-0a55-456c-95f2-b64937423a50
+status: experimental
+description: Detects the presence of files associated with the Mistic backdoor side-loading routine.
+references:
+  - https://www.bleepingcomputer.com/news/security/stealthy-mistic-backdoor-linked-to-ransomware-access-broker-kongtuke/
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1574.002
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '\EndpointDlp.dll'
+      - '\MpExtMs.exe'
+  filter:
+    TargetFilename|startswith: 'C:\Windows\System32\'
+  condition: selection and not filter

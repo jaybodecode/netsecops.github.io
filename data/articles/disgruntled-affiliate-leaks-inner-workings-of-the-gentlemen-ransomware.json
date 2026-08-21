@@ -1,0 +1,171 @@
+{
+  "id": "b2c25219-6053-4010-b874-55833099492e",
+  "slug": "disgruntled-affiliate-leaks-inner-workings-of-the-gentlemen-ransomware",
+  "headline": "Disgruntled Affiliate Leaks 'The Gentlemen' Ransomware Gang's Playbook",
+  "title": "Inner Workings of 'The Gentlemen' RaaS Leaked by Affiliate, Exposing TTPs and FortiGate Exploitation",
+  "summary": "The operational playbook of 'The Gentlemen,' a nascent Ransomware-as-a-Service (RaaS) operation, has been leaked by a disgruntled affiliate known as 'hastalamuerte'. The leak, stemming from a financial dispute, provides a rare, unfiltered look into the group's methods. It reveals that The Gentlemen, an offshoot of the Qilin ransomware group, employs dual-extortion tactics and targets Windows, Linux, and ESXi environments. A primary initial access vector is the exploitation of vulnerable Fortinet FortiGate VPNs. The leaked TTPs include using PowerShell and WMI for lateral movement, deploying anti-forensic tools, and using Bring Your Own Vulnerable Driver (BYOVD) exploits. The incident highlights growing instability and internal conflict within the cybercrime ecosystem.",
+  "full_report": "## Executive Summary\nOn March 20, 2026, the internal tactics, techniques, and procedures (TTPs) of a new Ransomware-as-a-Service (RaaS) group called **The Gentlemen** were publicly leaked by one of its own affiliates. The affiliate, using the handle \"hastalamuerte,\" exposed the group's entire operational playbook, reportedly due to a financial dispute. The leak provides valuable threat intelligence on the group, which is an offshoot of the established Qilin ransomware operation. Key details reveal that the group targets vulnerable **[Fortinet](https://www.fortinet.com/)** FortiGate VPN appliances for initial access and employs a sophisticated set of tools for lateral movement, data exfiltration, and encryption across Windows, Linux, and ESXi environments. This public infighting provides a unique opportunity for defenders to understand and counter a new ransomware threat.\n\n---\n\n## Threat Overview\nThe leak offers a fascinating glimpse into the professionalization and internal politics of the ransomware ecosystem.\n\n*   **The Group:** **The Gentlemen** is a new RaaS player that spun off from the Qilin ransomware group. This structure allows the core developers to focus on the malware while affiliates handle the intrusion and deployment.\n*   **The Motive:** The leak by \"hastalamuerte\" was an act of revenge, demonstrating the inherent instability in a trust-based criminal enterprise. Financial disputes are a common source of conflict.\n*   **The Playbook:** The leaked information constitutes the group's operational manual, detailing their preferred methods from initial access to impact.\n\n## Technical Analysis (Based on Leaked TTPs)\nThe Gentlemen's playbook reveals a modern, multi-stage ransomware attack methodology.\n\n1.  **Initial Access:** A primary vector is the exploitation of vulnerabilities in Fortinet FortiGate VPN appliances ([`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/)). This continues a long trend of ransomware groups targeting unpatched edge devices.\n\n2.  **Execution & Lateral Movement:** Once inside a network, the group uses common but effective living-off-the-land techniques. They leverage **PowerShell** ([`T1059.001 - PowerShell`](https://attack.mitre.org/techniques/T1059/001/)) and **Windows Management Instrumentation (WMI)** ([`T1047 - Windows Management Instrumentation`](https://attack.mitre.org/techniques/T1047/)) to move between systems and execute commands.\n\n3.  **Defense Evasion:** The group employs several techniques to avoid detection and hinder response:\n    *   **Bring Your Own Vulnerable Driver (BYOVD):** ([`T1547.006 - Boot or Logon Autostart Execution: Kernel Modules and Extensions`](https://attack.mitre.org/technique/T1547/006/)) This technique is used to disable or bypass security products (EDR) by loading a legitimate but vulnerable driver to execute code in the kernel.\n    *   **Anti-Forensics:** The group actively compromises backup systems to prevent recovery and deletes logs ([`T1070.004 - Indicator Removal: File Deletion`](https://attack.mitre.org/techniques/T1070/004/)) to cover their tracks.\n\n4.  **Impact:** The group follows a dual-extortion model.\n    *   **Data Exfiltration:** They steal sensitive data before encryption to use as leverage.\n    *   **Encryption:** The ransomware payload is capable of encrypting files on Windows, Linux, and VMware ESXi hosts ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)), allowing them to cripple both standard servers and virtualized infrastructure.\n\n## Impact Assessment\nWhile the leak itself does not describe a specific victim, it provides a blueprint for the potential impact of an attack by The Gentlemen.\n\n*   **Cross-Platform Encryption:** The ability to encrypt ESXi hosts is particularly damaging, as it allows the attackers to take down dozens or hundreds of virtual machines at once, causing a complete operational shutdown.\n*   **Dual-Extortion:** Victims face the dual threat of having their operations halted and their sensitive data leaked publicly if they do not pay the ransom.\n*   **Disrupted Operations:** The targeting of backup systems is designed to make recovery from the attack as difficult as possible, increasing the pressure on the victim to pay.\n\n## Cyber Observables for Detection\nBased on the leaked TTPs, defenders can hunt for the following:\n\n| Type | Value | Description |\n|---|---|---|\n| `url_pattern` | `(known FortiGate exploit paths)` | Monitor web server and firewall logs for exploit attempts against known FortiGate vulnerabilities. |\n| `command_line_pattern` | `wmic.exe` | Look for suspicious use of WMI for remote process execution or system discovery. |\n| `process_name` | `powershell.exe` | Monitor for encoded PowerShell commands or PowerShell being used to download files from the internet. |\n| `other` | `(vulnerable driver load)` | EDR and OS-level logging may detect the loading of known-vulnerable drivers used in BYOVD attacks. |\n\n## Detection & Response\n*   **Threat Intelligence:** Incorporate the leaked TTPs into your threat intelligence platform and detection rules. This is a rare opportunity to get ahead of a new threat.\n*   **EDR/SIEM:** Create specific detection rules for the sequence of activities described: FortiGate exploit followed by PowerShell/WMI lateral movement, followed by access to backup servers or ESXi hosts.\n*   **Behavioral Analysis:** Use behavioral analytics to detect the abuse of legitimate tools like PowerShell and WMI for malicious purposes.\n\n## Mitigation\n*   **Patch Management:** The first line of defense is to patch internet-facing devices like FortiGate VPNs. This is a core tenet of **[MITRE Mitigation M1051 - Update Software](https://attack.mitre.org/mitigations/M1051/)**.\n*   **Network Segmentation:** Segment your network to prevent attackers from moving laterally from an IT system to a critical ESXi environment. Restrict access to ESXi management interfaces. This aligns with **[D3FEND Network Isolation (D3-NI)](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**.\n*   **Immutable Backups:** Ensure you have offline and/or immutable backups that cannot be compromised by an attacker who has gained administrative access to your network.\n*   **Application Control:** Use application control policies to prevent the loading of unauthorized or known-vulnerable drivers, which can mitigate BYOVD attacks. This is a form of **[D3FEND Executable Allowlisting (D3-EAL)](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)**.",
+  "twitter_post": "Internal drama in the cybercrime world! 🍿 A disgruntled affiliate has leaked the entire playbook of 'The Gentlemen' ransomware gang, revealing their TTPs, including the exploitation of FortiGate VPNs. #Ransomware #ThreatIntel #Leak",
+  "meta_description": "The inner workings and TTPs of 'The Gentlemen' Ransomware-as-a-Service (RaaS) have been leaked by a disgruntled affiliate, revealing their methods, including the exploitation of vulnerable FortiGate VPNs.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Threat Intelligence"
+  ],
+  "severity": "informational",
+  "entities": [
+    {
+      "name": "The Gentlemen",
+      "type": "threat_actor"
+    },
+    {
+      "name": "hastalamuerte",
+      "type": "person"
+    },
+    {
+      "name": "Qilin",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    },
+    {
+      "name": "FortiGate",
+      "type": "product"
+    },
+    {
+      "name": "PowerShell",
+      "type": "technology"
+    },
+    {
+      "name": "Windows Management Instrumentation (WMI)",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.scmagazine.com/brief/ransomware/the-gentlemen-ransomware-gangs-inner-workings-leaked",
+      "title": "The Gentlemen ransomware gang's inner workings leaked",
+      "friendly_name": "SC Magazine",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://scmagazine.com/briefs",
+      "title": "Briefs",
+      "friendly_name": "SC Magazine",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://thecyberpost.com/news/threatsday-bulletin-fortigate-raas-citrix-exploits-mcp-abuse-livechat-phish-more/",
+      "title": "ThreatsDay Bulletin: FortiGate RaaS, Citrix Exploits, MCP Abuse, LiveChat Phish & More",
+      "friendly_name": "The Cyber Post",
+      "website": "thecyberpost.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-20",
+      "summary": "An affiliate known as 'hastalamuerte' leaks the internal TTPs of The Gentlemen ransomware group."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.001",
+      "name": "PowerShell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1047",
+      "name": "Windows Management Instrumentation",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1547.006",
+      "name": "Boot or Logon Autostart Execution: Kernel Modules and Extensions",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1070.004",
+      "name": "Indicator Removal: File Deletion",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Rigorously patch internet-facing infrastructure like VPN appliances to prevent initial access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control to prevent the loading of known-vulnerable drivers used in BYOVD attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "description": "Segment networks to prevent lateral movement from user workstations to critical server infrastructure like ESXi hosts.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "wmic /node:<remote_ip> process call create \"...\"",
+      "description": "The use of WMI to execute commands on remote systems is a key lateral movement technique for this group.",
+      "context": "Windows Event ID 4688 (Process Creation), EDR logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "powershell.exe -enc <base64_blob>",
+      "description": "Attackers use encoded PowerShell commands to bypass simple command-line logging and execute malicious scripts.",
+      "context": "PowerShell Script Block Logging (Event ID 4104), EDR logs",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "Loading of known vulnerable driver",
+      "description": "The loading of a legitimate but vulnerable driver (BYOVD) to disable security software.",
+      "context": "Windows System event logs for driver loads, EDR alerts on suspicious driver activity",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "RaaS",
+    "TTPs",
+    "threat intelligence",
+    "FortiGate",
+    "BYOVD",
+    "cybercrime"
+  ],
+  "extract_datetime": "2026-03-21T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ]
+  },
+  "pub_date": "2026-03-21",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-03-21T15:00:00.000Z",
+  "updatedAt": "2026-03-21T15:00:00.000Z"
+}

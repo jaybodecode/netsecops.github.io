@@ -1,0 +1,161 @@
+{
+  "id": "af268f9a-ca2d-44f0-a2b4-cb2add462d85",
+  "slug": "new-tclbanker-trojan-targets-59-brazilian-financial-platforms-with-worm-like-spread",
+  "headline": "New TCLBANKER Trojan Spreads via WhatsApp and Outlook, Targeting 59 Brazilian Financial Apps",
+  "title": "TCLBANKER: Sophisticated Brazilian Banking Trojan Spreads Like a Worm to Target 59 Financial Platforms",
+  "summary": "A new, highly advanced Brazilian banking trojan named TCLBANKER is targeting 59 different banking, fintech, and cryptocurrency platforms. The malware, an evolution of the 'Maverick' family linked to the threat actor 'Water Saci,' uses a worm component to spread via victims' WhatsApp and Outlook contacts. The attack chain begins with a malicious MSI installer that abuses a legitimate Logitech program via DLL side-loading. TCLBANKER employs robust anti-analysis features, including a watchdog subsystem to evade security tools, and will only execute its final payload on systems configured for Brazilian Portuguese.",
+  "full_report": "## Executive Summary\n\nSecurity researchers have identified a new and highly sophisticated Brazilian banking trojan named **TCLBANKER**. Tracked as REF3076 by Elastic Security Labs, the malware is an evolution of the 'Maverick' malware family, previously associated with the threat actor **[Water Saci](https://attack.mitre.org/groups/G1006/)**. TCLBANKER targets an extensive list of 59 financial, fintech, and cryptocurrency platforms primarily in Brazil. Its attack chain is notable for its use of **[DLL side-loading](https://attack.mitre.org/techniques/T1574/002/)** against a legitimate Logitech application, robust anti-analysis and anti-VM capabilities, and a worm-like propagation mechanism that hijacks a victim's WhatsApp and Microsoft Outlook applications to spread to new targets. The malware's final payload only activates on systems set to Brazilian Portuguese, indicating a highly targeted campaign.\n\n---\n\n## Threat Overview\n\nTCLBANKER represents a significant threat to the Brazilian financial sector due to its sophistication and propagation method. The attack begins with a user downloading a ZIP file containing a malicious MSI installer. This installer bundles a legitimate, signed program, 'Logi AI Prompt Builder,' which is vulnerable to DLL side-loading.\n\nThe malware's propagation is particularly effective. It leverages a worm component, an evolution of the SORVEPOTEL worm, to spread through trusted communication channels. By hijacking active WhatsApp Web sessions and the Outlook desktop client, it sends phishing messages with the malicious installer to the victim's entire contact list—potentially up to 3,000 contacts. This method bypasses traditional security gateways and leverages social trust, dramatically increasing the likelihood of successful infection.\n\n---\n\n## Technical Analysis\n\nThe TCLBANKER attack chain is multi-staged and complex:\n\n1.  **Initial Access**: The victim is lured into downloading and executing a malicious MSI installer from a ZIP file ([`T1566.001`](https://attack.mitre.org/techniques/T1566/001/)).\n2.  **Defense Evasion (DLL Side-Loading)**: The MSI installer drops a legitimate, signed executable from Logitech (`Logi AI Prompt Builder.exe`) and a malicious DLL. When the executable is run, it loads the malicious DLL instead of the legitimate one ([`T1574.002`](https://attack.mitre.org/techniques/T1574/002/)).\n3.  **Anti-Analysis**: The malicious loader is packed with extensive anti-analysis features. It includes a \"watchdog subsystem\" that continuously scans for debuggers, sandboxes, analysis tools, and antivirus software. It actively removes security software hooks from system libraries and disables Windows telemetry to avoid detection ([`T1497`](https://attack.mitre.org/techniques/T1497/), [`T1622`](https://attack.mitre.org/techniques/T1622/)).\n4.  **Targeted Execution**: The malware performs several checks before deploying its final payload. It verifies it is being loaded by the correct process and confirms the system's default language is Brazilian Portuguese (`LANG_PORTUGUESE_BRAZILIAN`) ([`T1497.003`](https://attack.mitre.org/techniques/T1497/003/)).\n5.  **Payload Deployment**: If all checks pass, two main components are deployed: the core banking trojan and the worm.\n6.  **Lateral Movement (Worm)**: The worm component hijacks the victim's active WhatsApp Web session and Microsoft Outlook application. It iterates through the contact list and sends phishing messages containing the trojanized installer, facilitating its spread ([`T1598.003`](https://attack.mitre.org/techniques/T1598/003/)).\n7.  **Credential Access**: The banking trojan component is designed to steal credentials and manipulate sessions for the 59 targeted financial applications.\n\n### MITRE ATT&CK Mapping\n| Tactic | Technique ID | Technique Name | Description |\n|---|---|---|---|\n| Initial Access | `T1566.001` | Phishing: Spearphishing Attachment | The attack begins with a malicious MSI installer delivered in a ZIP file. |\n| Execution | `T1204.002` | User Execution: Malicious File | The user must be tricked into running the malicious installer. |\n| Persistence / Privilege Escalation | `T1574.002` | Hijack Execution Flow: DLL Side-Loading | The malware abuses a legitimate Logitech executable to load its malicious DLL. |\n| Defense Evasion | `T1497` | Virtualization/Sandbox Evasion | The loader includes a watchdog subsystem to detect and evade analysis environments. |\n| Defense Evasion | `T1622` | Debugger Evasion | The malware actively scans for and avoids debuggers. |\n| Defense Evasion | `T1497.003` | System Checks | The payload only executes if the system language is Brazilian Portuguese. |\n| Lateral Movement | `T1598.003` | Phishing for Information: Spearphishing via Service | The worm component uses the victim's WhatsApp and Outlook to send phishing messages to contacts. |\n\n---\n\n## Impact Assessment\n\nThe potential impact of TCLBANKER on individuals and financial institutions in Brazil is substantial. For individuals, a successful infection can lead to direct financial loss through fraudulent transactions, theft of banking credentials, and compromise of cryptocurrency wallets. The worm's propagation method also carries a significant reputational risk for the victim, as their accounts are used to attack their own contacts.\n\nFor the 59 targeted financial institutions, this malware represents a major threat to their customers and their platform's integrity. The widespread nature of the attack could lead to a surge in fraud cases, increased operational costs for customer support and reimbursement, and a loss of customer trust in their digital banking platforms. The malware's ability to spam up to 3,000 contacts per infection means it can spread exponentially, quickly reaching a large portion of the user base.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns to detect TCLBANKER activity:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| `process_name` | `Logi AI Prompt Builder.exe` | Look for this process running in environments where it is not expected, or for instances that load unsigned or suspicious DLLs. | EDR, Process Auditing |\n| `command_line_pattern` | `msiexec.exe` | Monitor for MSI installers being run from unusual locations (e.g., `Downloads` folder) that drop Logitech-related executables. | EDR, Windows Event ID 4688 |\n| `network_traffic_pattern` | `web.whatsapp.com` | Correlate process activity from Outlook or other desktop apps with network traffic to WhatsApp Web, which could indicate session hijacking. | EDR, Network Flow, Proxy Logs |\n| `log_source` | `Microsoft Outlook` | Audit for automated or scripted sending of messages from the Outlook client, especially if they contain ZIP files or links. | Application Logs, EDR Script Block Logging |\n\n---\n\n## Detection & Response\n\n**Detection:**\n1.  **Endpoint Detection and Response (EDR)**: Deploy EDR solutions capable of detecting DLL side-loading. Create rules to alert on legitimate, signed processes (like `Logi AI Prompt Builder.exe`) loading unsigned or untrusted DLLs from the same directory.\n2.  **Behavioral Analysis**: Monitor for processes that attempt to read WhatsApp or Outlook data files and simultaneously make network connections. This behavior is highly indicative of session hijacking.\n3.  **Script Logging**: Enable enhanced PowerShell and script block logging. The worm component may use scripting to automate interactions with Outlook and WhatsApp, which would be visible in these logs.\n4.  **Language Check**: While specific to this malware, an EDR rule that flags any process checking the system language and then performing sensitive actions could be a useful heuristic for targeted threats.\n\n**Response:**\n1.  **Isolate**: Disconnect the infected machine from the network immediately to stop the worm from spreading.\n2.  **Terminate Sessions**: Log out of all active web sessions, especially WhatsApp Web, and revoke any linked devices.\n3.  **Change Passwords**: Change passwords for all financial applications, email, and other sensitive accounts accessed from the compromised machine.\n4.  **Forensic Analysis**: Analyze the machine to identify the initial infection vector and ensure all components of the malware are removed.\n\n---\n\n## Mitigation\n\n**Strategic Mitigation:**\n*   **[Execution Prevention (M1038)](https://attack.mitre.org/mitigations/M1038/)**: Use application control solutions to prevent the execution of unauthorized applications and installers. This can block the initial MSI file from running.\n*   **[Attack Surface Reduction Rules](https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/attack-surface-reduction)**: Enable ASR rules, such as \"Block executable files from running unless they meet a prevalence, age, or trusted list criterion\" and \"Block Office applications from creating child processes.\"\n*   **[User Training (M1017)](https://attack.mitre.org/mitigations/M1017/)**: Train users to be suspicious of unsolicited ZIP files and messages, even if they appear to come from a trusted contact.\n\n**Tactical Mitigation:**\n1.  **File Extension Visibility**: Ensure Windows is configured to show file extensions, so users can distinguish an executable from a document.\n2.  **Limit Local Admin Rights**: Prevent users from installing software. This would stop the malicious MSI installer from running with the necessary privileges.\n3.  **Regularly Review Linked Devices**: Periodically check the \"Linked Devices\" section in WhatsApp to ensure no unauthorized sessions are active.",
+  "twitter_post": "🇧🇷 New Banking Trojan 'TCLBANKER' targets 59 Brazilian financial apps! The malware spreads like a worm via WhatsApp & Outlook, using DLL side-loading to evade detection. Stay vigilant! 💻 #Malware #BankingTrojan #Brazil #Cybersecurity",
+  "meta_description": "A new Brazilian banking trojan, TCLBANKER, is targeting 59 financial platforms with a worm-like component that spreads via WhatsApp and Outlook, using advanced anti-analysis techniques.",
+  "category": [
+    "Malware",
+    "Threat Actor",
+    "Phishing"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TCLBANKER",
+      "type": "malware"
+    },
+    {
+      "name": "Water Saci",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1006/"
+    },
+    {
+      "name": "Maverick",
+      "type": "malware"
+    },
+    {
+      "name": "SORVEPOTEL",
+      "type": "malware"
+    },
+    {
+      "name": "Logitech",
+      "type": "vendor"
+    },
+    {
+      "name": "Elastic Security Labs",
+      "type": "security_organization"
+    },
+    {
+      "name": "WhatsApp",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft Outlook",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/05/tclbanker-banking-trojan-targets.html",
+      "title": "TCLBANKER Banking Trojan Targets Financial Platforms via WhatsApp and Outlook Worms",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.bitsight.com/blog/top-4-targeting-financial-sector",
+      "title": "Cyber Threat Intelligence Report: Top 4 Malware Targeting Finance",
+      "friendly_name": "Bitsight",
+      "website": "bitsight.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1574.002",
+      "name": "Hijack Execution Flow: DLL Side-Loading"
+    },
+    {
+      "id": "T1566.001",
+      "name": "Phishing: Spearphishing Attachment"
+    },
+    {
+      "id": "T1497",
+      "name": "Virtualization/Sandbox Evasion"
+    },
+    {
+      "id": "T1622",
+      "name": "Debugger Evasion"
+    },
+    {
+      "id": "T1497.003",
+      "name": "System Checks"
+    },
+    {
+      "id": "T1598.003",
+      "name": "Phishing for Information: Spearphishing via Service"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control solutions to block the execution of unauthorized MSI installers and executables."
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate users to recognize and avoid downloading and running suspicious files, even from trusted contacts."
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Keep endpoint security solutions updated to detect and block known components of the malware."
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "Logi AI Prompt Builder.exe",
+      "description": "The legitimate, signed executable that is abused via DLL side-loading to launch the malware.",
+      "context": "EDR process creation logs. Look for this process loading DLLs from non-standard paths.",
+      "confidence": "high"
+    },
+    {
+      "type": "registry_key",
+      "value": "HKEY_CURRENT_USER\\Control Panel\\International",
+      "description": "The malware checks registry keys related to system language to ensure the target is Brazilian Portuguese before executing its payload.",
+      "context": "EDR monitoring, registry analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "outlook.exe /c ipm.note /a",
+      "description": "The worm component may use command-line arguments to automate sending emails with attachments via the Outlook client.",
+      "context": "Windows Event ID 4688, command-line logging.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "TCLBANKER",
+    "banking trojan",
+    "Brazil",
+    "Water Saci",
+    "DLL side-loading",
+    "WhatsApp",
+    "Outlook",
+    "malware"
+  ],
+  "extract_datetime": "2026-06-07T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Brazil"
+    ],
+    "industries_affected": [
+      "Finance",
+      "Other"
+    ]
+  },
+  "pub_date": "2026-06-07",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-06-07T15:00:00.000Z",
+  "updatedAt": "2026-06-07T15:00:00.000Z"
+}

@@ -1,0 +1,229 @@
+{
+  "id": "cfcaef23-5c2c-4bc5-bebf-c6949d2f56fc",
+  "slug": "aeternum-botnet-leverages-polygon-blockchain-for-c2",
+  "headline": "Aeternum Botnet Uses Polygon Blockchain for Resilient C2",
+  "title": "Aeternum Botnet Loader Leverages Polygon Smart Contracts",
+  "summary": "A C++ botnet loader named Aeternum is leveraging the public Polygon blockchain for its command-and-control (C2) infrastructure, creating a highly resilient and decentralized threat. Infected devices query public Remote Procedure Call (RPC) endpoints to retrieve commands stored on-chain in smart contracts. This method makes C2 takedowns extremely difficult. The loader also employs anti-evasion techniques, including VM detection. Analysis of the loader reveals a flawed encryption scheme for C2 payloads and its ability to download and execute secondary malware, such as the XMRig cryptominer.",
+  "full_report": "## Executive Summary\n\nResearchers have analyzed a C++ botnet loader named **[Aeternum](https://malpedia.caad.fkie.fraunhofer.de/details/win.aeternum)** that utilizes the public **[Polygon](https://polygon.technology/)** blockchain for a decentralized and highly resilient command-and-control (C2) infrastructure. Instead of connecting to traditional servers, infected Windows systems query public Remote Procedure Call (RPC) endpoints to read instructions from smart contracts deployed by the threat actors. This architecture makes the botnet's C2 nearly impossible to dismantle through conventional takedown methods. The loader, which advertises itself as `Aeternum C2 BotNet Loader`, also incorporates anti-analysis features and is used to deliver secondary payloads, including cryptominers like **[XMRig](https://github.com/xmrig/xmrig)**.\n\n## Threat Overview\n\nThe core innovation of the **Aeternum** botnet is its complete reliance on a public blockchain for C2 operations. Threat actors issue commands by writing data to smart contracts on the **Polygon** network. Infected hosts, acting as bots, periodically poll public RPC gateways to fetch these commands. This design offers several advantages to the attackers: high availability, censorship resistance, and anonymity, all at a low operational cost. The malware sample analyzed (`Build.exe`) is a 32-bit UPX-packed Windows executable that establishes persistence, performs reconnaissance, and then begins communicating with the blockchain to await instructions.\n\n## Technical Analysis\n\nThe Aeternum loader (`SHA256: 5bfb25b8255b61e5ffdf6804451534bcfa9f1dfd225e6c8cdcefb5f50d846898`) executes in stages, first unpacking itself and then deobfuscating internal strings and configuration data.\n\n### String Deobfuscation\n\nThe malware hides critical strings, such as JSON object templates for RPC requests, using a simple XOR-based encryption scheme. The encrypted data follows a recognizable pattern: `\\x00\\x00\\x00[ENC bytes]\\x00[KEY bytes]\\x00\\x00\\x00`. A script can parse the binary for this pattern, extract the key, and decrypt the embedded information.\n\n### Blockchain C2 Communication\n\n1.  **JSON-RPC Request**: The loader sends an HTTP POST request to a **Polygon** RPC endpoint (e.g., `polygon-rpc.com`). The request is a JSON-RPC call to the `eth_call` method.\n2.  **Smart Contract Call**: The JSON payload specifies the target smart contract address in the `to` field and the function to call in the `data` field. The malware calls the `getDomain()` method, identified by its function selector `0xb68d1809`.\n3.  **Payload Retrieval and Decryption**: The RPC endpoint returns the data from the smart contract. While some commands are in plaintext, others are encrypted. The analysis revealed a critical flaw in the encryption: a weak, self-salting password scheme condemned by **[NIST](https://www.nist.gov/)** SP 800-132. The decryption key is derived from the smart contract address itself, allowing researchers to decrypt the payload using the contract address and the returned data. An example decrypted command is `all:url:<URI for putty.exe>`, instructing the bot to download a file.\n\n### Secondary Payloads\n\nThe loader has been observed downloading both legitimate and malicious files. In one case, it downloaded a legitimate installer for **[PuTTY](https://www.putty.org/)** (likely for testing) and a malicious `DotNetZip.dll` from a **[GitHub](https://github.com/)** repository. The ultimate goal is to deliver malware like the **XMRig** cryptominer, though the architecture allows for any payload to be deployed.\n\n### MITRE ATT&CK Techniques\n\n- [`T1568.003 - Dynamic Resolution: Cloud-Based Dynamic DNS`](https://attack.mitre.org/techniques/T1568/003/): Using a public blockchain as a decentralized and dynamic C2 resolution mechanism.\n- [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/): Downloading secondary payloads from sources like GitHub.\n- [`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/): Using UPX packing and a custom XOR-based string encryption scheme.\n- [`T1497 - Virtualization/Sandbox Evasion`](https://attack.mitre.org/techniques/T1497/): The malware includes checks to detect if it is running in a virtual machine or analysis environment.\n- [`T1059.003 - Command and Scripting Interpreter: Windows Command Shell`](https://attack.mitre.org/techniques/T1059/003/): Used to execute downloaded payloads.\n\n## Impact Assessment\n\nAeternum represents a significant step forward in the development of resilient malware. By decentralizing its C2 on a public blockchain, the botnet is largely immune to traditional infrastructure takedown efforts that target servers and domains. This makes it a persistent threat that can be repurposed to deliver various malicious payloads, from resource-stealing cryptominers to destructive ransomware. The low cost and high resilience of this model are likely to be adopted by other threat actors, posing a long-term challenge for the cybersecurity community.\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| File Hash (SHA256) | `5bfb25b8255b61e5ffdf6804451534bcfa9f1dfd225e6c8cdcefb5f50d846898` | SHA256 hash of the Aeternum loader sample `Build.exe`. |\n\n## Cyber Observables — Hunting Hints\n\nThe following patterns may help identify Aeternum activity:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| Domain | `polygon-rpc.com` | A public RPC endpoint for the Polygon blockchain used for C2. | DNS logs, proxy logs. Monitor for repeated POST requests. |\n| File Name | `Build.exe` | The name of the initial Aeternum loader sample. | EDR alerts, file system monitoring. |\n| File Name | `DotNetZip.dll` | A malicious DLL observed being downloaded as a secondary payload. | EDR alerts, file system monitoring. |\n| Network Traffic Pattern | `\"method\":\"eth_call\"` | Part of the JSON-RPC request sent to the Polygon endpoint. | Deep packet inspection, network traffic analysis. |\n| Hex Pattern | `0xb68d1809` | The 4-byte function selector for the `getDomain()` method in the smart contract call. | Deep packet inspection, network security monitoring. |\n\n## Detection & Response\n\nDetecting Aeternum requires a focus on behavioral and network anomalies.\n\n1.  **Network Traffic Analysis**: Monitor for HTTP POST requests to known public blockchain RPC endpoints (e.g., `polygon-rpc.com`). While legitimate applications may use these, a pattern of repeated requests from numerous endpoints within an organization could indicate a widespread botnet infection. Use D3FEND's [`Network Traffic Analysis (D3-NTA)`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) to inspect the JSON-RPC payload for suspicious characteristics, such as calls to the `eth_call` method with the `getDomain()` function selector (`0xb68d1809`).\n\n2.  **Endpoint Detection**: Use an EDR solution to monitor for the execution of unsigned or UPX-packed executables. Create detection rules for the loader's persistence mechanisms and its specific string deobfuscation patterns. [`Process Analysis (D3-PA)`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) can help identify the chain of execution from the initial loader to the downloaded secondary payloads.\n\n3.  **Threat Hunting**: Proactively hunt for downloads from public code repositories like GitHub, especially for files that are later executed by `cmd.exe` or `powershell.exe`. Hunt for the specific string encryption pattern (`\\x00\\x00\\x00...`) in suspicious binaries on disk.\n\n## Mitigation\n\n- **Application Control**: Implement application allowlisting policies, such as Windows Defender Application Control, to prevent the execution of unauthorized and unsigned executables like the Aeternum loader. This is a form of D3FEND's [`Executable Allowlisting (D3-EAL)`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n\n- **Egress Filtering**: While blocking all blockchain RPC endpoints may be impractical, organizations can restrict or closely monitor outbound connections to them. Create policies that alert on systems making frequent JSON-RPC calls, which is not typical behavior for most corporate workstations. Block direct downloads from untrusted sources like raw GitHub content URLs.\n\n- **Endpoint Hardening**: Ensure endpoint security solutions are configured to detect and block packed executables and scripts that exhibit anti-VM or anti-debugging behavior. This aligns with [`Application Hardening (D3-AH)`](https://d3fend.mitre.org/technique/d3f:ApplicationHardening).",
+  "twitter_post": "Aeternum C++ botnet loader uses Polygon blockchain for decentralized C2, issuing commands via smart contracts. This resilient architecture complicates takedowns. #Aeternum #Botnet #Blockchain #C2 #Malware #Polygon",
+  "meta_description": "Analysis of the Aeternum botnet loader, a C++ threat that uses Polygon blockchain smart contracts for a highly resilient and decentralized C2 infrastructure.",
+  "category": [
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Aeternum",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.aeternum"
+    },
+    {
+      "name": "Polygon",
+      "type": "technology",
+      "url": "https://polygon.technology/"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Ctrl-Alt-Intel",
+      "type": "security_organization"
+    },
+    {
+      "name": "PuTTY",
+      "type": "product",
+      "url": "https://www.putty.org/"
+    },
+    {
+      "name": "DotNetZip",
+      "type": "product"
+    },
+    {
+      "name": "XMRig",
+      "type": "malware",
+      "url": "https://github.com/xmrig/xmrig"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "NIST",
+      "type": "government_agency",
+      "url": "https://www.nist.gov"
+    },
+    {
+      "name": "Telegram",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/aeternum-blockchain-c2-analysis/",
+      "title": "The Permanent Threat: Analyzing Aeternum’s Blockchain-Based C2 Operations and Communications",
+      "date": "2026-08-10",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-10",
+      "summary": "A malicious DLL payload associated with Aeternum activity was committed to a public GitHub repository."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1568.003",
+      "name": "Dynamic Resolution: Cloud-Based Dynamic DNS",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1497",
+      "name": "Virtualization/Sandbox Evasion",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1059.003",
+      "name": "Command and Scripting Interpreter: Windows Command Shell",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control solutions to prevent the execution of unauthorized, unsigned, or packed executables like the Aeternum loader.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Monitor and restrict outbound HTTP POST requests to public blockchain RPC endpoints, as this is anomalous behavior for most workstations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Deploy endpoint protection capable of detecting packed binaries and behaviors associated with loaders and cryptominers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Block or monitor downloads from untrusted sources, such as direct file downloads from public code repositories like GitHub.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "To prevent the initial execution of the Aeternum loader (`Build.exe`), organizations should implement a strict application control policy. Using technologies like Windows Defender Application Control or AppLocker, administrators can create rules that only permit signed, known-good applications to run. Since Aeternum is an unsigned custom executable, an allowlisting policy would block it from running, neutralizing the threat at the very first stage. This is particularly effective on servers and fixed-function workstations where the set of required software is predictable. This proactive stance is one of the most robust defenses against unknown malware loaders.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Given Aeternum's reliance on blockchain C2, network traffic analysis is critical for detection. Security teams should configure network monitoring tools (like Zeek or commercial equivalents) to specifically baseline and inspect HTTP POST requests to known public RPC endpoints (e.g., `polygon-rpc.com`). Create detection logic that alerts on the specific JSON-RPC `eth_call` method combined with the `getDomain()` function selector (`0xb68d1809`). While a single request might be benign, a pattern of these requests from multiple endpoints is a strong indicator of a botnet infection. This allows for detection of active C2 communication even if the endpoint malware itself is not detected.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Endpoint Detection and Response (EDR) tools should be configured to analyze process behavior and lineage. For Aeternum, a key detection opportunity is the process chain where the loader (`Build.exe`) spawns a shell (`cmd.exe`) to execute a downloaded payload (like `putty.exe` or a malicious DLL via `rundll32.exe`). EDR solutions can correlate the network activity (downloads from GitHub) with the subsequent process creation events. Furthermore, EDR can be used to hunt for processes that exhibit anti-VM or anti-analysis API calls, which the Aeternum loader is known to perform, providing another layer of behavioral detection.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_hash_sha256",
+      "value": "5bfb25b8255b61e5ffdf6804451534bcfa9f1dfd225e6c8cdcefb5f50d846898",
+      "description": "SHA256 hash of the Aeternum loader sample Build.exe."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "domain",
+      "value": "polygon-rpc.com",
+      "description": "Public RPC endpoint for the Polygon blockchain used for C2 communications.",
+      "context": "DNS logs, Web proxy logs",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "Build.exe",
+      "description": "Name of the initial Aeternum loader executable observed in the analysis.",
+      "context": "File integrity monitoring, EDR alerts",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "DotNetZip.dll",
+      "description": "Malicious DLL downloaded by the loader as a secondary payload.",
+      "context": "File integrity monitoring, EDR alerts",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "\"method\":\"eth_call\"",
+      "description": "String within JSON-RPC requests indicating a call to read data from the blockchain, used by Aeternum for C2.",
+      "context": "Deep packet inspection, SIEM rules on network logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "hex_pattern",
+      "value": "0xb68d1809",
+      "description": "The 4-byte function selector for the getDomain() method, which the malware calls in the smart contract to retrieve C2 data.",
+      "context": "Network intrusion detection systems, PCAP analysis",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "botnet",
+    "loader",
+    "blockchain",
+    "C2",
+    "Polygon",
+    "smart contract",
+    "malware analysis",
+    "cryptominer"
+  ],
+  "extract_datetime": "2026-08-11T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [],
+    "other_affected": [
+      "Cryptocurrency users",
+      "Users of public blockchain infrastructure"
+    ]
+  },
+  "pub_date": "2026-08-11",
+  "reading_time_minutes": 18,
+  "createdAt": "2026-08-11T15:00:00.000Z",
+  "updatedAt": "2026-08-11T15:00:00.000Z"
+}

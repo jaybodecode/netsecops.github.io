@@ -1,0 +1,87 @@
+title: Data Staging via Archive File Creation in Temp Directory
+id: 2b9a7c1d-8e4f-4b1a-9c3d-5e6f7a8b9c0d
+status: experimental
+description: |
+  Detects the creation of large archive files (zip, rar, 7z) in common temporary directories.
+  This is a common technique used by attackers to stage data for exfiltration.
+references:
+  - Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed
+author: cyber.netsecops.io
+date: 2026-04-14
+tags:
+  - attack.t1074.001
+  - attack.collection
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|startswith:
+      - 'C:\Windows\Temp\'
+      - 'C:\Users\Public\'
+    TargetFilename|endswith:
+      - '.zip'
+      - '.rar'
+      - '.7z'
+  condition: selection
+---
+title: Anomalous Egress Traffic from Database Server
+id: 9e8f7d6c-5b4a-4c3d-2e1f-0a9b8c7d6e5f
+status: experimental
+description: |
+  Detects large, sustained outbound data flows from a known database server to an external IP address.
+  This is a potential indicator of data exfiltration.
+references:
+  - Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed
+author: cyber.netsecops.io
+date: 2026-04-14
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: high
+logsource:
+  category: network_traffic
+detection:
+  selection:
+    src_ip: 
+      # Add your database server IPs here
+      - '10.0.1.50'
+      - '192.168.1.100'
+    # This requires a baseline or thresholding capability in the SIEM
+    # The following is a placeholder for a high volume of bytes out
+    bytes_out|gt: 100000000 # 100MB
+  filter:
+    dst_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter
+---
+title: Suspicious Full Table Database Query
+id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: |
+  Monitors for database queries that access large tables in their entirety, especially from non-standard application accounts or at unusual times. This can be a sign of data theft.
+references:
+  - Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed
+author: cyber.netsecops.io
+date: 2026-04-14
+tags:
+  - attack.t1213
+  - attack.collection
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains|all:
+      - 'SELECT * FROM'
+      # Add sensitive table names here
+      - 'patients'
+      - 'medical_records'
+  filter:
+    # Add legitimate application user accounts here
+    user:
+      - 'app_service_account'
+  condition: selection and not filter

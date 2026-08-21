@@ -1,0 +1,269 @@
+{
+  "id": "039ddba5-7a3b-48d0-a449-2d48971799d8",
+  "slug": "us-agencies-expand-warning-on-iranian-attacks-targeting-industrial-controllers",
+  "headline": "Iranian Hackers Expand Attacks to Siemens, Schneider Industrial Systems",
+  "title": "US Warns of Iranian Attacks on Siemens & Schneider ICS Devices",
+  "summary": "An updated U.S. government advisory warns that Iranian-affiliated threat actors have expanded their cyber campaigns against U.S. critical infrastructure. The attackers are now targeting internet-exposed programmable logic controllers (PLCs) from Schneider Electric and Siemens, in addition to previously reported Rockwell Automation devices. The actors use legitimate manufacturer software to connect to misconfigured PLCs, override safety logic, and disrupt operations in sectors like water and energy.",
+  "full_report": "## Executive Summary\nOn July 22, 2026, U.S. federal agencies, including **[CISA](https://www.cisa.gov)**, the **[FBI](https://www.fbi.gov)**, and the EPA, updated a joint cybersecurity advisory warning of an expanded campaign by Iranian-affiliated cyber actors against U.S. critical infrastructure. The threat actors are targeting internet-exposed operational technology (OT) devices, specifically programmable logic controllers (PLCs). The campaign, initially focused on **[Rockwell Automation](https://www.rockwellautomation.com/)** products, has now been observed targeting PLCs from **[Schneider Electric](https://www.se.com/us/en/)** and **[Siemens](https://www.siemens.com/global/en.html)**. The attackers are leveraging legitimate engineering software to connect to misconfigured devices, manipulate control logic, and disrupt physical processes, posing a direct threat to public safety and national security. The advisory urges OT asset owners to immediately remove PLCs from the public internet and implement robust security controls.\n\n## Threat Overview\nThe threat actors, linked to Iran's Islamic Revolutionary Guard Corps Cyber-Electronic Command (IRGC-CEC), are systematically scanning the internet for exposed OT devices. Their targets now include **Schneider Electric Modicon M340**, **Siemens S7-1200**, and **Rockwell Automation CompactLogix** and **Micro850** PLCs. The primary attack vector is the exploitation of misconfigured devices that are directly accessible from the internet, often with default credentials or weak security settings.\n\nOnce a target is identified, the actors use legitimate, publicly available software—such as Rockwell's `Studio 5000 Logix Designer`, Schneider's `EcoStruxure Control Expert`, and Siemens' `TIA Portal`—to connect to the PLC. This 'living off the land' approach makes detection difficult, as the network traffic can appear benign. After gaining access, they download malicious project files that alter the PLC's logic to create unsafe operating conditions, disable safety and alarm functions, and manipulate data on HMI/SCADA displays to deceive operators.\n\n## Technical Analysis\nThe campaign demonstrates a clear understanding of OT systems and their control software. The actors are not exploiting software vulnerabilities but rather fundamental security weaknesses in network architecture and device configuration.\n\n**Attack Pattern:**\n1.  **Reconnaissance ([T0885](https://attack.mitre.org/techniques/T0885/)):** Actors scan the internet for specific PLCs listening on common OT ports, including `44818` (EtherNet/IP), `102` (ISO-TSAP for Siemens S7), and `502` (Modbus TCP).\n2.  **Initial Access ([T0867](https://attack.mitre.org/techniques/T0867/)):** Actors connect to internet-exposed PLCs using default or weak credentials via legitimate engineering workstations running vendor software.\n3.  **Inhibit Response Function ([T0826](https://attack.mitre.org/techniques/T0826/)):** The attackers download modified project files to the PLC. This malicious logic is designed to override safety interlocks and disable automated shutdown procedures.\n4.  **Manipulation of View ([T0839](https://attack.mitre.org/techniques/T0839/)):** The actors manipulate data presented on HMI and SCADA systems, causing operators to see normal values while the physical process enters a hazardous state.\n5.  **Impact ([T0828](https://attack.mitre.org/techniques/T0828/)):** The ultimate goal is to cause physical disruption, equipment damage, or unsafe conditions in critical infrastructure sectors like water and energy.\n\nThe group behind these attacks shares TTPs with actors tracked as CyberAv3ngers, Shahid Kaveh Group, and Hydro Kitten (Storm-0784).\n\n## Impact Assessment\nThe potential impact of this campaign is severe. By targeting the core control elements of industrial processes, the attackers can cause tangible physical consequences. In the water and wastewater sector, this could lead to the discharge of untreated water or the manipulation of chemical dosing, posing a public health risk. In the energy sector, it could result in power outages or equipment damage. The disruption to government facilities could impact essential services. The financial losses from operational downtime and equipment repair are significant, but the primary risk is to public safety and the integrity of U.S. critical infrastructure.\n\n## IOCs — Directly from Articles\nThe source articles mentioned network ports but no specific IP addresses, domains, or file hashes.\n\n- **TCP Port:** `44818` (EtherNet/IP for Rockwell)\n- **TCP Port:** `2222`\n- **TCP Port:** `102` (ISO-TSAP for Siemens)\n- **TCP Port:** `502` (Modbus TCP)\n\n## Cyber Observables — Hunting Hints\nSecurity teams should hunt for the following patterns to identify potential targeting or compromise:\n| Type | Value | Description |\n|---|---|---|\n| network_traffic_pattern | Inbound connections on ports 102, 502, 44818 from non-partner IPs | Inbound connections on OT ports from unexpected external sources are a strong indicator of scanning or an attack attempt. |\n| log_source | Firewall, IDS/IPS logs | Monitor for unauthorized access attempts or scans against known OT ports. |\n| process_name | `LogixDesigner.exe`, `ControlExpert.exe`, `tia.exe` | Monitor for these legitimate processes making connections to or from unusual IP addresses. |\n| file_name | `*.ACD`, `*.STU`, `*.ap*` | Look for unexpected modifications or transfers of PLC project files on engineering workstations. |\n\n## Detection & Response\n**Detection:**\n- **Network Monitoring:** Implement robust monitoring of all traffic to and from the OT network. Baseline normal communication patterns and alert on any deviations, especially connections from external IP addresses to PLCs. **D3FEND Technique:** [Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n- **Asset Inventory:** Maintain a complete and accurate inventory of all OT assets, including their network exposure. Use tools like Shodan to proactively identify your organization's exposed devices.\n- **Log Analysis:** Collect and analyze logs from firewalls, VPNs, and OT devices themselves. Look for login failures, configuration changes, and project downloads from unauthorized sources. **D3FEND Technique:** [System File Analysis (D3-SFA)](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis).\n\n**Response:**\n1.  If unauthorized access is detected, immediately disconnect the affected PLC from the network.\n2.  Restore the PLC to a known-good state from a verified backup.\n3.  Change all default and weak passwords on OT devices.\n4.  Preserve logs and device images for forensic analysis.\n\n## Mitigation\n**Strategic Mitigation:**\n- **Network Segmentation ([M0930](https://attack.mitre.org/mitigations/ics/M0930)):** The most critical mitigation is to remove all OT devices, especially PLCs, from the public internet. Implement a proper Purdue Model network architecture with a DMZ separating IT and OT networks. All remote access should be brokered through a secure, multi-factor authenticated VPN. **D3FEND Technique:** [Network Isolation (D3-NI)](https://d3fend.mitre.org/technique/d3f:NetworkIsolation).\n- **Privileged Account Management ([M1026](https://attack.mitre.org/mitigations/M1026/)):** Strictly control access to engineering workstations and PLC management software. Use strong, unique passwords for all OT devices and disable default accounts. **D3FEND Technique:** [Strong Password Policy (D3-SPP)](https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy).\n- **Asset Hardening:** Change default passwords, disable unnecessary ports and services, and apply the latest firmware updates to all PLCs and OT devices.",
+  "twitter_post": "🚨 CISA WARNING: Iranian-affiliated hackers expand attacks on U.S. critical infrastructure, now targeting Siemens & Schneider PLCs in addition to Rockwell. Actors use legit software to disrupt water & energy systems. #ICS #OTsecurity #CyberAttack",
+  "meta_description": "U.S. agencies warn that Iranian-linked hackers are targeting internet-exposed Siemens, Schneider, and Rockwell PLCs to disrupt U.S. critical infrastructure.",
+  "category": [
+    "Industrial Control Systems",
+    "Cyberattack",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "CISA",
+      "type": "government_agency",
+      "url": "https://www.cisa.gov"
+    },
+    {
+      "name": "FBI",
+      "type": "government_agency",
+      "url": "https://www.fbi.gov"
+    },
+    {
+      "name": "EPA",
+      "type": "government_agency",
+      "url": "https://www.epa.gov"
+    },
+    {
+      "name": "CyberAv3ngers",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Shahid Kaveh Group",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Hydro Kitten",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Storm-0784",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Rockwell Automation",
+      "type": "vendor",
+      "url": "https://www.rockwellautomation.com/"
+    },
+    {
+      "name": "Schneider Electric",
+      "type": "vendor",
+      "url": "https://www.se.com/us/en/"
+    },
+    {
+      "name": "Siemens",
+      "type": "vendor",
+      "url": "https://www.siemens.com/global/en.html"
+    },
+    {
+      "name": "Studio 5000 Logix Designer",
+      "type": "product"
+    },
+    {
+      "name": "EcoStruxure Control Expert",
+      "type": "product"
+    },
+    {
+      "name": "TIA Portal",
+      "type": "product"
+    },
+    {
+      "name": "CompactLogix",
+      "type": "product"
+    },
+    {
+      "name": "Micro850",
+      "type": "product"
+    },
+    {
+      "name": "Modicon M340",
+      "type": "product"
+    },
+    {
+      "name": "S7-1200",
+      "type": "product"
+    },
+    {
+      "name": "Islamic Revolutionary Guard Corps Cyber-Electronic Command (IRGC-CEC)",
+      "type": "threat_actor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cisa.gov/news-events/news/cisa-fbi-epa-and-us-government-partners-update-warning-iran-affiliated-threat-actors-targeting",
+      "title": "Iranian-Affiliated Cyber Actors Exploit Programmable Logic Controllers Across US Critical Infrastructure",
+      "date": "2026-07-22",
+      "friendly_name": "CISA"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/iran-hackers-siemen-schneider-ics/",
+      "title": "Iranian Hackers Target Siemens and Schneider Industrial Systems, CISA Warns",
+      "date": "2026-07-23",
+      "friendly_name": "Infosecurity Magazine"
+    },
+    {
+      "url": "https://www.securityweek.com/us-warns-of-iranian-hackers-targeting-siemens-schneider-and-rockwell-ics-devices/",
+      "title": "US Warns of Iranian Hackers Targeting Siemens, Schneider, and Rockwell ICS Devices",
+      "date": "2026-07-23",
+      "friendly_name": "SecurityWeek"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04",
+      "summary": "CISA and partners issue initial advisory on Iranian actors targeting Rockwell Automation PLCs."
+    },
+    {
+      "datetime": "2026-07-22",
+      "summary": "CISA and partners update the advisory, expanding the scope to include Schneider Electric and Siemens PLCs."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T0885",
+      "name": "Spearphishing"
+    },
+    {
+      "id": "T0867",
+      "name": "Standard Application Layer Protocol"
+    },
+    {
+      "id": "T0826",
+      "name": "Inhibit Response Function"
+    },
+    {
+      "id": "T0839",
+      "name": "Manipulation of View"
+    },
+    {
+      "id": "T0828",
+      "name": "Loss of Productivity and Revenue"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M0930",
+      "name": "Network Segmentation",
+      "description": "The most critical defense is to ensure PLCs and other OT devices are not exposed to the internet. Segment the OT network from the IT network.",
+      "domain": "ics"
+    },
+    {
+      "id": "M0937",
+      "name": "Remote Access",
+      "description": "Implement secure remote access solutions with multi-factor authentication instead of direct internet exposure.",
+      "domain": "ics"
+    },
+    {
+      "id": "M0918",
+      "name": "Application Whitelisting",
+      "description": "On engineering workstations, use application control to restrict which programs can run and make network connections.",
+      "domain": "ics"
+    },
+    {
+      "id": "M0933",
+      "name": "Password Policy",
+      "description": "Enforce strong, unique passwords for all OT devices and applications. Disable default accounts.",
+      "domain": "ics"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "The primary cause of these incidents is the direct exposure of PLCs to the public internet. The most effective countermeasure is to implement strict network isolation. OT networks should be air-gapped from IT networks or, at a minimum, segmented behind a properly configured firewall and DMZ, following the Purdue Model. No PLC should have a publicly routable IP address. All remote access to the OT environment must be brokered through a secure gateway, such as a VPN with multi-factor authentication, that terminates in the IT network or a DMZ. From there, access to the OT network should be further restricted to specific engineering workstations. This prevents threat actors from scanning for and directly connecting to PLCs from the internet, effectively removing the initial access vector used in this campaign.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-SPP",
+      "technique_name": "Strong Password Policy",
+      "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy",
+      "recommendation": "Even with network isolation, strong authentication is critical. The Iranian actors are known to use default or weak credentials. Organizations must enforce a strong password policy for all OT devices, including PLCs, HMIs, and engineering workstations. This involves changing all default passwords immediately upon device deployment to long, complex, and unique passwords. Where possible, integrate authentication with a centralized management system like Active Directory, but ensure the security of the directory itself. For devices that do not support complex passwords, compensating controls like network access control lists (ACLs) should be used to restrict access to only authorized engineering workstations. Disabling or renaming default administrative accounts is also a crucial step in hardening these devices against unauthorized access.",
+      "mitre_mitigation_id": "M1027"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "While the primary goal is to prevent inbound connections, controlling outbound traffic from the OT network provides another layer of defense. Configure firewalls to deny all outbound internet traffic from the OT network by default. Only allow specific, necessary connections to vendor update sites or other trusted destinations. This can prevent a compromised PLC or engineering workstation from establishing a reverse shell or connecting back to an attacker's command and control server. In the context of this campaign, where attackers use legitimate software, filtering outbound traffic could disrupt their ability to download malicious project files from an external source or receive commands, providing an opportunity for detection and response.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "destination_port",
+      "value": "44818"
+    },
+    {
+      "type": "destination_port",
+      "value": "2222"
+    },
+    {
+      "type": "destination_port",
+      "value": "102"
+    },
+    {
+      "type": "destination_port",
+      "value": "502"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "Inbound TCP connections to ports 102, 502, 44818",
+      "description": "Monitoring for unexpected inbound connections from the internet to these common OT ports can indicate scanning or an active attack.",
+      "context": "Perimeter firewall logs, network intrusion detection systems (NIDS).",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "LogixDesigner.exe",
+      "description": "Legitimate Rockwell Automation software used by attackers. Monitor for execution from unusual user contexts or network connections to unexpected IPs.",
+      "context": "Endpoint detection and response (EDR) logs, process monitoring.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "tia.exe",
+      "description": "Legitimate Siemens software used by attackers. Monitor for execution from unusual user contexts or network connections to unexpected IPs.",
+      "context": "Endpoint detection and response (EDR) logs, process monitoring.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "ICS",
+    "OT",
+    "PLC",
+    "Iran",
+    "critical infrastructure",
+    "Rockwell Automation",
+    "Siemens",
+    "Schneider Electric"
+  ],
+  "extract_datetime": "2026-07-23T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Critical Infrastructure",
+      "Energy",
+      "Government",
+      "Other"
+    ],
+    "other_affected": [
+      "Water and Wastewater Systems"
+    ]
+  },
+  "pub_date": "2026-07-23",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-23T15:00:00.000Z",
+  "updatedAt": "2026-07-23T15:00:00.000Z"
+}

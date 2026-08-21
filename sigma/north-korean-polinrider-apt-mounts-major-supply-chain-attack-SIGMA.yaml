@@ -1,0 +1,62 @@
+title: Suspicious Credential Access by Package Manager
+id: 2ecb6b76-5df8-48bc-9c5f-69564008630d
+status: experimental
+description: Detects package manager processes accessing sensitive credential files. This may indicate a compromised dependency attempting to steal secrets, as seen in the PolinRider campaign.
+references:
+  - https://www.scworld.com/news/north-korean-polinrider-supply-chain-attack-targets-108-unique-repos
+author: cyber.netsecops.io
+date: 2026-07-07
+tags:
+  - attack.t1552.001
+  - attack.credential_access
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_process:
+    Image|endswith:
+      - '\npm.exe'
+      - '\node.exe'
+      - '\go.exe'
+      - '\php.exe'
+      - '\composer.phar'
+  selection_files:
+    TargetFilename|contains:
+      - '.aws\credentials'
+      - '.ssh\'
+      - '.git-credentials'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate developer tools or scripts that need to access these credentials as part of their normal function.
+---
+title: Suspicious DNS Query to Blockchain Explorer During Build
+id: 2b8c5a1f-3d4e-4b1a-9c8d-7e6f5a4b3c2d
+status: experimental
+description: Detects DNS queries to public blockchain explorers from processes related to software builds or package installation. This may indicate PolinRider supply chain attack activity.
+references:
+  - https://www.scworld.com/news/north-korean-polinrider-supply-chain-attack-targets-108-unique-repos
+author: cyber.netsecops.io
+date: 2026-07-07
+tags:
+  - attack.t1102.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection_domains:
+    QueryName|contains:
+      - 'etherscan.io'
+      - 'bscscan.com'
+  selection_process:
+    Image|endswith:
+      - '\npm.exe'
+      - '\node.exe'
+      - '\go.exe'
+      - '\php.exe'
+      - '\composer.phar'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate developer tools or packages that interact with blockchain explorers for non-malicious reasons.

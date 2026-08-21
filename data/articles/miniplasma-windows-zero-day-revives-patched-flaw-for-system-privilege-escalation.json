@@ -1,0 +1,197 @@
+{
+  "id": "8f65d5bb-f517-489c-9b21-7191cb9b9dd6",
+  "slug": "miniplasma-windows-zero-day-revives-patched-flaw-for-system-privilege-escalation",
+  "headline": "New 'MiniPlasma' Windows Zero-Day Resurrects Patched Flaw for Full System Control",
+  "title": "Unpatched 'MiniPlasma' Windows Vulnerability Grants SYSTEM Privileges by Reviving CVE-2020-17103",
+  "summary": "A security researcher has released a proof-of-concept exploit for 'MiniPlasma,' an unpatched zero-day vulnerability affecting modern Windows 11 systems. The flaw, a regression of a bug Microsoft supposedly fixed in 2020, allows a local attacker to escalate privileges to SYSTEM, gaining complete control over the machine. The vulnerability exists in the Windows Cloud Files Mini Filter Driver (`cldflt.sys`) and highlights potential gaps in Microsoft's patching process, as the original exploit for CVE-2020-17103 now works again on fully updated systems.",
+  "full_report": "## Executive Summary\n\nA security researcher known as Chaotic Eclipse has disclosed a new zero-day local privilege escalation (LPE) vulnerability in **[Microsoft](https://www.microsoft.com/security)** Windows, dubbed \"MiniPlasma.\" The vulnerability allows an attacker with low-level user access to gain full `SYSTEM` privileges on a fully patched Windows 11 system. Alarmingly, this is not a new flaw but a regression of **CVE-2020-17103**, a vulnerability discovered by **[Google Project Zero](https://googleprojectzero.blogspot.com/)** in 2020 and reportedly patched. The public release of a working proof-of-concept (PoC) exploit presents a significant risk to organizations, as it enables attackers who have gained an initial foothold to take complete control of affected endpoints. No patch is currently available from Microsoft, requiring organizations to rely on detection and mitigation strategies.\n\n## Vulnerability Details\n\nThe MiniPlasma vulnerability resides in the Windows Cloud Files Mini Filter Driver (`cldflt.sys`), a core component for handling placeholder files linked to cloud storage. The specific flaw is within the `HsmOsBlockPlaceholderAccess` function, which is responsible for managing access to these placeholder files. The function fails to implement a necessary security check when handling file operations.\n\nTechnically, the vulnerability is triggered because the driver does not specify the `OBJ_FORCE_ACCESS_CHECK` flag when creating registry keys in the context of a low-privileged user. This omission allows an unprivileged process to create arbitrary registry keys within the `.DEFAULT` user hive, which is normally restricted. By manipulating these registry keys, an attacker can hijack system processes or create conditions that lead to code execution with `SYSTEM` privileges. The researcher confirmed that the original PoC for **CVE-2020-17103** works without modification, indicating that Microsoft's 2020 patch was either ineffective, incomplete, or was reversed in a later update.\n\n## Affected Systems\n\nThe vulnerability has been confirmed to affect modern, fully patched versions of:\n- Windows 11 (all versions with May 2026 updates)\n- Windows Server 2022\n- Windows Server 2025\n\nIndependent testing has shown the exploit does not appear to work on the latest Windows Insider Preview Canary builds, suggesting a fix may be in development. However, all current stable releases are considered vulnerable.\n\n## Exploitation Status\nThe researcher **Chaotic Eclipse** has publicly released a proof-of-concept (PoC) exploit for MiniPlasma. The release is part of a series of zero-day disclosures by the researcher, who has cited frustrations with Microsoft's bug bounty program. Security researcher Will Dormann has independently verified that the exploit works as described on an updated Windows 11 system. The public availability of the PoC significantly increases the likelihood of its adoption by threat actors for post-exploitation activities.\n\n## Impact Assessment\nThe primary impact of MiniPlasma is local privilege escalation. An attacker who has already gained initial access to a system through other means (e.g., phishing, malware) can use this exploit to elevate their permissions from a standard user to `SYSTEM`. This gives them complete control over the compromised machine, allowing them to:\n- Bypass all security controls (antivirus, EDR).\n- Install persistent backdoors or rootkits.\n- Steal sensitive data, including credentials from memory using tools like Mimikatz.\n- Move laterally across the network to compromise other systems.\n\nIn multi-user environments such as terminal servers or workstations shared by multiple employees, this vulnerability is particularly dangerous as it allows any standard user to become a full system administrator.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) such as file hashes, IP addresses, or domains were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns that could indicate exploitation of MiniPlasma or similar LPE techniques:\n\n| Type | Value | Description |\n|---|---|---|\n| Process Name | `cmd.exe` | Suspicious instance of `cmd.exe` or `powershell.exe` running as `NT AUTHORITY\\SYSTEM` spawned by a non-system user process. |\n| File Path | `cldflt.sys` | Monitor for anomalous interactions with the `cldflt.sys` driver from unexpected processes. |\n| Registry Key | `HKEY_USERS\\.DEFAULT` | Monitor for unauthorized or anomalous write operations to the `.DEFAULT` user registry hive by low-privileged user accounts. |\n| Event ID | `4688` | In Windows Security Logs, look for new process creation events where a user process spawns a child process with `SYSTEM` integrity. |\n\n## Detection & Response\nAs there is no patch, detection and response are critical. Security teams should focus on identifying post-exploitation behavior.\n\n1.  **Endpoint Detection and Response (EDR):** Configure EDR solutions to detect and alert on privilege escalation attempts. Specifically, look for processes that are created with `SYSTEM` privileges by a parent process running in a standard user context. This is a strong indicator of LPE.\n2.  **Log Analysis (SIEM):** Correlate Windows Security Event Logs, particularly Event ID `4688` (Process Creation), with user session information. Create rules to flag any process launched by a user's logon session that suddenly runs as `SYSTEM`.\n3.  **Registry Monitoring:** Use file and registry integrity monitoring tools to watch for unusual write activity to `HKEY_USERS\\.DEFAULT`. Alerts should be generated if non-system processes attempt to modify this hive.\n4.  **Behavioral Analysis:** Employ User and Entity Behavior Analytics (UEBA) to detect anomalous sequences of actions, such as a user process interacting with `cldflt.sys` followed by the execution of privileged commands.\n\nDefensive techniques from the **[D3FEND](https://d3fend.mitre.org/)** framework such as **[Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)** and **[System Call Analysis](https://d3fend.mitre.org/technique/d3f:SystemCallAnalysis)** are highly relevant for building detection logic.\n\n## Mitigation\nUntil an official patch is released by Microsoft, organizations should implement compensating controls to reduce risk.\n\n1.  **Principle of Least Privilege:** Strictly enforce the principle of least privilege. Ensure users only have the permissions necessary to perform their job functions. Limit the number of local administrator accounts.\n2.  **Application Control:** Implement application control solutions like Windows Defender Application Control (WDAC) or AppLocker to restrict which executables can run on a system. This can prevent an attacker from running their exploit code even if they gain initial access.\n3.  **Threat Hunting:** Proactively hunt for the observables listed above. Assume that an attacker may already be on the network and is looking for opportunities to escalate privileges.\n4.  **Enhanced Monitoring:** Increase monitoring on critical systems and for high-value user accounts. Pay close attention to any alerts related to privilege escalation or unusual process creation.\n\nFrom a D3FEND perspective, countermeasures like **[User Account Permissions](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions)** (Hardening) and **[Local Account Monitoring](https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring)** (Detect) are key to mitigating the impact of this vulnerability.",
+  "twitter_post": "⚠️ Unpatched Windows zero-day 'MiniPlasma' grants full SYSTEM access! A regression of a 2020 flaw, the PoC exploit works on fully patched Win11 systems. No patch available. #Windows11 #ZeroDay #CyberSecurity #LPE",
+  "meta_description": "A new Windows zero-day vulnerability, 'MiniPlasma,' allows local privilege escalation to SYSTEM on fully patched Windows 11 systems by exploiting a previously patched flaw (CVE-2020-17103).",
+  "category": [
+    "Vulnerability",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Chaotic Eclipse",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Google Project Zero",
+      "type": "security_organization"
+    },
+    {
+      "name": "James Forshaw",
+      "type": "person"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor"
+    },
+    {
+      "name": "MiniPlasma",
+      "type": "malware"
+    },
+    {
+      "name": "Will Dormann",
+      "type": "person"
+    },
+    {
+      "name": "Windows 11",
+      "type": "product"
+    },
+    {
+      "name": "Windows Server 2022",
+      "type": "product"
+    },
+    {
+      "name": "Windows Server 2025",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2020-17103",
+      "cvss_score": 7,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/05/miniplasma-windows-0-day-enables-system.html",
+      "title": "MiniPlasma Windows 0-Day Enables SYSTEM Privilege Escalation on Fully Patched Systems",
+      "date": "2026-05-18",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://securityweek.com/researcher-drops-miniplasma-windows-exploit-for-unpatched-2020-cve/",
+      "title": "Researcher Drops MiniPlasma Windows Exploit for Unpatched 2020 CVE",
+      "date": "2026-05-18",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://www.techradar.com/pro/security/the-exact-same-issue-that-was-reported-to-microsoft-by-google-project-zero-is-actually-still-present-unpatched-chaotic-eclipse-strikes-again-with-another-worrying-windows-security-flaw",
+      "title": "'The exact same issue that was reported to Microsoft by Google project zero is actually still present, unpatched': Chaotic Eclipse strikes again with another worrying Windows security flaw",
+      "date": "2026-05-18",
+      "website": "techradar.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2020-09",
+      "summary": "Google Project Zero researcher James Forshaw discovers the original vulnerability, later assigned CVE-2020-17103."
+    },
+    {
+      "datetime": "2020-12",
+      "summary": "Microsoft releases a patch for CVE-2020-17103 as part of its December 2020 Patch Tuesday."
+    },
+    {
+      "datetime": "2026-05-18",
+      "summary": "Researcher Chaotic Eclipse publicly releases the 'MiniPlasma' proof-of-concept exploit, demonstrating the 2020 patch is no longer effective."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1134.002",
+      "name": "Create Process with Token",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1548.002",
+      "name": "Bypass User Account Control",
+      "tactic": "Privilege Escalation"
+    }
+  ],
+  "tags": [
+    "CVE-2020-17103",
+    "Windows 11",
+    "cldflt.sys",
+    "patch regression",
+    "privilege escalation",
+    "zero-day"
+  ],
+  "extract_datetime": "2026-05-18",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "Users of Windows 11 and Windows Server 2022/2025"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "CVE-2020-17103",
+    "Windows 11",
+    "cldflt.sys",
+    "patch regression",
+    "privilege escalation",
+    "zero-day"
+  ],
+  "pub_date": "2026-05-18",
+  "reading_time_minutes": null,
+  "createdAt": "2026-05-18T15:00:00.000Z",
+  "updatedAt": "2026-05-23T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-23T12:00:00Z",
+      "summary": "MiniPlasma Windows zero-day is now actively exploited in the wild, increasing threat. New high-impact mitigation: disabling the cldflt service.",
+      "content": "The 'MiniPlasma' Windows zero-day, previously reported with a public PoC, is now confirmed to be actively exploited in the wild. This escalation significantly increases the threat level, as attackers are leveraging the vulnerability to gain SYSTEM privileges on fully patched Windows 11 and Server systems. Organizations should be aware that the exploit is being integrated into malicious toolkits. A new, high-impact mitigation involves disabling the `cldflt` service for systems not utilizing cloud file services, which can prevent exploitation but requires careful testing due to potential system instability. Enhanced behavioral monitoring remains critical.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.lumu.com/blog/advisory-alert-how-does-the-miniplasma-zero-day-blind-endpoint-security/",
+          "title": "Advisory Alert: How Does the MiniPlasma Zero-Day Blind Endpoint Security?",
+          "website": "",
+          "date": "2026-05-23T12:00:00Z"
+        },
+        {
+          "url": "https://securityweek.com/miniplasma-windows-privilege-escalation-zero-day-affects-fully-patched-systems/",
+          "title": "MiniPlasma: Windows privilege escalation zero-day affects fully patched systems",
+          "website": "",
+          "date": "2026-05-23T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "datetime": "2026-05-19T12:00:00Z",
+      "summary": "PoC exploit confirmed by multiple researchers, active exploitation highly likely, and new external sources provided for the MiniPlasma zero-day.",
+      "content": "The 'MiniPlasma' zero-day exploit's proof-of-concept has been further verified by multiple independent security researchers, confirming its reliability on fully patched Windows 11 systems. This widespread confirmation significantly increases the urgency, with active exploitation by threat actors now considered highly likely. The new report also provides specific external sources, including direct links to articles detailing the vulnerability and its impact, offering additional context and verification for the ongoing threat.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://thehackernews.com/2026/05/miniplasma-windows-0-day-enables.html",
+          "title": "MiniPlasma Windows 0-Day Enables SYSTEM Privilege Escalation on Fully Patched Systems",
+          "website": "",
+          "date": "2026-05-19T12:00:00Z"
+        },
+        {
+          "url": "https://www.bleepingcomputer.com/news/security/new-miniplasma-zero-day-exploit-grants-system-privileges-on-fully-patched-windows/",
+          "title": "New MiniPlasma Zero-Day Exploit Grants SYSTEM Privileges on Fully Patched Windows",
+          "website": "",
+          "date": "2026-05-19T12:00:00Z"
+        },
+        {
+          "url": "https://www.notebookcheck.net/MiniPlasma-zero-day-gives-SYSTEM-access-on-fully-patched-Windows-11.838392.0.html",
+          "title": "MiniPlasma zero-day gives SYSTEM access on fully patched Windows 11",
+          "website": "",
+          "date": "2026-05-19T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

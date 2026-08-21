@@ -1,0 +1,81 @@
+title: Anomalous IT to OT Network Traffic
+id: 2b1a3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects network traffic from the IT network segment to the OT network segment using non-standard or unexpected ports, which could indicate an attacker pivoting from a compromised edge device.
+references:
+  - https://varutra.com/blog/latest-cyber-security-attack-news-today-cyber-threat-post/
+author: cyber.netsecops.io
+date: 2026-05-16
+tags:
+  - attack.t0886
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip_zone: 'it_network'
+    dst_ip_zone: 'ot_network'
+  filter:
+    dst_port:
+      - 102 # Siemens S7
+      - 502 # Modbus
+      - 2404 # IEC 60870-5-104
+      - 20000 # DNP3
+      - 44818 # EtherNet/IP
+      - 4840 # OPC UA
+  condition: selection and not filter
+falsepositives:
+  - Legitimate, but un-documented, IT-to-OT communication.
+  - Misconfigured network zone definitions.
+---
+title: Anomalous VPN Login to Edge Device
+id: 8f7e6d5c-4b3a-4e2d-9c8b-1a2b3c4d5e6f
+status: experimental
+description: Detects successful VPN logins from unusual geographic locations, which could indicate compromised credentials for an edge device being used by an attacker.
+references:
+  - https://varutra.com/blog/latest-cyber-security-attack-news-today-cyber-threat-post/
+author: cyber.netsecops.io
+date: 2026-05-16
+tags:
+  - attack.t0859
+  - attack.t0886
+level: medium
+logsource:
+  category: authentication
+  product: vpn
+detection:
+  selection:
+    action: 'success'
+    logon_type: 'vpn'
+  filter:
+    source_country:
+      - 'USA'
+      - 'Canada'
+      - 'United Kingdom'
+      # Add other expected countries for legitimate remote access
+  condition: selection and not filter
+falsepositives:
+  - Legitimate employees traveling or using personal VPNs.
+---
+title: Network Device Configuration Discovery Command
+id: 1a2b3c4d-5e6f-4a7b-8c9d-9e8f7a6b5c4d
+status: experimental
+description: Detects the execution of commands used to display the running configuration of a network device, which could indicate an attacker performing reconnaissance on a compromised edge device.
+references:
+  - https://varutra.com/blog/latest-cyber-security-attack-news-today-cyber-threat-post/
+author: cyber.netsecops.io
+date: 2026-05-16
+tags:
+  - attack.t1082
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    CommandLine|contains:
+      - 'show running-config'
+      - 'show configuration'
+  condition: selection
+falsepositives:
+  - Legitimate administrative activity. Correlation with anomalous logins is recommended.

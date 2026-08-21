@@ -1,0 +1,262 @@
+{
+  "id": "c786e20a-f0ee-4edc-b326-c2f0439c7667",
+  "slug": "miasma-worm-supply-chain-attack-microsoft-github",
+  "headline": "Miasma Worm Breaches 73 Microsoft GitHub Repos in AI-Powered Supply Chain Attack",
+  "title": "Miasma Worm Compromises 73 Microsoft GitHub Repositories in Sophisticated Supply Chain Attack Leveraging AI Coding Tools",
+  "summary": "The 'Miasma worm,' a self-replicating malware, has executed a significant supply chain attack, compromising 73 GitHub repositories across four major Microsoft organizations. The attack, which occurred on June 5, 2026, leveraged a previously compromised contributor account to inject a credential-harvesting payload. This payload was specifically designed to activate when developers used popular AI-powered coding assistants like Claude Code and VS Code, stealing credentials to propagate itself further. The incident is believed to be an evolution of the 'Mini Shai-Hulud' worm, publicly released by the threat group TeamPCP. GitHub responded swiftly by disabling the affected repositories, but the attack highlights the growing threat of AI-assisted malware and the targeting of core developer infrastructure.",
+  "full_report": "## Executive Summary\n\nA sophisticated and self-replicating supply chain attack, dubbed the **Miasma worm**, successfully compromised 73 **[Microsoft](https://www.microsoft.com)** GitHub repositories on June 5, 2026. The attack leveraged compromised contributor credentials to inject a malicious payload designed to be activated by AI-powered coding assistants. The payload harvested developer credentials, enabling the worm to propagate autonomously. The incident, linked to the threat actor **[TeamPCP](https://www.malpedia.caad.fkie.fraunhofer.de/actor/teampcp)**, targeted four major Microsoft GitHub organizations: `Azure`, `Azure-Samples`, `Microsoft`, and `MicrosoftDocs`. **[GitHub](https://github.com)** quickly disabled the affected repositories, but the event underscores a significant escalation in targeting critical developer infrastructure and the novel use of AI tools as an attack vector.\n\n---\n\n## Threat Overview\n\nThe **Miasma** worm represents a significant evolution in supply chain attacks, moving beyond simple code injection to a more dynamic and insidious propagation method. By targeting the interaction between developers and AI coding tools, the attackers found a novel execution trigger. The attack appears to be a continuation of a broader campaign, with evidence suggesting the threat actor maintained access from a previous compromise in May 2026.\n\nThe initial entry point was a single compromised contributor account, which was used to push a backdated commit to the `Azure/durabletask` repository. This commit introduced configuration files that lay dormant until a developer interacted with the repository using tools like **Claude Code**, **Gemini CLI**, **Cursor**, or **VS Code**. Upon activation, the payload exfiltrated credentials, which the worm then used to access and infect other repositories available to the compromised account. This self-replicating nature makes it particularly dangerous, as a single breach can quickly cascade across an organization's entire software ecosystem.\n\n## Technical Analysis\n\nThe attack chain demonstrates a deep understanding of modern development workflows and CI/CD pipelines.\n\n1.  **Initial Access**: The threat actor utilized previously compromised credentials of a contributor, bypassing initial authentication controls. This aligns with the MITRE ATT&CK technique [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/).\n2.  **Execution & Persistence**: The core of the attack involved modifying repository configuration files. The malicious commit, pushed to `Azure/durabletask`, was backdated to evade simple timeline analysis. The payload was designed to execute via a hook or trigger within AI coding assistants when they parsed the repository's code or configuration. This is a novel form of [`T1059 - Command and Scripting Interpreter`](https://attack.mitre.org/techniques/T1059/).\n3.  **Defense Evasion**: Backdating the commit ([`T1070.006 - Timestomp`](https://attack.mitre.org/techniques/T1070/006/)) was a clear attempt to hide the malicious changes within the repository's history.\n4.  **Credential Access**: The primary objective of the payload was to harvest credentials. This includes API keys, tokens, and other secrets stored in the developer's environment, consistent with [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/).\n5.  **Lateral Movement & Propagation**: Using the stolen credentials, the worm autonomously authenticated to other GitHub repositories accessible by the victim's account and repeated the infection process. This constitutes a supply chain compromise ([`T1195.001 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/001/)).\n\nThe **Miasma** worm is assessed as a variant of the **Mini Shai-Hulud** worm, which was open-sourced by **TeamPCP**. This has led to its proliferation and modification by various actors, with related malicious repositories appearing on GitHub under names like \"Miasma: The Spreading Blight\" and \"Hades - The End for the Damned\".\n\n## Impact Assessment\n\nThe immediate impact was the compromise of 73 repositories containing source code and documentation for critical Microsoft services, including Azure and Windows. While GitHub's rapid response in disabling the repositories mitigated further spread, the potential for widespread damage was immense. Had the worm propagated further, it could have injected malicious code into official software releases, leading to a massive downstream impact on Microsoft's customers.\n\nThis incident erodes trust in the software supply chain and forces organizations to re-evaluate the security of their development environments, especially with the increasing integration of third-party AI tools. The operational impact on Microsoft involved an immediate freeze on the affected repositories, requiring extensive security audits, code reviews, and credential rotation for all potentially exposed developers before they could be brought back online.\n\n## IOCs — Directly from Articles\n\nNo specific file hashes, IP addresses, or domains were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns to detect similar activity:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| command_line_pattern | `git commit --date='YYYY-MM-DD'` | Look for developers using the `--date` flag to backdate commits, which is an unusual practice. | Git server logs, SIEM, audit logs. |\n| file_path | `/.vscode/settings.json` | Monitor for unusual modifications to VS Code workspace settings files that could trigger malicious scripts. | File Integrity Monitoring (FIM), EDR. |\n| network_traffic_pattern | `api.github.com` | Baseline and monitor for anomalous API calls from developer workstations or CI/CD runners, especially authentication or write actions to multiple repositories in a short timeframe. | Network monitoring tools, proxy logs. |\n| log_source | `GitHub Audit Log` | Search for `repo.config_enable` or `repo.config_disable` events from unexpected user accounts or IP ranges. | GitHub Enterprise Cloud audit logs. |\n\n## Detection & Response\n\n- **Log Analysis**: Continuously analyze GitHub audit logs for suspicious activities, such as commits from unusual locations, rapid repository modifications, or changes to repository configurations by multiple users in a short period. D3FEND's [`User Geolocation Logon Pattern Analysis (D3-UGLPA)`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis) can help identify anomalous access patterns.\n- **Endpoint Detection (EDR)**: Deploy EDR solutions on developer workstations to monitor for suspicious processes spawned by IDEs or AI coding tools. Look for unexpected network connections or file system access from plugins.\n- **Supply Chain Monitoring**: Utilize tools that scan git history for secrets and suspicious commit patterns, such as backdated commits or changes that introduce known malicious code snippets. D3FEND's [`System File Analysis (D3-SFA)`](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis) can be adapted to source code repositories.\n- **Incident Response**: If a compromise is suspected, immediately rotate all credentials for the affected developer(s), disable the account, and trigger a full audit of all repositories they had access to. Isolate the developer workstation for forensic analysis.\n\n## Mitigation\n\n- **Principle of Least Privilege**: Enforce strict, role-based access controls (RBAC) on GitHub repositories. Developers should only have write access to the repositories they are actively working on. This is a core part of [`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/).\n- **Multi-Factor Authentication (MFA)**: Mandate the use of strong, phishing-resistant MFA (e.g., FIDO2 security keys) for all GitHub accounts. This maps to [`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/).\n- **Branch Protection Rules**: Configure branch protection rules to require signed commits and mandatory code reviews by at least one other developer before merging changes into main branches. This helps prevent a single compromised account from injecting malicious code.\n- **Vet Third-Party Tools**: Thoroughly vet all third-party applications and AI coding assistants before integration. Isolate them and restrict their permissions to the minimum required for their function. This aligns with D3FEND's [`Application Configuration Hardening (D3-ACH)`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).\n- **Developer Training**: Educate developers on the risks of supply chain attacks and the TTPs used, including social engineering and the dangers of using personal access tokens with broad scopes.",
+  "twitter_post": "🚨 Miasma Worm strikes Microsoft! 73 GitHub repos compromised in a sophisticated supply chain attack. The worm uses AI coding tools as a trigger to steal credentials and spread. 웜 #SupplyChain #GitHub #MiasmaWorm #CyberAttack",
+  "meta_description": "A detailed analysis of the Miasma worm, a self-replicating supply chain attack that compromised 73 Microsoft GitHub repositories by leveraging AI coding tools to harvest developer credentials.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "company",
+      "url": "https://www.microsoft.com"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor",
+      "url": "https://www.malpedia.caad.fkie.fraunhofer.de/actor/teampcp"
+    },
+    {
+      "name": "Miasma",
+      "type": "malware"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "Hades",
+      "type": "malware"
+    },
+    {
+      "name": "Claude Code",
+      "type": "product"
+    },
+    {
+      "name": "Gemini CLI",
+      "type": "product"
+    },
+    {
+      "name": "Cursor",
+      "type": "product"
+    },
+    {
+      "name": "VS Code",
+      "type": "product"
+    },
+    {
+      "name": "Azure",
+      "type": "product",
+      "url": "https://azure.microsoft.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.rescana.com/post/miasma-worm-supply-chain-attack-73-microsoft-github-repositories-compromised-via-ai-coding-tools",
+      "title": "Miasma Worm Supply Chain Attack: 73 Microsoft GitHub Repositories Compromised via AI Coding Tools",
+      "date": "2026-06-07",
+      "friendly_name": "Rescana",
+      "website": "rescana.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/06/miasma-worm-hits-73-microsoft-github.html",
+      "title": "Miasma Worm Hits 73 Microsoft GitHub Repositories in Major Supply Chain Attack",
+      "date": "2026-06-06",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05",
+      "summary": "A previous compromise occurred, suggesting the threat actor maintained access to credentials."
+    },
+    {
+      "datetime": "2026-06-05",
+      "summary": "The Miasma worm compromises 73 Microsoft GitHub repositories using a backdated commit."
+    },
+    {
+      "datetime": "2026-06-05",
+      "summary": "GitHub staff disabled access to the 73 affected repositories in two automated waves over 105 seconds."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter"
+    },
+    {
+      "id": "T1070.006",
+      "name": "Timestomp"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Group Policy Preferences"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforcing MFA on all developer accounts can prevent attackers from using stolen credentials for initial access and lateral movement.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Implement least-privilege access for developer accounts and CI/CD service principals to limit the blast radius of a compromised account.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Enforce signed commits to ensure the integrity and provenance of code changes, making it harder for an attacker to inject malicious code anonymously.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Run AI coding assistants and other development tools in sandboxed environments with restricted permissions to prevent them from accessing sensitive credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train developers to recognize the signs of a compromised account and the risks associated with third-party development tools.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "Mandate the use of phishing-resistant Multi-Factor Authentication, such as FIDO2 security keys or hardware tokens, for all access to source code management systems like GitHub. This directly counters the attacker's use of compromised credentials (T1078) for initial access. While password-based MFA (TOTP) is better than nothing, hardware-based keys are essential for high-value developer accounts, as they are not susceptible to credential phishing. This should be enforced not only for the GitHub web UI but also for all Git CLI and API operations. Implementing this control would have likely prevented the initial malicious commit, stopping the attack chain before it began.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "Implement a strict principle of least privilege for all developer and service accounts within GitHub. A single compromised account should not have write access to 73 repositories, especially critical ones. Use GitHub's team-based permissions to grant access on a need-to-know basis. For critical repositories like `Azure/durabletask`, enforce branch protection rules that require multiple, independent reviewers for all pull requests. This ensures that even if one account is compromised, a second, uncompromised party must approve any malicious code before it is merged. This granular control limits the blast radius of a single compromised credential set.",
+      "mitre_mitigation_id": "M1015"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Treat AI coding tools and their plugins as untrusted, third-party code. Execute them within a sandboxed or containerized environment on developer workstations. This environment should have restricted network access and no access to local credential stores (e.g., SSH keys, Git credential managers, cloud provider tokens). By isolating the execution of these tools, organizations can dynamically analyze their behavior for suspicious activities, such as unexpected network callbacks or attempts to read sensitive files outside of the project directory. This would prevent a malicious payload triggered by an AI tool from successfully harvesting credentials and propagating.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "git commit --date=",
+      "description": "Unusual use of the git commit --date flag to backdate commits, potentially to hide malicious activity in the commit history.",
+      "context": "Git server logs, SIEM, source code management audit logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "/.vscode/settings.json",
+      "description": "Malicious modification of VS Code workspace settings files, which can be used to execute scripts or commands automatically.",
+      "context": "File Integrity Monitoring (FIM), Endpoint Detection and Response (EDR)",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "api.github.com",
+      "description": "Anomalous API call patterns to api.github.com, such as a single user/token performing write actions across many unrelated repositories in a short time.",
+      "context": "Web proxy logs, network traffic analysis, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "GitHub Audit Log",
+      "description": "Look for `repo.config_enable` or `repo.config_disable` events from unexpected user accounts or IP ranges, which could indicate unauthorized changes.",
+      "context": "GitHub Enterprise Cloud audit logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Miasma",
+    "Supply Chain Attack",
+    "GitHub",
+    "Microsoft",
+    "TeamPCP",
+    "AI",
+    "Credential Harvesting",
+    "Self-Replicating Malware"
+  ],
+  "extract_datetime": "2026-06-08T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "companies_affected": [
+      "Microsoft"
+    ],
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "cloud service customers"
+    ]
+  },
+  "pub_date": "2026-06-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-06-08T15:00:00.000Z",
+  "updatedAt": "2026-06-12T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-06-12T00:00:00Z",
+      "datetime": "2026-06-12T00:00:00Z",
+      "title": "Update 1",
+      "summary": "Miasma framework leaked, spawning 'Hades' variant. Attack expanded to 19 PyPI packages and hundreds across npm, with a new 'on-open' IDE trigger.",
+      "sources": [
+        {
+          "title": "ThreatsDay Bulletin June 2026: Miasma Supply Chain Worm Leak, Claude Code GitHub Action Vulnerability, AI Agent Phishing & Top Cyber Incidents",
+          "url": "https://www.rescana.com/post/threatsday-bulletin-june-2026-miasma-supply-chain-worm-leak-claude-code-github-action-vulnerability-ai-agent-phishing-to"
+        },
+        {
+          "title": "Miasma Worm Reaches Microsoft Azure and PyPI: 73 Repositories Disabled, Hades Wave Drops 37 Malicious Python Wheels",
+          "url": "https://phoenix.security/miasma-azure-hades-pypi-supply-chain-worm-2026/"
+        },
+        {
+          "title": "Miasma worm targets Microsoft, compromises 73 GitHub repositories",
+          "url": "https://www.threatlocker.com/blog/miasma-worm-targets-microsoft-compromises-73-github-repositories"
+        }
+      ]
+    }
+  ]
+}

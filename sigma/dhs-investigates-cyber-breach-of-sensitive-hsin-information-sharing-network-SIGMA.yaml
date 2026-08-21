@@ -1,0 +1,63 @@
+title: Suspicious SharePoint Layouts Path Access
+id: 2b3c1d4e-5f6a-4b9c-8d7e-1a2b3c4d5e6f
+status: experimental
+description: Detects access to common SharePoint administrative paths which could indicate reconnaissance or exploitation attempts, as mentioned in the HSIN breach report.
+references:
+  - https://securityboulevard.com/2026/07/dhs-confirms-hackers-breached-hsin-information-sharing-platform/
+author: cyber.netsecops.io
+date: 2026-07-03
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|contains: '/_layouts/15/'
+  condition: selection
+---
+title: Potential SharePoint Webshell Activity
+id: 31360dd5-7955-4adc-b296-76cf1332203f
+status: experimental
+description: Detects the IIS worker process (w3wp.exe) spawning command shells, a strong indicator of a web shell, as suggested in the HSIN breach investigation.
+references:
+  - https://securityboulevard.com/2026/07/dhs-confirms-hackers-breached-hsin-information-sharing-platform/
+author: cyber.netsecops.io
+date: 2026-07-03
+tags:
+  - attack.t1505.003
+level: high
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    ParentImage|endswith: '\w3wp.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  condition: selection
+---
+title: Anomalous Account Logon Activity
+id: 7d6e5f4a-3b2c-4d1e-9f8a-7b6c5d4e3f2a
+status: experimental
+description: Detects multiple failed login attempts from a source IP followed by a successful login, which can indicate a brute-force or password spraying attack against a web application or VPN.
+references:
+  - https://securityboulevard.com/2026/07/dhs-confirms-hackers-breached-hsin-information-sharing-platform/
+author: cyber.netsecops.io
+date: 2026-07-03
+tags:
+  - attack.t1078
+  - attack.t1110
+level: medium
+logsource:
+  category: authentication
+  product: windows
+detection:
+  selection_fail:
+    EventID: 4625
+  selection_success:
+    EventID: 4624
+  timeframe: 10m
+  condition: selection_fail | count(AuthenticationPackageName) by SourceIpAddress > 5 and selection_success

@@ -1,0 +1,192 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-18T15:54:47.884Z",
+    "article_slug": "cisco-patches-critical-command-execution-flaw-in-ise",
+    "article_date": "2026-06-18",
+    "token_usage": {
+      "input_tokens": 144023,
+      "output_tokens": 3093,
+      "cached_tokens": 137831,
+      "total_tokens": 147116,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.055899
+    }
+  },
+  "report_name": "Cisco Patches Critical RCE Flaw (CVE-2026-20181) in ISE with 9.1 CVSS Score",
+  "threat_actors": [
+    {
+      "name": "Unspecified Threat Actor",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A generic placeholder for any threat actor that might exploit the vulnerabilities CVE-2026-20181 and CVE-2026-20190 in Cisco ISE. The article does not attribute the vulnerabilities to a specific group but describes how a generic attacker could leverage them.",
+      "goals": "Gain full control over a Cisco ISE appliance to modify network access policies, bypass security controls, and pivot to other parts of the network.",
+      "primary_motivation": "organizational-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "An attacker could exploit CVE-2026-20181 by sending a specially crafted HTTP request to the web-based management interface of a Cisco ISE appliance to achieve remote command execution."
+    },
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "After successful exploitation of CVE-2026-20181, an attacker could elevate privileges to root on the underlying operating system of the Cisco ISE appliance."
+    },
+    {
+      "name": "Unix Shell",
+      "mitre_id": "T1059.004",
+      "description": "An attacker could execute arbitrary commands on the underlying OS of the Cisco ISE appliance, potentially spawning a shell like /bin/bash, after exploiting CVE-2026-20181."
+    },
+    {
+      "name": "Unsecured Credentials",
+      "mitre_id": "T1552",
+      "description": "An unauthenticated attacker could exploit CVE-2026-20190 to read sensitive information from a Cisco ISE device, which may include hashed user credentials."
+    },
+    {
+      "name": "Valid Accounts",
+      "mitre_id": "T1078",
+      "description": "An attacker could use administrative credentials obtained by cracking hashes stolen via CVE-2026-20190 to authenticate to the ISE web interface and exploit CVE-2026-20181 for remote code execution."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-20181",
+      "cve": "CVE-2026-20181",
+      "description": "A critical remote command execution vulnerability in the web-based management interface of Cisco ISE due to insufficient input validation. An authenticated administrator can send a crafted HTTP request to execute arbitrary commands with root privileges.",
+      "affected_products": [
+        "Cisco Identity Services Engine (ISE)",
+        "Cisco ISE Passive Identity Connector (ISE-PIC)"
+      ],
+      "cvss_score": 9.1,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-20190",
+      "cve": "CVE-2026-20190",
+      "description": "A high-severity information disclosure vulnerability in Cisco ISE caused by an improper authorization check. An unauthenticated, remote attacker can send crafted traffic to read sensitive information, including hashed user credentials.",
+      "affected_products": [
+        "Cisco Identity Services Engine (ISE)",
+        "Cisco ISE Passive Identity Connector (ISE-PIC)"
+      ],
+      "cvss_score": 7.5,
+      "severity": "high"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Cisco ISE RCE via ise-tacacs-runtime Child Process",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Cisco ISE RCE via ise-tacacs-runtime Child Process\nid: 2b8a1c3d-f4e5-4b9a-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the Cisco ISE TACACS runtime process spawning a shell, which is a strong indicator of remote command execution (CVE-2026-20181).\nreferences:\n  - https://www.securityweek.com/critical-command-execution-vulnerability-patched-in-cisco-ise/\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1059.004\n  - attack.execution\nlevel: critical\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    ParentImage|endswith: '/ise-tacacs-runtime'\n    Image|endswith:\n      - '/bash'\n      - '/sh'\n      - '/zsh'\n      - '/ksh'\n  condition: selection",
+      "description": "Detects the 'ise-tacacs-runtime' process spawning a shell, which could indicate successful exploitation of CVE-2026-20181 for remote command execution."
+    },
+    {
+      "name": "Anomalous Cisco ISE Administrative Login",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Cisco ISE Administrative Login\nid: 9d8c7b6a-5f4e-4d3c-2b1a-0e9f8d7c6b5a\nstatus: experimental\ndescription: Detects successful administrative logins to a Cisco ISE appliance from an untrusted or non-standard IP address, which could be a precursor to exploiting CVE-2026-20181.\nreferences:\n  - https://www.securityweek.com/critical-command-execution-vulnerability-patched-in-cisco-ise/\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1078\n  - attack.initial_access\nlevel: medium\nlogsource:\n  product: cisco\n  service: ise\n  category: authentication\ndetection:\n  selection:\n    event_type: 'admin_login_success'\n    privileges: 'administrator'\n  filter:\n    source_ip|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  condition: selection and not filter",
+      "description": "Identifies successful administrative logins to Cisco ISE from unknown or untrusted IP addresses, which could indicate the use of stolen credentials (potentially from CVE-2026-20190) as a precursor to RCE."
+    },
+    {
+      "name": "Unusual Outbound Connection from Cisco ISE",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Unusual Outbound Connection from Cisco ISE\nid: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects a Cisco ISE appliance initiating an outbound network connection to an external IP address, which could indicate a post-compromise C2 channel.\nreferences:\n  - https://www.securityweek.com/critical-command-execution-vulnerability-patched-in-cisco-ise/\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1071\n  - attack.command_and_control\nlevel: high\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    SourceImage|endswith: '/ise-tacacs-runtime'\n    Initiated: true\n  filter:\n    DestinationIp|startswith:\n      - '10.'\n      - '172.16.'\n      - '172.17.'\n      - '172.18.'\n      - '172.19.'\n      - '172.20.'\n      - '172.21.'\n      - '172.22.'\n      - '172.23.'\n      - '172.24.'\n      - '172.25.'\n      - '172.26.'\n      - '172.27.'\n      - '172.28.'\n      - '172.29.'\n      - '172.30.'\n      - '172.31.'\n      - '192.168.'\n    DestinationHostname|endswith:\n      - '.cisco.com'\n  condition: selection and not filter",
+      "description": "Monitors for unusual outbound network connections initiated by a Cisco ISE appliance, which could indicate a C2 channel established after a successful RCE."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-20181",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-20190",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Unix Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Unsecured Credentials",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unspecified Threat Actor",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Valid Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cisco ISE RCE via ise-tacacs-runtime Child Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Unix Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cisco ISE RCE via ise-tacacs-runtime Child Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-20181",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Anomalous Cisco ISE Administrative Login",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Valid Accounts",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

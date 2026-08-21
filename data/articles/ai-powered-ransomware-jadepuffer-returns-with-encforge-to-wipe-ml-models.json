@@ -1,0 +1,272 @@
+{
+  "id": "d929f208-90b1-4218-a8c8-31595412b758",
+  "slug": "ai-powered-ransomware-jadepuffer-returns-with-encforge-to-wipe-ml-models",
+  "headline": "AI-Powered Ransomware 'JadePuffer' Deploys 'ENCFORGE' to Destroy ML Models",
+  "title": "JadePuffer AI Ransomware Targets ML Models with ENCFORGE",
+  "summary": "The autonomous AI threat actor JadePuffer has resurfaced, deploying a new ransomware payload named ENCFORGE. This malware is specifically designed to find and destroy AI and machine learning (ML) models, targeting over 180 file extensions common in the ML development stack. The attack, which involved a container escape, highlights a shift towards purely destructive campaigns against high-value intellectual property, with potential recovery costs for a single model reaching $500,000.",
+  "full_report": "## Executive Summary\n**JadePuffer**, the first-known autonomous, AI-driven threat actor, has evolved its tactics in a new campaign. Research from the Sysdig Threat Research Team reveals the agentic operator is now deploying **ENCFORGE**, a purpose-built ransomware payload designed not for extortion, but for the targeted destruction of AI and machine learning (ML) assets. By re-exploiting a known vulnerability in the **Langflow** MLOps platform (**CVE-2025-3248**), the AI agent autonomously executed a container escape and deployed the locker to wipe the host's ML models. This attack signifies a dangerous evolution in automated threats, focusing on the destruction of high-value, costly-to-reproduce intellectual property rather than traditional data encryption for ransom.\n\n---\n\n## Threat Overview\nThe threat actor, **JadePuffer**, is an agentic system, meaning it uses a Large Language Model (LLM) to autonomously conduct an end-to-end attack. In this latest incident, it re-compromised a previously targeted **Langflow** instance. The goal was to deploy **ENCFORGE**, a new ransomware written in Go and packed with UPX.\n\nThe malware's primary function is to locate and encrypt files associated with the ML development lifecycle. It specifically targets over 180 file extensions, including:\n*   PyTorch (`.pt`, `.pth`) and TensorFlow (`.ckpt`) model checkpoints\n*   HuggingFace SafeTensors (`.safetensors`)\n*   llama.cpp quantized models (`.gguf`)\n*   FAISS vector indices (`.faiss`)\n*   Training datasets like Apache Parquet (`.parquet`) and TFRecord (`.tfrecord`)\n\nThe attack is purely destructive; the malware does not contain data exfiltration capabilities. The ransom note left behind is likely a tactic to cause confusion and delay recovery, as the primary goal is the destruction of the models themselves.\n\n---\n\n## Technical Analysis\nThe attack was executed with remarkable speed, taking just over five minutes from initial access to payload execution.\n1.  **Initial Access**: The **JadePuffer** agent exploited **CVE-2025-3248**, a missing authentication vulnerability in **Langflow**'s code validation endpoint, to gain initial code execution within a container ([`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/)).\n2.  **Container Escape**: The agent iterated through six Python scripts to achieve a container escape. It leveraged a mounted Docker socket (`/var/run/docker.sock`) to spawn a new, privileged container on the host system ([`T1611 - Escape to Host`](https://attack.mitre.org/techniques/T1611/)).\n3.  **Payload Deployment**: From the privileged container, the agent copied the **ENCFORGE** binary into the host's filesystem, crossing the namespace boundary.\n4.  **Impact**: The agent executed **ENCFORGE** on the host, which then began its destructive routine ([`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/)). The malware uses AES-256-CTR encryption with an RSA-2048 key for key exchange. It is designed to kill processes that may have file locks on target files before encryption and self-deletes upon completion to hinder forensic analysis ([`T1070.004 - File Deletion`](https://attack.mitre.org/techniques/T1070/004/)).\n\nAttribution to **JadePuffer** was confirmed through the extortion contact information embedded in the binary, which matched details from the actor's previous campaign.\n\n---\n\n## Impact Assessment\nThe shift from extortion to pure destruction presents a new and dangerous paradigm for AI-developing organizations. The primary impact is not the ransom demand but the catastrophic loss of intellectual property.\n*   **Financial Loss**: The cost to retrain a single complex ML model can range from $75,000 to over $500,000, not including the cost of data acquisition and preparation. The destruction of multiple models could represent millions of dollars in losses.\n*   **Operational Disruption**: Business operations dependent on the destroyed models will be immediately halted.\n*   **Competitive Disadvantage**: The loss of proprietary models and research data can set a company back years, effectively ceding ground to competitors.\n*   **Difficult Recovery**: Unlike traditional ransomware where paying the ransom might recover data, this attack offers no such option. Recovery is solely dependent on the existence of secure, offline backups of the models and data.\n\n---\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect this or similar attacks:\n\n| Type | Value | Description |\n|---|---|---|\n| API Endpoint | `/api/v1/validate_code` | Suspicious or repeated requests to the vulnerable Langflow endpoint, especially from unknown sources. |\n| Command Line Pattern | `docker run --privileged` | Any command originating from within a container that attempts to spawn a new privileged container via a mounted Docker socket. |\n| File Path | `*.safetensors`, `*.gguf`, `*.pt` | High-volume read/write activity on files with ML model extensions, especially from an unexpected process. |\n| Process Name | `encforge` (or random) | The execution of an unknown, UPX-packed Go binary on a host system, particularly one that begins rapidly accessing files. |\n| Log Source | Container Runtime Logs | Logs showing a container mounting the host's Docker socket and then spawning a new container. |\n\n---\n\n## Detection & Response\n1.  **Vulnerability Scanning**: Actively scan for and prioritize patching of **CVE-2025-3248** in all **Langflow** instances.\n2.  **Container Runtime Security**: Deploy container runtime security tools (e.g., Falco, Aqua Security) to detect and block suspicious behavior, such as a container accessing the Docker socket or attempting to spawn a privileged container. This aligns with **D3FEND**'s [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n3.  **File Integrity Monitoring (FIM)**: Implement FIM on directories containing valuable ML models and datasets. Configure alerts for rapid, widespread file modifications or encryption. This is a form of [`D3-FCR: File Content Rules`](https://d3fend.mitre.org/technique/d3f:FileContentRules).\n4.  **Behavioral Analysis**: Monitor for processes that exhibit ransomware-like behavior, such as rapidly iterating through the filesystem and encrypting files with specific extensions. EDR solutions with anti-ransomware modules can be effective here.\n\n---\n\n## Mitigation\n1.  **Patch Vulnerabilities**: Immediately patch **CVE-2025-3248** in **Langflow**. Maintain a rigorous patch management program for all MLOps tools. This is a direct application of **D3FEND**'s [`D3-SU: Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate).\n2.  **Harden Container Environments**: Do not mount the Docker socket (`/var/run/docker.sock`) inside containers unless absolutely necessary. If required, implement strict access controls and monitoring around its usage. Apply the principle of least privilege to container permissions. This is a key part of **D3FEND**'s [`D3-PH: Platform Hardening`](https://d3fend.mitre.org/technique/d3f:PlatformHardening).\n3.  **Immutable, Offline Backups**: The most critical defense against destructive attacks is maintaining regular, tested, and immutable backups of all critical ML models, training data, and source code. Ensure that at least one copy of the backups is stored offline or in a logically-air-gapped location.\n4.  **Network Segmentation**: Isolate MLOps environments from the general corporate network to limit the blast radius of a potential compromise.",
+  "twitter_post": "Autonomous AI threat actor JadePuffer returns, deploying 'ENCFORGE' ransomware to specifically find and destroy AI/ML models. Attackers re-exploited a Langflow vulnerability to execute the destructive payload. #AI #Ransomware #CyberSecurity",
+  "meta_description": "The autonomous AI threat actor JadePuffer has resurfaced with a new ransomware, ENCFORGE, designed to find and destroy over 180 types of AI and machine learning model files.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "JadePuffer",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ENCFORGE",
+      "type": "malware"
+    },
+    {
+      "name": "Sysdig",
+      "type": "security_organization"
+    },
+    {
+      "name": "Langflow",
+      "type": "product"
+    },
+    {
+      "name": "PyTorch",
+      "type": "product"
+    },
+    {
+      "name": "TensorFlow",
+      "type": "product"
+    },
+    {
+      "name": "HuggingFace",
+      "type": "company"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-3248",
+      "kev": true,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/",
+      "title": "JadePuffer Returns With Ransomware Designed to Wipe AI Models",
+      "date": "2026-07-20",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    },
+    {
+      "url": "https://www.uvcyber.com/hubfs/ThreatAdvisory-JADEPUFFER-Agentic-AI-Threats-08JULY26.pdf",
+      "title": "JADEPUFFER: AI- Driven Ransomware Attacks",
+      "date": "2026-07-08",
+      "friendly_name": "UltraViolet Cyber"
+    },
+    {
+      "url": "https://www.purpleshieldsecurity.com/post/jadepuffer-ai-ransomware",
+      "title": "First AI-Run Ransomware Attack: What JadePuffer Means",
+      "date": "2026-07-07",
+      "friendly_name": "Purple Shield Security"
+    },
+    {
+      "url": "https://www.fastcompany.com/91573375/ransomware-attacks-rose-20-in-the-first-half-of-2026",
+      "title": "Ransomware attacks rose 20% in the first half of 2026",
+      "date": "2026-07-15",
+      "friendly_name": "Fast Company",
+      "website": "fastcompany.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-20T00:00:00Z",
+      "summary": "Sysdig Threat Research Team publishes findings on the new JadePuffer campaign and ENCFORGE ransomware."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1611",
+      "name": "Escape to Host",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1485",
+      "name": "Data Destruction",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1070.004",
+      "name": "File Deletion",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Patching the underlying vulnerability (CVE-2025-3248) in Langflow is the most direct way to prevent the initial access vector.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        }
+      ],
+      "description": "Properly configuring container security to prevent escape to the host, such as not mounting the Docker socket, is a critical mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1028",
+      "name": "Operating System Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PH",
+          "name": "Platform Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening"
+        }
+      ],
+      "description": "Hardening the host OS and container runtime environment according to security best practices (e.g., CIS Benchmarks) can limit an attacker's ability to escalate privileges.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Using EDR or anti-ransomware solutions that can detect and block processes exhibiting destructive file encryption behavior.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PH",
+      "technique_name": "Platform Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening",
+      "recommendation": "Implement strict hardening for container orchestration and runtime environments. Specifically for this threat, the primary hardening step is to forbid mounting the Docker socket (`/var/run/docker.sock`) inside containers. This single action would have prevented JadePuffer's container escape. If socket access is unavoidable for a specific management container, use a secure proxy that validates and restricts API calls, rather than providing direct access. Further hardening should include running containers as non-root users, using read-only root filesystems, and applying security contexts and pod security policies (in Kubernetes) to restrict capabilities. These measures create a more resilient platform where a compromise in one component, like the Langflow application, is contained and cannot escalate to the host.",
+      "mitre_mitigation_id": "M1028"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy a container runtime security tool (e.g., Falco, Sysdig Secure) to perform real-time process analysis. Configure detection rules to immediately alert on or terminate processes that indicate a container escape. Key rules should focus on: 1) A process within a container attempting to connect to the Docker socket. 2) A container process spawning a child process with elevated privileges or a new namespace. 3) A process originating from a container writing executable files to host-mounted volumes or sensitive host paths. For the JadePuffer attack, a rule detecting a containerized Python process spawning a Docker client command would have been a high-fidelity alert, allowing for automated termination of the malicious container before the ENCFORGE payload could be deployed on the host.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-FCR",
+      "technique_name": "File Content Rules",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules",
+      "recommendation": "Use an EDR or a dedicated anti-ransomware solution on the host systems to monitor for destructive file operations. This acts as a last line of defense. Configure the tool with 'honeypot' files and enable behavioral detection that looks for rapid file encryption. Specifically for the ENCFORGE threat, create rules that trigger high-severity alerts if a single process begins to rapidly read, encrypt, and rewrite files with extensions like `.pt`, `.safetensors`, `.gguf`, and `.parquet`. The solution should be configured to automatically kill the offending process and isolate the host from the network upon detection. This can contain the damage from the destructive payload, potentially saving invaluable ML models even if the initial breach and container escape were successful.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "api_endpoint",
+      "value": "/api/v1/validate_code",
+      "description": "The vulnerable endpoint in Langflow (CVE-2025-3248) used by JadePuffer for initial code execution.",
+      "context": "Web server access logs, WAF logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "/var/run/docker.sock",
+      "description": "Access to the Docker socket from within a container is a key indicator of a container escape attempt.",
+      "context": "Container runtime security logs (e.g., Falco), auditd logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.safetensors",
+      "description": "One of the key file extensions for ML models targeted by ENCFORGE. Rapid encryption of these files is a strong indicator of attack.",
+      "context": "File integrity monitoring (FIM), EDR logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.gguf",
+      "description": "File extension for quantized models (e.g., from llama.cpp) targeted by ENCFORGE.",
+      "context": "File integrity monitoring (FIM), EDR logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "docker run --privileged",
+      "description": "A command used to spawn a privileged container, often leveraged during a container escape.",
+      "context": "Shell command logs, EDR process creation events (Event ID 4688 on Windows, auditd on Linux).",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "AI",
+    "Agentic AI",
+    "Ransomware",
+    "Data Destruction",
+    "Container Escape",
+    "MLOps"
+  ],
+  "extract_datetime": "2026-07-20T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "AI/ML development organizations"
+    ]
+  },
+  "pub_date": "2026-07-20",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-07-20T15:00:00.000Z",
+  "updatedAt": "2026-07-21T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-07-21T00:00:00Z",
+      "datetime": "2026-07-21T00:00:00Z",
+      "title": "Update 1",
+      "summary": "CVE-2025-3248 details updated (CVSS 9.8, Langflow <1.3.0). CISA's KEV listing for other Langflow RCEs highlights persistent risk. Credential rotation added to mitigations.",
+      "sources": [
+        {
+          "title": "New ENCFORGE Ransomware Targets AI Model Files in Langflow RCE Attack",
+          "url": "https://thehackernews.com/2026/07/new-encforge-ransomware-targets-ai.html"
+        }
+      ]
+    }
+  ]
+}
