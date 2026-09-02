@@ -1,0 +1,79 @@
+title: Suspicious Python .pth File Modification
+id: 8d9e2f3a-1b2c-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: 'Detects the creation or modification of .pth files by unexpected processes. The LiteLLM supply chain attack used .pth files for stealthy code execution.'
+references:
+  - https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines
+author: cyber.netsecops.io
+date: 2026-08-11
+tags:
+  - attack.t1059
+  - attack.execution
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_pth:
+    TargetFilename|endswith: '.pth'
+  filter_legit_procs:
+    Image|endswith:
+      - '\python.exe'
+      - '\pip.exe'
+      - '\pip3.exe'
+  condition: selection_pth and not filter_legit_procs
+---
+title: Anomalous Outbound Traffic from Python Process
+id: 327df368-0084-48cc-9b99-27fa18d127bc
+status: experimental
+description: 'Detects unusual outbound network traffic from Python processes, which could indicate data exfiltration by a malicious package like the one in the LiteLLM attack. This rule should be tuned by adding known-good domains to the filter.'
+references:
+  - https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines
+author: cyber.netsecops.io
+date: 2026-08-11
+tags:
+  - attack.t1048
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\python.exe'
+    Initiated: true
+  filter_known_good:
+    DestinationHostname|endswith:
+      - '.python.org'
+      - 'pypi.org'
+      - '.windows.net'
+      - '.microsoft.com'
+      - '.google.com'
+  condition: selection and not filter_known_good
+---
+title: Installation of Malicious LiteLLM Package
+id: 7c5b1a3d-8f9e-4b1c-9d2e-1a2b3c4d5e6f
+status: experimental
+description: Detects the installation of malicious versions (1.82.7, 1.82.8) of the LiteLLM Python package via pip or other package managers.
+references:
+  - https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines
+author: cyber.netsecops.io
+date: 2026-08-11
+tags:
+  - attack.t1195.001
+  - attack.initial_access
+level: critical
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    CommandLine|contains:
+      - 'litellm==1.82.7'
+      - 'litellm==1.82.8'
+  filter_legit:
+    CommandLine|contains:
+      - 'uninstall'
+      - 'pip-audit'
+  condition: selection and not filter_legit

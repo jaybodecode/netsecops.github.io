@@ -1,0 +1,49 @@
+title: AWS CreateAccessKey by Automated Tool
+id: 2a8b3c1d-f4e5-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: 'Detects the creation of a new AWS access key, particularly when initiated by a service account or an automated tool, which could indicate a persistence technique following a credential compromise.'
+references:
+  - https://www.therecord.media/cert-eu-attributes-major-data-breach-to-teampcp-hacking-group
+author: cyber.netsecops.io
+date: 2026-04-04
+tags:
+  - attack.t1098.001
+  - attack.persistence
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName: CreateAccessKey
+    userIdentity.type: AssumedRole
+  condition: selection
+falsepositives:
+  - Legitimate automated processes that rotate or create access keys.
+---
+title: Anomalous Egress from Security Scanner
+id: 8b7c6d5e-4f3a-4b2c-9d8e-7f6a5b4c3d2e
+status: experimental
+description: 'Detects network connections from known security scanning tools (like Trivy) to external endpoints that are not approved vendor update sites. This could indicate data exfiltration by a compromised tool.'
+references:
+  - https://www.therecord.media/cert-eu-attributes-major-data-breach-to-teampcp-hacking-group
+author: cyber.netsecops.io
+date: 2026-04-04
+tags:
+  - attack.t1537
+  - attack.exfiltration
+level: high
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/trivy'
+    Initiated: true
+  filter:
+    DestinationIp:
+      # Add legitimate Aqua Security / Trivy update IPs/domains here
+      - '1.1.1.1'
+  condition: selection and not filter
+falsepositives:
+  - Scanners configured to send reports to a legitimate, but unlisted, external service.

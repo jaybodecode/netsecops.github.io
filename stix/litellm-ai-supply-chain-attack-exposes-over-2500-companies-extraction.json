@@ -1,0 +1,236 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-12T14:40:34.140Z",
+    "article_slug": "litellm-ai-supply-chain-attack-exposes-over-2500-companies",
+    "article_date": "2026-08-12",
+    "token_usage": {
+      "input_tokens": 146581,
+      "output_tokens": 3186,
+      "cached_tokens": 140587,
+      "total_tokens": 149767,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.056926
+    }
+  },
+  "report_name": "LiteLLM Supply Chain Attack Harvests Credentials from 2,500 Firms",
+  "threat_actors": [
+    {
+      "name": "Team PCP",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A threat group that conducted a major supply chain attack against the LiteLLM open-source AI framework by publishing malicious versions to PyPI. The group's objective was to harvest cloud credentials, API keys, and other secrets from AI development environments.",
+      "goals": "To harvest sensitive credentials, including cloud provider credentials and API keys for services like OpenAI, Azure, and Google Vertex AI, from AI development and CI/CD environments.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "Team PCP published malicious versions (1.82.7 and 1.82.8) of the LiteLLM package to the official PyPI repository, compromising the software supply chain for its users."
+    },
+    {
+      "name": "Credentials In Files",
+      "mitre_id": "T1552.001",
+      "description": "The malicious code within the trojanized LiteLLM package was designed to scan the environment and steal credentials stored in files and configuration management systems."
+    },
+    {
+      "name": "Exfiltration Over Alternative Protocol",
+      "mitre_id": "T1048",
+      "description": "Harvested secrets, including API keys, SSH keys, and cloud credentials, were exfiltrated from compromised environments to an external server controlled by Team PCP."
+    },
+    {
+      "name": "Command and Scripting Interpreter",
+      "mitre_id": "T1059",
+      "description": "The malicious package used .pth files to execute arbitrary Python code. These files are automatically processed by the Python interpreter upon startup, providing a stealthy execution and persistence mechanism."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Malicious LiteLLM Package",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": false,
+      "aliases": [],
+      "description": "Trojanized versions (1.82.7 and 1.82.8) of the LiteLLM Python package published to PyPI. The malware scans for credentials in files and environment variables and exfiltrates them to an attacker-controlled server using stealthy execution via .pth files.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "exfiltrates-data",
+        "hides-artifacts"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "LiteLLM",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A popular open-source Python package that acts as a universal interface for LLM APIs. It was compromised and trojanized by Team PCP in a supply chain attack.",
+      "tool_types": [],
+      "tool_version": "1.82.7, 1.82.8"
+    },
+    {
+      "name": "Trivy",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A development tool from Aqua Security that was compromised by Team PCP to obtain initial credentials for escalating access to publish malicious packages.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Over 2,500 companies",
+      "identity_class": "class",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A class of over 2,500 organizations and 434,000 CI/CD pipelines exposed to credential theft due to installing malicious versions of the LiteLLM package."
+    },
+    {
+      "name": "PyPI",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The Python Package Index (PyPI) was the distribution platform abused by Team PCP to publish the malicious LiteLLM packages."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Team PCP Exfiltration Server",
+      "infrastructure_types": [
+        "exfiltration",
+        "command-and-control"
+      ],
+      "description": "An attacker-controlled server used to receive credentials and other secrets harvested by the malicious LiteLLM packages."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "litellm==1.82.7"
+    },
+    {
+      "type": "file",
+      "name": "litellm==1.82.8"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Installation of Malicious LiteLLM Package",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[process:command_line MATCHES '.*litellm==1\\\\.82\\\\.[78].*']",
+      "x_netsecio_sigma_rule": "title: Installation of Malicious LiteLLM Package\nid: 7c5b1a3d-8f9e-4b1c-9d2e-1a2b3c4d5e6f\nstatus: experimental\ndescription: Detects the installation of malicious versions (1.82.7, 1.82.8) of the LiteLLM Python package via pip or other package managers.\nreferences:\n  - https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines\nauthor: cyber.netsecops.io\ndate: 2026-08-11\ntags:\n  - attack.t1195.001\n  - attack.initial_access\nlevel: critical\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    CommandLine|contains:\n      - 'litellm==1.82.7'\n      - 'litellm==1.82.8'\n  filter_legit:\n    CommandLine|contains:\n      - 'uninstall'\n      - 'pip-audit'\n  condition: selection and not filter_legit",
+      "pattern": "",
+      "description": "Detects command-line execution for the installation of the specific malicious versions of the LiteLLM package."
+    },
+    {
+      "name": "Suspicious Python .pth File Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Python .pth File Modification\nid: 8d9e2f3a-1b2c-4d5e-8f9a-0b1c2d3e4f5a\nstatus: experimental\ndescription: 'Detects the creation or modification of .pth files by unexpected processes. The LiteLLM supply chain attack used .pth files for stealthy code execution.'\nreferences:\n  - https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines\nauthor: cyber.netsecops.io\ndate: 2026-08-11\ntags:\n  - attack.t1059\n  - attack.execution\n  - attack.persistence\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection_pth:\n    TargetFilename|endswith: '.pth'\n  filter_legit_procs:\n    Image|endswith:\n      - '\\python.exe'\n      - '\\pip.exe'\n      - '\\pip3.exe'\n  condition: selection_pth and not filter_legit_procs",
+      "description": "Detects the creation or modification of Python .pth files by processes other than standard Python installers, a technique used for stealthy execution in the LiteLLM attack."
+    },
+    {
+      "name": "Anomalous Outbound Traffic from Python Process",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Outbound Traffic from Python Process\nid: 9e0f1a2b-3c4d-5e6f-8a9b-0c1d2e3f4a5b\nstatus: experimental\ndescription: 'Detects unusual outbound network traffic from Python processes, which could indicate data exfiltration by a malicious package like the one in the LiteLLM attack. This rule should be tuned by adding known-good domains to the filter.'\nreferences:\n  - https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines\nauthor: cyber.netsecops.io\ndate: 2026-08-11\ntags:\n  - attack.t1048\n  - attack.exfiltration\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\python.exe'\n    Initiated: true\n  filter_known_good:\n    DestinationHostname|endswith:\n      - '.python.org'\n      - 'pypi.org'\n      - '.windows.net'\n      - '.microsoft.com'\n      - '.google.com'\n  condition: selection and not filter_known_good",
+      "description": "Detects potentially anomalous outbound network connections from Python processes, which could be indicative of credential exfiltration by a compromised package."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Team PCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Malicious LiteLLM Package",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Team PCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Trivy",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Team PCP",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Over 2,500 companies",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Team PCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious LiteLLM Package",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials In Files",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious LiteLLM Package",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious LiteLLM Package",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious LiteLLM Package",
+      "source_type": "malware",
+      "relationship_type": "exfiltrates-to",
+      "target_name": "Team PCP Exfiltration Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Installation of Malicious LiteLLM Package",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Malicious LiteLLM Package",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious Python .pth File Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Outbound Traffic from Python Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

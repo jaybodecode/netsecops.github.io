@@ -1,0 +1,172 @@
+{
+  "id": "f159df63-a78b-4e17-b57e-9ca32982e63c",
+  "slug": "data-wiping-attacks-rise-using-legitimate-tools-for-destruction",
+  "headline": "Data-Wiping Attacks on the Rise, Abusing Legitimate Admin Tools",
+  "title": "Rise of Data-Wiping Attacks Using LoTL",
+  "summary": "The supply chain industry is being warned about a rising trend of destructive data-wiping attacks. A key example is the March 2026 incident at medical tech firm Stryker, where the Iranian hacktivist group Handala Hack Team claimed to have used Microsoft Intune to issue remote wipe commands to 80,000 devices. This 'living off the land' technique, which abuses legitimate administrative tools for destructive purposes, marks a dangerous shift from financially motivated ransomware to pure, unrecoverable data destruction.",
+  "full_report": "## Executive Summary\nA dangerous trend is emerging in the threat landscape: data-wiping attacks where the primary goal is destruction, not financial extortion. A July 22, 2026 warning from **Source Logistics** highlighted this threat, citing the March 2026 cyberattack against medical technology company **[Stryker](https://www.stryker.com/us/en/index.html)** as a prime example. In that incident, the Iranian hacktivist group **Handala Hack Team** claimed to have gained Global Administrator access to Stryker's Microsoft environment and used the legitimate **[Microsoft Intune](https://www.microsoft.com/en-us/security/business/microsoft-intune)** mobile device management (MDM) platform to wipe an estimated 80,000 devices. This attack demonstrates a potent 'living off the land' (LotL) strategy, leveraging trusted enterprise tools to cause catastrophic damage, bypassing traditional malware-based defenses entirely.\n\n## Threat Overview\nThe Stryker incident, which the company confirmed was not a ransomware attack, represents a tactical shift. Instead of encrypting data and demanding a ransom, the attackers aimed for maximum disruption and data destruction. The Handala Hack Team, a hacktivist group, claimed responsibility on March 11, 2026. Their alleged method was to abuse Global Administrator privileges to issue remote wipe commands via Microsoft Intune over a three-hour period.\n\nThis LotL approach is highly effective because it uses the organization's own management tools against it. The malicious commands are signed, authenticated, and delivered through trusted channels, making them extremely difficult to block with conventional security measures. Research from Outpost24 supports the initial access vector, revealing that 278 credentials linked to the `stryker.com` domain had been compromised in the months prior, suggesting the attackers gained their initial foothold through stolen credentials rather than malware.\n\n## Technical Analysis\nThis attack is a textbook case of [`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/). The novelty lies in the execution method, which is a sophisticated abuse of legitimate functionality.\n1.  **Initial Access**: The attackers likely gained initial access by using one of the 278 previously compromised credentials, possibly through password spraying or credential stuffing attacks.\n2.  **Privilege Escalation**: They escalated their privileges within the Microsoft environment to achieve Global Administrator status, the highest level of administrative rights. This likely involved further credential theft or exploitation of misconfigurations ([`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/)).\n3.  **Destructive Action**: With Global Admin rights, the attackers accessed the Microsoft Intune portal and used its built-in functionality to issue a mass remote wipe command to all enrolled devices. This is an abuse of the `DeviceManagementManagedDevices` API and falls under the broader technique of [`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/), where the 'tool' is the operating system on the endpoint.\n\nBecause the wipe command is a legitimate function of Intune, endpoint protection platforms (EPP) would not flag it as malicious. The only way to detect it is by monitoring the administrative plane itself.\n\n## Impact Assessment\nThe impact of a mass data-wiping attack is catastrophic and potentially more damaging than a ransomware attack. There is no option for recovery by paying a ransom; the data is permanently gone. For a company like Stryker, this could mean the loss of critical corporate data, intellectual property, and operational capabilities across 80,000 endpoints. The recovery process would be immensely costly and time-consuming, requiring the re-imaging and re-provisioning of every affected device. For the supply chain industry, such an attack could halt logistics, manufacturing, and distribution, with far-reaching economic consequences.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nDetecting this type of LotL attack requires monitoring the administrative control plane:\n| Type | Value | Description | Context |\n|---|---|---|---|\n| log_source | `Microsoft Entra ID Audit Logs` | The source for all administrative activity in the Microsoft cloud environment. | Ingest into a SIEM. |\n| api_endpoint | `POST /deviceManagement/managedDevices/wipe` | The Graph API call to remotely wipe a device. A large number of these calls in a short period is a critical indicator. | Microsoft 365 audit logs, CASB logs. |\n| event_id | `Wipe` (in Intune Audit Logs) | The specific event name for a remote wipe action initiated from Intune. | Intune audit logs. |\n| user_account_pattern | A new Global Administrator account is created and used almost immediately | A common attacker TTP is to create a new admin account for their activities. | Microsoft Entra ID audit logs. |\n\n## Detection & Response\n- **Admin Activity Monitoring**: Implement stringent monitoring and alerting on all Global Administrator activity within Microsoft 365/Entra ID. Any sensitive action, such as issuing a mass wipe command, should require a multi-person approval workflow or trigger a high-priority, automated response ([D3-DAM: Domain Account Monitoring](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring)).\n- **Behavioral Analytics**: Use UEBA (User and Entity Behavior Analytics) to detect anomalous administrative behavior, such as a Global Admin logging in from a new location and immediately performing destructive actions.\n- **Threshold-Based Alerting**: Configure alerts for when a certain threshold of critical actions (like device wipes) is crossed in a specific time frame.\n\n## Mitigation\n- **Principle of Least Privilege (PoLP)**: Strictly limit the number of Global Administrator accounts. Use Privileged Identity Management (PIM) to provide just-in-time (JIT) administrative access that is time-bound and requires approval ([M1026 - Privileged Account Management](https://attack.mitre.org/mitigations/M1026/)).\n- **Break-Glass Accounts**: Maintain a small number of emergency 'break-glass' accounts that are not used for daily operations and are heavily monitored.\n- **Phishing-Resistant MFA**: Protect all administrative accounts with phishing-resistant MFA (e.g., FIDO2 security keys) to prevent credential theft ([M1032 - Multi-factor Authentication](https://attack.mitre.org/mitigations/M1032/)).\n- **Layered Defense**: As recommended by Source Logistics, implement a layered defense strategy that includes strong credential hygiene, phishing awareness, and granular access controls to prevent attackers from gaining the elevated privileges needed to launch such an attack.",
+  "twitter_post": "Destructive data-wiping attacks are rising. In March, attackers used Microsoft Intune to wipe 80,000 devices at Stryker, showing a shift to 'living off the land' tactics for pure destruction. #CyberAttack #DataWipe #Intune #LoTL #Stryker",
+  "meta_description": "A rising trend of data-wiping attacks is highlighted by an incident at Stryker, where threat actors used Microsoft Intune to destroy data on 80,000 devices.",
+  "category": [
+    "Cyberattack",
+    "Threat Actor",
+    "Cloud Security"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Handala Hack Team",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Stryker",
+      "type": "company"
+    },
+    {
+      "name": "Source Logistics",
+      "type": "company"
+    },
+    {
+      "name": "Microsoft Intune",
+      "type": "product"
+    },
+    {
+      "name": "Outpost24",
+      "type": "company"
+    },
+    {
+      "name": "Iran",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.globenewswire.com/news-release/2026/07/22/3331494/0/en/source-logistics-warns-supply-chain-industry-about-rising-data-wiping-cyberattacks-outlines-layered-defense-strategy.html",
+      "title": "Source Logistics Warns Supply Chain Industry About Rising Data-Wiping Cyberattacks, Outlines Layered Defense Strategy",
+      "friendly_name": "GlobeNewswire",
+      "website": "globenewswire.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-11T00:00:00Z",
+      "summary": "The Handala Hack Team claims responsibility for the cyberattack against Stryker."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1485",
+      "name": "Data Destruction",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1562.008",
+      "name": "Disable Cloud Logs",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Implement just-in-time (JIT) access using tools like PIM to drastically limit the number of standing privileged accounts."
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce phishing-resistant MFA (e.g., FIDO2 keys) for all administrative accounts to prevent credential compromise."
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Implement comprehensive auditing and alerting for all administrative actions within cloud management platforms like Intune."
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Microsoft Entra ID Audit Logs",
+      "description": "This is the definitive source for all administrative actions within the Microsoft cloud. It will contain records of role assignments (like Global Admin) and user sign-ins.",
+      "context": "Ingest logs into a SIEM and create alerts for unusual Global Admin activity, such as role assignments outside of a PIM workflow.",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "POST /deviceManagement/managedDevices/wipe",
+      "description": "The specific Microsoft Graph API call used to remotely wipe a device. A large volume of these calls is a critical indicator of an attack.",
+      "context": "Monitor Microsoft 365 audit logs or use a CASB to detect and alert on mass execution of this API call.",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "Wipe",
+      "description": "The specific event name recorded in Intune's own audit logs when a remote wipe action is initiated.",
+      "context": "Configure alerts in your SIEM to trigger if the count of 'Wipe' events exceeds a low threshold (e.g., >5) in a short time window.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Data Wiper",
+    "Living off the Land",
+    "Stryker",
+    "Handala Hack Team",
+    "Microsoft Intune",
+    "Supply Chain"
+  ],
+  "extract_datetime": "2026-07-22T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "companies_affected": [
+      "Stryker"
+    ],
+    "industries_affected": [
+      "Healthcare",
+      "Manufacturing",
+      "Technology"
+    ]
+  },
+  "pub_date": "2026-07-22",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-22T15:00:00.000Z",
+  "updatedAt": "2026-07-22T15:00:00.000Z"
+}

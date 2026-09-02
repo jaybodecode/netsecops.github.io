@@ -1,0 +1,71 @@
+title: Potential Data Staging with Common Dump File Extensions
+id: 7c8b5d3a-1e9f-4b0a-9c2d-8e4f5a6b7c8d
+status: experimental
+description: |
+  Detects the creation of files with extensions commonly used for data staging before exfiltration, such as .csv or .sql. This was suggested as a hunting hint in a report about a financial data breach.
+references:
+  - https://www.claimdepot.com/data-breach/first-national-holdings-2026
+author: cyber.netsecops.io
+date: 2026-07-13
+tags:
+  - attack.t1074.001
+  - attack.collection
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.csv'
+      - '.sql'
+      - '.sql.gz'
+  condition: selection
+---
+title: Anomalous Outbound Data Transfer
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: |
+  Detects sustained or high-volume outbound data transfers to non-internal IP addresses, which could indicate data exfiltration. This rule is conceptual and requires baselining and tuning for the specific environment to define 'sustained' or 'high-volume' and to build an allowlist of known destinations.
+references:
+  - https://www.claimdepot.com/data-breach/first-national-holdings-2026
+author: cyber.netsecops.io
+date: 2026-07-13
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: low
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter_local
+---
+title: Anomalous Dormant Account Logon
+id: 29f953e3-246e-4a11-8081-d663c31e146c
+status: experimental
+description: |
+  Detects logon activity from a user account that has been dormant for an extended period. This is a UEBA-style detection and requires a history of user activity to establish dormancy and a list of dormant accounts to check against.
+references:
+  - https://www.claimdepot.com/data-breach/first-national-holdings-2026
+author: cyber.netsecops.io
+date: 2026-07-13
+tags:
+  - attack.t1078
+  - attack.persistence
+level: medium
+logsource:
+  category: authentication
+  product: windows
+detection:
+  selection:
+    EventID: 4624
+  condition: selection

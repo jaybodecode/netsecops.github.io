@@ -1,0 +1,130 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-01T02:01:46.539Z",
+    "article_slug": "pharmaceutical-giant-amgen-suffers-data-breach-affecting-patient-info",
+    "article_date": "2026-07-31",
+    "token_usage": {
+      "input_tokens": 145912,
+      "output_tokens": 2010,
+      "cached_tokens": 140179,
+      "total_tokens": 147922,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.044789
+    }
+  },
+  "report_name": "Amgen Discloses Data Breach of Patient and Proprietary Information",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Data from Cloud Storage",
+      "mitre_id": "T1530",
+      "description": "Unauthorized actors accessed and exfiltrated proprietary corporate data and protected health information (PHI) from Amgen's third-party cloud storage environments."
+    },
+    {
+      "name": "Valid Accounts: Cloud Accounts",
+      "mitre_id": "T1078.004",
+      "description": "Threat actors gained unauthorized access to Amgen's third-party cloud systems, likely using compromised cloud account credentials, to access sensitive data."
+    },
+    {
+      "name": "Exfiltration Over Web Service",
+      "mitre_id": "T1567",
+      "description": "Data was successfully exfiltrated from Amgen's compromised cloud environments. The exact method was not specified, but exfiltration over a web service is a likely technique for moving data out of a cloud provider."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Amgen",
+      "identity_class": "organization",
+      "sectors": [
+        "pharmaceuticals",
+        "healthcare",
+        "technology"
+      ],
+      "description": "A leading biotechnology and pharmaceutical company that suffered a data breach in its third-party cloud environments, exposing patient PHI and proprietary corporate data."
+    }
+  ],
+  "locations": [
+    {
+      "name": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Anomalous Cloud Storage Data Access",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous High-Volume Cloud Storage Object Access\nid: 2b1a9c8d-4e5f-4a3b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: >\n  Detects an unusually high volume of GetObject API calls from a single source IP or user agent in a short period, which could indicate a data exfiltration attempt from a cloud storage bucket.\nreferences:\n  - https://www.bleepingcomputer.com/news/security/amgen-says-cloud-data-breach-exposed-patient-health-proprietary-info/\nauthor: cyber.netsecops.io\ndate: 2026-07-31\ntags:\n  - attack.t1530\n  - attack.collection\nlevel: medium\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: s3.amazonaws.com\n    eventName: GetObject\n  condition: selection | count(sourceIpAddress) by sourceIpAddress > 1000\nfalsepositives:\n  - Legitimate high-volume data processing applications or services.\n",
+      "description": "Detects a high volume of 'GetObject' API calls from a single source, which could indicate a data exfiltration attempt from cloud storage, as suggested in the article's hunting hints."
+    },
+    {
+      "name": "Anomalous IAM User Access Key Creation",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous AWS IAM User Access Key Creation\nid: 8e7f6d5c-4b3a-4c2d-8e7f-6d5c4b3a2e1f\nstatus: experimental\ndescription: >\n  Detects the creation of a new access key for an IAM user. While a legitimate administrative action, it can also indicate an attacker creating a persistent backdoor after compromising an account.\nreferences:\n  - https://www.bleepingcomputer.com/news/security/amgen-says-cloud-data-breach-exposed-patient-health-proprietary-info/\nauthor: cyber.netsecops.io\ndate: 2026-07-31\ntags:\n  - attack.t1098.001\n  - attack.persistence\nlevel: medium\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: iam.amazonaws.com\n    eventName: CreateAccessKey\n  condition: selection\nfalsepositives:\n  - Legitimate creation of access keys by administrators or automated processes.\n",
+      "description": "Detects the creation of a new access key for an IAM user, a common persistence technique after an initial cloud account compromise."
+    },
+    {
+      "name": "Anomalous STS AssumeRole Call from Unknown Source",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous AWS STS AssumeRole Call from Unknown Source\nid: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: >\n  Detects an attempt to assume an IAM role from an unexpected or untrusted source IP address. This can be an indicator of lateral movement or privilege escalation within a cloud environment.\nreferences:\n  - https://www.bleepingcomputer.com/news/security/amgen-says-cloud-data-breach-exposed-patient-health-proprietary-info/\nauthor: cyber.netsecops.io\ndate: 2026-07-31\ntags:\n  - attack.t1078.004\n  - attack.privilege_escalation\nlevel: high\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: sts.amazonaws.com\n    eventName: AssumeRole\n  filter:\n    sourceIpAddress:\n      - 10.0.0.0/8\n      - 172.16.0.0/12\n      - 192.168.0.0/16\n      # Add known corporate/VPN IP ranges here\n  condition: selection and not filter\nfalsepositives:\n  - Legitimate role assumption from new or unlisted IP addresses.\n",
+      "description": "Detects attempts to assume an IAM role from an unknown source, a potential indicator of lateral movement or privilege escalation in a compromised cloud environment."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Amgen",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "United States",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Anomalous Cloud Storage Data Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data from Cloud Storage",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Cloud Storage Data Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration Over Web Service",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous IAM User Access Key Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Valid Accounts: Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous STS AssumeRole Call from Unknown Source",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Valid Accounts: Cloud Accounts",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

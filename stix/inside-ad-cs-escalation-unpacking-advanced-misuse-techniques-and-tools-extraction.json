@@ -1,0 +1,293 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-12T15:04:51.452Z",
+    "article_slug": "inside-ad-cs-escalation-unpacking-advanced-misuse-techniques-and-tools",
+    "article_date": "2026-05-12",
+    "token_usage": {
+      "input_tokens": 144850,
+      "output_tokens": 3660,
+      "cached_tokens": 137731,
+      "total_tokens": 148510,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.062715
+    }
+  },
+  "report_name": "AD CS Escalation Deep Dive: How Attackers Abuse Certificate Templates for Domain Dominance",
+  "threat_actors": [
+    {
+      "name": "Fighting Ursa",
+      "mitre_id": "G0007",
+      "aliases": [
+        "APT28"
+      ],
+      "description": "A state-sponsored actor cited as an example of groups exploiting Active Directory Certificate Services (AD CS) for privilege escalation and domain control.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The core purpose of abusing AD CS is to escalate from a low-privilege account to a high-privilege one, such as a domain administrator."
+    },
+    {
+      "name": "Steal or Forge Authentication Certificates",
+      "mitre_id": "T1649",
+      "description": "Attackers exploit misconfigured certificate templates (e.g., ESC1 technique) to request certificates with a Subject Alternative Name (SAN) of a privileged user, effectively forging an authentication certificate to impersonate them."
+    },
+    {
+      "name": "Domain Account",
+      "mitre_id": "T1087.002",
+      "description": "Attackers enumerate domain accounts to identify high-privilege targets, such as domain administrators, for impersonation via malicious certificate requests."
+    },
+    {
+      "name": "Steal or Forge Kerberos Tickets",
+      "mitre_id": "T1558",
+      "description": "After obtaining a malicious certificate for a privileged user, attackers use tools like Rubeus to request a Kerberos Ticket-Granting Ticket (TGT) for the impersonated account, granting them domain-wide access."
+    },
+    {
+      "name": "Valid Accounts",
+      "mitre_id": "T1078",
+      "description": "The ultimate goal of the AD CS exploitation is to gain access to and use valid, high-privilege accounts, such as domain administrator accounts, for lateral movement, persistence, and achieving objectives."
+    },
+    {
+      "name": "Account Manipulation",
+      "mitre_id": "T1098",
+      "description": "Attackers use a persistence technique known as shadow credentials, where they modify an attribute on a user or computer object (like msDS-KeyCredentialLink) to add their own certificate-based credential, allowing them to authenticate as that user without their password."
+    }
+  ],
+  "malware": [
+    {
+      "name": "update6.exe",
+      "mitre_id": "",
+      "type": "trojan",
+      "is_family": false,
+      "aliases": [],
+      "description": "A file named update6.exe was observed in an attempt to exploit CVE-2022-26923 for privilege escalation."
+    }
+  ],
+  "tools": [
+    {
+      "name": "Certipy",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Used by attackers to enumerate vulnerable certificate templates in Active Directory Certificate Services and to request malicious certificates for privilege escalation.",
+      "tool_types": [
+        "information-gathering",
+        "exploitation"
+      ]
+    },
+    {
+      "name": "Rubeus",
+      "mitre_id": "S1071",
+      "aliases": [],
+      "description": "Used by attackers to request a Kerberos Ticket-Granting Ticket (TGT) using a certificate obtained from AD CS, allowing impersonation of a privileged user.",
+      "tool_types": [
+        "credential-exploitation"
+      ]
+    },
+    {
+      "name": "Certify",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Mentioned as a tool used for AD CS enumeration, similar to Certipy.",
+      "tool_types": [
+        "information-gathering"
+      ]
+    },
+    {
+      "name": "certreq.exe",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A legitimate Windows utility that can be used to request certificates, and is monitored as a potential indicator of malicious activity.",
+      "tool_types": [
+        "exploitation"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2022-26923",
+      "cve": "CVE-2022-26923",
+      "description": "A vulnerability in Active Directory Certificate Services that could be exploited by attackers to elevate privileges by acquiring a malicious certificate.",
+      "cvss_score": 8.8,
+      "severity": "high"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "update6.exe"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "AD CS Exploitation File update6.exe",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'update6.exe']",
+      "x_netsecio_sigma_rule": "title: AD CS Exploitation Attempt File Creation\nid: 7c5a3d1e-9b8f-4c6d-8a7b-1e2f3a4b5c6d\nstatus: experimental\ndescription: Detects the creation of a file named 'update6.exe', which has been associated with attempts to exploit CVE-2022-26923 for privilege escalation.\nreferences:\n  - https://unit42.paloaltonetworks.com/active-directory-certificate-services-exploitation/\nauthor: cyber.netsecops.io\ndate: 2026-05-12\ntags:\n  - attack.t1068\n  - attack.privilege_escalation\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '\\update6.exe'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the file `update6.exe` which was associated with attempts to exploit CVE-2022-26923."
+    },
+    {
+      "name": "Certipy Vulnerable Template Enumeration",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Certipy Vulnerable AD CS Template Enumeration\nid: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a\nstatus: experimental\ndescription: Detects the use of the Certipy tool to find vulnerable Active Directory Certificate Services templates.\nreferences:\n  - https://unit42.paloaltonetworks.com/active-directory-certificate-services-exploitation/\nauthor: cyber.netsecops.io\ndate: 2026-05-12\ntags:\n  - attack.t1087.002\n  - attack.discovery\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith:\n      - '\\certipy.exe'\n      - '\\certipy'\n    CommandLine|contains|all:\n      - 'find'\n      - '-vulnerable'\n  condition: selection",
+      "description": "Detects command-line execution of the Certipy tool to find vulnerable AD CS certificate templates."
+    },
+    {
+      "name": "Certipy Malicious Certificate Request",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Certipy Malicious AD CS Certificate Request\nid: 9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d\nstatus: experimental\ndescription: Detects the use of the Certipy tool to request a certificate, potentially for privilege escalation.\nreferences:\n  - https://unit42.paloaltonetworks.com/active-directory-certificate-services-exploitation/\nauthor: cyber.netsecops.io\ndate: 2026-05-12\ntags:\n  - attack.t1649\n  - attack.credential_access\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith:\n      - '\\certipy.exe'\n      - '\\certipy'\n    CommandLine|contains: 'req'\n  condition: selection",
+      "description": "Detects command-line execution of the Certipy tool to request a certificate from AD CS."
+    },
+    {
+      "name": "Suspicious Access to AD CS Web Enrollment Page",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Access to AD CS Web Enrollment Page\nid: a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6\nstatus: experimental\ndescription: Detects network traffic to AD CS web enrollment pages from unusual client workstations, which could indicate reconnaissance or exploitation attempts.\nreferences:\n  - https://unit42.paloaltonetworks.com/active-directory-certificate-services-exploitation/\nauthor: cyber.netsecops.io\ndate: 2026-05-12\ntags:\n  - attack.t1649\n  - attack.credential_access\nlevel: low\nlogsource:\n  category: proxy\ndetection:\n  selection:\n    c-uri-stem|contains: '/certsrv/'\n  condition: selection",
+      "description": "Detects network traffic to the AD CS web enrollment pages (e.g., /certsrv/), which could indicate reconnaissance or an attempt to request a certificate."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Fighting Ursa",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Fighting Ursa",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Steal or Forge Authentication Certificates",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Fighting Ursa",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Certipy",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Fighting Ursa",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Rubeus",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Fighting Ursa",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2022-26923",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "update6.exe",
+      "source_type": "malware",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2022-26923",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "update6.exe",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Certipy",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "Domain Account",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Certipy",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "Steal or Forge Authentication Certificates",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Rubeus",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "Steal or Forge Kerberos Tickets",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AD CS Exploitation File update6.exe",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "update6.exe",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "AD CS Exploitation File update6.exe",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "update6.exe",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Certipy Vulnerable Template Enumeration",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Certipy",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Certipy Vulnerable Template Enumeration",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Domain Account",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Certipy Malicious Certificate Request",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Certipy",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Certipy Malicious Certificate Request",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Steal or Forge Authentication Certificates",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious Access to AD CS Web Enrollment Page",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Steal or Forge Authentication Certificates",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

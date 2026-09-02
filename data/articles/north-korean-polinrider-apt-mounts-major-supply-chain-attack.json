@@ -1,0 +1,199 @@
+{
+  "id": "5e157a20-b068-4693-a18e-ba4af05f0b28",
+  "slug": "north-korean-polinrider-apt-mounts-major-supply-chain-attack",
+  "headline": "North Korean 'PolinRider' APT Hits 100+ Open-Source Repos in Major Supply Chain Attack",
+  "title": "'PolinRider' Supply Chain Campaign by Lazarus Subgroup 'Famous Chollima' Compromises Over 100 Open-Source Packages",
+  "summary": "A sophisticated supply chain attack campaign named 'PolinRider' has been attributed to 'Famous Chollima', a subgroup of the North Korean Lazarus APT. The attackers are compromising the accounts of legitimate open-source maintainers to inject malicious code into their packages. Over 108 unique repositories across npm, Go, and Packagist have been targeted. The malware uses the blockchain to fetch its final payload, a remote-access trojan (RAT) and info-stealer, designed to steal developer secrets, cloud tokens, and cryptocurrency wallets, posing a significant threat to the software development lifecycle.",
+  "full_report": "## Executive Summary\nSecurity researchers have identified a large-scale, sophisticated supply chain attack campaign, codenamed **PolinRider**, attributed to the North Korean advanced persistent threat (APT) group **[Lazarus Group](https://attack.mitre.org/groups/G0032/)** and its subgroup, **Famous Chollima**. The operation targets the open-source software ecosystem by compromising the accounts of trusted package maintainers. To date, the campaign has successfully injected malicious code into at least 108 unique software packages across multiple registries, including Go modules, Packagist (PHP), and npm (JavaScript). The primary goal of the attackers is to distribute backdoors and information-stealing malware to developers who unwittingly use these compromised packages. The campaign's advanced tradecraft, including rewriting Git history and using public blockchains for payload delivery, represents a significant and ongoing threat to software supply chain security.\n\n---\n\n## Threat Overview\nThe **PolinRider** campaign is a classic supply chain attack that leverages the trust inherent in the open-source ecosystem. The attackers' methodology is consistent and effective:\n\n1.  **Initial Compromise**: The threat actors target and compromise the accounts of legitimate open-source package maintainers. The exact methods for this are not detailed but likely involve phishing, credential stuffing, or exploiting other vulnerabilities.\n2.  **Code Injection**: Once they have access, the attackers modify the trusted packages, hiding obfuscated malicious code within the legitimate source. To evade suspicion, they often rewrite the Git version history to make their malicious commits appear older and part of routine maintenance.\n3.  **Malicious Publication**: The compromised package, now containing a backdoor, is published to public registries like npm, Go's package index, and Packagist.\n4.  **Execution**: When a developer installs or builds a project using the compromised package, a concealed JavaScript loader is executed.\n5.  **Payload Delivery**: This loader connects to a public blockchain infrastructure (e.g., querying transaction data) to retrieve an encrypted final payload. This technique makes the command-and-control (C2) infrastructure resilient to takedowns.\n6.  **Final Payload**: The decrypted payload typically includes a remote-access trojan (RAT) for persistent access and an information stealer designed to harvest sensitive data from the developer's machine.\n\n---\n\n## Technical Analysis\nThe campaign showcases a mature and evolving set of tactics, techniques, and procedures (TTPs).\n\n-   **[`T1195.002` - Compromise Software Supply Chain: Compromise Software Dependencies and Development Tools](https://attack.mitre.org/techniques/T1195/002/)**: This is the core technique of the operation. The attackers poison popular libraries that are dependencies for many other projects.\n-   **[`T1078` - Valid Accounts](https://attack.mitre.org/techniques/T1078/)**: The attackers gain initial access to repositories by using the compromised credentials of legitimate maintainers.\n-   **[`T1552.006` - Cloud Accounts](https://attack.mitre.org/techniques/T1552/006/)**: The info-stealer payload is specifically designed to find and exfiltrate cloud tokens (AWS, Azure, etc.) and other developer secrets.\n-   **[`T1562.001` - Disable or Modify Tools](https://attack.mitre.org/techniques/T1562/001/)**: The rewriting of Git history is a form of defense evasion, designed to mislead security analysts and code reviewers.\n-   **[`T1102` - Web Service](https://attack.mitre.org/techniques/T1102/)**: The use of public blockchain infrastructure as a dead-drop resolver to fetch the final payload is an innovative way to create a resilient C2 mechanism.\n\nAccording to Joshua Miller, director of threat intelligence at **[BeyondTrust](https://www.beyondtrust.com/)**, the objective is clear: \"theft of developer secrets, cloud tokens, and cryptocurrency wallets.\"\n\n---\n\n## Impact Assessment\nThe **PolinRider** campaign poses a severe risk to organizations that rely on open-source software. A single compromised developer machine can lead to a much larger breach.\n\n-   **Upstream Compromise**: By stealing developer secrets and cloud tokens, attackers can gain access to sensitive source code repositories, CI/CD pipelines, and cloud infrastructure.\n-   **Lateral Movement**: A compromised developer workstation is a high-value target, often providing a trusted entry point into a corporate network.\n-   **Financial Loss**: The theft of cryptocurrency wallets can result in direct financial losses for individual developers and their companies.\n-   **Widespread Infection**: Because the attack targets popular dependencies, a single compromised package can infect thousands of downstream applications and users, creating a cascading failure of trust.\n\n---\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams should hunt for signs of this activity in their development environments:\n\n| Type | Value | Description |\n|---|---|---|\n| `network_traffic_pattern` | Outbound connections from build servers or developer machines to public blockchain explorers (e.g., `etherscan.io`, `bscscan.com`) during package installation. | This is a key indicator of the C2 technique used by PolinRider. |\n| `log_source` | `package-lock.json`, `go.sum` | Monitor for unexpected changes or additions of suspicious dependencies in package lock files. |\n| `command_line_pattern` | `npm install`, `go get` | Correlate package installation commands with subsequent suspicious network activity or file modification. |\n| `file_path` | `~/.aws/credentials`, `~/.ssh/`, `~/.git-credentials` | Monitor for unexpected read access to these files by processes related to package managers or build tools. |\n\n---\n\n## Detection & Response\n-   **Dependency Scanning**: Implement robust dependency scanning tools that check for known malicious packages and unusual changes in package behavior. Services like Socket (mentioned in the report) specialize in this.\n-   **Network Monitoring**: Monitor and restrict outbound network traffic from build environments. Connections to blockchain explorers or other non-standard endpoints during a build should be flagged as highly suspicious.\n-   **Behavioral Analysis on Endpoints**: Deploy EDR on developer workstations to detect anomalous behavior, such as a package manager process reading SSH keys or cloud credential files.\n-   **D3FEND Techniques**: Employ **[File Analysis (D3-FA)](https://d3fend.mitre.org/technique/d3f:FileAnalysis)** on downloaded packages before they are used in a build. Use **[Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)** to block connections to known malicious or suspicious endpoints, including unexpected connections to blockchain services.\n\n---\n\n## Mitigation\n-   **Lock Dependencies**: Use package lock files (`package-lock.json`, `yarn.lock`, `go.sum`) to ensure that builds are reproducible and use vetted versions of dependencies. Regularly audit these files.\n-   **Vendor Dependencies**: Where possible, vendor or cache third-party dependencies internally. This allows for scanning and validation before they are introduced into the environment and prevents a compromised package from being pulled automatically.\n-   **Principle of Least Privilege**: Ensure that build processes and developer accounts do not have unnecessary access to sensitive secrets. Use ephemeral tokens for CI/CD jobs instead of long-lived static credentials.\n-   **Developer Training**: Educate developers on the risks of supply chain attacks and the importance of vetting new dependencies.\n-   **D3FEND Countermeasures**: Implement **[Executable Allowlisting (D3-EAL)](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)** in build environments to prevent unexpected code execution. Harden developer environments using **[Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)** to limit the permissions of package managers.",
+  "twitter_post": "🚨 North Korean APT 'PolinRider' is conducting a massive supply chain attack, compromising 100+ open-source packages on npm, Go & Packagist to steal developer secrets. The malware uses the blockchain for C2! #SupplyChain #Lazarus #CyberAttack",
+  "meta_description": "North Korean APT 'PolinRider' (Famous Chollima) is behind a major supply chain attack compromising over 100 open-source packages to steal developer credentials, cloud tokens, and crypto.",
+  "category": [
+    "Supply Chain Attack",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "PolinRider",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Famous Chollima",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Lazarus Group",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0032/"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    },
+    {
+      "name": "Go",
+      "type": "product"
+    },
+    {
+      "name": "Packagist",
+      "type": "product"
+    },
+    {
+      "name": "Chrome",
+      "type": "product"
+    },
+    {
+      "name": "BeyondTrust",
+      "type": "vendor",
+      "url": "https://www.beyondtrust.com/"
+    },
+    {
+      "name": "Joshua Miller",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.scworld.com/news/north-korean-polinrider-supply-chain-attack-targets-108-unique-repos",
+      "title": "North Korean PolinRider supply chain attack targets 108 unique repos",
+      "friendly_name": "SC Media",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://www.securityweek.com/north-korean-hackers-target-open-source-developers-in-supply-chain-attacks/",
+      "title": "North Korean Hackers Target Open Source Developers in Supply Chain Attacks",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com",
+      "x_url": "https://x.com/SecurityWeek"
+    },
+    {
+      "url": "https://cyberrecaps.com/news/cybersecurity-news-july-06-2026/",
+      "title": "Daily Cybersecurity News – July 6, 2026",
+      "friendly_name": "Cyber Recaps",
+      "website": "cyber-recaps.com",
+      "x_url": "https://x.com/cyber_recaps"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1102",
+      "name": "Web Service",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Cloud Accounts",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "While not a direct fix, keeping all tools and dependencies updated is crucial. However, in a supply chain attack, this can also be the infection vector, highlighting the need for vetting.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Filter egress network traffic from build environments to block connections to unexpected endpoints like blockchain explorers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train developers to scrutinize new dependencies and recognize the signs of a compromised package.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections to blockchain explorers (e.g., etherscan.io, bscscan.com)",
+      "description": "The malware's loader connects to public blockchain infrastructure to retrieve its payload, a highly unusual behavior for a build process.",
+      "context": "Network egress logs from build servers and developer workstations.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "~/.aws/credentials",
+      "description": "The info-stealer payload specifically targets developer secrets, including AWS credentials.",
+      "context": "File Integrity Monitoring (FIM) or EDR logs showing access by package manager processes.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "git rebase",
+      "description": "Attackers rewrite Git history to hide their malicious commits. Unexpected or forced history changes in a dependency should be investigated.",
+      "context": "Source code repository logs and audit trails.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "PolinRider",
+    "Famous Chollima",
+    "Lazarus Group",
+    "Supply Chain Attack",
+    "North Korea",
+    "Open Source",
+    "npm",
+    "Go"
+  ],
+  "extract_datetime": "2026-07-07T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Open-source software developers"
+    ]
+  },
+  "pub_date": "2026-07-07",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-07-07T15:00:00.000Z",
+  "updatedAt": "2026-07-31T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-07-31T00:00:00Z",
+      "datetime": "2026-07-31T00:00:00Z",
+      "title": "Update 1",
+      "summary": "Amazon attributes high-impact npm supply chain attacks on 'axios', 'debug', 'chalk' to North Korea's Sapphire Sleet, impacting 10% of cloud environments.",
+      "sources": [
+        {
+          "title": "AWS Blames North Korean Group for Axios and Other npm Supply Chain Attacks",
+          "url": "https://www.infosecurity-magazine.com/news/aws-north-korea-axios-npm-supply/"
+        },
+        {
+          "title": "Amazon identifies North Korean hacker group behind open-source supply chain attacks",
+          "url": "https://aws.amazon.com/blogs/security/amazon-identifies-north-korean-hacker-group-behind-open-source-supply-chain-attacks/"
+        },
+        {
+          "title": "CaptiveCrunch: Midnight Blizzard targets travelers worldwide for malware delivery and credential theft",
+          "url": "https://www.microsoft.com/en-us/security/blog/2026/07/31/captivecrunch-midnight-blizzard-targets-travelers-worldwide-for-malware-delivery-and-credential-theft/"
+        }
+      ]
+    }
+  ]
+}

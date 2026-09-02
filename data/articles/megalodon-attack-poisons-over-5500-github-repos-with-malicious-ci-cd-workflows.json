@@ -1,0 +1,164 @@
+{
+  "id": "56ddf890-123a-401b-b0ce-7e18ee4b14a9",
+  "slug": "megalodon-attack-poisons-over-5500-github-repos-with-malicious-ci-cd-workflows",
+  "headline": "‘Megalodon’ Campaign Hits 5,500+ GitHub Repos in Automated CI/CD Supply Chain Attack",
+  "title": "Automated 'Megalodon' Attack Compromises Over 5,500 GitHub Repos by Injecting Malicious CI/CD Workflows",
+  "summary": "A massive, automated supply chain attack dubbed 'Megalodon' has compromised over 5,500 public GitHub repositories in just six hours. The attackers pushed thousands of malicious commits that altered CI/CD workflow files, backdooring the build processes of the affected projects. Research from Hudson Rock indicates the attack was enabled by the large-scale theft of GitHub credentials from developers infected with information-stealing malware. Over a third of the compromised repository owners were found on lists of known infostealer victims. This campaign, along with similar attacks from the group TeamPCP, signals a new era of widespread, automated assaults on the software supply chain, prompting defensive measures from platforms like npm.",
+  "full_report": "## Executive Summary\n\nA large-scale, automated **[supply chain attack](https://en.wikipedia.org/wiki/Software_supply_chain)** campaign named \"Megalodon\" has compromised the CI/CD pipelines of over 5,500 public **[GitHub](https://github.com/)** repositories. In a rapid-fire assault lasting only six hours, the attackers pushed 5,718 malicious commits to 5,561 unique repositories. These commits were designed to modify CI/CD workflow files (e.g., GitHub Actions), injecting malicious steps into the automated build and deployment processes. The initial access vector for this widespread attack was the use of developer credentials harvested by information-stealing malware. This incident demonstrates a significant evolution in supply chain attacks, moving towards highly automated, broad-spectrum campaigns that leverage previously compromised developer accounts at scale. It underscores the critical risk posed by infostealer malware to the entire software development ecosystem.\n\n## Threat Overview\n\nThe \"Megalodon\" campaign is characterized by its speed and scale. The threat actor automated the process of using stolen **[GitHub](https://github.com/)** credentials to push malicious code. The core of the attack was not to poison a single popular library, but to backdoor the build process of thousands of individual projects simultaneously.\n\n- **Attack Vector**: The campaign leveraged a large collection of **[GitHub](https://github.com/)** credentials previously stolen from developers whose machines were infected with infostealer malware. Security firm **[Hudson Rock](https://www.hudsonrock.com/)** found that over 33% of the usernames associated with the compromised repositories matched victims in their infostealer database.\n- **Malicious Action**: The attacker's script logged into each compromised account and pushed a commit that modified CI/CD workflow files (e.g., `.github/workflows/*.yml`). The specific payload of these malicious workflows was not detailed in the articles, but such attacks typically aim to steal secrets (like `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`) from the build environment and exfiltrate them to an attacker-controlled server.\n- **Attribution**: While not explicitly linked, this campaign's methodology is similar to attacks conducted by the **[TeamPCP](https://www.reversinglabs.com/blog/teampcp-the-developer-focused-malware-behind-the-iconburst-supply-chain-attack)** group, indicating a broader trend of financially motivated actors targeting developers.\n\n## Technical Analysis\n\nThe attack follows a clear, repeatable pattern that is ideal for automation:\n\n1.  **Credential Acquisition**: The prerequisite for the attack is a large database of developer credentials (username, password, and potentially session cookies or tokens) harvested by infostealer malware from compromised developer machines.\n2.  **Automated Login & Commit**: The attacker uses a script to iterate through the list of stolen credentials. For each valid credential, the script authenticates to **[GitHub](https://github.com/)**, clones a repository owned by the victim, adds a malicious commit, and pushes it back to the repository.\n3.  **CI/CD Poisoning**: The malicious commit specifically targets CI/CD configuration files. By adding a malicious step to a GitHub Action workflow, the attacker ensures their code will be executed every time the CI pipeline runs (e.g., on a new push or pull request).\n4.  **Secret Exfiltration**: The malicious workflow step is typically a simple script (e.g., `curl` or `wget`) that sends all environment variables—which often contain sensitive secrets—to the attacker's server.\n\n### MITRE ATT&CK Techniques\n- [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/): The entire campaign is predicated on the use of legitimate, stolen developer accounts.\n- [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/): By modifying CI/CD workflows, the attacker compromises the development toolchain.\n- [`T1552.006 - Group Policy Preferences`](https://attack.mitre.org/techniques/T1552/006/): While this is specific to Windows, the concept of modifying configuration files (CI/CD workflows) to steal credentials is the same.\n- [`T1059.004 - Unix Shell`](https://attack.mitre.org/techniques/T1059/004/): The malicious workflow steps likely use basic shell commands to exfiltrate data.\n- [`T1500 - Compile After Delivery`](https://attack.mitre.org/techniques/T1500/): The malicious code is not executed until the CI/CD pipeline compiles or runs the project.\n\n## Impact Assessment\n\nThe \"Megalodon\" campaign represents a shift from targeted supply chain attacks to a high-volume, opportunistic model.\n\n- **Direct Impact**: The 5,561 compromised repositories are now backdoored. Any secrets present in their CI/CD environments are likely stolen. This could lead to further compromise of cloud services, package registries, and other systems accessible via those secrets.\n- **Indirect Impact**: The attack affects the integrity of any downstream project that uses code or artifacts from the compromised repositories. It creates a massive ripple effect of potential risk throughout the open-source community.\n- **Ecosystem Impact**: This attack, along with others like it, forces platforms to take drastic measures. For example, the **[npm](https://www.npmjs.com/)** registry invalidated all granular access tokens in response to rising token theft, a move that disrupts developer workflows but is necessary to mitigate the immediate threat. It highlights that the security of the entire software supply chain is dependent on the endpoint security of individual developers.\n\n## IOCs — Directly from Articles\n\nNo specific IOCs such as commit hashes, attacker domains, or IP addresses were provided in the source articles.\n\n## Detection & Response\n\n- **Detection**: **[GitHub](https://github.com/)** users should review their repository's commit history for any unexpected or unauthorized commits, particularly those modifying files in the `.github/workflows/` directory. Enable **[GitHub](https://github.com/)'s** push protection and secret scanning features. Monitor account security logs for logins from unusual IP addresses or locations. Use EDR on developer machines to detect the presence of infostealer malware.\n- **Response**: If a repository is found to be compromised:\n  1.  Immediately revoke the commit access of the compromised user account.\n  2.  Revert the malicious commit.\n  3.  Assume all secrets ever exposed to the CI/CD environment have been stolen. Rotate all API keys, tokens, and other credentials.\n  4.  Force a password reset and enable **[MFA](https://www.cisa.gov/mfa)** for the compromised user account.\n  5.  Scan the user's machine for infostealer malware.\n\n## Mitigation\n\n- **Developer Account Security**: Enforce mandatory **[Multi-Factor Authentication (MFA)](https://www.cisa.gov/mfa)** for all **[GitHub](https://github.com/)** accounts. This is the single most effective defense against the use of stolen credentials.\n- **Endpoint Security**: Protect developer workstations with a robust Endpoint Detection and Response (EDR) solution capable of identifying and blocking infostealer malware.\n- **Principle of Least Privilege**: Configure CI/CD pipelines to have access only to the secrets they absolutely need. Use short-lived, dynamically generated credentials instead of long-lived static secrets where possible (e.g., using OIDC with cloud providers).\n- **Code Review and Integrity Checks**: Require signed commits to verify the identity of the committer. Implement policies that require review for any changes to critical files like CI/CD workflows.",
+  "twitter_post": "🦈 'Megalodon' attack poisons 5,500+ GitHub repos in 6 hours. Attackers used stolen developer credentials from infostealers to inject malicious CI/CD workflows. A new era of automated supply chain attacks. #GitHub #SupplyChain #CyberAttack #InfoSec",
+  "meta_description": "A massive, automated supply chain attack named 'Megalodon' has compromised over 5,500 GitHub repositories by pushing malicious commits to CI/CD workflows using stolen developer credentials.",
+  "category": [
+    "Supply Chain Attack",
+    "Cyberattack",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "GitHub",
+      "type": "vendor"
+    },
+    {
+      "name": "Hudson Rock",
+      "type": "security_organization"
+    },
+    {
+      "name": "Infostealer",
+      "type": "malware"
+    },
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "npm",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/05/megalodon-github-attack-targets-5561.html",
+      "title": "Megalodon GitHub Attack Targets 5,561 Repos with Malicious CI/CD Workflows",
+      "date": "2026-05-22",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://daily.dev/blog/laravel-lang-supply-chain-attack-hits-233-versions-megalodon-poisons-5500-github-repos",
+      "title": "Laravel-Lang supply chain attack hits 233 versions, Megalodon poisons 5,500 GitHub repos",
+      "date": "2026-05-23",
+      "website": "daily.dev"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-22T00:00:00Z",
+      "summary": "The 'Megalodon' campaign compromises over 5,500 GitHub repositories within a six-hour window."
+    },
+    {
+      "datetime": "2026-05-23T00:00:00Z",
+      "summary": "Hudson Rock publishes analysis linking the attack to credentials stolen by infostealer malware."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1059.004",
+      "name": "Unix Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials In Files",
+      "tactic": "Credential Access"
+    }
+  ],
+  "tags": [
+    "Automation",
+    "CI/CD",
+    "Cyberattack",
+    "GitHub",
+    "Infostealer",
+    "Megalodon",
+    "Supply Chain Attack"
+  ],
+  "extract_datetime": "2026-05-24",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "open-source software users",
+      "software developers"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Automation",
+    "CI/CD",
+    "Cyberattack",
+    "GitHub",
+    "Infostealer",
+    "Megalodon",
+    "Supply Chain Attack"
+  ],
+  "pub_date": "2026-05-24",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-24T15:00:00.000Z",
+  "updatedAt": "2026-05-26T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-26T00:00:00Z",
+      "summary": "New technical details on the malicious workflow, including a code example for secret exfiltration, and additional mitigation strategies like OIDC.",
+      "content": "The new article provides a hypothetical example of the malicious GitHub Actions workflow used for secret exfiltration, showing how attackers collect and send sensitive data to their servers. It also details additional mitigation strategies, such as using OpenID Connect (OIDC) for short-lived credentials and enforcing signed commits, to enhance security against such supply chain attacks. This adds valuable technical depth to the understanding of the attack methodology and defense.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://www.cyber-recaps.com/2026-05-25",
+          "title": "Daily Cybersecurity News – May 25, 2026",
+          "website": "",
+          "date": "2026-05-26T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "datetime": "2026-05-25T12:00:00Z",
+      "summary": "New analysis attributes Megalodon attack to TeamPCP, revealing a dual motivation including geopolitical disruption with wiper malware deployed against targets in Iran and Israel.",
+      "content": "New analysis explicitly attributes the 'Megalodon' supply chain attack to the threat actor TeamPCP. Beyond financial gain, the campaign is now understood to have a geopolitical dimension, with evidence of destructive wiper malware deployed against targets in Iran and Israel. Attackers utilized throwaway GitHub accounts like 'build-bot' and 'ci-bot' to obscure their actions. The update also provides more detailed 'Cyber Observables - Hunting Hints' and expanded detection and mitigation strategies for CI/CD compromises, emphasizing the need for robust log analysis and commit monitoring.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.securityweek.com/docketwise-data-breach-impacts-143000/",
+          "title": "Over 5,500 GitHub Repositories Infected in ‘Megalodon’ Supply Chain Attack",
+          "website": "",
+          "date": "2026-05-25T12:00:00Z"
+        },
+        {
+          "url": "https://www.rescana.ai/blog/megalodon-supply-chain-attack-teamtcp-compromised-5561-github-repositories",
+          "title": "Megalodon Supply Chain Attack: TeamPCP Compromises 5,561 GitHub Repositories via Malicious CI/CD Workflows",
+          "website": "",
+          "date": "2026-05-25T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

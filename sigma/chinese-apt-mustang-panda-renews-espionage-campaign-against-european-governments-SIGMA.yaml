@@ -1,0 +1,52 @@
+title: TA416 MSBuild Payload Execution
+id: 5e8f1b2a-3c4d-4e5f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: Detects the use of MSBuild.exe to compile and execute a malicious C# project, a technique used by TA416 to load PlugX malware.
+references:
+  - https://www.infosecurity-magazine.com/news/chinese-hackers-target-european/
+author: cyber.netsecops.io
+date: 2026-04-02
+tags:
+  - attack.t1127.001
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\msbuild.exe'
+    CommandLine|contains:
+      - '.csproj'
+      - '.vbproj'
+  filter_legit_path:
+    CurrentDirectory|startswith:
+      - 'C:\Program Files'
+      - 'C:\Program Files (x86)'
+      - 'C:\Windows\Microsoft.NET'
+  condition: selection and not filter_legit_path
+---
+title: Suspicious Microsoft Entra ID Application Consent
+id: 9a8b7c6d-5e4f-4d3c-b2a1-0987654321fe
+status: experimental
+description: Detects potentially malicious OAuth consent grants in Microsoft Entra ID, a tactic used by TA416 to redirect users to malware delivery sites.
+references:
+  - https://www.infosecurity-magazine.com/news/chinese-hackers-target-european/
+author: cyber.netsecops.io
+date: 2026-04-02
+tags:
+  - attack.t1556.007
+  - attack.credential_access
+level: medium
+logsource:
+  product: azure
+  service: auditlogs
+detection:
+  selection:
+    OperationName: 'Consent to application'
+    TargetResources|contains:
+      - 'Type: ServicePrincipal'
+  filter_known_publishers:
+    InitiatedBy.user.userPrincipalName|contains:
+      - '@microsoft.com'
+  condition: selection and not filter_known_publishers

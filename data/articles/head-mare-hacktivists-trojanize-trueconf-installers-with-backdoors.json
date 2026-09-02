@@ -1,0 +1,211 @@
+{
+  "id": "77d817e3-b3d0-4154-9c10-3ea2ae65e899",
+  "slug": "head-mare-hacktivists-trojanize-trueconf-installers-with-backdoors",
+  "headline": "Hacktivists Trojanize TrueConf Installers with PhantomCore RAT",
+  "title": "Head Mare Group Breaches TrueConf to Deploy Backdoors",
+  "summary": "The hacktivist group 'Head Mare' is exploiting a chain of vulnerabilities in unpatched TrueConf video conferencing servers to conduct supply-chain attacks. By compromising the servers, the attackers replace legitimate client installers with malicious versions that deliver the PhantomCore RAT and another backdoor, targeting a range of organizations in Russia.",
+  "full_report": "## Executive Summary\nThe pro-Ukrainian hacktivist group **Head Mare** is conducting a sophisticated supply-chain attack by exploiting vulnerabilities in **[TrueConf](https://trueconf.com/)** video conferencing servers. According to research from **[Kaspersky](https://www.kaspersky.com)**, the group is compromising unpatched servers to replace legitimate TrueConf client installers with trojanized versions. These malicious installers, when downloaded and run by users, deploy backdoors including **PhantomCore RAT** and **PhantomGraph**. The campaign, observed in July 2026, has targeted Russian organizations across multiple sectors, demonstrating the group's growing technical capabilities and its focus on disruptive attacks.\n\n## Threat Overview\nThe attack targets organizations in Russia using on-premise TrueConf Server instances. Head Mare's operation leverages a chain of two vulnerabilities (`KLCERT-26-057` and `KLCERT-26-058`) in older versions of the software to achieve full system control and then poison the software distribution mechanism.\n\n**Attack Chain:**\n1.  **Initial Access:** The attackers connect to a vulnerable TrueConf server on the default TCP port `4307`. ([`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/))\n2.  **Privilege Escalation:** They exploit a vulnerability chain (`KLCERT-26-057` and `KLCERT-26-058`) to escape a sandbox environment and execute commands with `NT AUTHORITY\\SYSTEM` privileges. ([`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/))\n3.  **Persistence:** A web shell is installed by replacing the legitimate `locale.php` file, giving the attackers persistent remote access to the server. ([`T1505.003 - Web Shell`](https://attack.mitre.org/techniques/T1505/003/))\n4.  **Supply Chain Compromise:** Using the web shell, the attackers substitute the legitimate, digitally signed TrueConf client installer with a trojanized, unsigned version.\n5.  **Impact:** When users download the client from the compromised server, they receive the malicious version, which installs the **PhantomCore RAT**. This provides the attackers with remote control over the victim's workstation. ([`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/))\n\n## Technical Analysis\n- **Threat Actor:** Head Mare, a hacktivist group with increasing sophistication, known for targeting Russian entities.\n- **Vulnerabilities:** `KLCERT-26-057` and `KLCERT-26-058` (No CVEs assigned). These allow for sandbox escape and arbitrary code execution.\n- **Affected Software:** TrueConf Server versions 5.3.x (before 5.3.9), 5.4.x (before 5.4.9), and 5.5.x (before 5.5.5).\n- **Malware:**\n    - **PhantomCore:** A remote access trojan (RAT) that gives attackers control over the infected machine.\n    - **PhantomGraph:** A secondary backdoor also deployed in the campaign.\n\n> A key indicator of this attack is that the malicious installer is not digitally signed, whereas the legitimate TrueConf installer is. This provides a crucial verification point for security-conscious users.\n\n## Impact Assessment\nThis campaign has a significant impact on the targeted Russian organizations.\n\n- **Espionage and Data Theft:** The deployment of a RAT allows Head Mare to exfiltrate sensitive data, monitor communications, and gain a deep understanding of the victim's internal network and operations.\n- **Supply Chain Risk:** By compromising a central server, the attackers can infect any employee or external partner who downloads the client software, amplifying the breach's scale.\n- **Reputational Damage:** For the affected organizations, a breach of their communications platform can damage trust with partners and clients.\n- **Targeted Sectors:** The attack has been observed against a wide array of industries, including instrumentation, electronics, transport, energy, and IT, indicating a broad targeting strategy.\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| file_name | `locale.php` | Legitimate file that is replaced by a web shell for persistence. |\n| port | `4307` | Default TCP port for TrueConf server, used for initial connection. |\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for signs of this activity:\n\n| Type | Value | Description |\n|---|---|---|\n| file_path | `...\\web\\locale\\locale.php` | Monitor this file for unauthorized modifications or content indicative of a web shell. |\n| network_traffic_pattern | Inbound connections on TCP port `4307` from unknown or suspicious IP addresses. | Indicates potential scanning or exploitation attempts against the TrueConf server. |\n| file_name | `TrueConf-Client-7.5.1.exe` (or similar) | Check the digital signature of all TrueConf client installers. An unsigned binary is a strong indicator of compromise. |\n\n## Detection & Response\n1.  **File Integrity Monitoring:** Implement FIM on TrueConf web server directories to detect unauthorized changes to files like `locale.php`. Use **System File Analysis** ([D3-SFA](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis)).\n2.  **Signature Verification:** Before deploying or allowing users to download software, verify its digital signature. Create policies to block or alert on the execution of unsigned executables. This aligns with **Executable Allowlisting** ([D3-EAL](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)).\n3.  **Network Monitoring:** Monitor for and alert on suspicious outbound connections from TrueConf servers, which could indicate web shell or RAT activity.\n\n## Mitigation\n1.  **Patch Immediately ([M1051](https://attack.mitre.org/mitigations/M1051/)):** Update all TrueConf Server instances to the latest patched versions (5.3.9, 5.4.9, 5.5.5 or newer). TrueConf released patches on June 18, 2026.\n2.  **Code Signing Verification ([M1045](https://attack.mitre.org/mitigations/M1045/)):** Educate users and administrators to always verify the digital signature of software before installation. This is a critical step in preventing this type of supply-chain attack.\n3.  **Restrict Access:** Limit network access to the TrueConf server management ports from untrusted networks. Apply firewall rules to allow connections only from known, safe locations.\n4.  **Web Application Firewall (WAF):** Deploy a WAF in front of the TrueConf server to inspect and filter traffic, which may help block the initial exploitation attempts.",
+  "twitter_post": "Hacktivist group Head Mare is exploiting TrueConf server flaws to trojanize installers with PhantomCore RAT. The supply-chain attack targets Russian organizations. #HeadMare #TrueConf #SupplyChain #Malware #PhantomCore",
+  "meta_description": "The hacktivist group Head Mare is exploiting vulnerabilities in TrueConf video conferencing servers to replace legitimate installers with backdoored versions.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Head Mare",
+      "type": "threat_actor"
+    },
+    {
+      "name": "TrueConf",
+      "type": "vendor",
+      "url": "https://trueconf.com/"
+    },
+    {
+      "name": "PhantomCore",
+      "type": "malware"
+    },
+    {
+      "name": "PhantomGraph",
+      "type": "malware"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "security_organization",
+      "url": "https://www.kaspersky.com"
+    }
+  ],
+  "cves": [
+    {
+      "id": "KLCERT-26-057"
+    },
+    {
+      "id": "KLCERT-26-058"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/08/head-mare-exploits-trueconf-flaws-to.html",
+      "title": "TrueConf Server Flaws Exploited to Replace Client Installers with PhantomCore",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/",
+      "title": "Hackers breach TrueConf to trojanize client installers with backdoors",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://www.reconbee.com/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/",
+      "title": "Hackers breach TrueConf to trojanize client installers with backdoors",
+      "friendly_name": "ReconBee",
+      "website": "reconbee.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-18",
+      "summary": "TrueConf releases patches for the exploited vulnerabilities."
+    },
+    {
+      "datetime": "2026-07",
+      "summary": "Kaspersky observes the Head Mare campaign actively exploiting the vulnerabilities."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "The primary mitigation is to update TrueConf Server to a patched version (5.3.9, 5.4.9, 5.5.5 or newer).",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Enforce policies that verify software digital signatures before installation. Alert on or block unsigned executables.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Implement file integrity monitoring to detect unauthorized changes to critical application files like 'locale.php'.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Restrict access to the TrueConf server's management ports from the internet, allowing connections only from trusted IP ranges.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "locale.php",
+      "description": "File replaced by web shell"
+    },
+    {
+      "type": "destination_port",
+      "value": "4307",
+      "description": "Default TCP port for TrueConf server"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": ".../web/locale/locale.php",
+      "description": "Monitor for unauthorized modifications to this file, which is replaced with a web shell in the attack.",
+      "context": "File Integrity Monitoring (FIM) systems",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "powershell -enc",
+      "description": "Attackers may use PowerShell with encoded commands for post-exploitation activity after gaining SYSTEM access.",
+      "context": "EDR logs, Windows Event ID 4104",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Unsigned Executable",
+      "description": "The trojanized TrueConf client installer is unsigned. Any unsigned installer for this software should be treated as malicious.",
+      "context": "Endpoint security policy, Application Control logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Head Mare",
+    "TrueConf",
+    "Supply Chain Attack",
+    "Hacktivism",
+    "PhantomCore",
+    "RAT",
+    "Russia"
+  ],
+  "extract_datetime": "2026-08-10T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Russia"
+    ],
+    "industries_affected": [
+      "Technology",
+      "Energy",
+      "Transportation",
+      "Manufacturing"
+    ]
+  },
+  "pub_date": "2026-08-10",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-08-10T15:00:00.000Z",
+  "updatedAt": "2026-08-21T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-08-21T00:00:00Z",
+      "datetime": "2026-08-21T00:00:00Z",
+      "title": "Update 1",
+      "summary": "CISA adds TrueConf Server flaws (CVE-2026-72529, CVE-2026-72530) to KEV, confirming active exploitation by Head Mare for unauthenticated RCE.",
+      "sources": [
+        {
+          "title": "CISA Adds Two Known Exploited Vulnerabilities to Catalog",
+          "url": "https://www.cisa.gov/news-events/alerts/2026/08/20/cisa-adds-two-known-exploited-vulnerabilities-catalog"
+        },
+        {
+          "title": "CVE-2026-72529 and CVE-2026-72530 Exploited in the Wild: TrueConf Server Under Attack",
+          "url": "https://securityonline.info/trueconf-cve-2026-72529-exploited/"
+        },
+        {
+          "title": "U.S. CISA adds TrueConf Server flaws to its Known Exploited Vulnerabilities catalog",
+          "url": "https://securityaffairs.com/197602/security/u-s-cisa-adds-trueconf-server-flaws-to-its-known-exploited-vulnerabilities-catalog.html"
+        }
+      ]
+    }
+  ]
+}

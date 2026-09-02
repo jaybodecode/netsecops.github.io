@@ -1,0 +1,104 @@
+title: Lantronix EDS5000 Command Injection Attempt (CVE-2025-67038)
+id: 5e9f1b2a-3c4d-4e5f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: |
+  Detects HTTP POST requests to Lantronix device login pages where the username field contains shell metacharacters. This indicates a command injection attempt for CVE-2025-67038.
+references:
+  - https://www.cisa.gov/news-events/alerts/2026/06/24/cisa-adds-four-vulnerabilities-kev-catalog
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1190
+  - attack.initial_access
+  - cve.2025.67038
+level: critical
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri: '/'
+    cs-method: 'POST'
+    cs-uri-query|re: 'username=.*[;`|&$(].*'
+  condition: selection
+---
+title: Suspicious Child Process on Lantronix Device
+id: 6f0a2c3b-4d5e-4f6a-9b0c-1d2e3f4a5b6c
+status: experimental
+description: |
+  Detects the execution of shell or download utilities (sh, bash, wget, curl) as child processes of the web server on a Lantronix device, which may indicate successful exploitation of CVE-2025-67038.
+references:
+  - https://www.cisa.gov/news-events/alerts/2026/06/24/cisa-adds-four-vulnerabilities-kev-catalog
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1059.004
+  - attack.execution
+  - cve.2025.67038
+level: high
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection:
+    ParentImage|contains: 'httpd' # Assuming a generic web server process name
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+      - '/wget'
+      - '/curl'
+  condition: selection
+---
+title: Rogue Administrator Account Creation on UniFi OS
+id: 7a1b3d4c-5e6f-4a7b-8c1d-2e3f4a5b6c7d
+status: experimental
+description: |
+  Detects the creation of new administrator accounts on Ubiquiti UniFi OS devices, a reported post-exploitation activity following compromise via CVE-2026-34908, CVE-2026-34909, and CVE-2026-34910.
+references:
+  - https://www.cisa.gov/news-events/alerts/2026/06/24/cisa-adds-four-vulnerabilities-kev-catalog
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1078.001
+  - attack.persistence
+  - cve.2026.34908
+level: high
+logsource:
+  product: ubiquiti
+  service: unifi_os
+  category: application
+detection:
+  selection:
+    event_type: 'user_created'
+    user_role: 'administrator'
+  filter:
+    source_ip|cidr:
+      - '192.168.0.0/16'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      # Add known legitimate admin subnets here
+  condition: selection and not filter
+---
+title: Suspicious File Creation on UniFi OS
+id: 8b2c4e5d-6f7a-4b8c-9d2e-3f4a5b6c7d8e
+status: experimental
+description: |
+  Detects the creation of files in temporary directories (/tmp/, /var/tmp/) by the web server process on a Ubiquiti UniFi OS device, which could indicate an attacker writing a webshell or script after exploiting CVE-2026-34909.
+references:
+  - https://www.cisa.gov/news-events/alerts/2026/06/24/cisa-adds-four-vulnerabilities-kev-catalog
+author: cyber.netsecops.io
+date: 2026-06-25
+tags:
+  - attack.t1190
+  - attack.initial_access
+  - cve.2026.34909
+level: medium
+logsource:
+  product: linux
+  category: file_event
+detection:
+  selection:
+    Image|contains: 'unifi' # Generic process name for UniFi web server
+    TargetFilename|startswith:
+      - '/tmp/'
+      - '/var/tmp/'
+  condition: selection

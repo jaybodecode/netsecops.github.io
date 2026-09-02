@@ -1,0 +1,261 @@
+{
+  "id": "f6efc03b-d163-4913-9baf-f27476281d88",
+  "slug": "tropic-trooper-apt-uses-trojanized-pdf-reader-in-new-espionage-campaign",
+  "headline": "Tropic Trooper APT Targets Chinese Speakers with Trojanized PDF Reader, Uses GitHub for C2",
+  "title": "Tropic Trooper (APT23) Deploys Custom Beacon via Trojanized SumatraPDF, Abuses GitHub and VS Code Tunnels for Espionage",
+  "summary": "The cyber-espionage group Tropic Trooper (also known as APT23 or Pirate Panda) has been linked to a new campaign targeting Chinese-speaking individuals in Taiwan, South Korea, and Japan. According to Zscaler's ThreatLabz, the attack, first seen in March 2026, uses a military-themed ZIP archive containing a trojanized version of the SumatraPDF reader. Upon execution, the malware displays a decoy document while deploying a multi-stage payload. This payload includes the TOSHIS loader and the AdaptixC2 Beacon, which uses GitHub issues and repository APIs for command and control. For high-value targets, the threat actors also leverage Microsoft Visual Studio Code tunnels to establish persistent remote access, showcasing a sophisticated approach to blending in with legitimate developer traffic.",
+  "full_report": "## Executive Summary\nThe advanced persistent threat (APT) group **[Tropic Trooper](https://attack.mitre.org/groups/G0081/)** (also known as APT23, Pirate Panda) has been attributed to a new cyber-espionage campaign observed in March 2026. Researchers at **[Zscaler's](https://www.zscaler.com/)** ThreatLabz report with high confidence that the group is targeting Chinese-speaking individuals, likely in Taiwan, South Korea, and Japan, with military-themed lures. The attack chain begins with a trojanized version of the legitimate **SumatraPDF** reader. When executed, it deploys a custom post-exploitation agent called **AdaptixC2 Beacon**. In a novel command-and-control (C2) tactic, this beacon uses **[GitHub](https://github.com/)**'s API to receive commands and exfiltrate data, hiding its traffic within legitimate developer activity. For persistent access to high-value targets, the group was also observed using **[Microsoft Visual Studio Code](https://code.visualstudio.com/)** tunnels. The campaign leverages a complex toolset including a loader named **TOSHIS** and a backdoor called **EntryShell**, reinforcing the attribution to Tropic Trooper.\n\n## Threat Overview\n**Threat Actor:** **Tropic Trooper** (APT23, Earth Centaur, KeyBoy, Pirate Panda)\n**Targets:** Chinese-speaking individuals and organizations, with a focus on Taiwan, South Korea, and Japan.\n**Malware:** **AdaptixC2 Beacon**, **TOSHIS** (loader, variant of Xiangoop), **EntryShell** (backdoor), **[Cobalt Strike](https://attack.mitre.org/software/S0154)** Beacon.\n**Infrastructure:** `158.247.193.100` (staging server), GitHub repositories (for C2).\n**Primary Goal:** Cyber espionage and long-term intelligence gathering.\n\nThe campaign demonstrates Tropic Trooper's continued evolution, incorporating living-off-the-land techniques and abusing legitimate services to evade detection. The use of military-themed documents suggests a focus on government, defense, or political targets.\n\n## Technical Analysis\nThe attack is multi-staged and relies on social engineering to initiate.\n1.  **Initial Access & Execution:** ([`T1204.002 - Malicious File`](https://attack.mitre.org/techniques/T1204/002/)) The victim receives a ZIP archive with a lure document, such as `Comparative Analysis of US-UK and US-Australia Nuclear Submarine Cooperation (2025).exe`. This executable is a trojanized version of SumatraPDF.\n2.  **Defense Evasion & Payload Delivery:** ([`T1140 - Deobfuscate/Decode Files or Information`](https://attack.mitre.org/techniques/T1140/)) Upon execution, the legitimate PDF reader displays a decoy document. In the background, it runs a loader called **TOSHIS**. TOSHIS connects to a staging server (`158.247.193.100`) to download an encrypted shellcode.\n3.  **Beacon Deployment:** The shellcode is decrypted and executed in memory, launching the **AdaptixC2 Beacon**.\n4.  **Command and Control:** ([`T1102.002 - Bidirectional Communication`](https://attack.mitre.org/techniques/T1102/002/)) The AdaptixC2 Beacon uses the GitHub API to communicate. It reads commands from GitHub issues and exfiltrates data by posting to the repository, effectively using GitHub as its C2 server.\n5.  **Persistence & Remote Access:** ([`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)) For high-value targets, the actors deploy Microsoft Visual Studio Code and establish a **VS Code tunnel**. This provides them with persistent, encrypted remote access that blends in with legitimate remote development or administration traffic.\n\nThe staging server was also found hosting a **Cobalt Strike** Beacon and a custom backdoor named **EntryShell**, tools previously associated with Tropic Trooper.\n\n## Impact Assessment\nThe impact of this campaign is primarily espionage-related. By gaining persistent access to the systems of individuals in government, policy, or defense circles, Tropic Trooper can exfiltrate sensitive documents, monitor communications, and gather long-term intelligence. The use of VS Code tunnels provides a stealthy and resilient foothold within a target network, making eviction difficult. While not directly destructive, the loss of confidential strategic, political, or military information can have significant national security implications for the targeted countries. The abuse of trusted platforms like GitHub and VS Code for malicious purposes also makes detection harder for network defenders, as blocking these services is often not feasible.\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| ip_address_v4 | `158.247.193.100` | Staging server used to host payloads. |\n| file_name | `Comparative Analysis of US-UK and US-Australia Nuclear Submarine Cooperation (2025).exe` | Malicious executable masquerading as a document. |\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect this activity:\n\n| Type | Value | Description |\n|---|---|---|\n| url_pattern | `api.github.com/repos/{user}/{repo}/issues` | Network traffic pattern for C2 communication via GitHub issues. Monitor for suspicious or unauthorized processes making these API calls. |\n| process_name | `code.exe` | Execution of Visual Studio Code in a server environment or by a user who is not a developer could be suspicious. |\n| command_line_pattern | `code tunnel` | The command used to initiate a VS Code tunnel for remote access. Monitor for this in command-line logs. |\n| network_traffic_pattern | Outbound connections to `*.rel.tunnels.api.visualstudio.com` | The domain used for VS Code tunnel connections. Connections from servers or non-developer workstations are highly suspect. |\n\n## Detection & Response\n- **Network Monitoring**: Monitor for outbound connections to `api.github.com`. While legitimate, traffic from non-developer tools or suspicious processes should be investigated. Use **[URL Analysis](https://d3fend.mitre.org/technique/d3f:URLAnalysis)** to inspect the full API path for suspicious repository names.\n- **Endpoint Detection**: Deploy EDR to monitor for process execution chains. A PDF reader spawning network connections to GitHub or launching command shells is highly anomalous. Create detection rules for the `code tunnel` command line.\n- **Application Control**: Use application allowlisting ([`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)) to prevent the execution of unauthorized applications like the trojanized `SumatraPDF.exe`.\n- **Response**: If a VS Code tunnel is detected, treat it as an active hands-on-keyboard incident. Isolate the host and investigate all activity performed through the tunnel. Revoke any credentials that may have been used or exposed on the compromised machine.\n\n## Mitigation\n- **User Training**: Train users to be suspicious of unsolicited attachments, especially executables masquerading as documents ([`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/)).\n- **Email Security**: Implement email security gateways to scan and block malicious attachments and ZIP files.\n- **Restrict Web-Based Content**: If feasible, restrict or monitor outbound connections to code-hosting platforms like GitHub from non-developer systems ([`M1021 - Restrict Web-Based Content`](https://attack.mitre.org/mitigations/M1021/)).\n- **Disable or Remove Feature or Program**: For server environments, disable or remove developer tools like VS Code unless there is a clear business need. This prevents their abuse for persistence ([`M1042 - Disable or Remove Feature or Program`](https://attack.mitre.org/mitigations/M1042/)).",
+  "twitter_post": "Tropic Trooper (APT23) is back! 🕵️‍♂️ A new campaign uses a trojanized SumatraPDF reader to target Chinese speakers. The malware uses GitHub for C2 and VS Code tunnels for persistent access. #APT #CyberEspionage #TropicTrooper #Infosec",
+  "meta_description": "The Tropic Trooper APT group (APT23) is targeting individuals in Asia with a trojanized SumatraPDF reader that deploys the AdaptixC2 beacon, using GitHub for C2 and VS Code tunnels for persistence.",
+  "category": [
+    "Threat Actor",
+    "Cyberattack",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Tropic Trooper",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0081/"
+    },
+    {
+      "name": "Zscaler",
+      "type": "vendor",
+      "url": "https://www.zscaler.com/"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Microsoft Visual Studio Code",
+      "type": "product",
+      "url": "https://code.visualstudio.com/"
+    },
+    {
+      "name": "SumatraPDF",
+      "type": "product"
+    },
+    {
+      "name": "AdaptixC2 Beacon",
+      "type": "malware"
+    },
+    {
+      "name": "TOSHIS",
+      "type": "malware"
+    },
+    {
+      "name": "Xiangoop",
+      "type": "malware"
+    },
+    {
+      "name": "EntryShell",
+      "type": "malware"
+    },
+    {
+      "name": "Cobalt Strike",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0154/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/04/tropic-trooper-uses-trojanized.html",
+      "title": "Tropic Trooper Uses Trojanized SumatraPDF and GitHub to Deploy AdaptixC2",
+      "date": "2026-04-24",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.zscaler.com/blogs/security-research/tropic-trooper-apt-takes-aim-home-routers-japanese-targets",
+      "title": "Tropic Trooper: AdaptixC2 + Custom Beacon | ThreatLabz",
+      "date": "2026-04-22",
+      "friendly_name": "Zscaler",
+      "website": "zscaler.com"
+    },
+    {
+      "url": "https://cyberpress.com/tropic-trooper-deploys-custom-beacon-and-vs-code-tunnels-in-fresh-apt-assault/",
+      "title": "Tropic Trooper Deploys Custom Beacon and VS Code Tunnels in Fresh APT Assault",
+      "date": "2026-04-23",
+      "friendly_name": "Cyberpress",
+      "website": "cyberpress.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-12",
+      "summary": "Zscaler's ThreatLabz first observed the new Tropic Trooper campaign activity."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1102.002",
+      "name": "Bidirectional Communication",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1573.002",
+      "name": "Asymmetric Cryptography",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1059.005",
+      "name": "Visual Basic",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1547.001",
+      "name": "Registry Run Keys / Startup Folder",
+      "tactic": "Persistence"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and avoid opening executable files disguised as documents from untrusted sources.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Monitor and potentially block or restrict traffic to developer platforms like GitHub from non-developer workstations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application control to prevent unknown or unauthorized executables from running.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Remove developer tools like VS Code from systems where they are not required to prevent their abuse for persistence.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To counter Tropic Trooper's abuse of legitimate services like GitHub and VS Code, organizations should implement granular outbound traffic filtering and monitoring. It is not feasible to block these services entirely. Instead, create policies that restrict access to them based on user roles and device posture. For example, only allow developer workstations to connect to `api.github.com` and `*.rel.tunnels.api.visualstudio.com`. All other systems, especially servers, should be blocked from accessing these domains. Use a web proxy or next-gen firewall that can perform TLS inspection to gain visibility into the API calls being made. Alert on high-frequency API calls to GitHub from a single host or connections to VS Code tunnels from unexpected network segments. This approach significantly narrows the field for threat hunters and can block the C2 and persistence mechanisms used in this campaign.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-PCA",
+      "technique_name": "Process Creation Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessCreationAnalysis",
+      "recommendation": "The initial execution chain of this attack—a PDF reader spawning child processes that make network connections—is highly anomalous and a prime candidate for detection via Process Creation Analysis. Configure EDR or SIEM rules to detect when a common document reader process (like `SumatraPDF.exe`, `AcroRd32.exe`, etc.) spawns unexpected child processes like `cmd.exe`, `powershell.exe`, or any unsigned binary. Furthermore, correlate this process creation event with subsequent network connections to suspicious domains like the IOC `158.247.193.100` or API endpoints for legitimate services like GitHub. A rule that triggers on `SumatraPDF.exe` -> `[unsigned_loader.exe]` -> `api.github.com` would be a high-fidelity indicator of this specific Tropic Trooper campaign, allowing for immediate automated response like host isolation.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "158.247.193.100",
+      "description": "Staging server"
+    },
+    {
+      "type": "file_name",
+      "value": "Comparative Analysis of US-UK and US-Australia Nuclear Submarine Cooperation (2025).exe",
+      "description": "Malicious lure file"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "api.github.com/repos/",
+      "description": "The malware uses GitHub repository APIs for C2. Monitor for processes other than git or web browsers making frequent calls to this API endpoint.",
+      "context": "Web proxy logs, DNS logs, EDR telemetry",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "code tunnel",
+      "description": "Command used to initiate a persistent Visual Studio Code remote tunnel. This is a strong indicator of this TTP.",
+      "context": "Windows Event ID 4688, EDR process creation logs",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "*.rel.tunnels.api.visualstudio.com",
+      "description": "The domain used by VS Code tunnels for C2. Connections from servers or non-developer machines to this domain are highly suspicious.",
+      "context": "DNS logs, Netflow, Firewall logs",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "SumatraPDF.exe",
+      "description": "The trojanized executable. Monitor for this process making unexpected network connections or spawning child processes.",
+      "context": "EDR process monitoring",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Tropic Trooper",
+    "APT23",
+    "Cyber Espionage",
+    "GitHub",
+    "SumatraPDF",
+    "VS Code",
+    "Malware"
+  ],
+  "extract_datetime": "2026-04-24T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Taiwan",
+      "South Korea",
+      "Japan"
+    ],
+    "other_affected": [
+      "Chinese-speaking individuals"
+    ]
+  },
+  "pub_date": "2026-04-24",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-04-24T15:00:00.000Z",
+  "updatedAt": "2026-04-24T15:00:00.000Z"
+}

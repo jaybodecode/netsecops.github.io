@@ -1,0 +1,81 @@
+title: Potential MpClient.dll Sideloading
+id: 8c1d9e0a-4b7c-4f8e-9a2d-3b1c8f9a7d6e
+status: experimental
+description: Detects the Windows Defender process (MsMpEng.exe) loading MpClient.dll from a non-standard system directory, which may indicate a DLL sideloading attack as seen in the Vidar campaign.
+references:
+  - https://unit42.paloaltonetworks.com/vidar-stealer-xmrig-miner-campaign-analysis/
+author: cyber.netsecops.io
+date: 2026-07-08
+tags:
+  - attack.t1574.002
+level: high
+logsource:
+  category: image_load
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\MsMpEng.exe'
+    ImageLoaded|endswith: '\MpClient.dll'
+  filter:
+    ImageLoaded|startswith:
+      - 'C:\Program Files\Windows Defender\'
+      - 'C:\Program Files (x86)\Windows Defender\'
+      - 'C:\ProgramData\Microsoft\Windows Defender\'
+  condition: selection and not filter
+---
+title: XMRig Cryptocurrency Mining Traffic
+id: 1f9a8c1d-7d6e-4b7c-8a2d-9f8e3b1c8f9a
+status: experimental
+description: Detects outbound network traffic using the Stratum protocol (stratum+tcp), which is characteristic of XMRig and other cryptocurrency miners.
+references:
+  - https://unit42.paloaltonetworks.com/vidar-stealer-xmrig-miner-campaign-analysis/
+author: cyber.netsecops.io
+date: 2026-07-08
+tags:
+  - attack.t1496
+  - attack.command_and_control
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|startswith: 'stratum+tcp://'
+  condition: selection
+---
+title: Factory-v3 Go Loader PDB Artifact
+id: 5a4d2b8c-1f9a-4b7c-8a2d-9f8e7c6b3d1e
+status: experimental
+description: 'Detects files containing the PDB path string ''C:\\Users\\Administrator\\Desktop\\UpdateFactory'' associated with the Factory-v3 loader builder.'
+references:
+  - https://unit42.paloaltonetworks.com/vidar-stealer-xmrig-miner-campaign-analysis/
+author: cyber.netsecops.io
+date: 2026-07-08
+tags:
+  - attack.t1204.002
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  keywords:
+    - 'C:\Users\Administrator\Desktop\UpdateFactory\compiler\'
+  condition: keywords
+---
+title: Vidar Core Payload SHA256 Hash
+id: 2b8c1f9a-3d1e-4b7c-8a2d-9f8e7c6b5a4d
+status: experimental
+description: Detects the Vidar core payload file hash identified in the Unit 42 report.
+references:
+  - https://unit42.paloaltonetworks.com/vidar-stealer-xmrig-miner-campaign-analysis/
+author: cyber.netsecops.io
+date: 2026-07-08
+tags:
+  - attack.t1204.002
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    Hashes|contains: 'SHA256=7ed4a256e1d281cb4f194d13ff554fb280dafde0a67a18115ea038ea6c87d'
+  condition: selection

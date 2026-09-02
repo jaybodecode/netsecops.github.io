@@ -1,0 +1,285 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-20T13:33:59.523Z",
+    "article_slug": "fake-govt-job-postings-in-india-used-to-spread-sheetagent-rat",
+    "article_date": "2026-08-20",
+    "token_usage": {
+      "input_tokens": 146499,
+      "output_tokens": 3536,
+      "cached_tokens": 140742,
+      "total_tokens": 150035,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.060149
+    }
+  },
+  "report_name": "Fake Indian Gov't Job Postings Spread 'SheetAgent' RAT via Google Sheets",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Malicious File",
+      "mitre_id": "T1204.002",
+      "description": "The attack initiates when a victim opens a malicious LNK shortcut file disguised as a recruitment notice within a ZIP archive."
+    },
+    {
+      "name": "PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "A malicious LNK file executes a hidden PowerShell script to deploy the SheetAgent RAT payload."
+    },
+    {
+      "name": "Dead Drop Resolver",
+      "mitre_id": "T1102.001",
+      "description": "SheetAgent uses the Google Sheets API to communicate with an attacker-controlled spreadsheet to retrieve C2 information and commands."
+    },
+    {
+      "name": "Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "The malware uses Google Sheets API calls for C2, making the traffic appear as legitimate web protocol communications to evade network defenses."
+    },
+    {
+      "name": "Remote Access Software",
+      "mitre_id": "T1219",
+      "description": "The attackers were observed using the legitimate ControlR remote management platform during the attack chain."
+    }
+  ],
+  "malware": [
+    {
+      "name": "SheetAgent",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": true,
+      "aliases": [],
+      "description": "A new .NET-based Remote Access Trojan (RAT) that uses Google Sheets as a novel backup command-and-control channel.",
+      "capabilities": [
+        "communicates-with-c2",
+        "determines-c2-server",
+        "exfiltrates-data"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "ControlR",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The legitimate ControlR remote management platform was abused by the attackers during the infection chain.",
+      "tool_types": [
+        "remote-access"
+      ]
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [
+    {
+      "name": "Operation ShadowRecruit",
+      "description": "A targeted malware campaign in India using fake government job postings to distribute the SheetAgent RAT to job seekers.",
+      "aliases": []
+    }
+  ],
+  "identities": [
+    {
+      "name": "Indian Cabinet Secretariat",
+      "identity_class": "organization",
+      "sectors": [
+        "government"
+      ],
+      "description": "Used as a lure in the campaign. The attackers created a fake recruitment notice for a 'Senior Field Officer' role in this organization to trick victims."
+    },
+    {
+      "name": "Seqrite",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The enterprise security company that discovered and reported on the Operation ShadowRecruit campaign."
+    }
+  ],
+  "locations": [
+    {
+      "name": "India",
+      "country": "India",
+      "region": "southern-asia"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Google Sheets C2 Channel",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "SheetAgent malware uses an attacker-controlled Google Sheet as a fallback C2 channel, reading commands from and writing data to specific cells via the Google Sheets API."
+    }
+  ],
+  "observables": [
+    {
+      "type": "domain-name",
+      "value": "sheets.googleapis.com"
+    },
+    {
+      "type": "file",
+      "name": "Cabinet Secretariat Recruitment.lnk"
+    },
+    {
+      "type": "file",
+      "name": "ControlR.exe"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "SheetAgent C2 Traffic to Google Sheets",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[domain-name:value = 'sheets.googleapis.com']",
+      "x_netsecio_sigma_rule": "title: SheetAgent C2 Traffic to Google Sheets\nid: 7c5b1a3d-8f9e-4b1c-9a2d-3e4f5a6b7c8d\nstatus: experimental\ndescription: Detects DNS queries to sheets.googleapis.com from unusual processes, which could indicate C2 communication by the SheetAgent RAT.\nreferences:\n  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1102.001\n  - attack.t1071.001\n  - attack.command_and_control\nlevel: medium\nfalsepositives:\n  - Legitimate applications using the Google Sheets API.\nlogsource:\n  category: dns_query\n  product: windows\ndetection:\n  selection:\n    QueryName: 'sheets.googleapis.com'\n  filter:\n    Image|endswith:\n      - '\\chrome.exe'\n      - '\\firefox.exe'\n      - '\\msedge.exe'\n      - '\\Google\\Chrome\\Application\\chrome.exe'\n  condition: selection and not filter",
+      "pattern": "",
+      "description": "Detects network traffic to sheets.googleapis.com from processes other than web browsers, a TTP used by SheetAgent for C2."
+    },
+    {
+      "name": "ShadowRecruit Malicious LNK File Creation",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'Cabinet Secretariat Recruitment.lnk']",
+      "x_netsecio_sigma_rule": "title: ShadowRecruit Malicious LNK File Creation\nid: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the creation of a malicious LNK file used in the Operation ShadowRecruit campaign.\nreferences:\n  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1204.002\n  - attack.initial_access\nlevel: high\nfalsepositives:\n  - None expected.\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '\\Cabinet Secretariat Recruitment.lnk'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the presence of the malicious LNK file used as the initial vector in Operation ShadowRecruit."
+    },
+    {
+      "name": "Suspicious ControlR Execution",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[process:name = 'ControlR.exe']",
+      "x_netsecio_sigma_rule": "title: Suspicious ControlR Execution\nid: f9e8d7c6-b5a4-4938-8271-d6c5b4a3e2f1\nstatus: experimental\ndescription: Detects the execution of ControlR.exe, a legitimate remote management tool observed being abused in the Operation ShadowRecruit campaign.\nreferences:\n  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1219\n  - attack.execution\nlevel: medium\nfalsepositives:\n  - Legitimate use of ControlR by system administrators.\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\ControlR.exe'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the execution of the ControlR remote management tool, which was abused in this campaign."
+    },
+    {
+      "name": "ShadowRecruit PowerShell Execution Pattern",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: ShadowRecruit PowerShell Execution Pattern\nid: 2b3c4d5e-6f7a-4b8c-9d6e-5f4a3b2c1d0e\nstatus: experimental\ndescription: Detects the PowerShell execution pattern used in Operation ShadowRecruit to deploy the SheetAgent RAT.\nreferences:\n  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1059.001\n  - attack.execution\nlevel: high\nfalsepositives:\n  - Legitimate administrative scripts using similar parameters.\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\powershell.exe'\n    CommandLine|contains|all:\n      - '-ExecutionPolicy Bypass'\n      - '-File'\n  condition: selection",
+      "description": "Detects the specific PowerShell command line pattern used to execute the payload script in the Operation ShadowRecruit campaign."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Operation ShadowRecruit",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "India",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Operation ShadowRecruit",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "SheetAgent",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Operation ShadowRecruit",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "ControlR",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Operation ShadowRecruit",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Malicious File",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Operation ShadowRecruit",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Operation ShadowRecruit",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Remote Access Software",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SheetAgent",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Dead Drop Resolver",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SheetAgent",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SheetAgent",
+      "source_type": "malware",
+      "relationship_type": "communicates-with",
+      "target_name": "Google Sheets C2 Channel",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "SheetAgent C2 Traffic to Google Sheets",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "SheetAgent",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "SheetAgent C2 Traffic to Google Sheets",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "sheets.googleapis.com",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "ShadowRecruit Malicious LNK File Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Operation ShadowRecruit",
+      "target_type": "campaign"
+    },
+    {
+      "source_name": "ShadowRecruit Malicious LNK File Creation",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "Cabinet Secretariat Recruitment.lnk",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Suspicious ControlR Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "ControlR",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Suspicious ControlR Execution",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "ControlR.exe",
+      "target_type": "file"
+    },
+    {
+      "source_name": "ShadowRecruit PowerShell Execution Pattern",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

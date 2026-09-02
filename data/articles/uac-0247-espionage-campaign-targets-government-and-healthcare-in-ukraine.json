@@ -1,0 +1,178 @@
+{
+  "id": "aae9cf0e-0815-42e4-b302-905997150b6f",
+  "slug": "uac-0247-espionage-campaign-targets-government-and-healthcare-in-ukraine",
+  "headline": "UAC-0247 Espionage Campaign Targets Ukrainian Government and Healthcare with Data-Stealing Malware",
+  "title": "CERT-UA Warns of UAC-0247 Cyber-Espionage Campaign Targeting Government and Healthcare in Ukraine",
+  "summary": "The Computer Emergency Response Team of Ukraine (CERT-UA) is warning of an ongoing cyber-espionage campaign by the threat actor UAC-0247. Active since March 2026, the campaign targets Ukrainian government bodies and healthcare facilities with phishing emails. The attack uses a multi-stage infection chain involving LNK and HTA files to deploy a data-stealing payload that injects into legitimate processes like RuntimeBroker.exe. The malware, similar to the RAVENSHELL backdoor, is designed to exfiltrate data from web browsers and the WhatsApp desktop application.",
+  "full_report": "## Executive Summary\nThe Computer Emergency Response Team of Ukraine (**[CERT-UA](https://cert.gov.ua/)**) has issued an alert (CERT-UA#9240) detailing a targeted cyber-espionage campaign conducted by the threat actor group **UAC-0247**. Active from March to April 2026, the campaign has focused on Ukrainian government organizations and municipal healthcare facilities, including clinics and hospitals. The attackers use phishing lures, often themed around humanitarian aid, to trick victims into executing a malicious payload. The malware's primary objective is to steal sensitive data, specifically targeting information from Chromium-based web browsers and the **[WhatsApp](https://www.whatsapp.com/)** desktop application. The complex infection chain utilizes LNK and HTA files to ultimately inject a backdoor, similar to **RAVENSHELL**, into trusted system processes to evade detection.\n\n## Threat Overview\n**UAC-0247** is conducting a classic espionage operation with a focus on data exfiltration from specific, high-value targets within Ukraine. The choice of targets—government and healthcare—suggests a motive of gathering intelligence on government operations and the state of civilian services during a time of conflict.\n\nThe attack begins with a socially engineered phishing email. The email contains a link that, when clicked, downloads a ZIP archive. To enhance credibility, the attackers have been observed using AI-generated websites or exploiting XSS vulnerabilities on legitimate sites to host their malicious files. Inside the ZIP archive is a Windows Shortcut file (`.LNK`). This reliance on user execution of a file from an archive is a common and effective TTP.\n\n## Technical Analysis\nThe infection process is multi-staged, designed to bypass security controls and obfuscate the final payload.\n\n1.  **Phishing ([`T1566.002`](https://attack.mitre.org/techniques/T1566/002/) - Spearphishing Link):** The attack is initiated via a malicious link in a phishing email.\n2.  **User Execution ([`T1204.002`](https://attack.mitre.org/techniques/T1204/002/) - Malicious File):** The victim is tricked into extracting a ZIP archive and clicking on a malicious `.LNK` shortcut file.\n3.  **Command and Scripting Interpreter ([`T1059.001`](https://attack.mitre.org/techniques/T1059/001/) - PowerShell):** The LNK file executes a command, which in turn launches an HTA file. HTA files are often used to run scripts (like VBScript or JScript) that can download and execute further payloads.\n4.  **Scheduled Task/Job ([`T1053.005`](https://attack.mitre.org/techniques/T1053/005/)):** The HTA script creates a scheduled task to launch the main executable payload, establishing persistence and running with system privileges.\n5.  **Process Injection ([`T1055`](https://attack.mitre.org/techniques/T1055/)):** To evade detection by EDR and antivirus, the malware injects its malicious shellcode into a legitimate, trusted Windows process, `RuntimeBroker.exe`.\n6.  **Data from Local System ([`T1005`](https://attack.mitre.org/techniques/T1005/)):** The injected payload, a reverse TCP shell similar to **RAVENSHELL**, then begins its primary task: stealing data. It specifically targets credential files, cookies, and history from Chromium-based browsers and data from the local WhatsApp desktop client.\n7.  **Exfiltration Over C2 Channel ([`T1041`](https://attack.mitre.org/techniques/T1041/)):** The stolen data is exfiltrated back to an attacker-controlled command-and-control server.\n\n> The use of process injection into `RuntimeBroker.exe` is a notable defense evasion technique. As `RuntimeBroker.exe` is a legitimate Windows process that manages app permissions, its network activity might be considered normal by less sophisticated security tools, allowing the malware to blend in.\n\n## Impact Assessment\nThe impact of this campaign is primarily intelligence loss for the targeted Ukrainian entities. The theft of browser data can expose sensitive communications, usernames, passwords, and session cookies, allowing the attackers to access other government systems or personal accounts of employees. Stealing data from WhatsApp provides insight into real-time communications. This intelligence can be used for strategic advantage, to plan future attacks, or for disinformation purposes. For the healthcare facilities, the compromise of patient data or administrative systems could have serious consequences for their ability to provide care.\n\n## IOCs\nCERT-UA's advisory contains specific IOCs. While not listed in the summary articles, a full investigation would retrieve them from the official source.\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context |\n| :--- | :--- | :--- | :--- |\n| file_name | `*.lnk` in `.zip` | The delivery mechanism involves tricking users into opening a LNK file from a ZIP archive. | Email security gateway logs, EDR file creation events. |\n| process_name | `mshta.exe` | The HTA file is executed by `mshta.exe`. This process spawning from an email or browser is suspicious. | EDR process lineage analysis. |\n| parent_process | `RuntimeBroker.exe` | Monitor for `RuntimeBroker.exe` making outbound network connections, which is atypical behavior. | EDR, firewall logs. |\n| command_line_pattern | `schtasks.exe /create` | Monitor for the creation of scheduled tasks by suspicious scripts or processes. | EDR, Windows Event ID 4698. |\n\n## Detection & Response\n**Detection Strategies:**\n*   **Attack Surface Reduction (ASR) Rules:** Enable Microsoft Defender ASR rules, specifically the rule that blocks script files like `.LNK` and `.HTA` from launching downloaded executable content.\n*   **Process Lineage Analysis:** Use an EDR to monitor process chains. A chain like `Outlook.exe` -> `mshta.exe` -> `powershell.exe` -> `schtasks.exe` is highly indicative of this attack.\n*   **D3FEND: [Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis):** Specifically focus on the behavior of `RuntimeBroker.exe`. This process should not be making persistent outbound network connections or spawning other processes. Alert on any such behavior.\n\n**Response Actions:**\n1.  Isolate the compromised host from the network.\n2.  Investigate the user account for other signs of compromise.\n3.  Block the C2 domains/IPs identified during analysis at the network perimeter.\n4.  Reset passwords for the affected user and any services they accessed.\n\n## Mitigation\n**Strategic Controls:**\n*   **User Training ([`M1017`](https://attack.mitre.org/mitigations/M1017/)):** Train users to be suspicious of unsolicited emails, especially those with attachments or links, and to never open files from untrusted ZIP archives.\n*   **D3FEND: [Executable Denylisting (D3-EDL)](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting):** Block the execution of script interpreters for file types that are not required for business purposes. For most users, `mshta.exe` (for HTA files) can be blocked entirely.\n*   **Email Security:** Implement an advanced email security gateway that can scan links and attachments, and sandbox potentially malicious files to detect threats before they reach the user's inbox.",
+  "twitter_post": "CERT-UA warns of espionage campaign UAC-0247 targeting Ukrainian government & healthcare. Attackers use phishing with LNK/HTA files to deploy a backdoor that steals data from browsers and WhatsApp. 🇺🇦 #CyberWar #Ukraine #Espionage",
+  "meta_description": "The Ukrainian CERT has issued a warning about a cyber-espionage campaign from threat actor UAC-0247, targeting government and healthcare organizations with data-stealing malware.",
+  "category": [
+    "Threat Actor",
+    "Phishing",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "CERT-UA",
+      "type": "government_agency",
+      "url": "https://cert.gov.ua/"
+    },
+    {
+      "name": "UAC-0247",
+      "type": "threat_actor"
+    },
+    {
+      "name": "RAVENSHELL",
+      "type": "malware"
+    },
+    {
+      "name": "WhatsApp",
+      "type": "product"
+    },
+    {
+      "name": "Ukraine",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securityaffairs.com/161942/apt/uac-0247-expands-cyber-campaign-across-ukraine.html",
+      "title": "From clinics to government: UAC-0247 expands cyber campaign across Ukraine",
+      "date": "2026-04-17",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    },
+    {
+      "url": "https://cert.gov.ua/article/6280370",
+      "title": "(UAC-0247) Розповсюдження шкідливого програмного забезпечення з метою викрадення даних (CERT-UA#9240)",
+      "date": "2026-04-17",
+      "friendly_name": "CERT-UA",
+      "website": "cert.gov.ua"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File"
+    },
+    {
+      "id": "T1053.005",
+      "name": "Scheduled Task"
+    },
+    {
+      "id": "T1055",
+      "name": "Process Injection"
+    },
+    {
+      "id": "T1005",
+      "name": "Data from Local System"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report phishing emails and to be wary of executing files from ZIP archives.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use Attack Surface Reduction (ASR) rules or application control policies to block the execution of potentially malicious script files like LNK and HTA.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "description": "Use an EDR to monitor for suspicious process chains (e.g., email client spawning a script host) and anomalous behavior from system processes like RuntimeBroker.exe.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "The UAC-0247 attack chain relies on executing scripts via legitimate Windows interpreters like `mshta.exe` (for HTA files). Executable Denylisting, often implemented via Microsoft Defender Attack Surface Reduction (ASR) rules or AppLocker, is a powerful countermeasure. Specifically, organizations should implement policies to block or audit the execution of these interpreters for most users. For example, an ASR rule can block 'untrusted and unsigned processes that run from USB' or 'process creations originating from PSExec and WMI commands'. More aggressively, AppLocker can be configured to block `mshta.exe` entirely for all users who do not have a specific business need for it. This breaks the infection chain at an early stage, preventing the LNK file's command from successfully launching the HTA payload, thus neutralizing the threat before the final backdoor is even downloaded.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "To evade detection, UAC-0247 injects its final payload into the legitimate `RuntimeBroker.exe` process. This makes signature-based detection impossible. The key is Process Analysis focused on behavior and lineage. An EDR solution should be configured with high-severity alerts for the following `RuntimeBroker.exe` anomalies: 1) Network Connections: `RuntimeBroker.exe` is designed to manage UWP app permissions and should almost never initiate its own outbound network connections. Any persistent TCP connection from this process should be considered highly suspicious. 2) Process Ancestry: While the malware injects into an existing process, a full attack chain analysis would show the parent process (e.g., `mshta.exe` or `powershell.exe`) that led to the injection. Monitoring for suspicious process chains like `Outlook.exe -> mshta.exe` is critical. 3) File Access: `RuntimeBroker.exe` should not be accessing user browser profiles or WhatsApp data directories. EDRs configured to monitor file access can detect this anomalous data gathering behavior. These behavioral analytics provide the necessary context to uncover the malicious activity hiding within a legitimate process.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "mshta.exe",
+      "description": "Execution of the Microsoft HTA application, often used to run malicious scripts. Its execution from an email client or browser is highly suspicious.",
+      "context": "EDR process creation logs (Sysmon Event ID 1).",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "schtasks.exe /create",
+      "description": "The malware uses scheduled tasks for persistence. Monitor for new task creation by unexpected processes.",
+      "context": "Windows Security Event Log (Event ID 4698), EDR command line logging.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "RuntimeBroker.exe",
+      "description": "The malware injects into this legitimate process. Monitor for RuntimeBroker.exe making outbound network connections or spawning child processes.",
+      "context": "EDR process and network logs, firewall logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.lnk",
+      "description": "The initial execution vector is a malicious LNK file within a ZIP archive. Block or alert on LNK files originating from email attachments.",
+      "context": "Email security gateway, EDR file creation events.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Espionage",
+    "Ukraine",
+    "UAC-0247",
+    "CERT-UA",
+    "Phishing",
+    "Healthcare",
+    "Government"
+  ],
+  "extract_datetime": "2026-04-18T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Ukraine"
+    ],
+    "industries_affected": [
+      "Government",
+      "Healthcare"
+    ]
+  },
+  "pub_date": "2026-04-18",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-04-18T15:00:00.000Z",
+  "updatedAt": "2026-04-18T15:00:00.000Z"
+}

@@ -1,0 +1,55 @@
+title: Cisco IMC Command Injection Attempt (CVE-2026-20200)
+id: 0c8b3d1a-5f8e-4b9c-8a2d-1e4f5a6b7c8d
+status: experimental
+description: |
+  Detects attempts to exploit the command injection vulnerability CVE-2026-20200 in the Cisco Integrated Management Controller (IMC) web interface.
+  This is based on hunting hints suggesting to look for shell metacharacters in POST requests to the management interface.
+references:
+  - https://www.helpnetsecurity.com/2026/08/06/cisco-imc-cve-2026-20200-public-poc-exploit/
+author: cyber.netsecops.io
+date: 2026-08-06
+modified: 2026-08-06
+tags:
+  - attack.t1190
+  - attack.initial_access
+  - cve.2026.20200
+level: critical
+logsource:
+  category: webserver
+  product: cisco_imc
+detection:
+  selection:
+    cs-method: 'POST'
+    c-uri-query|re: '.*;.*|.*\|.*|.*&.*|.*`.*'
+  condition: selection
+---
+title: Suspicious Outbound Connection from Cisco IMC
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: |
+  Detects suspicious outbound network connections originating from a Cisco Integrated Management Controller (IMC) management IP.
+  IMC interfaces should generally not initiate outbound connections to the internet, making such traffic a strong indicator of compromise, potentially related to CVE-2026-20200 post-exploitation.
+  The rule requires populating the 'Source_IPs' field with the known IP addresses of your IMC interfaces.
+references:
+  - https://www.helpnetsecurity.com/2026/08/06/cisco-imc-cve-2026-20200-public-poc-exploit/
+author: cyber.netsecops.io
+date: 2026-08-06
+modified: 2026-08-06
+tags:
+  - attack.t1071
+  - attack.command_and_control
+  - cve.2026.20200
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip:
+      # Add your Cisco IMC management IP addresses/subnets here
+      - 192.168.1.10
+  filter_rfc1918:
+    dst_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_rfc1918

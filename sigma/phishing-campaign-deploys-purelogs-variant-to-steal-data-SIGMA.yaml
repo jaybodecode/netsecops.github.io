@@ -1,0 +1,76 @@
+title: Suspicious Script Host Spawning PowerShell
+id: 2b8c1f9a-e1b0-4f8a-9c7d-3e5f6a1b2c3d
+status: experimental
+description: Detects the Windows Script Host (wscript.exe or cscript.exe) launching PowerShell, a behavior observed in the PureLogs infection chain.
+references:
+  - https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data
+author: cyber.netsecops.io
+date: 2026-05-27
+tags:
+  - attack.t1059.007
+  - attack.t1059.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\wscript.exe'
+      - '\cscript.exe'
+    Image|endswith: '\powershell.exe'
+  condition: selection
+falsepositives:
+  - Legitimate administrative scripts.
+level: medium
+---
+title: PowerShell Spawning MSBuild for Potential Process Hollowing
+id: 8d7e6f5a-4b3c-4d2e-8f1a-9b8c7d6e5f4a
+status: experimental
+description: Detects PowerShell launching MsBuild.exe, a technique used by the PureLogs loader to select a target process for hollowing.
+references:
+  - https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data
+author: cyber.netsecops.io
+date: 2026-05-27
+tags:
+  - attack.t1059.001
+  - attack.t1055.012
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\powershell.exe'
+    Image|endswith: '\MsBuild.exe'
+  condition: selection
+falsepositives:
+  - Legitimate build processes or automation scripts that invoke MSBuild via PowerShell.
+level: high
+---
+title: MsBuild.exe Making Outbound Network Connections
+id: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the legitimate Windows utility MsBuild.exe making outbound network connections, which is highly anomalous and a strong indicator of compromise, as seen in the PureLogs campaign where it is used to download further payloads after being hollowed.
+references:
+  - https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data
+author: cyber.netsecops.io
+date: 2026-05-27
+tags:
+  - attack.t1055.012
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\MsBuild.exe'
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '::1/128'
+  condition: selection and not filter_local
+falsepositives:
+  - Very rare legitimate use cases where a build process might need to fetch dependencies from the internet.
+level: high

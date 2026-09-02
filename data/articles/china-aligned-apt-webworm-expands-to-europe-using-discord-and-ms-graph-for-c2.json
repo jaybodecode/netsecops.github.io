@@ -1,0 +1,278 @@
+{
+  "id": "08e1595e-a397-4c1d-8114-f68b7aace048",
+  "slug": "china-aligned-apt-webworm-expands-to-europe-using-discord-and-ms-graph-for-c2",
+  "headline": "China-Aligned APT Webworm Targets Europe, Using Discord and MS Graph for C2",
+  "title": "Webworm APT Expands Cyber-Espionage to Europe, Leveraging Discord and Microsoft Graph for Covert C2 Communications",
+  "summary": "The China-aligned APT group Webworm (aka Space Pirates) has expanded its operations from Asia to Europe, targeting government entities in Belgium, Italy, and Poland. Security researchers at ESET have identified new, stealthy backdoors named EchoCreep and GraphWorm. These tools use legitimate, high-reputation services for command-and-control (C2): EchoCreep uses Discord, while GraphWorm leverages the Microsoft Graph API and OneDrive. This tactic allows the group to blend its malicious traffic with normal enterprise network activity, making detection difficult. The group has been observed exfiltrating sensitive government documents, including network infrastructure diagrams.",
+  "full_report": "## Executive Summary\n\nThe China-aligned Advanced Persistent Threat (APT) group known as **[Webworm](https://attack.mitre.org/groups/G1015/)** (also tracked as Space Pirates) has significantly evolved its tactics and expanded its targeting scope from Asia to European government entities. Research from **[ESET](https://www.eset.com/us/)** reveals the group is deploying a new arsenal of sophisticated backdoors designed for stealth and persistence. Two notable new malware families, **EchoCreep** and **GraphWorm**, abuse legitimate, high-reputation cloud services for command-and-control (C2) communications. **EchoCreep** uses **[Discord](https://discord.com/)**'s API, while **GraphWorm** leverages the **[Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview)** and OneDrive. This living-off-the-trusted-land (LOTL) approach makes their C2 traffic exceptionally difficult to detect, as it blends in with legitimate business communications. The group's primary objective appears to be cyber-espionage, with observed exfiltration of sensitive government documents from targets in Spain, Belgium, Italy, and Poland.\n\n## Threat Overview\n\n**[Webworm](https://attack.mitre.org/groups/G1015/)** is a sophisticated espionage group that continuously refines its toolset to evade detection. Their latest campaign demonstrates a clear focus on stealth and operational security.\n\n- **Targeting**: The group has expanded its focus to include government organizations in several European nations, as well as targets in South Africa. This marks a strategic shift from their previous focus on Asia.\n- **New Malware**: \n    - **EchoCreep**: A backdoor that uses **[Discord](https://discord.com/)** webhooks for C2. It sends system information to an attacker-controlled **[Discord](https://discord.com/)** channel and receives commands in return. **[ESET](https://www.eset.com/us/)** was able to decrypt over 400 of these messages, gaining significant insight.\n    - **GraphWorm**: A more advanced backdoor that abuses the **[Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview)**. It uses a compromised Microsoft account's OneDrive as a dead-drop location for tasking and data exfiltration.\n- **C2 Evasion**: By using **[Discord](https://discord.com/)** and the **[Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview)**, **[Webworm](https://attack.mitre.org/groups/G1015/)**'s C2 traffic is encrypted by default and directed towards highly trusted domains (`discord.com`, `graph.microsoft.com`). This bypasses many network security controls that rely on domain reputation and blacklisting.\n- **Other Tools**: The group also utilizes open-source vulnerability scanners for initial reconnaissance and deploys various proxy tools, including a custom variant of FRP named `WormFrp`, to tunnel their traffic and further obscure their activities.\n\n## Technical Analysis\n\nThe attack chain showcases the group's methodical approach:\n\n1.  **Initial Access**: The specific initial access vector is not detailed, but APTs like **[Webworm](https://attack.mitre.org/groups/G1015/)** typically use spear-phishing ([`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/)) or exploit public-facing applications ([`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/)).\n2.  **Payload Deployment**: Once inside, the operators deploy one of their backdoors, either **EchoCreep** or **GraphWorm**.\n3.  **C2 Communication (GraphWorm)**: The **GraphWorm** backdoor authenticates to the **[Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview)**. It checks a specific folder in the associated OneDrive account for a tasking file. It executes the commands in the file, writes the output to a new file, and uploads it back to OneDrive for the operator to retrieve.\n4.  **C2 Communication (EchoCreep)**: The **EchoCreep** backdoor sends a POST request to a hardcoded **[Discord](https://discord.com/)** webhook URL. The body of the request contains encrypted, base64-encoded system information. It receives tasks from the same channel.\n5.  **Data Exfiltration**: In one documented case, the group exfiltrated files from a Spanish government entity, including a Microsoft Visio diagram of the domain's network infrastructure, using compromised **[AWS](https://aws.amazon.com/)** S3 buckets as an exfiltration point.\n\n### MITRE ATT&CK Techniques\n- [`T1071.001 - Application Layer Protocol: Web Protocols`](https://attack.mitre.org/techniques/T1071/001/): The core of the C2, using legitimate web services.\n- [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/): Downloading the backdoors after initial access.\n- [`T1567.002 - Exfiltration to Cloud Storage`](https://attack.mitre.org/techniques/T1567/002/): Using OneDrive and AWS S3 for data exfiltration.\n- [`T1573.002 - Asymmetric Cryptography`](https://attack.mitre.org/techniques/T1573/002/): Using standard TLS encryption provided by Discord and Microsoft to hide C2 traffic.\n- [`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/): Encrypting the C2 messages sent via Discord.\n\n## Impact Assessment\n\n- **Espionage**: The primary impact is successful cyber-espionage against European government targets. The theft of sensitive documents, such as network diagrams, provides the threat actor with valuable intelligence for planning future operations or understanding the target's capabilities.\n- **Erosion of Trust in Cloud Services**: This campaign further demonstrates how threat actors can turn trusted enterprise cloud services into weapons, making it harder for defenders to distinguish malicious from benign activity.\n- **Increased Detection Complexity**: Security teams must now consider traffic to legitimate services like **[Discord](https://discord.com/)** and **[Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview)** as potential C2 channels, significantly increasing the complexity of threat hunting.\n\n## IOCs — Directly from Articles\n\nNo specific IOCs such as domains, IPs, or file hashes were provided in the summarized articles.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams should hunt for anomalous use of legitimate services:\n\n| Type | Value | Description |\n|---|---|---|\n| `url_pattern` | `discord.com/api/webhooks/` | Outbound connections to Discord webhooks from servers or non-standard client applications are highly suspicious. |\n| `url_pattern` | `graph.microsoft.com/v1.0/me/drive/` | Monitor for unusual processes or scripts making API calls to OneDrive endpoints. |\n| `process_name` | `svchost.exe` | A generic service host making direct connections to Discord or Microsoft Graph API is anomalous and warrants investigation. |\n| `network_traffic_pattern` | `Unusual User-Agent for graph.microsoft.com` | The backdoors may use a non-standard User-Agent string when communicating with the Graph API. |\n| `log_source` | `Microsoft 365 Audit Logs` | Look for anomalous file creation/modification patterns in a user's OneDrive, especially if the user account is a service account or shows no other activity. |\n\n## Detection & Response\n\n- **Detection**: Detecting this activity requires a shift from blocking bad domains to baselining normal application behavior. \n    -   Implement strict egress filtering and monitor for alerts on connections to services like **[Discord](https://discord.com/)** from servers and applications that have no business reason to do so.\n    -   Use EDR to identify which process is initiating the outbound connection. A process like `powershell.exe` or a random executable connecting to `graph.microsoft.com` is a major red flag.\n    -   Leverage Microsoft 365 audit logs to monitor for suspicious API usage or file access patterns in OneDrive.\n- **Response**: If a **[Webworm](https://attack.mitre.org/groups/G1015/)** backdoor is found, isolate the host and begin a forensic investigation. Since this is an APT, assume the attacker has moved laterally and conduct a broader hunt across the environment for other compromised systems.\n\n## Mitigation\n\n- **Egress Filtering**: This is the most effective mitigation. Block outbound access to non-essential web services like **[Discord](https://discord.com/)**, paste sites, and personal cloud storage from all corporate assets, especially servers. For services like Microsoft 365, use application-aware firewalls that can enforce tenant restrictions, preventing users from authenticating to non-corporate instances.\n- **Application Control**: Use application control solutions (e.g., AppLocker) to prevent unauthorized executables (the backdoors) from running.\n- **Endpoint Detection and Response (EDR)**: A properly configured EDR can detect the malicious processes and their suspicious network connections, allowing for rapid response.\n- **Principle of Least Privilege**: Ensure user and service accounts have the minimum necessary permissions, especially for accessing cloud APIs like Microsoft Graph.",
+  "twitter_post": "🇨🇳 China-aligned APT Webworm expands to Europe, targeting governments with new backdoors. 'EchoCreep' uses Discord for C2, while 'GraphWorm' abuses Microsoft Graph API, blending in with legitimate traffic. #APT #Webworm #CyberEspionage #C2",
+  "meta_description": "The China-aligned APT group Webworm is targeting European governments with new backdoors, EchoCreep and GraphWorm, that use Discord and the Microsoft Graph API for stealthy C2 communications.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Webworm",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1015/"
+    },
+    {
+      "name": "Space Pirates",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ESET",
+      "type": "security_organization",
+      "url": "https://www.eset.com/us/"
+    },
+    {
+      "name": "EchoCreep",
+      "type": "malware"
+    },
+    {
+      "name": "GraphWorm",
+      "type": "malware"
+    },
+    {
+      "name": "WormFrp",
+      "type": "malware"
+    },
+    {
+      "name": "Discord",
+      "type": "product",
+      "url": "https://discord.com/"
+    },
+    {
+      "name": "Microsoft Graph API",
+      "type": "product",
+      "url": "https://learn.microsoft.com/en-us/graph/overview"
+    },
+    {
+      "name": "OneDrive",
+      "type": "product"
+    },
+    {
+      "name": "AWS S3",
+      "type": "product"
+    },
+    {
+      "name": "SoftEther VPN",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://medium.com/@marcelle.lee/weekly-cyber-threat-bulletin-22-may-2026-62118ffb4d24",
+      "title": "Weekly Cyber Threat Bulletin: 22 May 2026",
+      "date": "2026-05-23",
+      "friendly_name": "Medium",
+      "website": "medium.com"
+    },
+    {
+      "url": "https://www.darkreading.com/cyberattacks-data-breaches/china-webworm-discord-microsoft-graphs-hack-eu-govts",
+      "title": "China's Webworm Uses Discord, Microsoft Graphs to Hack EU Govts",
+      "date": "2026-05-22",
+      "friendly_name": "Dark Reading",
+      "website": "darkreading.com"
+    },
+    {
+      "url": "https://www.streetinsider.com/Globe+Newswire/ESET+uncovers+the+expanded+arsenal+of+China-aligned+Webworm%3B+European+governments+targeted/23258045.html",
+      "title": "ESET uncovers the expanded arsenal of China-aligned Webworm; European governments targeted",
+      "date": "2026-05-20",
+      "friendly_name": "StreetInsider.com",
+      "website": "streetinsider.com"
+    },
+    {
+      "url": "https://www.welivesecurity.com/en/eset-research/webworm-new-burrowing-techniques/",
+      "title": "Webworm: New burrowing techniques",
+      "date": "2026-05-20",
+      "friendly_name": "WeLiveSecurity",
+      "website": "welivesecurity.com"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/webworm-apt-targets-european-govt/",
+      "title": "China-Linked Webworm APT Evolves Tactics, Expands to European Targets",
+      "date": "2026-05-20",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-12-01T00:00:00Z",
+      "summary": "Webworm operators observed exfiltrating files from a Spanish governmental entity between December 2025 and January 2026."
+    },
+    {
+      "datetime": "2026-05-20T00:00:00Z",
+      "summary": "ESET publishes research detailing Webworm's new backdoors and expansion into Europe."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1090.003",
+      "name": "Multi-hop Proxy",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering to block access to unauthorized web services like Discord from server environments.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Use application-aware firewalls or CASB solutions to block access to personal cloud storage and other services not sanctioned by the organization.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Deploy EDR solutions capable of detecting malicious processes and their anomalous network connections, even when they are to trusted domains.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly audit cloud service logs (e.g., Microsoft 365) for unusual API usage or file access patterns that could indicate C2 activity.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Outbound Traffic Filtering is the most effective defense against Webworm's C2 tactics. The backdoors rely on connecting to public services like `discord.com` and `graph.microsoft.com`. Organizations must implement a default-deny egress policy on servers. Connections to Discord should be blocked entirely from server subnets, as there is no legitimate business reason for them. For Microsoft Graph, a more nuanced approach is needed. Use an application-aware firewall or proxy that can enforce Microsoft 365 tenant restrictions. This ensures that even if a process tries to connect to the Graph API, it can only authenticate to the organization's own tenant, not a personal or attacker-controlled one. This filtering breaks the C2 channel, rendering the EchoCreep and GraphWorm backdoors inert.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Process Analysis via an EDR is crucial for detecting the backdoors themselves. Security teams should create detection rules that hunt for suspicious process and network event correlations. For example, a rule should alert when a non-browser process (like `svchost.exe`, `rundll32.exe`, or an unknown executable) initiates a network connection to `discord.com` or `graph.microsoft.com`. Baselining normal network activity for legitimate processes is key. The EDR should also monitor for process injection or the loading of suspicious modules that might contain the backdoor's logic. This allows for detection of the malware's execution on the endpoint, even if the network traffic itself is encrypted and destined for a trusted domain.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "For the GraphWorm backdoor, which abuses a Microsoft account, Domain Account Monitoring (extended to cloud identities) is a vital detection layer. Ingest Microsoft 365 Unified Audit Logs into a SIEM. Hunt for anomalous activity associated with user or service accounts. Key indicators for GraphWorm would be: 1) An account accessing OneDrive via the Graph API from an unusual IP or location. 2) A pattern of small file uploads (tasking) followed by larger file uploads (exfiltration) in a specific OneDrive folder. 3) API-only access to a OneDrive account that is normally accessed interactively by a user. By monitoring the *behavior* of the cloud identity, defenders can spot the abuse of legitimate credentials and infrastructure, revealing the C2 dead-drop.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "discord.com/api/webhooks/",
+      "description": "Outbound POST requests to Discord webhook URLs from server environments or unexpected applications are a strong indicator of EchoCreep or similar malware.",
+      "context": "Proxy logs, Firewall logs, EDR network events",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "graph.microsoft.com/v1.0/me/drive/root:/",
+      "description": "Anomalous API calls to this endpoint, especially from non-interactive scripts or service accounts, may indicate GraphWorm activity.",
+      "context": "Microsoft 365 audit logs, Cloud Access Security Broker (CASB) logs",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "rundll32.exe",
+      "description": "A rundll32.exe process making network connections to discord.com or graph.microsoft.com is highly suspicious, as it's a common way to run malware in a legitimate process.",
+      "context": "EDR, Process monitoring logs (Sysmon Event ID 1)",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "Microsoft 365 Unified Audit Log",
+      "description": "Hunt for 'FileUploaded' and 'FileDownloaded' events in OneDrive associated with service accounts or from unusual IP addresses, which could indicate C2 dead-drop activity.",
+      "context": "SIEM, Microsoft Sentinel",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Webworm",
+    "APT",
+    "Threat Actor",
+    "China",
+    "Cyber Espionage",
+    "Discord",
+    "Microsoft Graph",
+    "C2"
+  ],
+  "extract_datetime": "2026-05-24T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Belgium",
+      "Italy",
+      "Poland",
+      "Spain",
+      "South Africa"
+    ],
+    "industries_affected": [
+      "Government"
+    ]
+  },
+  "keywords": [
+    "Webworm APT",
+    "Space Pirates",
+    "EchoCreep malware",
+    "GraphWorm malware",
+    "Discord C2",
+    "Microsoft Graph API exploit",
+    "cyber espionage Europe"
+  ],
+  "pub_date": "2026-05-24",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-05-24T15:00:00.000Z",
+  "updatedAt": "2026-06-07T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-06-07T00:00:00Z",
+      "datetime": "2026-06-07T00:00:00Z",
+      "title": "Update 1",
+      "summary": "China-aligned Webworm APT now widely using SoftEther VPN for persistent, encrypted C2 channels, expanding evasion tactics.",
+      "sources": [
+        {
+          "title": "ESET APT Activity Report Q2 2024–Q3 2024: Abusing Cloud Services and VPN Platforms in The Pursuit of New Prey",
+          "url": "https://www.eset.com/us/business/resource-center/reports/apt-activity-report-q2-2024-q3-2024/"
+        },
+        {
+          "title": "ESET APT Activity Report Q2 2024-Q3 2024",
+          "url": "https://web-assets.esetstatic.com/wls/en/papers/threat-reports/eset-apt-activity-report-q2-2024-q3-2024.pdf"
+        }
+      ]
+    }
+  ]
+}

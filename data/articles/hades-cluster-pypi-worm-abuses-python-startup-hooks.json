@@ -1,0 +1,171 @@
+{
+  "id": "fe620f2f-e96c-4e58-b1f1-486cb2fe5148",
+  "slug": "hades-cluster-pypi-worm-abuses-python-startup-hooks",
+  "headline": "\"Hades Cluster\" PyPI Worm Abuses Python Startup Hooks for Stealthy Credential Theft",
+  "title": "New PyPI Supply Chain Attack \"Hades Cluster\" Abuses Python Startup Hooks to Steal Credentials",
+  "summary": "A novel supply chain attack campaign, dubbed \"Hades Cluster,\" has been discovered on the Python Package Index (PyPI), affecting at least 19 legitimate packages. The malware utilizes a stealthy and unusual technique for execution and persistence by abusing Python's `.pth` startup hook files. This method allows the malware's code to execute automatically whenever the Python interpreter is launched, bypassing common detection methods. The campaign, suspected to be linked to the threat actor TeamPCP, uses the Bun JavaScript runtime to harvest credentials, primarily targeting developers in the scientific research and deep-learning communities.",
+  "full_report": "## Executive Summary\nA new and sophisticated supply chain attack campaign named **\"Hades Cluster\"** has been identified on the **[Python Package Index (PyPI)](https://pypi.org/)**. The campaign, disclosed on June 7, 2026, has compromised at least 19 legitimate packages, mainly within the scientific and deep-learning ecosystems. The malware's novelty lies in its execution and persistence mechanism: it abuses Python's `.pth` startup hook files. This technique allows the malicious code to run automatically every time a Python interpreter starts, evading detection tools that focus on more common infection points like `setup.py`. The malware then uses the **Bun** JavaScript runtime to facilitate credential harvesting. This campaign is believed to be linked to **[TeamPCP](https://www.malpedia.caad.fkie.fraunhofer.de/actor/teampcp)**, the group that recently open-sourced the **Shai-Hulud** worm, suggesting a rapid evolution and proliferation of these attack methods.\n\n---\n\n## Threat Overview\nThe **Hades Cluster** campaign represents a tactical evolution in **[PyPI](https://pypi.org/)** supply chain attacks. Instead of relying on typosquatting or embedding malicious code directly in a package's `setup.py` file, the attackers are using a more obscure feature of Python's packaging system. This demonstrates a deeper understanding of the target environment and a conscious effort to evade existing security controls.\n\nThe attack targets developers, particularly those in data-intensive fields like scientific research and deep learning, who are likely to have access to valuable data, computational resources, and cloud credentials. By compromising their development environments, the attackers can potentially steal sensitive research, gain access to powerful GPU clusters, or pivot into corporate cloud environments.\n\n## Technical Analysis\nThe core of the attack is the abuse of Python's path configuration (`.pth`) files.\n\n1.  **Initial Access & Execution**: The developer installs a compromised Python package via `pip`. During installation, the package drops a malicious `*-setup.pth` file into the Python `site-packages` directory. This is a form of [`T1195.001 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/001/).\n2.  **Persistence**: `.pth` files are processed by Python on startup to add directories to `sys.path`. However, they can also execute arbitrary code if a line starts with `import`. The attackers leverage this to create a startup hook. Every time the developer runs `python`, `pip`, or any tool that uses the Python interpreter, the malicious code in the `.pth` file is executed. This provides a highly effective and stealthy persistence mechanism ([`T1547.001 - Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder`](https://attack.mitre.org/techniques/T1547/001), adapted for the Python environment).\n3.  **Defense Evasion**: This method is inherently evasive. Most security scanners and developers inspect `setup.py` or the package's source code for malicious behavior. The `.pth` file is often overlooked as a simple configuration file, allowing the malware to bypass scrutiny ([`T1036.005 - Masquerading: Match Legitimate Name or Location`](https://attack.mitre.org/techniques/T1036/005/)).\n4.  **Credential Access**: Once executed, the startup hook bootstraps the **Bun** JavaScript runtime. This is an unusual choice, likely intended to further obfuscate the malware's actions and use a different toolset than what defenders might be monitoring. The JavaScript payload is then used to perform credential harvesting from the developer's environment, targeting environment variables, configuration files, and other common locations for secrets ([`T1552 - Unsecured Credentials`](https://attack.mitre.org/techniques/T1552/)).\n\nThe link to **TeamPCP** and their **Shai-Hulud** worm suggests that open-sourcing malware is leading to rapid innovation and adaptation by other threat actors, creating a more diverse and unpredictable threat landscape.\n\n## Impact Assessment\nThe impact of this campaign is primarily on the developers and organizations that use the compromised packages. The consequences include:\n\n-   **Theft of Intellectual Property**: Loss of sensitive source code, research data, and proprietary algorithms.\n-   **Cloud Account Compromise**: Theft of AWS, GCP, or Azure credentials can lead to substantial financial loss through cryptomining, data theft, or deployment of other malicious infrastructure.\n-   **Further Supply Chain Attacks**: A compromised developer machine can be used as a pivot point to inject malicious code into the software their organization produces, propagating the attack to downstream customers.\n-   **Erosion of Trust**: Each new PyPI attack erodes trust in the open-source ecosystem, forcing organizations to implement more stringent and costly vetting processes for third-party libraries.\n\n## IOCs — Directly from Articles\n\nNo specific package names, hashes, or C2 domains were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\n\nTo hunt for this type of attack, security teams should:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| file_path | `site-packages/**/*.pth` | Regularly inspect the contents of all `.pth` files in Python environments. Any file containing more than simple directory paths should be considered highly suspicious. | File system scanning, FIM. |\n| process_name | `bun.exe` | The presence of the Bun JavaScript runtime (`bun.exe`) in an environment where it is not expected or officially used is a strong indicator of compromise. | EDR, process monitoring. |\n| network_traffic_pattern | `Network connections from python.exe` | Monitor for network connections originating from the main `python.exe` process at startup, before any user script is run. This could indicate a malicious startup hook phoning home. | Host-based firewall logs, EDR network telemetry. |\n| command_line_pattern | `import '...'` | Scan `.pth` files for lines starting with `import`, which is the mechanism for code execution. | Static analysis, file content scanning. |\n\n## Detection & Response\n-   **File Integrity Monitoring (FIM)**: Deploy FIM on developer workstations and build servers to alert on the creation or modification of `.pth` files.\n-   **Behavioral Analysis**: Use EDR to detect the Python interpreter making unexpected network connections on startup or spawning unusual child processes like `bun.exe`.\n-   **Dependency Scanning**: Use advanced dependency scanners that can inspect not just the package code but also its installation scripts and metadata for suspicious patterns like the creation of `.pth` files. D3FEND's [`File Analysis (D3-FA)`](https://d3fend.mitre.org/technique/d3f:FileAnalysis) is a relevant concept.\n\n## Mitigation\n-   **Isolated Build Environments**: Use ephemeral and isolated environments for software builds. This ensures that any compromise is contained and does not persist or affect the underlying host. This aligns with [`M1048 - Application Isolation and Sandboxing`](https://attack.mitre.org/mitigations/M1048/).\n-   **Vet Dependencies**: Do not blindly trust packages from public repositories. Use a private package registry that proxies PyPI and allows for a vetting and approval process before packages are made available to developers.\n-   **Least Privilege Execution**: Run development and build processes with the minimum necessary permissions. They should not have access to sensitive credentials or the ability to write to system-wide directories if not required.\n-   **Audit `.pth` Files**: As a specific countermeasure, organizations can implement scripts that audit all Python environments and flag any `.pth` file that contains executable code.",
+  "twitter_post": "🐍 New PyPI supply chain attack 'Hades Cluster' hits 19 packages. The worm uses a stealthy trick, abusing Python's .pth startup hooks for persistence and credential theft. #PyPI #SupplyChainAttack #Python #HadesCluster #InfoSec",
+  "meta_description": "A new supply chain attack on PyPI, 'Hades Cluster,' abuses Python's .pth startup hook files for persistence and credential theft, affecting 19 packages in the scientific community.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor",
+      "url": "https://www.malpedia.caad.fkie.fraunhofer.de/actor/teampcp"
+    },
+    {
+      "name": "Hades Cluster",
+      "type": "malware"
+    },
+    {
+      "name": "Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "Bun",
+      "type": "technology"
+    },
+    {
+      "name": "Python Package Index (PyPI)",
+      "type": "product",
+      "url": "https://pypi.org/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.reddit.com/r/cybersecurity/comments/1u06m8r/hades_cluster_pypi_worm_abuses_python_startup/",
+      "title": "Hades Cluster PyPI Worm Abuses Python Startup Hooks : r/cybersecurity",
+      "date": "2026-06-08",
+      "friendly_name": "Reddit",
+      "website": "reddit.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-07",
+      "summary": "The 'Hades Cluster' campaign is first disclosed."
+    },
+    {
+      "datetime": "2026-06-08",
+      "summary": "Details of the campaign are shared more widely on platforms like Reddit."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1547.001",
+      "name": "Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder"
+    },
+    {
+      "id": "T1036.005",
+      "name": "Masquerading: Match Legitimate Name or Location"
+    },
+    {
+      "id": "T1552",
+      "name": "Unsecured Credentials"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Use ephemeral, containerized, or sandboxed environments for builds to prevent persistent changes to the build system.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "While difficult for interpreted languages, strict auditing and control over what code can be executed at startup can help.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly audit Python environments for suspicious .pth files or other non-standard startup mechanisms.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "Organizations must specifically adapt their system file analysis to hunt for this threat. A recurring script should be deployed across all developer workstations and CI/CD runners to scan all Python environments. This script must inspect the contents of every `.pth` file within `site-packages` directories. Legitimate `.pth` files typically only contain directory paths. The script should flag any `.pth` file that contains the string `import`, as this is the trigger for arbitrary code execution. This is a highly specific and effective detection method that directly targets the core TTP of the Hades Cluster campaign. Flagged files should be immediately quarantined for manual review.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-HBPI",
+      "technique_name": "Hardware-based Process Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation",
+      "recommendation": "For critical development environments, use hardware-based process isolation and sandboxing for running builds and testing dependencies. Instead of installing packages directly on a developer's machine or a persistent build server, use ephemeral containers (like Docker) or lightweight VMs for every `pip install` command. The container should be destroyed after the build is complete. This ensures that even if a malicious package like those in Hades Cluster is installed, its persistence mechanism (the `.pth` file) is wiped out at the end of the build. This prevents the compromise from persisting and spreading, effectively containing the threat to a single, temporary build.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "A key observable in this attack is the use of the Bun JavaScript runtime. Most corporate environments, especially in scientific research, will not have a legitimate business need for `bun.exe`. Security teams should use application control software (like Windows Defender Application Control) to create a denylist rule that blocks the execution of `bun.exe` across the enterprise. This is a simple but powerful countermeasure. If the Python startup hook executes and attempts to bootstrap the Bun runtime, the action will be blocked and logged, immediately alerting security teams to the compromise attempt and preventing the final credential harvesting stage from running.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "site-packages/**/*.pth",
+      "description": "Malicious .pth files containing 'import' statements are the core of this attack's persistence mechanism.",
+      "context": "File system scanning, File Integrity Monitoring (FIM)",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "bun.exe",
+      "description": "The presence of the Bun JavaScript runtime, especially if not officially used by the development team, is a strong indicator of this specific campaign.",
+      "context": "Process monitoring, EDR",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connection from python.exe on startup",
+      "description": "The Python interpreter making network connections immediately upon launch, before a user's script is executed, suggests a malicious startup hook is active.",
+      "context": "Host-based firewall logs, EDR network monitoring",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Hades Cluster",
+    "PyPI",
+    "Python",
+    "Supply Chain Attack",
+    "TeamPCP",
+    "Credential Theft",
+    "Startup Hooks"
+  ],
+  "extract_datetime": "2026-06-08T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Scientific research community",
+      "Deep-learning developers",
+      "open-source software users"
+    ]
+  },
+  "pub_date": "2026-06-08",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-06-08T15:00:00.000Z",
+  "updatedAt": "2026-06-08T15:00:00.000Z"
+}

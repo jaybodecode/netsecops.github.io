@@ -1,0 +1,205 @@
+{
+  "id": "739e0af1-8aa8-4413-88ce-14e29dcab1f1",
+  "slug": "ref1695-threat-actor-spreads-rats-and-cryptominers-via-fake-installers",
+  "headline": "REF1695 Campaign Spreads RATs and Cryptominers via Fake Software Installers",
+  "title": "REF1695 Threat Actor Uses Bogus Installers on GitHub to Distribute RATs and Cryptominers",
+  "summary": "A long-running threat campaign, dubbed REF1695, has been active since November 2023, using counterfeit software installers to deliver a variety of malicious payloads. According to Elastic Security Labs, the operation uses ISO file lures to distribute malware including the PureMiner and PureRAT trojans, the CNB Bot implant, and various cryptominers like XMRig. The threat actor leverages GitHub as a content delivery network (CDN) to host its payloads, a tactic designed to evade detection by using a trusted platform.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Elastic Security Labs](https://www.elastic.co/security-labs/)** have detailed a multi-faceted malware distribution campaign by a threat actor tracked as **REF1695**. Active since at least November 2023, the operation uses malicious ISO files disguised as legitimate software installers to infect victims. These fake installers are used to deploy a range of malware, including the **PureMiner** and **PureRAT** trojans, the **CNB Bot** implant for delivering further payloads, and various cryptocurrency miners such as **SilentCrytoMiner** and **XMRig**. A key tactic of the campaign is its abuse of **[GitHub](https://github.com/)** as a trusted Content Delivery Network (CDN) to host and deliver its malicious binaries, making the activity appear more legitimate and harder to block.\n\n## Threat Overview\n**REF1695** is a financially motivated threat operation focused on deploying Remote Access Trojans (RATs) for system control and cryptominers for resource hijacking. Their primary infection vector is social engineering, luring users into downloading and mounting malicious ISO files that masquerade as popular software.\n\n- **Initial Access:** The attack begins when a user downloads a fake software installer, typically packaged as an ISO file ([`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/)). Mounting the ISO reveals a malicious loader.\n- **Execution & Obfuscation:** The loader is often protected with commercial packers like **.NET Reactor** to hinder analysis ([`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/)). This loader acts as a dropper for the main payloads.\n- **Payload Delivery:** The campaign leverages GitHub as a C2 and payload distribution CDN ([`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)). By hosting malware on a legitimate, widely trusted platform like GitHub, the attackers' download traffic is more likely to bypass network security controls.\n- **Impact:** The deployed malware varies. **PureRAT** provides the attacker with full remote control over the victim's machine. **CNB Bot** is a modular implant that can inject additional payloads. Cryptominers like **SilentCrytoMiner** and **XMRig** hijack the victim's CPU/GPU resources to mine cryptocurrency ([`T1496 - Resource Hijacking`](https://attack.mitre.org/techniques/T1496/)), leading to performance degradation and increased electricity costs.\n\n## Technical Analysis\nThe use of ISO files is a popular technique to bypass Mark-of-the-Web (MOTW) security controls in Windows, as files inside a mounted ISO may not inherit the flag that triggers security warnings. The REF1695 actor's reliance on GitHub is a strategic choice to improve operational security. It offloads the infrastructure burden to a reputable service, making it harder for defenders to block based on IP or domain reputation alone.\n\nThe **SilentCrytoMiner** payload is noteworthy for its evasion techniques, including the use of direct system calls to bypass EDR hooks and its ability to disable Windows Sleep and Hibernate modes to ensure continuous mining activity. This demonstrates a degree of sophistication aimed at maximizing profit while minimizing the chances of detection.\n\n## Impact Assessment\nThe primary impact of the REF1695 campaign is financial, both directly for the attacker (through cryptomining) and indirectly for the victim (through increased power consumption and system degradation). However, the deployment of **PureRAT** and **CNB Bot** presents a much greater risk. These RATs give the attacker complete control over the compromised system, allowing them to steal sensitive data, install keyloggers, deploy ransomware, or use the machine as a pivot point for further attacks into the victim's network. An infection can quickly escalate from a simple resource hijacking incident to a full-blown data breach.\n\n## Cyber Observables for Detection\n- **Network Traffic:** Monitor for outbound connections to `raw.githubusercontent.com` from unusual processes. While GitHub is legitimate, a non-developer tool making connections to it could be suspicious.\n- **Process Activity:** Look for processes associated with cryptomining, such as `xmrig.exe`. Also, monitor for high, sustained CPU usage from unexpected processes.\n- **File Artifacts:** The use of ISO files (`.iso`) as a delivery mechanism is a key observable. Monitor for the download and mounting of ISO files from untrusted sources.\n- **Persistence:** The malware may create scheduled tasks or registry run keys to maintain persistence. Monitor common persistence locations for new, suspicious entries.\n\n## Detection & Response\n- **Endpoint Monitoring:** Use EDR to detect the execution of binaries from mounted ISO files. Create alerts for high CPU usage that persists for long periods, which is a strong indicator of cryptomining. D3FEND's [`Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) can identify the miner processes.\n- **Network Egress Filtering:** While blocking all of GitHub is not feasible for many organizations, it is possible to restrict access to it. Monitor and alert on non-browser and non-developer tool processes connecting to `github.com` or its subdomains. D3FEND's [`Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) can be tuned to spot these anomalies.\n- **User Training:** Educate users about the dangers of downloading software from unofficial sources. Emphasize that even legitimate-looking installers can be malicious.\n\n## Mitigation\n- **Application Control:** Implement application control policies to prevent the execution of unauthorized software. This is the most effective way to stop users from running fake installers. This aligns with [`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/).\n- **Block ISO Mounting:** In environments where it is not required for business, consider creating a Group Policy Object (GPO) to block the automatic mounting of ISO files or to disable AutoPlay. This adds a layer of friction that can disrupt the attack chain.\n- **Endpoint Protection:** Ensure antivirus and EDR solutions are up-to-date. Many of the payloads, like XMRig, are well-known, and signature-based detection can be effective against the final payload, even if the loader is obfuscated.",
+  "twitter_post": "⚠️ A threat actor dubbed REF1695 is using fake software installers in ISO files to spread RATs & cryptominers like PureRAT and XMRig. The campaign abuses GitHub for payload delivery. 💻 #Malware #ThreatIntel #GitHub #CyberSecurity",
+  "meta_description": "The REF1695 threat campaign, active since late 2023, uses fake ISO installers and abuses GitHub to distribute a variety of malware, including RATs and cryptominers.",
+  "category": [
+    "Malware",
+    "Threat Actor",
+    "Phishing"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "REF1695",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Elastic Security Labs",
+      "type": "security_organization",
+      "url": "https://www.elastic.co/security-labs/"
+    },
+    {
+      "name": "PureMiner",
+      "type": "malware"
+    },
+    {
+      "name": "PureRAT",
+      "type": "malware"
+    },
+    {
+      "name": "CNB Bot",
+      "type": "malware"
+    },
+    {
+      "name": "SilentCrytoMiner",
+      "type": "malware"
+    },
+    {
+      "name": "XMRig",
+      "type": "malware"
+    },
+    {
+      "name": ".NET Reactor",
+      "type": "technology"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.scmagazine.com/brief/malware/bogus-installers-facilitate-rat-cryptominer-spread-in-long-running-operation",
+      "title": "Bogus installers facilitate RAT, cryptominer spread in long-running operation | brief | SC Media",
+      "date": "2026-04-03",
+      "friendly_name": "SC Media",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://www.scmagazine.com/brief/threat-intelligence/widespread-microsoft-365-account-compromise-sought-by-iran-linked-hackers",
+      "title": "Widespread Microsoft 365 account compromise sought by Iran-linked hackers | brief",
+      "date": "2026-04-01",
+      "friendly_name": "SC Media",
+      "website": "scmagazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2023-11-01T00:00:00Z",
+      "summary": "The REF1695 campaign is first observed to be active."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1496",
+      "name": "Resource Hijacking",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Using application control to prevent users from running unauthorized installers downloaded from the internet is a highly effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educating users on the dangers of downloading and running software from untrusted sources can help prevent the initial infection.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        }
+      ],
+      "description": "Keeping endpoint security software up-to-date can help detect and block known payloads like XMRig, even if the initial loader is novel.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "To combat campaigns like REF1695 that rely on users running fake installers, executable allowlisting is a powerful preventative control. Using a tool like Windows Defender Application Control, administrators can create a policy that only permits signed executables from trusted publishers to run. This would block the malicious, unsigned loaders found inside the ISO files used by REF1695. For environments with developers, policies can be configured to allow specific unsigned code in designated development folders while maintaining strict enforcement everywhere else. This mitigation shifts the security posture from a default-allow (blacklist) to a default-deny (whitelist) model, which is far more effective at stopping novel and socially engineered malware before it can execute.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To detect REF1695's abuse of GitHub, security teams must perform nuanced network traffic analysis. Since blocking GitHub entirely is impractical, the focus should be on context. Create detection rules that alert when non-standard processes make outbound connections to `raw.githubusercontent.com`. For example, a connection from `winword.exe` or a random process in `C:\\Users\\<user>\\AppData\\Local\\Temp\\` is highly suspicious. Baseline normal GitHub traffic from legitimate developer tools (e.g., `git.exe`) and IDEs, then alert on deviations. Furthermore, monitor for the download of executable file types (`.exe`, `.dll`, `.ps1`) from GitHub by any process other than an approved software management tool. This allows the security team to spot the payload download stage of the REF1695 attack chain.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-PH",
+      "technique_name": "Platform Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening",
+      "recommendation": "A key tactic of the REF1695 campaign is using ISO files to bypass Mark-of-the-Web (MOTW) controls. To counter this, organizations can implement platform hardening via Group Policy. A GPO can be created to change the default behavior for `.iso` files, preventing them from being automatically mounted as a drive when double-clicked. Instead, the policy can be set to open them with a tool like 7-Zip, or to do nothing at all. This adds a layer of friction and prevents the seamless execution path the attackers rely on. Additionally, ensure that PowerShell execution policies are set to 'RemoteSigned' or more restrictive settings across the enterprise to prevent the easy execution of downloaded scripts. These hardening steps disrupt the attacker's TTPs and increase the chances of the attack failing.",
+      "mitre_mitigation_id": "M1028"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "raw.githubusercontent.com",
+      "description": "The domain used by GitHub to serve raw file content. Attackers abuse this to host malicious payloads on a trusted domain.",
+      "context": "Proxy logs, DNS logs, Netflow",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "*.iso",
+      "description": "The use of ISO disk image files as a container for malware. Monitor for downloads of ISOs from browsers or email clients.",
+      "context": "EDR, File monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "xmrig.exe",
+      "description": "A common open-source cryptomining process frequently bundled in malware campaigns.",
+      "context": "Process monitoring, EDR",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "cryptomining",
+    "RAT",
+    "ISO file",
+    "GitHub",
+    "malware delivery",
+    "social engineering"
+  ],
+  "extract_datetime": "2026-04-03T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "General computer users"
+    ]
+  },
+  "pub_date": "2026-04-03",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-04-03T15:00:00.000Z",
+  "updatedAt": "2026-04-03T15:00:00.000Z"
+}

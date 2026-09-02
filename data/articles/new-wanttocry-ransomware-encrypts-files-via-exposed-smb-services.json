@@ -1,0 +1,154 @@
+{
+  "id": "38418e02-f30e-4198-89a4-cd581115f755",
+  "slug": "new-wanttocry-ransomware-encrypts-files-via-exposed-smb-services",
+  "headline": "New 'WantToCry' Ransomware Uses Exposed SMB Services for Novel Remote Encryption Attacks",
+  "title": "SophosLabs Details 'WantToCry' Ransomware Targeting Exposed SMB Ports for Remote File Encryption",
+  "summary": "A new ransomware strain named 'WantToCry' is actively targeting systems with exposed Server Message Block (SMB) services. According to SophosLabs, the attackers brute-force credentials to gain access, then exfiltrate files to their own servers for encryption. The encrypted files are then rewritten back to the victim's host over SMB. This technique minimizes the on-host footprint, making detection difficult as no malware is executed locally. The attacks are linked to infrastructure previously associated with LockBit, Qilin, and BlackCat ransomware.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Sophos](https://news.sophos.com/en-us/)** have identified a new ransomware variant, named **WantToCry**, that employs a novel technique to encrypt victim files by abusing exposed Server Message Block (SMB) services. Unlike traditional ransomware that encrypts files locally on the compromised machine, WantToCry exfiltrates data to attacker-controlled infrastructure, performs the encryption remotely, and then writes the encrypted files back to the victim's system. This method significantly reduces the malware's footprint on the target host, allowing it to evade detection by security tools focused on local process execution and file I/O monitoring. The attacks begin by scanning the internet for systems with open SMB ports (`TCP 139` and `445`) and then using brute-force attacks to gain access. The low ransom demands suggest a high-volume, opportunistic campaign targeting misconfigured systems.\n\n---\n\n## Threat Overview\nWantToCry represents an evolution in ransomware tactics, shifting the core malicious activity off the victim's machine. The name is likely a nod to the infamous 2017 WannaCry attacks, but there is no technical link, and WantToCry does not have worm-like self-propagation capabilities.\n\n**Attack Chain:**\n1.  **Reconnaissance:** Attackers use public scanning services like Shodan and Censys to find hosts with exposed SMB ports (`TCP 139`/`445`).\n2.  **Initial Access:** Automated brute-force attacks are launched against the identified SMB services using common or weak credentials. ([`T1110.001 - Password Guessing`](https://attack.mitre.org/techniques/T1110/001/))\n3.  **Exfiltration:** Upon successful authentication, the attacker uses the SMB session to read and transfer the victim's files over the network to their own servers. ([`T1048 - Exfiltration Over Alternative Protocol`](https://attack.mitre.org/techniques/T1048/))\n4.  **Remote Encryption:** The files are encrypted on the attacker's infrastructure, outside the victim's environment.\n5.  **Impact:** The attacker uses the same authenticated SMB session to overwrite the original files on the victim's host with the now-encrypted versions. A ransom note is also written to the device. ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/))\n\nThis entire process occurs over the SMB protocol, making the activity appear as legitimate file-sharing operations to less sophisticated monitoring tools. The lack of local malware execution means EDR/AV solutions may not trigger alerts for malicious processes.\n\n---\n\n## Technical Analysis\nThe key innovation of WantToCry is its reliance on a legitimate, albeit misconfigured, network protocol (SMB) for all stages of the attack post-authentication. By externalizing the encryption process, the attackers avoid the most easily detectable ransomware behaviors, such as rapid file modification and high CPU usage on the victim's endpoint.\n\nThe observed computer names `WIN-J9D866ESIJ2` and `WIN-LIVFRVQFMKO` from the attacker's side provide a potential link for threat hunters. The association of the latter with previous **LockBit**, **Qilin**, and **BlackCat** activity is notable, though it could indicate a shared infrastructure provider rather than the same threat actor.\n\n> This attack methodology underscores a critical security principle: any service exposed to the public internet will be scanned, probed, and attacked. Secure configuration and defense-in-depth are paramount.\n\n---\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| ip_address_v4 | `109.69.58.213` | Attacker infrastructure (Germany) |\n| ip_address_v4 | `185.189.13.56` | Attacker infrastructure (Russian Federation) |\n| ip_address_v4 | `185.200.191.37` | Attacker infrastructure (USA) |\n| ip_address_v4 | `194.36.179.18` | Attacker infrastructure (Singapore) |\n| ip_address_v4 | `194.36.179.30` | Attacker infrastructure (Singapore) |\n| other | `WIN-J9D866ESIJ2` | Attacker Windows computer name |\n| other | `WIN-LIVFRVQFMKO` | Attacker Windows computer name (previously linked to other ransomware) |\n\n---\n\n## Detection & Response\nDetecting WantToCry requires focusing on network activity and anomalous SMB behavior rather than local endpoint processes.\n\n### Detection Strategies\n*   **Network Traffic Analysis:** Monitor for large volumes of outbound SMB traffic from internal hosts to external IP addresses, especially the IOCs listed above. Legitimate SMB usage should almost always be confined within the internal network. This is a direct application of D3FEND's [`Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering).\n*   **Logon Failures:** Monitor for a high rate of failed login attempts against SMB services, which is indicative of a brute-force attack. D3FEND's [`Authentication Event Thresholding`](https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding) is the relevant defensive technique.\n*   **File Auditing:** Enable file access auditing on critical file shares. An alert should be triggered if a single user account reads and then rapidly overwrites a large number of files, especially if the source IP is external.\n*   **Honeypots:** Deploy an SMB honeypot with weak credentials on the network perimeter. Any login attempt is an immediate, high-fidelity indicator of malicious activity.\n\n### Response Actions\n1.  If an attack is detected, immediately block the source IP address at the firewall.\n2.  Force a password reset for the compromised account.\n3.  Disable the SMB service on the affected host and begin restoring files from a clean, offline backup.\n\n---\n\n## Mitigation Recommendations\n1.  **Block SMB at the Perimeter ([`M1037 - Filter Network Traffic`](https://attack.mitre.org/mitigations/M1037/)):**\n    *   **This is the most critical mitigation.** There is almost no legitimate reason to expose SMB (`TCP 139`, `445`) directly to the internet. Block these ports at your network perimeter firewall. For remote access to files, use a secure VPN.\n\n2.  **Strong Password Policies and MFA ([`M1027 - Password Policies`](https://attack.mitre.org/mitigations/M1027/)):**\n    *   Enforce strong, complex passwords for all accounts. Implement a policy of account lockout after a certain number of failed login attempts to thwart brute-force attacks.\n\n3.  **Network Segmentation ([`M1030 - Network Segmentation`](https://attack.mitre.org/mitigations/M1030/)):**\n    *   Even internally, segment networks to prevent a compromised host in one zone from accessing file shares in another. Restrict SMB traffic between different network segments unless absolutely necessary.\n\n4.  **Regular Backups:**\n    *   Maintain regular, offline, and immutable backups of all critical data. This is the last line of defense and ensures you can recover without paying a ransom.",
+  "twitter_post": "⚠️ New 'WantToCry' ransomware targets exposed SMB ports. It exfiltrates files, encrypts them remotely, then rewrites them to the victim—bypassing local EDR. Block SMB on your perimeter NOW! #Ransomware #CyberSecurity #SMB #ThreatIntel",
+  "meta_description": "Discover the new WantToCry ransomware which uses a novel remote encryption technique by targeting exposed SMB services, making it difficult to detect. Learn how to mitigate this threat.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Vulnerability"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "BlackCat",
+      "type": "malware"
+    },
+    {
+      "name": "Censys",
+      "type": "product"
+    },
+    {
+      "name": "LockBit",
+      "type": "malware"
+    },
+    {
+      "name": "Qilin",
+      "type": "malware"
+    },
+    {
+      "name": "Server Message Block (SMB)",
+      "type": "technology"
+    },
+    {
+      "name": "Shodan",
+      "type": "product"
+    },
+    {
+      "name": "Sophos",
+      "type": "vendor"
+    },
+    {
+      "name": "WantToCry",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://news.sophos.com/en-us/2026/05/19/wanttocry-ransomware-remotely-encrypts-files/",
+      "title": "WantToCry ransomware remotely encrypts files",
+      "date": null,
+      "website": "news.sophos.com"
+    },
+    {
+      "url": "https://www.elastio.com/ransomware/wanttocry-ransomware",
+      "title": "What is WantToCry Ransomware?",
+      "date": null,
+      "website": "elastio.com"
+    },
+    {
+      "url": "https://blogs.quickheal.com/exposed-smb-the-hidden-risk-behind-wanttocry-ransomware-attacks/",
+      "title": "Exposed SMB: The Hidden Risk Behind ‘WantToCry’ Ransomware Attacks",
+      "date": null,
+      "website": "blogs.quickheal.com"
+    },
+    {
+      "url": "https://www.npav.net/blog/wanttocry-ransomware-exploits-smb-vulnerabilities-a-serious-cybersecurity-threat/",
+      "title": "WantToCry Ransomware Exploits SMB Vulnerabilities: A Serious Cybersecurity Threat",
+      "date": null,
+      "website": "npav.net"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1021.002",
+      "name": "SMB/Windows Admin Shares",
+      "tactic": null
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": null
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": null
+    },
+    {
+      "id": "T1110.001",
+      "name": "Password Guessing",
+      "tactic": null
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "Brute Force",
+    "Ransomware",
+    "Remote Encryption",
+    "SMB",
+    "Sophos",
+    "TCP 445",
+    "WantToCry"
+  ],
+  "extract_datetime": "2026-05-19",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Brute Force",
+    "Ransomware",
+    "Remote Encryption",
+    "SMB",
+    "Sophos",
+    "TCP 445",
+    "WantToCry"
+  ],
+  "pub_date": "2026-05-19",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-05-19T15:00:00.000Z",
+  "updatedAt": "2026-05-20T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-20T00:00:00Z",
+      "summary": "Updated analysis details MITRE ATT&CK techniques, emphasizes data breach risk from exfiltration, and adds MFA/privileged account management to mitigation strategies.",
+      "content": "The updated report provides a more structured technical analysis, mapping the attack to specific MITRE ATT&CK techniques including T1021.002 (SMB/Windows Admin Shares) and T1048 (Exfiltration Over Alternative Protocol). It explicitly highlights the data breach risk associated with file exfiltration prior to remote encryption. New mitigation recommendations include Multi-factor Authentication (M1032) and Privileged Account Management (M1026). The IOC list has been refined, focusing on the `WIN-LIVFRVQFMKO` attacker computer name.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://news.sophos.com/en-us/2026/05/19/wanttocry-ransomware-remotely-encrypts-files/",
+          "title": "WantToCry ransomware remotely encrypts files",
+          "website": "",
+          "date": "2026-05-20T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

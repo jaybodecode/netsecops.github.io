@@ -1,0 +1,225 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:09:28.025Z",
+    "article_slug": "shinyhunters-claims-massive-data-breach-at-european-commission",
+    "article_date": "2026-04-02",
+    "token_usage": {
+      "input_tokens": 141982,
+      "output_tokens": 3174,
+      "cached_tokens": 135916,
+      "total_tokens": 145156,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.056312
+    }
+  },
+  "report_name": "European Commission Confirms Data Breach After ShinyHunters Claims 350GB Theft",
+  "threat_actors": [
+    {
+      "name": "ShinyHunters",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A notorious cyber extortion group that claimed responsibility for the breach of the European Commission's Europa.eu web portal, allegedly exfiltrating over 350GB of data from a compromised AWS account.",
+      "goals": "Exfiltrate valuable data and extort the victim or sell the data on dark web forums.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Valid Accounts: Cloud Accounts",
+      "mitre_id": "T1078.004",
+      "description": "The initial access vector was a compromised AWS account, which ShinyHunters used to gain entry into the European Commission's cloud environment."
+    },
+    {
+      "name": "Data from Cloud Storage",
+      "mitre_id": "T1530",
+      "description": "The threat actor exfiltrated over 350GB of sensitive data, including mail servers, databases, and documents, from the European Commission's AWS-hosted infrastructure."
+    },
+    {
+      "name": "Exfiltration Over C2 Channel",
+      "mitre_id": "T1041",
+      "description": "The attackers likely aggregated the stolen data to a staging server or S3 bucket under their control before transferring it out of the victim's environment."
+    },
+    {
+      "name": "Cloud Infrastructure Discovery",
+      "mitre_id": "T1580",
+      "description": "After gaining initial access, ShinyHunters performed reconnaissance within the AWS environment to identify valuable data stores like S3 buckets, RDS databases, and EC2 instance volumes."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "European Commission",
+      "identity_class": "organization",
+      "sectors": [
+        "government"
+      ],
+      "description": "A governmental body of the European Union whose Europa.eu web portal was breached by ShinyHunters, resulting in the exfiltration of over 350GB of data from its AWS hosting environment."
+    },
+    {
+      "name": "Amazon Web Services",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The cloud service provider hosting the European Commission's compromised Europa.eu web portal."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Europe",
+      "region": "europe"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "ShinyHunters Dark Web Leak Site",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "A dark web site where ShinyHunters released a 90GB sample of the data stolen from the European Commission to substantiate their claims and apply pressure."
+    },
+    {
+      "name": "Attacker-controlled Staging Server",
+      "infrastructure_types": [
+        "staging"
+      ],
+      "description": "A staging server or S3 bucket likely used by ShinyHunters to aggregate data before exfiltrating it from the European Commission's AWS environment."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Suspicious AWS API Activity for Discovery",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious AWS API Activity for Discovery\nid: 2b8c1f9a-1e3d-4b5a-9c8d-7e6f5a4b3c2d\nstatus: experimental\ndescription: 'Monitors for suspicious AWS API calls like ListBuckets, GetObject, or CreateUser from unusual IP ranges or user agents, which could indicate reconnaissance activity as seen in the ShinyHunters breach of the European Commission.'\nreferences:\n  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact\nauthor: cyber.netsecops.io\ndate: 2026-04-01\ntags:\n  - attack.t1580\n  - attack.discovery\nlevel: medium\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: 's3.amazonaws.com'\n    eventName:\n      - 'ListBuckets'\n      - 'GetObject'\n  selection_iam:\n    eventSource: 'iam.amazonaws.com'\n    eventName:\n      - 'CreateUser'\n      - 'ListUsers'\n  filter_known_good:\n    # Add known good IPs, UserAgents, or account ARNs here\n    source_ip_address: '192.168.1.1'\n  condition: (selection or selection_iam) and not filter_known_good",
+      "description": "Detects suspicious AWS API calls such as ListBuckets, GetObject, or CreateUser from unusual sources, indicative of reconnaissance."
+    },
+    {
+      "name": "Anomalous AWS STS AssumeRole Activity",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous AWS STS AssumeRole Activity\nid: 8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a\nstatus: experimental\ndescription: 'Detects anomalous AWS STS AssumeRole activity, especially if roles are assumed by external accounts or from unexpected geolocations. This can be an indicator of a compromised cloud account.'\nreferences:\n  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact\nauthor: cyber.netsecops.io\ndate: 2026-04-01\ntags:\n  - attack.t1078.004\n  - attack.defense_evasion\n  - attack.privilege_escalation\nlevel: high\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: 'sts.amazonaws.com'\n    eventName: 'AssumeRole'\n  filter_external:\n    userIdentity.type: 'AWSAccount'\n    userIdentity.principalId|contains: # Add your own account ID here to filter for external accounts\n      - 'AROA:'\n  condition: selection and filter_external",
+      "description": "Detects anomalous AWS `sts:AssumeRole` activity, particularly from external accounts or unexpected locations, which may indicate account compromise."
+    },
+    {
+      "name": "Anomalous High-Volume AWS Egress Traffic",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous High-Volume AWS Egress Traffic\nid: 4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d\nstatus: experimental\ndescription: 'Alerts on unusually large data transfers from S3 buckets or EC2 instances to external IP addresses, which could indicate data exfiltration.'\nreferences:\n  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact\nauthor: cyber.netsecops.io\ndate: 2026-04-01\ntags:\n  - attack.t1041\n  - attack.exfiltration\nlevel: high\nlogsource:\n  product: aws\n  service: guardduty\ndetection:\n  selection:\n    type|startswith:\n      - 'Exfiltration:S3'\n      - 'Exfiltration:EC2'\n  condition: selection",
+      "description": "Detects unusually large data transfers from S3 buckets or EC2 instances to external IP addresses, a potential sign of data exfiltration."
+    },
+    {
+      "name": "Anomalous AWS Console Login Location",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous AWS Console Login Location\nid: 1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b\nstatus: experimental\ndescription: 'Monitors for AWS console logins from geolocations inconsistent with known employee locations, which can indicate a compromised cloud account.'\nreferences:\n  - https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact\nauthor: cyber.netsecops.io\ndate: 2026-04-01\ntags:\n  - attack.t1078.004\n  - attack.initial_access\nlevel: high\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventName: 'ConsoleLogin'\n    responseElements.ConsoleLogin: 'Success'\n  filter_known_locations:\n    # Add known good country codes here\n    awsRegion: 'eu-central-1'\n  condition: selection and not filter_known_locations",
+      "description": "Detects AWS console logins from geolocations that are inconsistent with normal employee locations, suggesting credential compromise."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Valid Accounts: Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data from Cloud Storage",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Infrastructure Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "European Commission",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "controls",
+      "target_name": "ShinyHunters Dark Web Leak Site",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Attacker-controlled Staging Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "European Commission",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "Europe",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Suspicious AWS API Activity for Discovery",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Cloud Infrastructure Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous AWS STS AssumeRole Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Valid Accounts: Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous High-Volume AWS Egress Traffic",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous AWS Console Login Location",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Valid Accounts: Cloud Accounts",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

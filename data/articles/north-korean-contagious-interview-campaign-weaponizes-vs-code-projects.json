@@ -1,0 +1,234 @@
+{
+  "id": "ce7d4822-b161-49c4-9cf7-99f555a387a3",
+  "slug": "north-korean-contagious-interview-campaign-weaponizes-vs-code-projects",
+  "headline": "North Korean Hackers Lure Developers with Fake Job Interviews, Backdoor macOS via VS Code",
+  "title": "North Korea's 'Contagious Interview' Campaign Weaponizes Malicious VS Code Projects on GitHub",
+  "summary": "State-sponsored threat actors from North Korea, including the Lazarus Group, are targeting software developers in a sophisticated campaign dubbed 'Contagious Interview.' According to Jamf Threat Labs, the attackers use fake job offers to entice developers, particularly in the crypto and fintech sectors, into cloning malicious repositories from GitHub and GitLab. The attack abuses a feature in Microsoft's Visual Studio Code (VS Code), where trusting a repository can automatically execute a hidden `tasks.json` file. This triggers a backdoor on macOS systems, establishing persistence, collecting system data, and opening a C2 channel for remote code execution.",
+  "full_report": "## Executive Summary\nA sophisticated social engineering campaign attributed to North Korean state-sponsored actors is targeting software developers by weaponizing trusted development tools and platforms. The campaign, named \"Contagious Interview,\" leverages fake job recruitment processes to lure developers into cloning malicious **[GitHub](https://github.com)** or **[GitLab](https://about.gitlab.com/)** repositories. Researchers at **[Jamf](https://www.jamf.com/)** Threat Labs discovered that the attack specifically abuses **[Microsoft](https://www.microsoft.com/security)** Visual Studio Code (VS Code) functionality. When a developer clones and trusts the malicious project, a pre-configured `tasks.json` file automatically executes, deploying a backdoor onto the victim's system without further interaction. This campaign, linked to the notorious **[Lazarus Group](https://attack.mitre.org/groups/G0032/)**, primarily targets macOS users in the cryptocurrency, fintech, and blockchain industries, aiming for espionage and financial theft.\n\n---\n\n## Threat Overview\nThe \"Contagious Interview\" campaign is a multi-stage attack that blends social engineering with abuse of legitimate developer workflows. \n\n1.  **Initial Contact**: Attackers, posing as recruiters, approach developers with enticing job opportunities, often for roles in high-value sectors like cryptocurrency or fintech.\n2.  **Technical Assessment**: The developer is asked to complete a technical challenge which requires them to clone a Git repository from a public platform like GitHub.\n3.  **Weaponized Repository**: The repository contains a seemingly legitimate coding project but includes a hidden, malicious `tasks.json` file within the `.vscode` directory.\n4.  **Execution via Trust**: When the developer opens the project folder in VS Code, the IDE prompts them to trust the folder's author. If the user clicks \"Trust,\" VS Code automatically parses and executes the commands within `tasks.json`.\n5.  **Payload Delivery**: On macOS, the task executes a background shell command that downloads a JavaScript payload from **[Vercel](https://vercel.com/)**-hosted infrastructure and runs it using Node.js. This establishes a persistent backdoor on the compromised machine.\n\nThis attack chain is highly effective because it exploits the trust inherent in developer ecosystems and the automated features of modern IDEs.\n\n## Technical Analysis\nThe threat actor, identified as PurpleBravo by **[Recorded Future](https://www.recordedfuture.com/)**, demonstrates a clear understanding of developer environments.\n\n*   **Attack Vector**: The core of the attack is the abuse of VS Code's Workspace Trust feature and the `tasks.json` configuration file. This file is intended for legitimate automation but is repurposed here to act as an execution trigger.\n*   **Payload**: The initial payload is a JavaScript file executed via Node.js. This choice of language is common in the target demographic (web and fintech developers) and less likely to be flagged by traditional AV than a binary executable.\n*   **Persistence**: The malware establishes persistence to survive reboots and ensure long-term access. On macOS, this can be achieved by creating LaunchAgents or LaunchDaemons.\n*   **Command and Control (C2)**: The backdoor communicates with a C2 server, sending system fingerprints (hostname, MAC address) and awaiting further commands. This allows for [`T1059.007 - JavaScript`](https://attack.mitre.org/techniques/T1059/007/) execution, data exfiltration, and deployment of secondary payloads.\n\n### MITRE ATT&CK TTPs\n- [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/): Using social engineering and links to malicious repositories to initiate the attack.\n- [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/): Weaponizing a VS Code project hosted on GitHub.\n- [`T1204.002 - Malicious File`](https://attack.mitre.org/techniques/T1204/002/): Tricking the user into opening a malicious project folder, which leads to code execution.\n- [`T1059.007 - JavaScript`](https://attack.mitre.org/techniques/T1059/007/): The primary payload is a JavaScript-based backdoor.\n- [`T1543.001 - Create or Modify System Process: LaunchAgent`](https://attack.mitre.org/techniques/T1543/001/): A common method for achieving persistence on macOS.\n- [`T1071.001 - Application Layer Protocol: Web Protocols`](https://attack.mitre.org/techniques/T1071/001/): Using HTTPS for C2 communications to blend in with normal traffic.\n\n## Impact Assessment\nA successful compromise can have severe consequences for both the individual developer and their employer. Attackers gain a persistent foothold inside a trusted environment, from which they can:\n- Steal intellectual property, source code, and proprietary algorithms.\n- Compromise cryptocurrency wallets and steal digital assets.\n- Pivot to other systems within the corporate network.\n- Inject malicious code into the software supply chain, affecting the employer's customers.\n- Conduct further espionage and intelligence gathering.\n\nGiven the targeting of the fintech and crypto sectors, the primary motive is likely financial gain, alongside traditional state-sponsored espionage.\n\n## Cyber Observables for Detection\n- **Process Execution**: Monitor for `node` processes being spawned by `Code` or `Code Helper` processes, especially if they are executing scripts from unexpected locations.\n- **Network Connections**: Look for network connections from `node` or VS Code-related processes to unusual domains or Vercel-hosted URLs (`*.vercel.app`).\n- **File System**: Scrutinize `.vscode/tasks.json` files in cloned repositories for suspicious shell commands, `curl`, or `wget` executions, especially those with `isBackground: true`.\n- **Persistence Locations**: On macOS, monitor for new or modified files in `~/Library/LaunchAgents/` and `/Library/LaunchDaemons/`.\n\n## Detection & Response\n1.  **EDR/Endpoint Security**: Configure EDR solutions to alert on VS Code spawning shell or Node.js processes that make external network connections. Use process tree analysis ([D3-PA](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)) to identify this anomalous behavior.\n2.  **Developer Awareness**: Educate developers about the risks of VS Code's Workspace Trust feature and the dangers of cloning and executing code from untrusted sources, even for interviews.\n3.  **Network Monitoring**: Implement outbound traffic filtering ([D3-OTF](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)) and analyze logs for connections to known malicious infrastructure or suspicious Vercel subdomains.\n4.  **Repository Scanning**: Before cloning, use tools to inspect repository contents for suspicious configuration files like `.vscode/tasks.json` without opening them in an IDE.\n\n## Mitigation\n1.  **User Training ([`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/))**: Train developers to be skeptical of unsolicited job offers and to never blindly trust code from unknown sources. Emphasize the security implications of IDE features like Workspace Trust.\n2.  **Application Hardening ([`M1050 - Exploit Protection`](https://attack.mitre.org/mitigations/M1050/))**: Configure VS Code to disable automatic task execution or run in a restricted mode by default. Developers should manually inspect all configuration files before granting trust.\n3.  **Application Isolation ([`M1048 - Application Isolation and Sandboxing`](https://attack.mitre.org/mitigations/M1048/))**: Encourage developers to use sandboxed environments (e.g., virtual machines, containers) when evaluating code from third parties. This contains any potential malware and prevents it from accessing the host system or network.\n4.  **Execution Prevention ([`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/))**: Use application control solutions to restrict the execution of unsigned scripts or binaries, particularly those downloaded from the internet.",
+  "twitter_post": "North Korean hackers' 'Contagious Interview' campaign targets macOS developers using malicious VS Code projects on GitHub. Fake job offers lead to backdoors via trusted IDE features. 👨‍💻⚠️ #LazarusGroup #macOS #InfoSec #SupplyChain",
+  "meta_description": "North Korean threat actors (Lazarus Group) are targeting developers with a 'Contagious Interview' campaign, using malicious VS Code projects on GitHub to install backdoors on macOS systems.",
+  "category": [
+    "Threat Actor",
+    "Supply Chain Attack",
+    "Phishing"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Lazarus Group",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0032/"
+    },
+    {
+      "name": "PurpleBravo",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Jamf",
+      "type": "vendor",
+      "url": "https://www.jamf.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Visual Studio Code",
+      "type": "product"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "GitLab",
+      "type": "company",
+      "url": "https://about.gitlab.com/"
+    },
+    {
+      "name": "Vercel",
+      "type": "company",
+      "url": "https://vercel.com/"
+    },
+    {
+      "name": "Recorded Future",
+      "type": "security_organization",
+      "url": "https://www.recordedfuture.com/"
+    },
+    {
+      "name": "North Korea",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.darkreading.com/application-security/contagious-interview-attack-backdoor-vs-code",
+      "title": "'Contagious Interview' Attack Now Delivers Backdoor Via VS Code",
+      "date": "2026-01-21",
+      "friendly_name": "Dark Reading",
+      "website": "darkreading.com"
+    },
+    {
+      "url": "https://www.securityweek.com/north-korean-hackers-target-macos-developers-via-malicious-vs-code-projects/",
+      "title": "North Korean Hackers Target macOS Developers via Malicious VS Code Projects",
+      "date": "2026-01-21",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://scmagazine.com/news/vs-code-projects-weaponized-in-developer-targeted-contagious-interview-campaign",
+      "title": "VS Code projects weaponized in developer-targeted Contagious Interview campaign",
+      "date": "2026-01-21",
+      "friendly_name": "SC Magazine",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://www.recordedfuture.com/blog/purplebravos-targeting-of-the-it-software-supply-chain",
+      "title": "PurpleBravo's Targeting of the IT Software Supply Chain",
+      "date": "2026-01-21",
+      "friendly_name": "Recorded Future",
+      "website": "recordedfuture.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1543.001",
+      "name": "Create or Modify System Process: LaunchAgent",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate developers on the risks of social engineering and the specific threat of weaponized IDE features like VS Code's Workspace Trust.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Advise developers to use dedicated VMs or containers for evaluating code from untrusted external sources to contain potential threats.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Implement policies that prevent the execution of arbitrary scripts downloaded from the internet, especially within developer environments.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Configure VS Code and other IDEs with stricter security settings by default, such as disabling automatic task execution.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": ".vscode/tasks.json",
+      "description": "Malicious configuration file within a Git repository that triggers code execution when the project is trusted in VS Code.",
+      "context": "Source code repositories, developer workstations.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "node",
+      "description": "Node.js process used to execute the downloaded JavaScript payload.",
+      "context": "EDR logs, process monitoring. Look for parent process being 'Code' or 'Code Helper'.",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": ".vercel.app",
+      "description": "The campaign uses Vercel-hosted infrastructure to host its JavaScript payloads.",
+      "context": "Proxy logs, DNS logs, network traffic analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "~/Library/LaunchAgents/",
+      "description": "Common directory for user-level persistence on macOS via LaunchAgent plist files.",
+      "context": "File integrity monitoring, EDR, forensic analysis on macOS endpoints.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Social Engineering",
+    "macOS",
+    "VS Code",
+    "Developer Targeting",
+    "Cryptocurrency",
+    "Fintech"
+  ],
+  "extract_datetime": "2026-01-23T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance"
+    ],
+    "other_affected": [
+      "Cryptocurrency developers",
+      "Fintech developers",
+      "Blockchain developers"
+    ]
+  },
+  "pub_date": "2026-01-23",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-01-23T15:00:00.000Z",
+  "updatedAt": "2026-01-23T15:00:00.000Z"
+}
