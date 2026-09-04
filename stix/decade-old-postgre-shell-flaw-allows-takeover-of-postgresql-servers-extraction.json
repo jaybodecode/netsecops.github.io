@@ -1,0 +1,156 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-04T16:36:33.461Z",
+    "article_slug": "decade-old-postgre-shell-flaw-allows-takeover-of-postgresql-servers",
+    "article_date": "2026-09-04",
+    "token_usage": {
+      "input_tokens": 5727,
+      "output_tokens": 2132,
+      "cached_tokens": 141361,
+      "total_tokens": 7859,
+      "cache_hit": true,
+      "estimated_cost_usd": -0.130552
+    }
+  },
+  "report_name": "12-Year-Old 'PostGREShell' Flaw Threatens PostgreSQL Servers",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The PostGREShell exploit for CVE-2026-6471 allows an attacker to modify internal server memory to grant their database account SUPERUSER privileges, escalating from a low-privileged role with REPLICATION rights."
+    },
+    {
+      "name": "Hijack Execution Flow",
+      "mitre_id": "T1574",
+      "description": "The PostGREShell vulnerability is exploited by crafting a malicious plugin name with path traversal sequences (`../`) to trick the PostgreSQL server into loading and executing an arbitrary shared library from an attacker-controlled location."
+    },
+    {
+      "name": "Valid Accounts",
+      "mitre_id": "T1078",
+      "description": "The PostGREShell exploit requires the attacker to have an account with the 'REPLICATION' privilege, which is then abused to perform remote code execution."
+    }
+  ],
+  "malware": [
+    {
+      "name": "PostGREShell",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": false,
+      "aliases": [],
+      "description": "Name given to the exploit for CVE-2026-6471, which involves loading an arbitrary shared library via a path traversal in PostgreSQL's logical decoding feature to achieve remote code execution, privilege escalation, and potentially create a persistent backdoor."
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-6471",
+      "cve": "CVE-2026-6471",
+      "description": "A high-severity vulnerability in PostgreSQL versions 9.4 through 18 where the logical decoding feature fails to sanitize output plugin names, allowing an attacker with REPLICATION privileges to use path traversal to load an arbitrary shared library, leading to remote code execution and privilege escalation to superuser.",
+      "aliases": [
+        "PostGREShell"
+      ],
+      "cvss_score": 7.2,
+      "severity": "high"
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "PostgreSQL Global Development Group",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The open-source project and community responsible for developing the PostgreSQL database system, which was affected by CVE-2026-6471. They released patches for the vulnerability."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Attacker-controlled SMB Share",
+      "infrastructure_types": [
+        "hosting-malware",
+        "staging"
+      ],
+      "description": "On Windows systems, an attacker can host the malicious DLL on a remote SMB share and use a UNC path to force the PostgreSQL server to load it, simplifying the exploit delivery for CVE-2026-6471."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "PostgreSQL Suspicious Shared Library Load Attempt",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: PostgreSQL Suspicious Shared Library Load Attempt\nid: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c\nstatus: experimental\ndescription: >\n  Detects PostgreSQL server log entries indicating an attempt to load a shared library or output plugin from an unexpected path (e.g., containing '..', '/tmp', or a UNC path), which could indicate an attempt to exploit CVE-2026-6471 (PostGREShell).\nreferences:\n  - https://www.securityweek.com/12-year-old-postgresql-vulnerability-enables-database-server-takeover/\nauthor: cyber.netsecops.io\ndate: 2026-09-04\ntags:\n  - attack.t1574\n  - attack.t1068\n  - cve.2026.6471\nlevel: high\nlogsource:\n  category: database\ndetection:\n  selection_error:\n    - 'could not load library'\n    - 'unrecognized parameter \"output_plugin\"'\n  selection_path:\n    - '../'\n    - '\\\\'\n  condition: 1 of selection_error and 1 of selection_path\nfalsepositives:\n  - Legitimate but unusual plugin loading procedures that fail.",
+      "description": "Detects PostgreSQL server log entries indicating an attempt to load a shared library or output plugin from an unexpected path (e.g., containing '..', '/tmp', or a UNC path), which could indicate an attempt to exploit CVE-2026-6471 (PostGREShell)."
+    },
+    {
+      "name": "Unexpected PostgreSQL SUPERUSER Grant",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Unexpected PostgreSQL SUPERUSER Grant\nid: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: >\n  Detects PostgreSQL audit logs (pgaudit) showing a user account being unexpectedly granted SUPERUSER privileges. This is the primary goal of the PostGREShell (CVE-2026-6471) exploit.\nreferences:\n  - https://www.securityweek.com/12-year-old-postgresql-vulnerability-enables-database-server-takeover/\nauthor: cyber.netsecops.io\ndate: 2026-09-04\ntags:\n  - attack.t1068\n  - cve.2026.6471\nlevel: high\nlogsource:\n  category: database\ndetection:\n  selection:\n    - 'ALTER ROLE'\n    - 'SUPERUSER'\n  filter:\n    - 'postgres'\n    - 'admin'\n  condition: all of selection and not filter\nfalsepositives:\n  - Legitimate administrative actions granting superuser to a new account. Tuning may be required based on environment.",
+      "description": "Detects PostgreSQL audit logs showing a user account being unexpectedly granted SUPERUSER privileges. This is the primary goal of the PostGREShell (CVE-2026-6471) exploit."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "PostGREShell",
+      "source_type": "malware",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-6471",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "PostGREShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PostGREShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Hijack Execution Flow",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PostGREShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Valid Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Attacker-controlled SMB Share",
+      "source_type": "infrastructure",
+      "relationship_type": "hosts",
+      "target_name": "PostGREShell",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "PostgreSQL Suspicious Shared Library Load Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-6471",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Unexpected PostgreSQL SUPERUSER Grant",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    }
+  ]
+}
