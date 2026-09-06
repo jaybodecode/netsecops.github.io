@@ -1,6 +1,6 @@
 # Baylor Genetics Breach Exposes Medical Data of Over 2.8 Million
 
-**Severity:** high | **Category:** Data Breach,Threat Intelligence | **Updated:** 2026-08-29 | **Reading time:** 6 min
+**Severity:** high | **Category:** Data Breach,Threat Intelligence | **Updated:** 2026-09-06 | **Reading time:** 6 min
 
 Houston-based genetics testing firm Baylor Genetics has disclosed a massive data breach affecting 2,810,878 individuals. According to its report to the U.S. Department of Health and Human Services, an unauthorized party accessed its network for nearly a week, from June 11 to June 17, 2026. The compromised data is highly sensitive, potentially including names, Social Security numbers, addresses, medical diagnoses, lab results, and other genetic testing information. The company discovered the intrusion on June 15 and has since secured its systems and begun notifying the large number of affected individuals across the United States.
 
@@ -62,11 +62,11 @@ For healthcare organizations, hunting for similar breaches should include:
 - **MFA:** Mandate **[Multi-factor Authentication (MFA)](https://www.nist.gov/itl/glossary/multi-factor-authentication)** for all remote access and for any user accessing systems containing PHI.
 - **Vulnerability Management:** Maintain a robust vulnerability management program to ensure all systems, especially internet-facing servers, are patched promptly.
 
-**Tags:** Data Breach, Healthcare, Genetics, PII, PHI, HIPAA
+**Tags:** Data Breach, Genetics, HIPAA, Healthcare, PHI, PII
 
 ## Sources
-- [Genetics company data breach may have exposed medical conditions, Social Security numbers.](https://www.wbal.com/genetics-company-data-breach-may-have-exposed-medical-conditions-social-security-numbers) — WBAL (2026-08-28)
-- [Millions of patients warned after DNA testing data breach](https://cybernews.com/security/millions-of-patients-warned-after-dna-testing-data-breach/) — Cybernews (2026-08-28)
+- [Genetics company data breach may have exposed medical conditions, Social Security numbers.](https://www.wbal.com/genetics-company-data-breach-may-have-exposed-medical-conditions-social-security-numbers) (2026-08-28)
+- [Millions of patients warned after DNA testing data breach](https://cybernews.com/security/millions-of-patients-warned-after-dna-testing-data-breach/) (2026-08-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/baylor-genetics-data-breach-exposes-sensitive-info-of-2-8-million/
