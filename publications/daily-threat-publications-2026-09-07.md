@@ -1,0 +1,38 @@
+# Zero-Days Exploit RMM, E-commerce; Wall Street Targeted by AI Vishing
+
+**Published:** 2026-09-07 | **Articles:** 7
+
+**Critical Vulnerabilities Under Active Exploitation**:
+
+*   **N-able N-central Hit by Actively Exploited CVSS 10.0 RCE Flaw**: N-able is urging on-premises customers to immediately apply an emergency hotfix for its N-central RMM platform due to a critical, actively exploited zero-day vulnerability (CVE-2026-86218). This pre-authentication RCE allows unauthenticated attackers to gain full control of N-central servers, posing a significant supply chain risk.
+*   **Unpatched 'StyleSmuggler' RCE Flaw Hits Magento & Adobe Commerce**: An unpatched, unauthenticated RCE zero-day vulnerability named 'StyleSmuggler' is being actively exploited to compromise e-commerce sites running Magento Open Source and Adobe Commerce. The attack leverages the GraphQL endpoint and template system to inject a backdoor, affecting all current versions.
+*   **MikroTik Routers Hijacked via 'MikroTrick' Unauthenticated Exploit**: Attackers are actively exploiting an unauthenticated exploit chain called 'MikroTrick' to gain full administrative control of MikroTik routers with exposed SSH. This attack combines an SSH authentication bypass (CVE-2026-67276) and a privilege escalation flaw (CVE-2026-86060).
+
+**New Threats and Advisories**:
+
+*   **[UPDATE] Wall Street Giants Targeted in Coordinated AI Vishing Campaign**: The vishing campaign, now tracked as PREY-0058, has evolved to include data exfiltration from Microsoft 365 services like SharePoint and OneDrive. Attackers are using residential proxies to evade detection and are using exfiltrated data for extortion.
+*   **[NEW] Researcher 'Nightmare Eclipse' Drops Three LPE Zero-Day Exploits**: A security researcher known as 'Nightmare Eclipse' has publicly released proof-of-concept exploits for three unpatched local privilege escalation (LPE) zero-day vulnerabilities affecting CrowdStrike Falcon Sensor, Avast Antivirus, and Nvidia components.
+*   **[NEW] North Korea's Lazarus Group Operations Decomposed into Six Clusters**: New research reveals that North Korea's state-sponsored cyber operations, attributed to the Lazarus Group, are organized into six distinct clusters. These specialized units focus on missions including espionage, financial theft, and sanctions evasion.
+
+**Policy & Industry Notes**:
+
+*   **CISA Retires Six Free Cybersecurity Assessment Services**: The U.S. Cybersecurity and Infrastructure Security Agency (CISA) is retiring six of its free, hands-on cybersecurity assessment services for critical infrastructure operators, shifting organizations towards self-service tools.
+
+## Articles in this publication
+- [Wall Street Giants Targeted in Coordinated AI Vishing Campaign](https://cyber.netsecops.io/articles/wall-street-giants-targeted-in-ai-voice-phishing-campaign/) (high)
+  A sophisticated voice-phishing (vishing) campaign is targeting major financial firms like Blackstone, KKR, Citadel, and Point72. The threat actor, tracked as UNC6671 (aka BlackFile or Redact), uses AI voice cloning to impersonate IT staff and trick employees into giving up credentials for Microsoft 365 and Okta. The attackers direct victims to adversary-in-the-middle (AitM) phishing sites that capture passwords and MFA tokens in real-time. Several firms have confirmed being targeted, highlighting the growing threat of AI-powered social engineering in the financial sector.
+- [Researcher 'Nightmare Eclipse' Drops Three LPE Zero-Day Exploits](https://cyber.netsecops.io/articles/nightmare-eclipse-discloses-zero-day-exploits-in-crowdstrike-avast-nvidia/) (high)
+  A security researcher known as 'Nightmare Eclipse' has publicly released proof-of-concept exploits for three unpatched local privilege escalation (LPE) zero-day vulnerabilities. The flaws, named 'FalconFlank', 'PrettyPrague', and 'GreenSection', affect CrowdStrike Falcon Sensor, Avast Antivirus, and Nvidia components, respectively. Each exploit allows a local attacker to gain SYSTEM-level privileges. CrowdStrike has issued interim guidance, while Avast's parent company reports a fix has been deployed.
+- [N-able N-central Hit by Actively Exploited CVSS 10.0 RCE Flaw](https://cyber.netsecops.io/articles/n-able-n-central-critical-rce-zero-day-cve-2026-86218-actively-exploited/) (critical)
+  N-able is urging on-premises customers to immediately apply an emergency hotfix for its N-central RMM platform to address a critical, actively exploited zero-day. The vulnerability, CVE-2026-86218, is a pre-authentication RCE with a 10.0 CVSS score. It allows unauthenticated attackers to gain full control of N-central servers, creating a severe supply chain risk for MSPs and their clients. This is the fourth emergency patch N-able has issued in five weeks for its RMM product.
+- [Unpatched 'StyleSmuggler' RCE Flaw Hits Magento & Adobe Commerce](https://cyber.netsecops.io/articles/stylesmuggler-zero-day-actively-exploiting-magento-adobe-commerce/) (critical)
+  An unpatched, unauthenticated RCE zero-day vulnerability named 'StyleSmuggler' is being actively exploited to compromise e-commerce sites running Magento Open Source and Adobe Commerce. Discovered by Sansec, the attack leverages the GraphQL endpoint and the template system to inject a backdoor. The flaw affects all current versions, including fully patched instances. With no official patch available, administrators are urged to disable GraphQL if unused and scan for compromise.
+- [North Korea's Lazarus Group Operations Decomposed into Six Clusters](https://cyber.netsecops.io/articles/research-reveals-new-six-cluster-structure-of-north-koreas-lazarus-group/) (high)
+  New joint research from Sekoia and Kudelski Security reveals that North Korea's state-sponsored cyber operations, broadly attributed to the Lazarus Group, are organized into six distinct clusters. These specialized units, mostly operating under the GRIB intelligence bureau, focus on separate missions including espionage, financial theft, and sanctions evasion. The report highlights the division of the former APT38 into clusters like CryptoCore and Jade Sleet, which now target the cryptocurrency and Web3 sectors.
+- [MikroTik Routers Hijacked via 'MikroTrick' Unauthenticated Exploit](https://cyber.netsecops.io/articles/mikrotik-routers-exploited-via-mikrotrick-ssh-exploit-chain/) (critical)
+  Attackers are actively exploiting an unauthenticated exploit chain called 'MikroTrick' to gain full administrative control of MikroTik routers with SSH exposed to the internet. The attack, observed by CERT Polska since at least September 2, combines an SSH authentication bypass (CVE-2026-67276) and a privilege escalation flaw (CVE-2026-86060). MikroTik has released patches for RouterOS, and administrators are urged to update immediately and check for signs of compromise, such as a user named 'ops'.
+- [CISA Retires Six Free Cybersecurity Assessment Services](https://cyber.netsecops.io/articles/cisa-retires-six-free-cybersecurity-assessment-services-for-critical-infrastructure/) (informational)
+  The U.S. Cybersecurity and Infrastructure Security Agency (CISA) is retiring six of its free, hands-on cybersecurity assessment services for critical infrastructure operators. The move, which CISA attributes to reducing redundancy and improving efficiency, will shift organizations towards self-service tools like the Cybersecurity Performance Goals (CPGs). Critics express concern that this removes a vital resource for under-resourced entities like water utilities and hospitals, especially as new mandatory reporting rules under CIRCIA are finalized.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-09-07/

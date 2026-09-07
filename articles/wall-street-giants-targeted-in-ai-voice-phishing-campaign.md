@@ -1,6 +1,6 @@
 # Wall Street Giants Targeted in Coordinated AI Vishing Campaign
 
-**Severity:** high | **Category:** Phishing,Threat Actor,Cyberattack | **Updated:** 2026-08-08 | **Reading time:** 6 min
+**Severity:** high | **Category:** Phishing,Threat Actor,Cyberattack | **Updated:** 2026-09-07 | **Reading time:** 6 min
 
 A sophisticated voice-phishing (vishing) campaign is targeting major financial firms like Blackstone, KKR, Citadel, and Point72. The threat actor, tracked as UNC6671 (aka BlackFile or Redact), uses AI voice cloning to impersonate IT staff and trick employees into giving up credentials for Microsoft 365 and Okta. The attackers direct victims to adversary-in-the-middle (AitM) phishing sites that capture passwords and MFA tokens in real-time. Several firms have confirmed being targeted, highlighting the growing threat of AI-powered social engineering in the financial sector.
 
@@ -94,14 +94,14 @@ Detecting AitM activity requires looking for subtle anomalies in the authenticat
 3.  **Conditional Access Policies:** Implement strict conditional access policies that block logins from non-compliant devices, untrusted locations, or IP addresses associated with anonymous proxies.
 4.  **Limit Personal Device Use:** Enforce policies that restrict employees from logging into corporate resources from personal, unmanaged devices, which are harder to monitor and secure.
 
-**Tags:** Vishing, Phishing, AI, Voice Cloning, UNC6671, BlackFile, Wall Street, Finance, AitM
+**Tags:** AI, AitM, BlackFile, Finance, Phishing, UNC6671, Vishing, Voice Cloning, Wall Street
 
 ## Sources
-- [Hackers hit Wall Street's biggest names with a phone-call scam](https://thenextweb.com/news/vishing-campaign-blackstone-kkr-cme-finance-firms) — The Next Web
-- [Top US hedge funds targeted by major vishing campaign — Blackstone, KKR and CME among those under fire](https://www.techradar.com/pro/security/top-us-hedge-funds-targeted-by-major-vishing-campaign-blackstone-kkr-and-cme-among-those-under-fire) — TechRadar
-- [Phone-Scam Hackers Now Target Wall Street's Biggest Firms](https://beincrypto.com/phone-scams-wall-street-financial-firms/) — BeInCrypto
-- [Major Hedge Funds Face Wave of Voice-Phishing Cyberattack Attempts](https://www.briefs.co/news/major-hedge-funds-face-wave-of-voice-phishing-cyberattack-at/) — Briefs Finance
-- [Point72, Citadel among hedge funds hit by AI vishing attacks](https://www.investmentnews.com/fintech/point72-citadel-among-hedge-funds-hit-by-ai-vishing-attacks/267708) — InvestmentNews
+- [Hackers hit Wall Street's biggest names with a phone-call scam](https://thenextweb.com/news/vishing-campaign-blackstone-kkr-cme-finance-firms)
+- [Top US hedge funds targeted by major vishing campaign — Blackstone, KKR and CME among those under fire](https://www.techradar.com/pro/security/top-us-hedge-funds-targeted-by-major-vishing-campaign-blackstone-kkr-and-cme-among-those-under-fire)
+- [Phone-Scam Hackers Now Target Wall Street's Biggest Firms](https://beincrypto.com/phone-scams-wall-street-financial-firms/)
+- [Major Hedge Funds Face Wave of Voice-Phishing Cyberattack Attempts](https://www.briefs.co/news/major-hedge-funds-face-wave-of-voice-phishing-cyberattack-at/)
+- [Point72, Citadel among hedge funds hit by AI vishing attacks](https://www.investmentnews.com/fintech/point72-citadel-among-hedge-funds-hit-by-ai-vishing-attacks/267708)
 
 ---
 Source: https://cyber.netsecops.io/articles/wall-street-giants-targeted-in-ai-voice-phishing-campaign/
