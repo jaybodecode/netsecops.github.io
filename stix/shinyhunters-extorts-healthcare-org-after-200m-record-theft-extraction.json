@@ -1,0 +1,214 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-09T14:20:28.853Z",
+    "article_slug": "shinyhunters-extorts-healthcare-org-after-200m-record-theft",
+    "article_date": "2026-09-09",
+    "token_usage": {
+      "input_tokens": 147680,
+      "output_tokens": 2880,
+      "cached_tokens": 0,
+      "total_tokens": 150560,
+      "cache_hit": false,
+      "estimated_cost_usd": 0.2134
+    }
+  },
+  "report_name": "ShinyHunters Demands $55M After Stealing 200M+ Health Records",
+  "threat_actors": [
+    {
+      "name": "ShinyHunters",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A prolific data extortion group that claimed responsibility for a massive data breach against a healthcare organization. They operate a pure extortion model without deploying ransomware, focusing on stealing large volumes of data and demanding a ransom to prevent its release.",
+      "external_references": [
+        {
+          "source_name": "malpedia",
+          "external_id": "shinyhunters"
+        }
+      ],
+      "goals": "Data extortion for financial gain.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    },
+    {
+      "name": "Scattered Spider",
+      "mitre_id": "G1015",
+      "aliases": [
+        "Roasted 0ktapus",
+        "Octo Tempest",
+        "Storm-0875"
+      ],
+      "description": "Mentioned as a sometimes-partner of ShinyHunters, indicating a potential relationship or similar TTPs."
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Phishing",
+      "mitre_id": "T1566",
+      "description": "The attack began with vishing calls targeting employees to trick them into giving up passwords or approving MFA prompts."
+    },
+    {
+      "name": "Cloud Accounts",
+      "mitre_id": "T1078.004",
+      "description": "Attackers used stolen employee credentials to compromise the victim's Okta single sign-on (SSO) instance, a form of cloud account."
+    },
+    {
+      "name": "Multi-Factor Authentication Request Generation",
+      "mitre_id": "T1621",
+      "description": "Attackers likely used MFA fatigue by spamming push notifications to the user's device to bypass multi-factor authentication on the victim's Okta instance."
+    },
+    {
+      "name": "Web Session Cookie",
+      "mitre_id": "T1550.004",
+      "description": "After a successful Okta login, the attackers hijacked the session cookie, which granted them access to federated applications like Salesforce and Snowflake without needing to re-authenticate."
+    },
+    {
+      "name": "Data from Cloud Storage",
+      "mitre_id": "T1530",
+      "description": "Attackers used native tools or APIs within Salesforce and Snowflake to query and stage over a terabyte of data for exfiltration."
+    },
+    {
+      "name": "Exfiltration to Cloud Storage",
+      "mitre_id": "T1567.002",
+      "description": "Over a terabyte of data was exfiltrated from the victim's Salesforce and Snowflake environments to an attacker-controlled cloud storage bucket."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Unnamed Healthcare Organization",
+      "identity_class": "class",
+      "sectors": [
+        "healthcare"
+      ],
+      "description": "A healthcare organization targeted by ShinyHunters, from which over 200 million records were allegedly exfiltrated. The organization uses Okta, Salesforce, and Snowflake."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Attacker Cloud Storage",
+      "infrastructure_types": [
+        "exfiltration"
+      ],
+      "description": "An attacker-controlled cloud storage bucket used to exfiltrate and store over a terabyte of data stolen from the victim's Salesforce and Snowflake environments."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Okta MFA Fatigue Attempt",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Okta MFA Fatigue Attempt\nid: 2a9b4c1d-8e7f-4a3b-9c1d-8e7f4a3b9c1d\nstatus: experimental\ndescription: 'Detects a high volume of Okta MFA challenges for a single user, which may indicate an MFA fatigue attack. This rule detects the challenge events; correlation with a subsequent successful login (`eventtype: user.authentication.auth_via_mfa` and `outcome.result: SUCCESS`) is recommended.'\nreferences:\n  - https://industrialcyber.co/medical/health-isac-warns-shinyhunters-targets-health-sector-with-vishing-credential-theft-and-mfa-bypass-tactics/\nauthor: cyber.netsecops.io\ndate: 2026-09-09\ntags:\n  - attack.t1621\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  product: okta\n  service: okta\ndetection:\n  selection:\n    eventtype: 'user.authentication.mfa_challenge'\n    outcome.result: 'CHALLENGE'\n  condition: selection\n",
+      "description": "Detects Okta MFA challenges which, when seen in high volume for a single user, can indicate an MFA fatigue attack as described in the report."
+    },
+    {
+      "name": "Suspicious Snowflake API Usage",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Snowflake API Usage for Data Exfiltration\nid: 5b3c9a2e-1d8f-4b9c-8a2d-1f8e9a2b3c4d\nstatus: experimental\ndescription: 'Detects access to the Snowflake statements API endpoint, which can be used for querying and exfiltrating large amounts of data. This activity should be correlated with user session information to identify anomalies.'\nreferences:\n  - https://industrialcyber.co/medical/health-isac-warns-shinyhunters-targets-health-sector-with-vishing-credential-theft-and-mfa-bypass-tactics/\nauthor: cyber.netsecops.io\ndate: 2026-09-09\ntags:\n  - attack.t1530\n  - attack.collection\nlevel: medium\nlogsource:\n  category: proxy\ndetection:\n  selection:\n    cs-host|endswith: 'snowflake.com'\n    c-uri-stem: '/api/v2/statements'\n  condition: selection\n",
+      "description": "Detects access to the Snowflake statements API, which the article notes can be used for mass data access and exfiltration."
+    },
+    {
+      "name": "Large Data Egress from Cloud Environment",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Large Data Egress from Cloud Environment\nid: 8d1e7f4a-3b9c-4d8e-9f4a-3b9c8d1e7f4a\nstatus: experimental\ndescription: 'Detects large, sustained data flows from known cloud data warehouse IP ranges (e.g., Snowflake, Salesforce) to non-corporate IP space. This rule requires baselining and knowledge of corporate IP ranges to be effective.'\nreferences:\n  - https://industrialcyber.co/medical/health-isac-warns-shinyhunters-targets-health-sector-with-vishing-credential-theft-and-mfa-bypass-tactics/\nauthor: cyber.netsecops.io\ndate: 2026-09-09\ntags:\n  - attack.t1567.002\n  - attack.exfiltration\nlevel: medium\nlogsource:\n  category: firewall\ndetection:\n  selection:\n    src_ip|cidr:\n      - 3.208.0.0/12 # Example AWS US-EAST-1 range often used by SaaS\n      - 52.0.0.0/11   # Example AWS US-EAST-1 range often used by SaaS\n  filter_corporate:\n    dst_ip|cidr:\n      - 10.0.0.0/8\n      - 172.16.0.0/12\n      - 192.168.0.0/16\n  condition: selection and not filter_corporate\n",
+      "description": "Detects large, sustained data flows from cloud environments to non-corporate IP space, indicative of data exfiltration."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Phishing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Multi-Factor Authentication Request Generation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Web Session Cookie",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data from Cloud Storage",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration to Cloud Storage",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Unnamed Healthcare Organization",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "related-to",
+      "target_name": "Scattered Spider",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "Okta MFA Fatigue Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Multi-Factor Authentication Request Generation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious Snowflake API Usage",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data from Cloud Storage",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Large Data Egress from Cloud Environment",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration to Cloud Storage",
+      "target_type": "attack-pattern"
+    }
+  ]
+}
