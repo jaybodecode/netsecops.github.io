@@ -1,6 +1,6 @@
 # CISA: Over 100 U.S. Water Systems Targeted in July Cyber Campaign
 
-**Severity:** critical | **Category:** Industrial Control Systems,Cyberattack,Threat Actor | **Updated:** 2026-09-04 | **Reading time:** 4 min
+**Severity:** critical | **Category:** Industrial Control Systems,Cyberattack,Threat Actor | **Updated:** 2026-09-11
 
 The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has revealed that a widespread cyber campaign in July 2026 targeted over 100 systems in the U.S. Water and Wastewater Systems (WWS) sector. The attacks, widely attributed to Iranian state-aligned actors, exploited internet-exposed industrial control devices, leading to operational disruptions, including flooding and boil-water notices in at least 12 states. The incidents highlight critical security gaps in the nation's vital infrastructure.
 
@@ -48,15 +48,15 @@ CISA and the FBI have provided clear guidance for the WWS sector:
 3.  **Network Segmentation:** Implement robust segmentation between IT and OT networks to prevent attackers from moving from a compromised corporate system to the industrial control environment.
 4.  **Firmware Updates:** Regularly update firmware on OT devices to patch known vulnerabilities.
 
-**Tags:** ics, ot security, critical infrastructure, water systems, plc, iran, cisa
+**Tags:** cisa, critical infrastructure, ics, iran, ot security, plc, water systems
 
 ## Sources
-- [CISA: Over 100 Internet-Exposed Water Systems Targeted in July Cyberattacks](https://www.securityweek.com/cisa-over-100-internet-exposed-water-systems-targeted-in-july-cyberattacks/) — SecurityWeek (2026-08-26)
-- [CISA Says Over 100 U.S. Water Systems Were Targeted in July](https://nationalcioreview.com/articles-insights/extra-bytes/cisa-says-over-100-u-s-water-systems-were-targeted-in-july/) — The National CIO Review (2026-08-26)
-- [What we know so far about the hacking campaign against US water systems](https://www.cybersecuritydive.com/news/what-we-know-so-far-about-the-hacking-campaign-against-us-water-systems/828374/) — Cybersecurity Dive (2026-08-20)
-- [CISA says over 100 US water systems were targeted in July 2026 alone](https://www.techradar.com/pro/security/cisa-says-over-100-us-water-systems-were-targeted-in-july-2026-alone) — TechRadar Pro (2026-08-27)
-- [2026 U.S. Water System Cyberattacks: 3 Lessons for Critical Infrastructure](https://www.cloudrangecyber.com/news/2026-us-water-system-cyberattacks) — Cloud Range (2026-08-18)
-- [CISA still finds water system controls exposed online amid multistate hacks](https://www.nextgov.com/cybersecurity/2026/08/cisa-still-finds-water-system-controls-exposed-online-amid-multistate-hacks/415266/) — Nextgov (2026-08-06)
+- [CISA: Over 100 Internet-Exposed Water Systems Targeted in July Cyberattacks](https://www.securityweek.com/cisa-over-100-internet-exposed-water-systems-targeted-in-july-cyberattacks/) (2026-08-26)
+- [CISA Says Over 100 U.S. Water Systems Were Targeted in July](https://nationalcioreview.com/articles-insights/extra-bytes/cisa-says-over-100-u-s-water-systems-were-targeted-in-july/) (2026-08-26)
+- [What we know so far about the hacking campaign against US water systems](https://www.cybersecuritydive.com/news/what-we-know-so-far-about-the-hacking-campaign-against-us-water-systems/828374/) (2026-08-20)
+- [CISA says over 100 US water systems were targeted in July 2026 alone](https.www.techradar.com/pro/security/cisa-says-over-100-us-water-systems-were-targeted-in-july-2026-alone) (2026-08-27)
+- [2026 U.S. Water System Cyberattacks: 3 Lessons for Critical Infrastructure](https://www.cloudrangecyber.com/news/2026-us-water-system-cyberattacks) (2026-08-18)
+- [CISA still finds water system controls exposed online amid multistate hacks](https://www.nextgov.com/cybersecurity/2026/08/cisa-still-finds-water-system-controls-exposed-online-amid-multistate-hacks/415266/) (2026-08-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/over-100-us-water-systems-targeted-in-widespread-cyber-campaign/
