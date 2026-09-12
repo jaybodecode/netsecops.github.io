@@ -1,6 +1,6 @@
 # GitLab Patches Critical CVSS 10.0 Path Traversal Vulnerability
 
-**Severity:** critical | **Category:** Vulnerability,Patch Management,Supply Chain Attack | **Updated:** 2026-09-11 | **Reading time:** 4 min
+**Severity:** critical | **Category:** Vulnerability,Patch Management,Supply Chain Attack | **Updated:** 2026-09-12
 
 GitLab has released emergency patches for a critical path traversal vulnerability, CVE-2026-85706, rated with a CVSS score of 10.0. The flaw allows an unauthenticated attacker to read arbitrary files from a server, including credentials and source code. Active scanning for vulnerable servers has been detected, posing a significant software supply chain risk to over 100,000 organizations.
 
@@ -65,12 +65,12 @@ The most critical defense is [`D3-SU: Software Update`](https://d3fend.mitre.org
 - CVE-2026-87719 (CVSS 9.9)
 - CVE-2026-88765 (CVSS 8.5)
 
-**Tags:** GitLab, Vulnerability, CVSS 10, Path Traversal, Patch Management, Supply Chain
+**Tags:** CVSS 10, GitLab, Patch Management, Path Traversal, Supply Chain, Vulnerability
 
 ## Sources
-- [GitLab Critical Patch Release: 19.3.2, 19.2.6, 19.1.8](https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-3-2-released/) — GitLab (2026-09-11)
-- [GitLab urges users to patch max severity path traversal flaw](https://www.bleepingcomputer.com/news/security/gitlab-urges-users-to-patch-max-severity-path-traversal-flaw/) — BleepingComputer (2026-09-11)
-- [GitLab CVSS 10 File-Read Flaw Draws In-the-Wild Probes After Disclosure](https://thehackernews.com/2026/09/gitlab-cvss-10-file-read-flaw-draws-in.html) — The Hacker News (2026-09-11)
+- [GitLab Critical Patch Release: 19.3.2, 19.2.6, 19.1.8](https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-3-2-released/) (2026-09-11)
+- [GitLab urges users to patch max severity path traversal flaw](https://www.bleepingcomputer.com/news/security/gitlab-urges-users-to-patch-max-severity-path-traversal-flaw/) (2026-09-11)
+- [GitLab CVSS 10 File-Read Flaw Draws In-the-Wild Probes After Disclosure](https://thehackernews.com/2026/09/gitlab-cvss-10-file-read-flaw-draws-in.html) (2026-09-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/gitlab-urges-patching-of-critical-cvss-10-path-traversal-flaw/

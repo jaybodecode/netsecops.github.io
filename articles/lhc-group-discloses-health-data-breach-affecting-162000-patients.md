@@ -1,6 +1,6 @@
 # LHC Group Discloses Health Data Breach Affecting Over 162,000
 
-**Severity:** high | **Category:** Data Breach,Phishing,Threat Actor | **Updated:** 2026-09-09 | **Reading time:** 4 min
+**Severity:** high | **Category:** Data Breach,Phishing,Threat Actor | **Updated:** 2026-09-12 | **Reading time:** 4 min
 
 LHC Group, a national home healthcare provider and a subsidiary of UnitedHealth Group's Optum, has disclosed a data breach affecting 162,578 individuals. The incident occurred in April 2026 after an employee's credentials were stolen in a voice phishing (vishing) attack. The threat actor used the compromised account to access a third-party vendor's platform, exfiltrating a vast amount of sensitive patient data, including Social Security numbers and protected health information (PHI).
 
@@ -51,14 +51,14 @@ To detect similar vishing-related compromises, security teams should hunt for:
 2.  **Phishing-Resistant MFA**: Implement phishing-resistant **[MFA](https://www.cisa.gov/MFA)**, such as FIDO2/WebAuthn security keys. Unlike one-time codes, these methods are not susceptible to being phished, as the authentication is bound to the legitimate domain. This is the strongest form of **[D3FEND Multi-factor Authentication](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication)**.
 3.  **Session Monitoring and Controls**: Implement session controls that limit the amount of data a user can access or download in a single session. Configure alerts for high-volume data access to detect potential exfiltration in progress.
 
-**Tags:** Data Breach, Healthcare, Vishing, Social Engineering, LHC Group, Optum, PHI, HIPAA
+**Tags:** Data Breach, HIPAA, Healthcare, LHC Group, Optum, PHI, Social Engineering, Vishing
 
 ## Sources
-- [LHC Group, Inc Data Breach Investigation](https://www.almeidalawgroup.com/data-breach-news/lhc-group-inc-data-breach-investigation/) — Almeida Law Group
-- [LHC Group Data Breach - Emery Reddy](https://www.emeryreddy.com/blog/data-breach/lhc-group-data-breach) — Emery Reddy
-- [LHC Group Data Breach Investigation](https://www.claimdepot.com/investigations/lhc-group-data-breach-2026) — ClaimDepot
-- [LHC Group Data Breach Lawsuit - Class Action U](https://classactionu.org/current-data-breaches/lhc-group/) — ClassActionU
-- [LHC Group Data Breach Lawsuit Investigation](https://www.claimdepot.com/data-breach/lhc-group-2026) — ClaimDepot
+- [LHC Group, Inc Data Breach Investigation](https://www.almeidalawgroup.com/data-breach-news/lhc-group-inc-data-breach-investigation/)
+- [LHC Group Data Breach - Emery Reddy](https://www.emeryreddy.com/blog/data-breach/lhc-group-data-breach)
+- [LHC Group Data Breach Investigation](https://www.claimdepot.com/investigations/lhc-group-data-breach-2026)
+- [LHC Group Data Breach Lawsuit - Class Action U](https://classactionu.org/current-data-breaches/lhc-group/)
+- [LHC Group Data Breach Lawsuit Investigation](https://www.claimdepot.com/data-breach/lhc-group-2026)
 
 ---
 Source: https://cyber.netsecops.io/articles/lhc-group-discloses-health-data-breach-affecting-162000-patients/
