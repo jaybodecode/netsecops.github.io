@@ -1,6 +1,6 @@
 # Threat Actors Use AI Scripts to Target Siemens PLCs in Critical Infrastructure
 
-**Severity:** high | **Category:** Industrial Control Systems,Cyberattack,Threat Intelligence | **Updated:** 2026-09-01 | **Reading time:** 5 min
+**Severity:** high | **Category:** Industrial Control Systems,Cyberattack,Threat Intelligence | **Updated:** 2026-09-13 | **Reading time:** 5 min
 
 A joint advisory from U.S. agencies like the NSA and CISA warns of an ongoing campaign where threat actors are using AI-generated scripts to target Siemens S7 Series Programmable Logic Controllers (PLCs) in U.S. critical infrastructure. The attackers are using scanning tools to find exposed PLCs and then deploying malicious scripts, created with the help of AI and open-source libraries, to conduct reconnaissance. This activity suggests a pre-positioning for future disruptive attacks. The campaign affects a wide range of Siemens PLCs across sectors like energy, water, and manufacturing. Agencies urge asset owners to isolate these devices from the internet and apply patches.
 
@@ -74,14 +74,14 @@ Federal agencies have issued strong recommendations for all critical infrastruct
 
 4.  **Strong Access Controls:** Change default passwords on all PLCs and use strong, unique credentials. Implement access control lists on the devices themselves where possible.
 
-**Tags:** ICS, SCADA, Siemens, PLC, Critical Infrastructure, AI, Cyberattack, NSA, CISA
+**Tags:** AI, CISA, Critical Infrastructure, Cyberattack, ICS, NSA, PLC, SCADA, Siemens
 
 ## Sources
-- [Weekly Intelligence Report - 28 Aug 2026](https://www.cyfirma.com/news/weekly-intelligence-report-28-aug-2026/) — CYFIRMA (2026-08-28)
-- [Hackers Using AI to Target Siemens PLCs in Critical US Sectors](https://www.securityweek.com/hackers-using-ai-to-target-siemens-plcs-in-critical-us-sectors/) — SecurityWeek (2026-08-20)
-- [Frequently asked questions about the active threat to Siemens S7 Series PLCs](https://www.tenable.com/blog/frequently-asked-questions-about-the-active-threat-to-siemens-s7-series-plcs) — Tenable (2026-08-20)
-- [Feds Warn of Active Cyber Threat Targeting Siemens Devices](https://www.meritalk.com/articles/feds-warn-of-active-cyber-threat-targeting-siemens-devices/) — MeriTalk (2026-08-21)
-- [NSA Issues Cybersecurity Advisory on AI-Generated Attacks Against Siemens PLCs](https://www.executivegov.com/articles/nsa-cybersecurity-advisory-siemens-plc) — ExecutiveGov (2026-08-20)
+- [Weekly Intelligence Report - 28 Aug 2026](https://www.cyfirma.com/news/weekly-intelligence-report-28-aug-2026/) (2026-08-28)
+- [Hackers Using AI to Target Siemens PLCs in Critical US Sectors](https://www.securityweek.com/hackers-using-ai-to-target-siemens-plcs-in-critical-us-sectors/) (2026-08-20)
+- [Frequently asked questions about the active threat to Siemens S7 Series PLCs](https://www.tenable.com/blog/frequently-asked-questions-about-the-active-threat-to-siemens-s7-series-plcs) (2026-08-20)
+- [Feds Warn of Active Cyber Threat Targeting Siemens Devices](https://www.meritalk.com/articles/feds-warn-of-active-cyber-threat-targeting-siemens-devices/) (2026-08-21)
+- [NSA Issues Cybersecurity Advisory on AI-Generated Attacks Against Siemens PLCs](https://www.executivegov.com/articles/nsa-cybersecurity-advisory-siemens-plc) (2026-08-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/threat-actors-use-ai-scripts-to-target-siemens-plcs-in-us-critical-infrastructure/

@@ -1,6 +1,6 @@
 # GitLab Patches Critical CVSS 10.0 Path Traversal Vulnerability
 
-**Severity:** critical | **Category:** Vulnerability,Patch Management,Supply Chain Attack | **Updated:** 2026-09-12
+**Severity:** critical | **Category:** Vulnerability,Patch Management,Supply Chain Attack | **Updated:** 2026-09-13
 
 GitLab has released emergency patches for a critical path traversal vulnerability, CVE-2026-85706, rated with a CVSS score of 10.0. The flaw allows an unauthenticated attacker to read arbitrary files from a server, including credentials and source code. Active scanning for vulnerable servers has been detected, posing a significant software supply chain risk to over 100,000 organizations.
 
