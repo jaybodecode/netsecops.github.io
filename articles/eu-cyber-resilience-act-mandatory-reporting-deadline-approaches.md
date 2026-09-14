@@ -1,6 +1,6 @@
 # EU Cyber Resilience Act's 24-Hour Reporting Mandate Starts Sept 11
 
-**Severity:** informational | **Category:** Policy and Compliance,Regulatory | **Updated:** 2026-09-02
+**Severity:** informational | **Category:** Policy and Compliance,Regulatory | **Updated:** 2026-09-14
 
 Manufacturers of connected products sold in the EU must comply with the Cyber Resilience Act's (CRA) new reporting obligations starting September 11, 2026. The rules mandate reporting actively exploited vulnerabilities and severe incidents affecting their products to ENISA within 24 hours.
 
