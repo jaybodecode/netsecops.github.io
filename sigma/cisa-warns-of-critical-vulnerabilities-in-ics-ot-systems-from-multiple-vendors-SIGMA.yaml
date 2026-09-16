@@ -1,0 +1,77 @@
+title: Potential Unauthenticated Access to OT Web Interfaces
+id: 2b1a8c7d-e3f4-4a9b-8c1d-9e0f1a2b3c4d
+status: experimental
+description: Monitors for access attempts to OT device web interfaces from external IP addresses. This may indicate attempts to exploit vulnerabilities like CVE-2026-66890. Whitelist trusted external sources.
+references:
+  - https://securityboulevard.com/2026/09/daily-ot-security-news-september-16-2026/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    # This rule requires knowledge of the OT network address space.
+    # Replace the placeholder with your actual OT network CIDR.
+    DestinationIp|cidr:
+      - '10.100.0.0/16' # Placeholder for OT network
+    DestinationPort:
+      - 80
+      - 443
+  filter_internal:
+    SourceIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+---
+title: Use of Default Credentials on OT Systems
+id: 5e8f1a2b-3c4d-4e9b-8a7d-6f0e1b2c3d4a
+status: experimental
+description: Detects successful login attempts using common default credentials like 'admin', which could indicate exploitation of vulnerabilities like CVE-2026-66887.
+references:
+  - https://securityboulevard.com/2026/09/daily-ot-security-news-september-16-2026/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1078.001
+level: high
+logsource:
+  category: webserver
+detection:
+  selection:
+    c-user: 'admin'
+    sc-status: 200
+  condition: selection
+---
+title: Anomalous Outbound Internet Traffic from OT Device
+id: 9c8d7b6a-5e4f-4d3c-b2a1-0e9f8d7c6b5a
+status: experimental
+description: Detects unusual outbound traffic from OT devices to the public internet. OT devices should typically only communicate with specific internal management servers.
+references:
+  - https://securityboulevard.com/2026/09/daily-ot-security-news-september-16-2026/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1041
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    # This rule requires knowledge of the OT network address space.
+    # Replace the placeholder with your actual OT network CIDR.
+    SourceIp|cidr:
+      - '10.100.0.0/16' # Placeholder for OT network
+  filter_rfc1918:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  filter_loopback:
+    DestinationIp: '127.0.0.1'
+  filter_multicast:
+    DestinationIp|startswith: '224.'
+  condition: selection and not (filter_rfc1918 or filter_loopback or filter_multicast)

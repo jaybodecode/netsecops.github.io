@@ -1,0 +1,95 @@
+title: Suspicious Script Execution via cURL Pipe on macOS
+id: e8da7fd7-5bb2-4ddc-8ac9-88f384286188
+status: experimental
+description: Detects the suspicious use of curl to pipe a script directly into a shell interpreter like sh, bash, or zsh on macOS, a technique used by AMOS stealer.
+references:
+  - https://unit42.paloaltonetworks.com/atomic-macos-amos-stealer-activity/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1059.004
+  - attack.t1105
+level: high
+logsource:
+  category: process_creation
+  product: macos
+detection:
+  selection:
+    CommandLine|contains|all:
+      - 'curl '
+      - ' | '
+    CommandLine|endswith:
+      - 'sh'
+      - 'bash'
+      - 'zsh'
+  condition: selection
+---
+title: AMOS Stealer Hidden Directory Creation in Application Support
+id: 744f3ae7-86c2-4466-99de-123d98241fe6
+status: experimental
+description: Detects the creation of hidden directories (starting with a dot) within /Library/Application Support/, a technique used by AMOS stealer for persistence.
+references:
+  - https://unit42.paloaltonetworks.com/atomic-macos-amos-stealer-activity/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1564.001
+  - attack.persistence
+level: medium
+logsource:
+  category: file_event
+  product: macos
+detection:
+  selection:
+    TargetFilename|startswith: '/Library/Application Support/.'
+    TargetFilename|endswith:
+      - '/.com.apple.accountsd/'
+      - '/.com.apple.metadata.mds/'
+  condition: selection
+---
+title: AMOS Stealer C2 DNS Query
+id: 2b8c9d0e-1f3a-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: Detects DNS queries to domains associated with Atomic macOS (AMOS) Stealer infrastructure.
+references:
+  - https://unit42.paloaltonetworks.com/atomic-macos-amos-stealer-activity/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1071.004
+  - attack.command_and_control
+level: high
+logsource:
+  category: dns_query
+detection:
+  selection:
+    QueryName|endswith:
+      - 'getmacouscloud.com'
+      - 'ferncore13.com'
+  condition: selection
+---
+title: AMOS Stealer File Artifacts
+id: 51cf42e6-eb75-4d18-9580-3e7778aa3d3f
+status: experimental
+description: Detects the presence of files associated with the AMOS Stealer based on their full path.
+references:
+  - https://unit42.paloaltonetworks.com/atomic-macos-amos-stealer-activity/
+author: cyber.netsecops.io
+date: 2026-09-16
+tags:
+  - attack.t1564.001
+level: high
+logsource:
+  category: file_event
+  product: macos
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '/tmp/helper'
+      - '/tmp/starter'
+      - '/Library/Application Support/.com.apple.accountsd/.service'
+      - '/Library/Application Support/.com.apple.accountsd/AccountsHelper'
+      - '/Library/Application Support/.com.apple.metadata.mds/.mdworker'
+      - '/Library/Application Support/.com.apple.metadata.mds/mdworker_shared'
+      - '/tmp/out.zip'
+  condition: selection
