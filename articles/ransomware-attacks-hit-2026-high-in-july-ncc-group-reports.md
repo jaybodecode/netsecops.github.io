@@ -1,6 +1,6 @@
 # Ransomware Attacks Hit 2026 High in July, NCC Group Reports
 
-**Severity:** high | **Category:** Ransomware,Threat Intelligence,Threat Actor | **Updated:** 2026-08-26 | **Reading time:** 4 min
+**Severity:** high | **Category:** Ransomware,Threat Intelligence,Threat Actor | **Updated:** 2026-09-17
 
 According to a new threat report from NCC Group, global ransomware activity surged in July 2026, reaching the highest monthly volume of the year. The report recorded 894 cases, a 22% increase from June. The Industrials sector and organizations in North America and Europe remained the top targets. The report also notes the appearance of a new group, 'CRPxO,' and the continued dominance of established actors.
 
@@ -63,10 +63,10 @@ A multi-layered defense strategy is essential to mitigate the risk of a successf
 -   **Backups:** Maintain regular, tested, and offline/immutable backups of critical data. This is the most important tool for recovery without paying a ransom.
 -   **User Training (M1017):** Educate employees to recognize and report phishing emails, which remain a common entry point for ransomware attacks.
 
-**Tags:** Ransomware, Threat Intelligence, NCC Group, Industrials, Double Extortion
+**Tags:** Double Extortion, Industrials, NCC Group, Ransomware, Threat Intelligence
 
 ## Sources
-- [NCC Group Monthly Threat Pulse - Review of July 2026](https://www.nccgroup.com/newsroom/ncc-group-monthly-threat-pulse-review-of-july-2026/) — NCC Group
+- [NCC Group Monthly Threat Pulse - Review of July 2026](https://www.nccgroup.com/newsroom/ncc-group-monthly-threat-pulse-review-of-july-2026/)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attacks-hit-2026-high-in-july-ncc-group-reports/
