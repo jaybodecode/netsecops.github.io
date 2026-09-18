@@ -1,6 +1,6 @@
 # Gyazo Screenshot Tool Breach Exposes 23.6M User Records, Image Data
 
-**Severity:** high | **Category:** Data Breach,Vulnerability,Cyberattack | **Updated:** 2026-09-17 | **Reading time:** 4 min
+**Severity:** high | **Category:** Data Breach,Vulnerability,Cyberattack | **Updated:** 2026-09-18 | **Reading time:** 4 min
 
 The popular image-sharing service Gyazo, operated by Helpfeel, has disclosed a massive data breach affecting 23.62 million user records and 490 million image metadata records. The breach was the result of a remote code execution vulnerability on an image upload server, which gave an attacker access to the service's database. Exposed data includes email addresses, hashed passwords, and social media integration tokens.
 
@@ -45,12 +45,12 @@ For affected Gyazo users, the following steps are recommended:
 4.  **Revoke Social Media Access**: Log in to your X/Twitter account settings and revoke Gyazo's access, then re-authorize it if needed after changing your password.
 5.  **Review Private Images**: Check any sensitive images you have stored on Gyazo and consider deleting them if they are no longer needed.
 
-**Tags:** data breach, PII, password security, image hosting, RCE, Helpfeel
+**Tags:** Helpfeel, PII, RCE, data breach, image hosting, password security
 
 ## Sources
-- [Gyazo Breach Exposes 23.62 Million User Records and 490 Million Image Metadata Records](https://thehackernews.com/2026/09/gyazo-breach-exposes-2362-million-user.html) — The Hacker News (2026-09-17)
-- [Gyazo data breach exposes 23.6M user records, 490M metadata records](https://cybernews.com/security/helpfeel-gyazo-data-breach-exposed-millions-records/) — Cybernews (2026-09-17)
-- [Japan's Gyazo Suffers Data Breach: 23.62 Million User Records and 490 Million Image Metadata Entries Leaked](https://finance.biggo.com/news/3dd4af7a-bc3a-4041-a58a-57cf1a7ae8fd) — BigGo Finance (2026-09-17)
+- [Gyazo Breach Exposes 23.62 Million User Records and 490 Million Image Metadata Records](https://thehackernews.com/2026/09/gyazo-breach-exposes-2362-million-user.html) (2026-09-17)
+- [Gyazo data breach exposes 23.6M user records, 490M metadata records](https://cybernews.com/security/helpfeel-gyazo-data-breach-exposed-millions-records/) (2026-09-17)
+- [Japan's Gyazo Suffers Data Breach: 23.62 Million User Records and 490 Million Image Metadata Entries Leaked](https://finance.biggo.com/news/3dd4af7a-bc3a-4041-a58a-57cf1a7ae8fd) (2026-09-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/gyazo-data-breach-exposes-23-million-user-records/
