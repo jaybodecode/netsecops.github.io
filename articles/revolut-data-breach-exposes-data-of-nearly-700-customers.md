@@ -1,6 +1,6 @@
 # Revolut Data Breach Exposes Data of Nearly 700 Customers
 
-**Severity:** high | **Category:** Data Breach,Phishing,Threat Intelligence | **Updated:** 2026-09-20 | **Reading time:** 5 min
+**Severity:** high | **Category:** Data Breach,Phishing,Threat Intelligence | **Updated:** 2026-09-21
 
 Financial technology firm Revolut has disclosed a data breach affecting nearly 700 customers after falling victim to a 'sophisticated' social engineering attack. An unauthorized third party impersonated a government agency to trick the company into handing over sensitive customer data. The exposed information includes names, addresses, bank account numbers, and copies of identity documents like passports and driver's licenses. Revolut has blocked the attack vector and notified the affected agencies.
 
@@ -59,12 +59,12 @@ Organizations can hunt for similar impersonation attempts by monitoring for the 
 - **Strong Authentication:** While not the primary vector here, ensuring all internal systems require MFA can prevent an attacker who has stolen employee credentials from easily accessing data.
 - **Response Protocol:** Revolut's quick action to block the address and alert agencies is a good example of a prepared response. All organizations should have a well-defined incident response plan for data breaches.
 
-**Tags:** Revolut, Data Breach, Fintech, Social Engineering, Impersonation, PII, GDPR
+**Tags:** Data Breach, Fintech, GDPR, Impersonation, PII, Revolut, Social Engineering
 
 ## Sources
-- [This Week's Top Five Stories in Cyber](https://cybermagazine.com/news/this-weeks-top-five-stories-in-cybersecurity-headlines-cyber-news) — Cyber Magazine (2026-09-19)
-- [Recent Data Breaches (Sep 2026): Latest Incidents - Scan My Shadow](https://www.scanmyshadow.com/blog/2026/09/recent-data-breaches-this-week.html) — Scan My Shadow (2026-09-20)
-- [Week in review: Cisco patches exploited email gateway 0-day, Revolut breach](https://www.helpnetsecurity.com/2026/09/20/week-in-review-cisco-patches-exploited-email-gateway-0-day-revolut-breach/) — Help Net Security (2026-09-20)
+- [This Week's Top Five Stories in Cyber](https://cybermagazine.com/news/this-weeks-top-five-stories-in-cybersecurity-headlines-cyber-news) (2026-09-19)
+- [Recent Data Breaches (Sep 2026): Latest Incidents - Scan My Shadow](https://www.scanmyshadow.com/blog/2026/09/recent-data-breaches-this-week.html) (2026-09-20)
+- [Week in review: Cisco patches exploited email gateway 0-day, Revolut breach](https://www.helpnetsecurity.com/2026/09/20/week-in-review-cisco-patches-exploited-email-gateway-0-day-revolut-breach/) (2026-09-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/revolut-data-breach-exposes-data-of-nearly-700-customers/

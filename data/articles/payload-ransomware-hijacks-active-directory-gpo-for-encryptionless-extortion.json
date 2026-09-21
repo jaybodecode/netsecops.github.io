@@ -1,0 +1,142 @@
+{
+  "id": "d0462511-eb91-44b1-85b1-a7007ef551a4",
+  "slug": "payload-ransomware-hijacks-active-directory-gpo-for-encryptionless-extortion",
+  "headline": "PAYLOAD Ransomware Abuses GPOs for Encryptionless Extortion",
+  "title": "PAYLOAD Ransomware Uses GPO Hijacking Technique",
+  "summary": "A new ransomware group known as PAYLOAD is using a novel encryptionless extortion technique by hijacking Active Directory Group Policy Objects (GPOs). In a recent attack on a Middle Eastern manufacturer, the threat actors used a malicious GPO to change the desktop wallpaper on all domain-joined machines to a ransom note, causing widespread disruption. This was combined with data exfiltration, allowing the group to extort the victim without encrypting any files.",
+  "full_report": "## Executive Summary\nA new ransomware group, tracked as **PAYLOAD**, has been observed employing a novel and highly disruptive technique that leverages **[Active Directory](https://en.wikipedia.org/wiki/Active_Directory)** Group Policy for domain-wide impact without encrypting files. According to a report from **[Kaspersky's](https://www.kaspersky.com/)** Global Emergency Response Team, an investigation in April 2026 at a manufacturing firm in the Middle East revealed this \"encryptionless extortion\" tactic. After gaining domain administrator-level privileges, the attackers created a malicious Group Policy Object (GPO) to deface every Windows workstation with a ransom note wallpaper. This attack was coupled with data exfiltration, creating a dual-threat scenario of business disruption and data leakage for extortion purposes.\n\n---\n\n## Threat Overview\nThe incident represents a tactical evolution in ransomware attacks, moving away from the resource-intensive process of file encryption on individual endpoints. The **PAYLOAD** actors instead targeted a central management system—Active Directory—to achieve maximum visibility and psychological impact with minimal effort. After compromising the domain, the threat actors created a GPO named \"PAYLOAD\" and linked it to the root of the Active Directory domain. This ensured the policy was enforced across all user and computer objects. The GPO's primary function was to modify a registry key to change the desktop wallpaper on all domain-joined systems to an image containing their ransom demand. While this action did not deny access to data, it served as a powerful and visible demonstration of the attackers' control over the entire network. The extortion leverage was amplified by the confirmed exfiltration of data from file servers, which was later published on the dark web.\n\n---\n\n## Technical Analysis\nThe core of this attack is the abuse of a legitimate administrative feature for malicious purposes. The technique is a direct implementation of **[MITRE ATT&CK `T1484.001` - Group Policy Modification](https://attack.mitre.org/techniques/T1484/001/)**.\n\n1.  **Initial Access & Privilege Escalation**: The attackers first gained initial access (vector not specified) and escalated their privileges to the level of a Domain Administrator. This is a critical prerequisite, as modifying root-level GPOs requires the highest level of administrative rights within an Active Directory domain ([`T1078.002` - Domain Admin Accounts](https://attack.mitre.org/techniques/T1078/002/)).\n2.  **Malicious GPO Creation**: The actors created a new GPO, reportedly named `PAYLOAD`. They configured this GPO to alter the `HKEY_CURRENT_USER\\Control Panel\\Desktop\\Wallpaper` registry value on targeted machines, pointing it to a UNC path where the ransom note image was stored.\n3.  **GPO Linking**: The GPO was linked to the domain root. This is a crucial step that forces the policy to be inherited by all Organizational Units (OUs) and applied to all computers and users within the domain upon the next Group Policy refresh cycle.\n4.  **Data Exfiltration**: In parallel, the attackers used their privileged access to exfiltrate sensitive data from file servers ([`T1048` - Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/)). This completes the double-extortion model.\n\nThis \"encryptionless\" approach is efficient for attackers as it avoids potential detection from EDR/antivirus solutions that look for mass file encryption behavior. Instead, it masquerades as a legitimate administrative action.\n\n---\n\n## Impact Assessment\nWhile avoiding file encryption, the impact of this attack method is still severe:\n\n*   **Operational Disruption**: The widespread visual defacement can cause confusion and panic, leading employees to stop work. IT and security teams must dedicate significant resources to investigate the GPO changes, validate system integrity, and restore normal configurations across the entire domain.\n*   **Data Breach**: The exfiltration of data carries the same consequences as any other data breach, including regulatory fines, reputational damage, and the loss of intellectual property or sensitive customer information.\n*   **Psychological Impact**: This highly visible attack demonstrates complete control over the victim's network, creating immense pressure to pay the ransom to prevent further disruption or the public release of stolen data.\n*   **Loss of Confidence**: The compromise of Active Directory, the backbone of the enterprise network, signifies a fundamental security failure and erodes trust in the organization's security posture.\n\n---\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were mentioned in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect GPO hijacking:\n\n| Type | Value / Pattern | Description | Context | Confidence |\n|---|---|---|---|---|\n| event_id | 5136 | A directory service object was modified. | Look for this event in the Windows Security Log on Domain Controllers, specifically for objects with `objectClass: groupPolicyContainer`. | high |\n| event_id | 4662 | An operation was performed on an object. | Monitor for access to GPO-related files in the SYSVOL share, especially `GptTmpl.inf` (Security Settings) and `Registry.pol` (Registry Settings). | high |\n| file_path | `\\\\<DOMAIN>\\SYSVOL\\<DOMAIN>\\Policies\\` | Monitor for the creation of new folders (identified by GUIDs) in the SYSVOL Policies directory, especially outside of normal change windows. | File Integrity Monitoring (FIM) on Domain Controllers. | high |\n| registry_key | `HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\` | Monitor for changes to GPO-related registry keys on endpoints, which could indicate policy enforcement. | EDR or registry monitoring tools. | medium |\n\n---\n\n## Detection & Response\nDetecting malicious GPO modification requires focused monitoring of Active Directory.\n\n1.  **Active Directory Auditing**: Enable advanced audit policies for DS Access on Domain Controllers. Specifically, audit the `Write` permission for `groupPolicyContainer` objects. Use a SIEM to alert on GPO modifications that occur outside of planned change management windows or are performed by accounts not associated with GPO administration. This is a form of **[D3-DAM: Domain Account Monitoring](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring)**.\n2.  **SYSVOL Monitoring**: Implement File Integrity Monitoring (FIM) on the SYSVOL share on all Domain Controllers. Alert on the creation of new GPO folders or modifications to key policy files like `Registry.pol`.\n3.  **Honeypot GPOs**: Create ",
+  "twitter_post": "New PAYLOAD ransomware uses a novel technique, hijacking Active Directory GPOs for domain-wide disruption without file encryption. Attackers combine data theft with visual extortion. #Ransomware #ActiveDirectory #GPO #CyberSecurity",
+  "meta_description": "A new ransomware variant, PAYLOAD, was observed using Active Directory Group Policy Objects (GPOs) for domain-wide disruption and extortion without encryption.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "PAYLOAD Ransomware",
+      "type": "malware"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "security_organization",
+      "url": "https://www.kaspersky.com/"
+    },
+    {
+      "name": "Active Directory",
+      "type": "product",
+      "url": "https://en.wikipedia.org/wiki/Active_Directory"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://cypro.co.uk/insights/cyber-bulletins/payload-ransomware-hijacks-active-directory-gpo/",
+      "title": "PAYLOAD Ransomware Hijacks Active Directory GPO",
+      "date": "2026-09-21",
+      "friendly_name": "Cypro",
+      "website": "cypro.co.uk"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04-01T00:00:00Z",
+      "summary": "Kaspersky's Global Emergency Response Team investigates the encryptionless extortion incident at a manufacturing organization."
+    },
+    {
+      "datetime": "2026-09-21T00:00:00Z",
+      "summary": "Details of the PAYLOAD ransomware's GPO hijacking technique are publicly reported."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1484.001",
+      "name": "Group Policy Modification",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1078.002",
+      "name": "Valid Accounts: Domain Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1499.004",
+      "name": "Endpoint Denial of Service: Systemd",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "description": "Harden Active Directory by restricting permissions for GPO creation/linking to a small, highly monitored group of administrators. Implement change control processes for all GPO modifications.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Strictly control and monitor the use of Domain Admin accounts. Use tiered access models and just-in-time (JIT) privileges to reduce the window of opportunity for attackers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable and actively monitor detailed audit logs for Active Directory and SYSVOL to detect unauthorized changes to Group Policy.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "event_id",
+      "value": "5136",
+      "description": "A directory service object was modified. This event can indicate the creation or modification of a Group Policy Object on a Domain Controller.",
+      "context": "Windows Security Log on Domain Controllers",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "\\\\<DOMAIN>\\SYSVOL\\<DOMAIN>\\Policies\\",
+      "description": "The SYSVOL path where GPO files are stored. Monitor for the creation of new policy folders (GUIDs) or unauthorized modification of files within.",
+      "context": "File Integrity Monitoring (FIM) on Domain Controllers",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "New-GPO -Name 'PAYLOAD'",
+      "description": "PowerShell command used to create a new GPO. Look for suspicious GPO names or creation outside of change windows.",
+      "context": "PowerShell Script Block Logging (Event ID 4104)",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "encryptionless extortion",
+    "GPO",
+    "Active Directory",
+    "extortion",
+    "PAYLOAD",
+    "ransomware"
+  ],
+  "extract_datetime": "2026-09-21T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "industries_affected": [
+      "Manufacturing"
+    ],
+    "other_affected": [
+      "Middle East"
+    ]
+  },
+  "pub_date": "2026-09-21",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-09-21T15:00:00.000Z",
+  "updatedAt": "2026-09-21T15:00:00.000Z"
+}

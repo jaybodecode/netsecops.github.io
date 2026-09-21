@@ -1,6 +1,6 @@
 # Thousands of Leaked AWS Keys, Many with Full Admin, Remain Active
 
-**Severity:** high | **Category:** Cloud Security,Data Breach,Security Operations | **Updated:** 2026-08-23 | **Reading time:** 5 min
+**Severity:** high | **Category:** Cloud Security,Data Breach,Security Operations | **Updated:** 2026-09-21
 
 A large-scale investigation by Truffle Security has uncovered a severe and persistent cloud security risk: thousands of publicly leaked Amazon Web Services (AWS) keys remain active, many for years. The researchers found 768 active keys that grant full administrative control, including 526 root keys, which provide the highest possible privileges. These keys, discovered in public code repositories, datasets on Hugging Face, and CI/CD logs, expose organizations to complete account takeover, data theft, and resource hijacking.
 
@@ -51,14 +51,18 @@ Organizations should proactively hunt for exposed secrets. The following pattern
 *   **Regular Key Rotation**: Implement and enforce a strict policy for rotating all IAM user access keys (e.g., every 90 days).
 *   **Developer Training**: Train developers on the risks of hardcoding secrets and provide them with secure alternatives like AWS Secrets Manager or HashiCorp Vault.
 
-**Tags:** AWS, Cloud Security, Access Keys, IAM, Secret Scanning, Data Leak
+**Tags:** AWS, Access Keys, Cloud Security, Data Leak, IAM, Secret Scanning
 
 ## Sources
-- [768 Leaked AWS Keys Still Active With Full Admin Access to Corporate Accounts](https://gbhackers.com/768-leaked-aws-keys-still-active-with-full-admin/amp/) — GBHackers on Security
-- [9,300 Leaked AWS Keys Still Work, 526 Are Root](https://www.gblock.app/articles/leaked-aws-keys-truffle-security-9300-2026) — Gblock
-- [Researchers found 768 leaked AWS keys that still work, and the containment policy leaves plenty possible](https://thenextweb.com/news/researchers-found-768-leaked-aws-keys-that-still-work-and-the-containment-policy-leaves-plenty-possible) — The Next Web
-- [Researchers found 768 leaked AWS keys that still work, and the containment policy leaves plenty possible](https://daily.dev/posts/researchers-found-768-leaked-aws-keys-that-still-work-and-the-containment-policy-leaves-plenty-poss-nhccuafhw) — daily.dev
-- [Daily Cybersecurity News – August 22, 2026](https://cyberrecaps.com/news/cybersecurity-news-august-22-2026) — Cyber Recaps
+- [768 Leaked AWS Keys Still Active With Full Admin Access to Corporate Accounts](https://gbhackers.com/768-leaked-aws-keys-still-active-with-full-admin/amp/)
+- [9,300 Leaked AWS Keys Still Work, 526 Are Root](https://www.gblock.app/articles/leaked-aws-keys-truffle-security-9300-2026)
+- [Researchers found 768 leaked AWS keys that still work, and the containment policy leaves plenty possible](https://thenextweb.com/news/researchers-found-768-leaked-aws-keys-that-still-work-and-the-containment-policy-leaves-plenty-possible)
+- [Researchers found 768 leaked AWS keys that still work, and the containment policy leaves plenty possible](https://daily.dev/posts/researchers-found-768-leaked-aws-keys-that-still-work-and-the-containment-policy-leaves-plenty-poss-nhccuafhw)
+- [Daily Cybersecurity News – August 22, 2026](https://cyberrecaps.com/news/cybersecurity-news-august-22-2026)
+- [Researchers warn thousands of active AWS access keys are still active and valid](https://www.itpro.com/security/researchers-warn-thousands-of-active-aws-access-keys-are-publicly-exposed) (2026-08-24)
+- [Researchers Uncover Thousands of Leaked AWS Keys](https://www.infosecurity-magazine.com/news/researchers-thousands-eaked-aws/) (2026-08-24)
+- [768 Leaked AWS Keys Still Active with Full Admin Privileges](https://gbhackers.com/768-leaked-aws-keys-still-active-with-full-admin/amp/)
+- [9,300 Leaked AWS Keys Still Work, 526 Are Root](https://www.gblock.app/articles/leaked-aws-keys-truffle-security-9300-2026)
 
 ---
 Source: https://cyber.netsecops.io/articles/thousands-of-leaked-aws-keys-remain-active-with-admin-access/
