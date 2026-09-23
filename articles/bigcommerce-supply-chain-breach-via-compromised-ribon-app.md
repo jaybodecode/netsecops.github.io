@@ -1,6 +1,6 @@
 # BigCommerce Data Breach Caused by Compromised Third-Party App
 
-**Severity:** high | **Category:** Data Breach,Supply Chain Attack,Cyberattack | **Updated:** 2026-09-22 | **Reading time:** 4 min
+**Severity:** high | **Category:** Data Breach,Supply Chain Attack,Cyberattack | **Updated:** 2026-09-23 | **Reading time:** 4 min
 
 E-commerce platform BigCommerce has disclosed a data breach affecting an undisclosed number of its merchants. The incident was a supply-chain attack originating from a compromised application key for the third-party 'Ribon' and 'Ribon 1.5' apps. Attackers used this key to access customer data between September 13 and 17, 2026. Exposed data includes customer names, emails, phone numbers, and shipping addresses. Financial data was not affected. One victim, Master of Malt, has notified its customers and the UK's ICO.
 
@@ -80,12 +80,12 @@ For organizations using platforms like BigCommerce, security teams may want to h
 *   **Vendor Risk Assessment**: Before integrating a third-party application, conduct a thorough security assessment of the vendor. Evaluate their security policies, development practices, and incident response capabilities ([`M1016 - Vulnerability Scanning`](https://attack.mitre.org/mitigations/M1016/)).
 *   **Contractual Obligations**: Ensure contracts with third-party developers include clauses that require them to maintain strong security controls and notify you immediately in the event of a breach.
 
-**Tags:** BigCommerce, Data Breach, Supply Chain Attack, API Security, E-commerce, Ribon, Master of Malt
+**Tags:** API Security, BigCommerce, Data Breach, E-commerce, Master of Malt, Ribon, Supply Chain Attack
 
 ## Sources
-- [BigCommerce data breach: shoppers warned after third-party app hacked](https://jointheclaim.com/bigcommerce-data-breach-shoppers-warned-after-third-party-app-hacked/) — Join the Claim (2026-09-22)
-- [BigCommerce warns customers of potential data leaks following cyber incident](https://www.techradar.com/pro/security/bigcommerce-warns-customers-of-potential-data-leaks-following-cyber-incident) — TechRadar Pro (2026-09-22)
-- [BigCommerce alerts merchants of data breach linked to Ribon apps](https://www.bleepingcomputer.com/news/security/bigcommerce-alerts-merchants-of-data-breach-linked-to-ribon-apps/) — BleepingComputer (2026-09-21)
+- [BigCommerce data breach: shoppers warned after third-party app hacked](https://jointheclaim.com/bigcommerce-data-breach-shoppers-warned-after-third-party-app-hacked/) (2026-09-22)
+- [BigCommerce warns customers of potential data leaks following cyber incident](https://www.techradar.com/pro/security/bigcommerce-warns-customers-of-potential-data-leaks-following-cyber-incident) (2026-09-22)
+- [BigCommerce alerts merchants of data breach linked to Ribon apps](https://www.bleepingcomputer.com/news/security/bigcommerce-alerts-merchants-of-data-breach-linked-to-ribon-apps/) (2026-09-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/bigcommerce-supply-chain-breach-via-compromised-ribon-app/

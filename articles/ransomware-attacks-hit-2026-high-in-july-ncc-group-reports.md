@@ -1,6 +1,6 @@
 # Ransomware Attacks Hit 2026 High in July, NCC Group Reports
 
-**Severity:** high | **Category:** Ransomware,Threat Intelligence,Threat Actor | **Updated:** 2026-09-17
+**Severity:** high | **Category:** Ransomware,Threat Intelligence,Threat Actor | **Updated:** 2026-09-23
 
 According to a new threat report from NCC Group, global ransomware activity surged in July 2026, reaching the highest monthly volume of the year. The report recorded 894 cases, a 22% increase from June. The Industrials sector and organizations in North America and Europe remained the top targets. The report also notes the appearance of a new group, 'CRPxO,' and the continued dominance of established actors.
 
