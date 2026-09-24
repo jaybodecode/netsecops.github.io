@@ -1,0 +1,95 @@
+title: Suspicious Cloud IAM User or Role Creation
+id: 2b9c1f8a-1e3d-4c5b-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Monitors for the creation of new IAM users or roles with high privileges, which could indicate a privilege escalation attempt in a cloud environment.
+references:
+  - https://industrialcyber.co/manufacturing/thales-2026-data-threat-report-finds-manufacturers-face-ai-and-cloud-security-risks-as-data-visibility-encryption-gaps-persist/
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1078.004
+level: medium
+logsource:
+  service: cloud-audit
+  product: generic
+detection:
+  selection_create_user:
+    event_name: 'CreateUser'
+    responseElements.user.attachedManagedPolicies|contains:
+      - 'arn:aws:iam::aws:policy/AdministratorAccess'
+  selection_create_role:
+    event_name: 'CreateRole'
+    requestParameters.assumeRolePolicyDocument|contains:
+      - '"sts:AssumeRole"'
+  condition: 1 of them
+---
+title: Anomalous Cloud Storage Access
+id: 8d7e6f5c-4b3a-4d2e-8f1a-9b8c7d6e5f4b
+status: experimental
+description: Detects when public access is enabled on a previously private cloud storage bucket or when large data downloads occur from unusual locations, which could indicate data exfiltration.
+references:
+  - https://industrialcyber.co/manufacturing/thales-2026-data-threat-report-finds-manufacturers-face-ai-and-cloud-security-risks-as-data-visibility-encryption-gaps-persist/
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1530
+level: high
+logsource:
+  service: cloud-storage
+  product: generic
+detection:
+  selection_public_access:
+    event_name: 'PutBucketPublicAccessBlock'
+    requestParameters.PublicAccessBlockConfiguration.BlockPublicAcls: false
+  selection_large_download:
+    event_name: 'GetObject'
+    additionalEventData.bytesTransferredOut|gt: 100000000
+  condition: 1 of them
+---
+title: Suspicious AWS Cross-Account Role Assumption
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Monitors for the abuse of cross-account role assumption in AWS (sts:AssumeRole), which can be a sign of lateral movement in a cloud environment.
+references:
+  - https://industrialcyber.co/manufacturing/thales-2026-data-threat-report-finds-manufacturers-face-ai-and-cloud-security-risks-as-data-visibility-encryption-gaps-persist/
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1078.004
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: 'sts.amazonaws.com'
+    eventName: 'AssumeRole'
+  filter:
+    sourceIPAddress|startswith:
+      - '10.'
+      - '172.16.'
+      - '192.168.'
+    userIdentity.invokedBy|contains:
+      - 'amazonaws.com' # Filter known AWS services
+  condition: selection and not filter
+---
+title: SaaS Impossible Travel Login
+id: f0e9d8c7-6b5a-4c3d-8e1f-0a9b8c7d6e5f
+status: experimental
+description: Detects impossible travel scenarios in SaaS application audit logs, such as logins from geographically distant locations in a short period of time.
+references:
+  - https://industrialcyber.co/manufacturing/thales-2026-data-threat-report-finds-manufacturers-face-ai-and-cloud-security-risks-as-data-visibility-encryption-gaps-persist/
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1078.004
+level: high
+logsource:
+  category: authentication
+  product: saas
+detection:
+  selection:
+    event_type: 'login'
+    outcome: 'success'
+    impossible_travel: true
+  condition: selection

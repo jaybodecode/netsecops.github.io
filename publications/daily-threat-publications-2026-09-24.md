@@ -1,0 +1,41 @@
+# Ransomware Surges, ICS & Aviation Cyber Risks Highlighted
+
+**Published:** 2026-09-24 | **Articles:** 8
+
+**Critical Vulnerabilities Under Active Exploitation**:
+
+*   **[UPDATE] Ransomware Attacks Reached Record High in August 2026, NCC Group Finds**: A recent report details a record high in ransomware attacks for August 2026, identifying top threat actors like Qilin and The Gentlemen. The update includes technical insights into common MITRE ATT&CK techniques, cyber observables, and hunting hints for detection, alongside mitigation strategies mapped to D3FEND techniques.
+*   **[NEW] MGM Resorts Shuts Down Systems to Contain Unspecified Cyberattack**: MGM Resorts International has initiated a shutdown of some computer systems to manage a detected cyberattack on September 23, 2026, leading to operational disruptions. The nature of the attack, involved threat actors, and potential data compromise are still under investigation.
+*   **[NEW] ShinyHunters Claims FBI Hack, Cites Revenge and PeopleSoft Zero-Day**: The extortion group ShinyHunters has claimed responsibility for breaching the FBI, alleging the use of a PeopleSoft zero-day vulnerability to access sensitive data. The group stated the attack was a retaliatory act, though the FBI has not confirmed the claim.
+
+**New Threats and Advisories**:
+
+*   **[NEW] CISA & FBI Warn of Third-Party Risks to Industrial Control Systems**: CISA and the FBI have issued a joint advisory concerning the significant cyber risks posed by third-party Industrial Control System (ICS) integrators. The guidance recommends critical infrastructure operators implement least privilege, strengthen contractual security, and enhance remote access monitoring.
+*   **[NEW] GAO: FAA Lacks Real-Time Monitoring for Aviation Cyber Threats**: A U.S. Government Accountability Office (GAO) report has identified cybersecurity weaknesses at the FAA, noting a lack of required risk assessments and real-time monitoring capabilities for threats to the National Airspace System (NAS), leaving aircraft communication systems vulnerable.
+
+**Policy & Industry Notes**:
+
+*   **[NEW] Google Fined €403M by Irish DPC for GDPR Location Data Violations**: Ireland's Data Protection Commission (DPC) has fined Google €403 million for GDPR violations related to the processing of user location data between 2018 and 2020. The DPC found Google's practices lacked lawfulness, fairness, and transparency concerning its 'Web & App Activity' and 'Location History' features.
+*   **[NEW] AI and Cloud Complexity Create New Risks for Manufacturers: Thales**: The 2026 Thales Data Threat Report for manufacturing highlights executive concerns about AI-driven security threats, with 67% citing the rapid pace of AI change as a top risk. The report also points to cloud security gaps, including low encryption rates for sensitive data and limited visibility into data location.
+*   **[NEW] Law Firm Investigates Data Breach at Infotree Global Solutions**: Edelson Lechtzin LLP is investigating a data breach at Infotree Global Solutions, where an employee inadvertently emailed sensitive personal information, including names and Social Security numbers, to an unauthorized party. The company has notified affected individuals and offered identity protection services.
+
+## Articles in this publication
+- [Ransomware Attacks Reached Record High in August 2026, NCC Group Finds](https://cyber.netsecops.io/articles/ransomware-attacks-hit-2026-record-high-in-august-ncc-group-reports/) (high)
+  Ransomware attacks surged to a new 2026 record in August, with 1,073 victims reported globally, a 12% increase from July, according to NCC Group. The industrial sector was the most frequent target, accounting for 31% of all incidents. North America remained the most affected region. The Qilin ransomware group emerged as the most prolific threat actor for the month, responsible for 15% of attributable attacks, overtaking 'The Gentlemen' group.
+- [CISA & FBI Warn of Third-Party Risks to Industrial Control Systems](https://cyber.netsecops.io/articles/cisa-fbi-warn-critical-infrastructure-on-third-party-ics-risks/) (high)
+  The U.S. Cybersecurity and Infrastructure Security Agency (CISA) and the FBI have issued a joint advisory highlighting the significant cyber risks posed by third-party Industrial Control System (ICS) integrators. The guidance urges critical infrastructure operators to enforce the principle of least privilege, enhance contractual security requirements, and improve monitoring of remote access to protect sensitive operational technology (OT) environments from supply chain attacks.
+- [Google Fined €403M by Irish DPC for GDPR Location Data Violations](https://cyber.netsecops.io/articles/google-fined-403-million-euros-for-gdpr-location-data-violations/) (medium)
+  Ireland's Data Protection Commission (DPC) has imposed a €403 million fine on Google for violations of the EU's General Data Protection Regulation (GDPR). The penalty, one of the largest of its kind, follows a six-year inquiry into Google's processing of user location data between 2018 and 2020. The DPC found the company's practices lacked lawfulness, fairness, and transparency, particularly concerning its 'Web & App Activity' and 'Location History' features.
+- [MGM Resorts Shuts Down Systems to Contain Unspecified Cyberattack](https://cyber.netsecops.io/articles/mgm-resorts-shuts-down-systems-following-cyberattack/) (high)
+  MGM Resorts International has proactively shut down some of its computer systems to contain a cyberattack detected on September 23, 2026. The move has caused operational disruptions across its properties. Details regarding the nature of the attack, the threat actor involved, and whether data was compromised have not yet been disclosed as the investigation is ongoing.
+- [AI and Cloud Complexity Create New Risks for Manufacturers: Thales](https://cyber.netsecops.io/articles/thales-report-ai-and-cloud-risks-plague-manufacturing-sector/) (medium)
+  The 2026 Thales Data Threat Report for the manufacturing sector reveals widespread concern over AI-driven security threats, with 67% of executives citing the rapid pace of AI change as their top risk. The report also highlights alarming gaps in cloud security, with only 31% of organizations having full visibility of their data's location and very low rates of encryption for sensitive data stored in the cloud.
+- [GAO: FAA Lacks Real-Time Monitoring for Aviation Cyber Threats](https://cyber.netsecops.io/articles/gao-report-finds-faa-lacks-real-time-aviation-cyber-threat-monitoring/) (high)
+  A U.S. Government Accountability Office (GAO) report has identified critical cybersecurity weaknesses at the Federal Aviation Administration (FAA). The report finds the FAA has failed to complete required risk assessments and lacks a real-time capability to monitor for threats like spoofing and jamming against the National Airspace System (NAS). This leaves key aircraft communication systems vulnerable to disruption.
+- [Law Firm Investigates Data Breach at Infotree Global Solutions](https://cyber.netsecops.io/articles/law-firm-investigates-data-breach-at-infotree-global-solutions/) (medium)
+  The law firm Edelson Lechtzin LLP is investigating a data breach at staffing and payroll company Infotree Global Solutions. The breach occurred when an employee accidentally emailed documents containing sensitive personal information, including names and Social Security numbers, to an unauthorized individual. The company has notified affected parties and offered identity protection services.
+- [ShinyHunters Claims FBI Hack, Cites Revenge and PeopleSoft Zero-Day](https://cyber.netsecops.io/articles/shinyhunters-claims-fbi-hack-via-peoplesoft-zero-day/) (critical)
+  The notorious extortion group ShinyHunters has claimed responsibility for a breach of the Federal Bureau of Investigation (FBI). In a post on September 23, 2026, the group alleged it exploited a zero-day vulnerability in PeopleSoft software to steal sensitive data on agents and job applicants. The attack was allegedly in retaliation for a recent FBI report on the group. The FBI has not confirmed the claim.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-09-24/
