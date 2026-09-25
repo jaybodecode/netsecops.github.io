@@ -1,6 +1,6 @@
 # CISA & FBI Warn of Third-Party Risks to Industrial Control Systems
 
-**Severity:** high | **Category:** Industrial Control Systems,Supply Chain Attack,Policy and Compliance | **Updated:** 2026-09-24 | **Reading time:** 6 min
+**Severity:** high | **Category:** Industrial Control Systems,Supply Chain Attack,Policy and Compliance | **Updated:** 2026-09-25
 
 The U.S. Cybersecurity and Infrastructure Security Agency (CISA) and the FBI have issued a joint advisory highlighting the significant cyber risks posed by third-party Industrial Control System (ICS) integrators. The guidance urges critical infrastructure operators to enforce the principle of least privilege, enhance contractual security requirements, and improve monitoring of remote access to protect sensitive operational technology (OT) environments from supply chain attacks.
 
@@ -72,12 +72,12 @@ The CISA/FBI advisory provides several key mitigation strategies:
 4.  **Asset Management:** Maintain a comprehensive inventory of all hardware and software provided or managed by the integrator. This is crucial for patch management and vulnerability scanning.
 5.  **Network Segmentation:** Isolate the OT network from the IT network and the internet. Use demilitarized zones (DMZs) to control access between network segments, limiting an attacker's ability to move laterally from a compromised IT system to the OT environment.
 
-**Tags:** ICS, OT Security, SCADA, Third-Party Risk, Supply Chain, Least Privilege, CISA, FBI
+**Tags:** CISA, FBI, ICS, Least Privilege, OT Security, SCADA, Supply Chain, Third-Party Risk
 
 ## Sources
-- [Considerations for Critical Infrastructure Operators Working With Third-Party ICS Integrators](https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators) — CISA (2026-09-23)
-- [CISA, FBI warn critical infrastructure operators of third-party ICS risks, urge least privilege and remote access controls](https://industrialcyber.co/industrial-cyber-attacks/cisa-fbi-warn-critical-infrastructure-operators-of-third-party-ics-risks-urge-least-privilege-and-remote-access-controls/) — Industrial Cyber (2026-09-24)
-- [The Cyber Threat](https://www.fbi.gov/investigate/cyber) — FBI (2026-09-23)
+- [Considerations for Critical Infrastructure Operators Working With Third-Party ICS Integrators](https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators) (2026-09-23)
+- [CISA, FBI warn critical infrastructure operators of third-party ICS risks, urge least privilege and remote access controls](https://industrialcyber.co/industrial-cyber-attacks/cisa-fbi-warn-critical-infrastructure-operators-of-third-party-ics-risks-urge-least-privilege-and-remote-access-controls/) (2026-09-24)
+- [The Cyber Threat](https://www.fbi.gov/investigate/cyber) (2026-09-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-fbi-warn-critical-infrastructure-on-third-party-ics-risks/

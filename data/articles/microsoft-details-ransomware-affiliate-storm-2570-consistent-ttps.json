@@ -1,0 +1,301 @@
+{
+  "id": "3207ecf4-5941-4c75-af84-572a1933aaf9",
+  "slug": "microsoft-details-ransomware-affiliate-storm-2570-consistent-ttps",
+  "headline": "Microsoft Links Ransomware Affiliate Storm-2570 to Four Malware Families",
+  "title": "Microsoft: Storm-2570 Affiliate Uses Same TTPs for Qilin, DragonForce",
+  "summary": "A Microsoft Threat Intelligence report details the activities of a single ransomware affiliate, Storm-2570, which has been observed deploying four different ransomware payloads: Qilin, DragonForce, Anubis, and BERT. The group maintains a consistent playbook of TTPs, including the use of RMM tools for C2, credential harvesting with Mimikatz, and data exfiltration with Rclone. This highlights the importance of tracking attacker behaviors over just the final malware payload for effective defense.",
+  "full_report": "## Executive Summary\n**[Microsoft](https://www.microsoft.com/security)** has identified and detailed the consistent operational playbook of a single ransomware affiliate, tracked as **Storm-2570**. This group is linked to attacks deploying at least four distinct ransomware families: **Qilin**, **DragonForce**, **Anubis**, and **BERT**. The research, published on September 24, 2026, underscores a critical defensive principle: tracking the consistent tactics, techniques, and procedures (TTPs) of the human operator provides more durable detection opportunities than focusing on the ever-changing final ransomware payload. Storm-2570's methodology involves abusing legitimate remote management tools, harvesting credentials, disabling security controls, and exfiltrating data before encryption, offering multiple chances for defenders to intervene.\n\n---\n\n## Threat Overview\n**Storm-2570** is a prolific ransomware affiliate active since at least April 2025. By operating under multiple **[Ransomware-as-a-Service (RaaS)](https://en.wikipedia.org/wiki/Ransomware_as_a_service)** banners, the group complicates attribution and defense. However, Microsoft's analysis reveals a highly consistent set of post-compromise behaviors, creating a distinct fingerprint for the attacker.\n\nThe group has targeted a wide range of sectors, including healthcare, education, energy, and manufacturing, with victims located in the United States, Canada, the United Kingdom, Spain, the Netherlands, and Puerto Rico. While the initial access vector is not yet confirmed, their actions after gaining a foothold are well-documented and predictable.\n\n## Technical Analysis\nStorm-2570's attack lifecycle is characterized by the use of legitimate tools and common offensive security utilities, a 'living-off-the-land' approach mixed with custom tooling.\n\n*   **Command and Control**: The affiliate heavily relies on remote management and monitoring (RMM) software for persistence and C2. Tools observed include `MeshAgent`, `Atera`, `NinjaRMM`, and `ScreenConnect`. They often rename the executables to masquerade as legitimate software ([`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)).\n*   **Credential Access**: Storm-2570 uses a variety of tools to harvest credentials, including **[Mimikatz](https://attack.mitre.org/software/S0002/)**, `LaZagne`, and `pypykatz`. Critically, they have been observed using the native Windows utility `ntdsutil` to create a copy of the Active Directory database (`ntds.dit`), which is then taken offline for credential extraction ([`T1003.003 - NTDS`](https://attack.mitre.org/techniques/T1003/003/)).\n*   **Defense Evasion**: The group actively works to undermine security measures, including using commands to disable Microsoft Defender's real-time protection ([`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/)).\n*   **Lateral Movement**: Tools like **[PsExec](https://attack.mitre.org/software/S0029)**, `Impacket`, and `NetExec` are used to move across the network to other systems.\n*   **Exfiltration**: Before deploying ransomware, the group exfiltrates stolen data using tools like `s5cmd` and `Rclone` to upload archives to attacker-controlled cloud storage ([`T1567.002 - Exfiltration to Cloud Storage`](https://attack.mitre.org/techniques/T1567/002/)).\n*   **Impact**: The final step is the deployment of one of the associated ransomware payloads, such as **Qilin**, to encrypt files across the network ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)).\n\n## Impact Assessment\nBy targeting diverse and critical sectors, Storm-2570 poses a significant economic and operational threat. The consistent TTPs across different ransomware brands suggest a skilled and efficient operator capable of systematically compromising networks. The impact on a victim organization includes not only the cost of the ransom and recovery but also the damage from the public leak of sensitive data stolen during the exfiltration phase. The focus on healthcare and energy sectors is particularly concerning due to the potential for disruption of essential services.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams should hunt for the following TTP-based observables:\n\n| Type | Value | Description |\n|---|---|---|\n| `process_name` | `MeshAgent.exe`, `AteraAgent.exe`, `NinjaRMM.exe` | Presence of legitimate RMM tools in environments where they are not officially used. |\n| `command_line_pattern` | `ntdsutil.exe \"ac i ntds\" \"ifm\" \"create full C:\\temp\"` | Command to create an Install From Media (IFM) copy of the Active Directory database. |\n| `command_line_pattern` | `rclone.exe copy /path/to/data remote:bucket` | Use of Rclone to exfiltrate data to cloud storage providers. |\n| `command_line_pattern` | `Set-MpPreference -DisableRealtimeMonitoring $true` | PowerShell command used to disable Microsoft Defender. |\n| `process_name` | `s5cmd.exe` | Presence and execution of the s5cmd tool, used for high-speed S3 data transfers. |\n\n## Detection & Response\n*   **Monitor RMM Tools**: Establish a baseline of approved remote administration tools. Alert on the installation or execution of any unauthorized RMM software. Use D3FEND's [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting) to prevent unapproved tools from running.\n*   **Protect Active Directory**: Closely monitor for any use of `ntdsutil.exe`. Access to the `ntds.dit` file should be heavily restricted and logged. Alert on any process attempting to access or copy this file. [`D3-DAM: Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring) is a key defensive technique.\n*   **Egress Traffic Filtering**: Monitor and filter outbound network traffic. The use of tools like `Rclone` and `s5cmd` creates distinctive traffic patterns to cloud storage providers that can be detected and blocked. [`D3-OTF: Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) can prevent data exfiltration.\n\n## Mitigation\n*   **Application Control**: Implement application control policies to restrict the execution of unauthorized software, including unapproved RMM tools and known credential dumping utilities.\n*   **Harden Active Directory**: Secure privileged accounts, implement robust password policies, and restrict access to domain controllers. Follow best practices for securing AD against attacks like Kerberoasting and DCSync.\n*   **Endpoint Protection**: Ensure endpoint security solutions are properly configured, tamper protection is enabled, and alerts for disabling security features are treated with high priority.\n*   **Network Segmentation**: Segment the network to inhibit lateral movement, making it harder for an attacker to move from a compromised workstation to a critical server like a domain controller.",
+  "twitter_post": "Microsoft unmasks ransomware affiliate Storm-2570, linking it to Qilin, DragonForce, Anubis & BERT payloads. The group uses a consistent playbook of RMM tools, ntdsutil, & Rclone, offering key detection points. #ThreatIntel #Ransomware #Storm2570 #Microsoft",
+  "meta_description": "Microsoft Threat Intelligence reports that a single ransomware affiliate, Storm-2570, uses a consistent set of TTPs to deploy Qilin, DragonForce, and other malware.",
+  "category": [
+    "Threat Actor",
+    "Ransomware",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Storm-2570",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Qilin",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.qilin"
+    },
+    {
+      "name": "DragonForce",
+      "type": "malware"
+    },
+    {
+      "name": "Anubis",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.anubis_banker"
+    },
+    {
+      "name": "BERT",
+      "type": "malware"
+    },
+    {
+      "name": "MeshAgent",
+      "type": "product"
+    },
+    {
+      "name": "Atera",
+      "type": "product"
+    },
+    {
+      "name": "NinjaRMM",
+      "type": "product"
+    },
+    {
+      "name": "ScreenConnect",
+      "type": "product"
+    },
+    {
+      "name": "Mimikatz",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0002/"
+    },
+    {
+      "name": "LaZagne",
+      "type": "malware"
+    },
+    {
+      "name": "Rclone",
+      "type": "product"
+    },
+    {
+      "name": "s5cmd",
+      "type": "product"
+    },
+    {
+      "name": "PsExec",
+      "type": "product",
+      "url": "https://attack.mitre.org/software/S0029/"
+    },
+    {
+      "name": "Impacket",
+      "type": "product"
+    },
+    {
+      "name": "NetExec",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/09/24/beyond-ransomware-tracking-storm-2570-consistent-tradecraft-across-deployments/",
+      "title": "Beyond the ransomware: Tracking Storm-2570's consistent tradecraft across deployments",
+      "date": "2026-09-24",
+      "friendly_name": "Microsoft Security",
+      "website": "microsoft.com"
+    },
+    {
+      "url": "https://cybersecuritynews.com/microsoft-finds-ransomware-group/",
+      "title": "Microsoft Finds Ransomware Group Using Same Attack Blueprint Across Multiple Malware Families",
+      "date": "2026-09-25",
+      "friendly_name": "Cyber Security News",
+      "website": "cybersecuritynews.com"
+    },
+    {
+      "url": "https://blog.gridinsoft.com/storm-2570-ransomware-remote-access/",
+      "title": "Storm-2570 Uses Four Ransomware Brands—and the Same Access Tools",
+      "date": "2026-09-24",
+      "friendly_name": "Gridinsoft"
+    },
+    {
+      "url": "https://cypro.co.uk/insights/cyber-bulletins/storm-2570-ransomware-blueprint-exposed/",
+      "title": "Storm-2570 Ransomware Blueprint Exposed",
+      "date": "2026-09-25",
+      "friendly_name": "Cypro"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-04-01T00:00:00Z",
+      "summary": "Storm-2570 affiliate activity is first observed."
+    },
+    {
+      "datetime": "2026-09-24T00:00:00Z",
+      "summary": "Microsoft publishes its threat intelligence report on Storm-2570's consistent TTPs."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1003.003",
+      "name": "NTDS",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1567.002",
+      "name": "Exfiltration to Cloud Storage",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1021.002",
+      "name": "SMB/Windows Admin Shares",
+      "tactic": "Lateral Movement"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application allowlisting to prevent the execution of unauthorized RMM tools and other attacker utilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        }
+      ],
+      "description": "Enable and monitor command-line and PowerShell logging to detect suspicious commands like `ntdsutil` or attempts to disable security software.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement egress filtering to block outbound connections to known malicious destinations and unauthorized cloud storage services.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UAP",
+          "name": "User Account Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions"
+        }
+      ],
+      "description": "Harden Active Directory by restricting permissions and closely monitoring for any attempts to access or copy the ntds.dit file.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "To directly counter Storm-2570's abuse of legitimate RMM tools like MeshAgent and Atera, organizations should implement a strict application allowlisting policy. This involves creating an inventory of all approved software and configuring endpoint security tools (like AppLocker or third-party solutions) to block the execution of any application not on this list. This is particularly critical on servers and domain controllers. By defining a 'known good' baseline, the execution of unauthorized RMM agents, credential dumpers like Mimikatz, and exfiltration tools like Rclone would be prevented by default. This shifts the defensive posture from chasing known bad signatures to enforcing known good behavior, significantly raising the difficulty for the attacker to establish persistence and execute their toolset.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "Storm-2570's use of `ntdsutil` to steal the Active Directory database is a key, high-fidelity indicator of a major compromise. Defenders must implement specific monitoring for this activity. Configure SACLs (System Access Control Lists) on the `ntds.dit` file (`%SystemRoot%\\NTDS\\ntds.dit`) to log all access attempts and forward these logs to a SIEM. Create a high-priority alert that triggers any time `ntdsutil.exe` is executed on a domain controller, or any process other than `lsass.exe` attempts to read the `ntds.dit` file. This provides a critical tripwire that can detect the adversary during the credential access phase, before they have achieved full domain dominance and begun exfiltration.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "ntdsutil.exe",
+      "description": "Execution of the ntdsutil command-line tool, especially with 'ifm' or 'create' arguments, is a strong indicator of credential theft.",
+      "context": "Monitor command-line logs (Event ID 4688) on Domain Controllers.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "rclone.exe",
+      "description": "The presence and execution of rclone.exe, a legitimate data sync tool often abused by threat actors for exfiltration.",
+      "context": "Process execution logs on servers and endpoints.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "Set-MpPreference -DisableRealtimeMonitoring $true",
+      "description": "A specific PowerShell command used to disable Microsoft Defender's real-time protection.",
+      "context": "PowerShell script block logging (Event ID 4104).",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "C:\\Windows\\Temp\\ntds.dit",
+      "description": "A common location where attackers store a copy of the Active Directory database before exfiltrating it.",
+      "context": "File Integrity Monitoring (FIM) on Domain Controllers.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Storm-2570",
+    "ransomware affiliate",
+    "Qilin",
+    "DragonForce",
+    "TTPs",
+    "Microsoft",
+    "RMM",
+    "ntdsutil"
+  ],
+  "extract_datetime": "2026-09-25T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "United States",
+      "Canada",
+      "United Kingdom",
+      "Spain",
+      "Netherlands",
+      "Puerto Rico"
+    ],
+    "industries_affected": [
+      "Healthcare",
+      "Education",
+      "Energy",
+      "Manufacturing"
+    ]
+  },
+  "pub_date": "2026-09-25",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-09-25T15:00:00.000Z",
+  "updatedAt": "2026-09-25T15:00:00.000Z"
+}

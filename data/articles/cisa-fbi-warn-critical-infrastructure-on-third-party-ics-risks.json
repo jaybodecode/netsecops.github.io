@@ -16,17 +16,11 @@
   "entities": [
     {
       "name": "Cybersecurity and Infrastructure Security Agency (CISA)",
-      "type": "government_agency",
-      "url": "https://www.cisa.gov"
+      "type": "government_agency"
     },
     {
       "name": "Federal Bureau of Investigation (FBI)",
-      "type": "government_agency",
-      "url": "https://www.fbi.gov"
-    },
-    {
-      "name": "U.S. industrial automation solutions company",
-      "type": "company"
+      "type": "government_agency"
     },
     {
       "name": "Industrial Control Systems",
@@ -35,6 +29,10 @@
     {
       "name": "SCADA",
       "type": "technology"
+    },
+    {
+      "name": "U.S. industrial automation solutions company",
+      "type": "company"
     }
   ],
   "cves": [],
@@ -43,21 +41,18 @@
       "url": "https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators",
       "title": "Considerations for Critical Infrastructure Operators Working With Third-Party ICS Integrators",
       "date": "2026-09-23",
-      "friendly_name": "CISA",
       "website": "cisa.gov"
     },
     {
       "url": "https://industrialcyber.co/industrial-cyber-attacks/cisa-fbi-warn-critical-infrastructure-operators-of-third-party-ics-risks-urge-least-privilege-and-remote-access-controls/",
       "title": "CISA, FBI warn critical infrastructure operators of third-party ICS risks, urge least privilege and remote access controls",
       "date": "2026-09-24",
-      "friendly_name": "Industrial Cyber",
       "website": "industrialcyber.co"
     },
     {
       "url": "https://www.fbi.gov/investigate/cyber",
       "title": "The Cyber Threat",
       "date": "2026-09-23",
-      "friendly_name": "FBI",
       "website": "fbi.gov"
     }
   ],
@@ -73,9 +68,14 @@
   ],
   "mitre_techniques": [
     {
-      "id": "T1199",
-      "name": "Trusted Relationship",
-      "tactic": "Initial Access"
+      "id": "T1021.001",
+      "name": "Remote Services: Remote Desktop Protocol",
+      "tactic": "Lateral Movement"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
     },
     {
       "id": "T1078",
@@ -83,133 +83,84 @@
       "tactic": "Defense Evasion"
     },
     {
-      "id": "T1021.001",
-      "name": "Remote Services: Remote Desktop Protocol",
-      "tactic": "Lateral Movement"
-    },
-    {
       "id": "T1105",
       "name": "Ingress Tool Transfer",
       "tactic": "Command and Control"
     },
     {
-      "id": "T1048",
-      "name": "Exfiltration Over Alternative Protocol",
-      "tactic": "Exfiltration"
-    }
-  ],
-  "mitre_mitigations": [
-    {
-      "id": "M1035",
-      "name": "Limit Access to Resource Over Network",
-      "description": "Restrict network access for third-party integrators to only the specific systems and ports required for their function.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1026",
-      "name": "Privileged Account Management",
-      "description": "Implement just-in-time access and enforce the principle of least privilege for all integrator accounts.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1030",
-      "name": "Network Segmentation",
-      "description": "Isolate OT networks from IT networks and the internet to contain potential breaches originating from third parties.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1047",
-      "name": "Audit",
-      "description": "Continuously log and audit all activities performed by third-party accounts to detect suspicious behavior.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1032",
-      "name": "Multi-factor Authentication",
-      "description": "Require MFA for all remote access sessions to prevent unauthorized access via compromised credentials.",
-      "domain": "enterprise"
-    }
-  ],
-  "d3fend_countermeasures": [
-    {
-      "technique_id": "D3-UAP",
-      "technique_name": "User Account Permissions",
-      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
-      "recommendation": "In the context of protecting against ICS integrator compromise, implementing User Account Permissions is paramount. This goes beyond standard account creation and involves a Zero Trust approach to access control. For each integrator, organizations should define granular permissions on a per-system, per-protocol, and per-user basis. Instead of granting broad VPN access, provide application-level access through a secure gateway. For example, if an integrator only needs to manage a specific PLC, their account should only have rights to communicate with that device's IP address on the specific management port (e.g., TCP/502 for Modbus) and nothing else. Access should be time-bound, automatically expiring after a project phase is complete. This D3FEND technique directly mitigates the risk of an attacker leveraging a compromised integrator account for lateral movement or broad network reconnaissance, as their access is confined to a minimal, pre-approved set of resources.",
-      "mitre_mitigation_id": "M1015"
-    },
-    {
-      "technique_id": "D3-NTA",
-      "technique_name": "Network Traffic Analysis",
-      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
-      "recommendation": "To detect malicious activity stemming from a compromised ICS integrator, Network Traffic Analysis is a critical defensive layer. Organizations should deploy network sensors or leverage existing firewall/switch capabilities (like NetFlow or sFlow) at key ingress/egress points used by third parties, such as VPN concentrators or DMZ jump boxes. The first step is to baseline normal activity: what protocols, systems, and data volumes does the integrator typically use? Once a baseline is established, security teams can create alerts for deviations. For example, an alert could trigger if an integrator's connection, which normally only involves RDP traffic to a specific server, suddenly initiates an SMB connection to a file share or attempts to exfiltrate a large volume of data to an unknown external IP. This directly addresses the threat of data exfiltration and reconnaissance, as seen in the 2025 incident where attackers searched for 'SCADA' files.",
-      "mitre_mitigation_id": "M1031"
-    },
-    {
-      "technique_id": "D3-NI",
-      "technique_name": "Network Isolation",
-      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
-      "recommendation": "Network Isolation, often implemented as network segmentation, is a foundational control for limiting the blast radius of a compromised third-party integrator. The Purdue Model for ICS security provides a strong framework. Integrator access should terminate in a DMZ (Level 3.5), completely separate from the corporate IT network and the core OT process control network (Levels 0-2). From this DMZ, all access into the OT environment must be strictly controlled through an internal firewall, allowing only specific, approved protocols and IP addresses. This prevents a compromised integrator from using their access to pivot to the corporate email server or, conversely, an attacker on the IT network from reaching the OT systems via the integrator's path. This D3FEND technique ensures that even if an integrator's credentials are stolen, the attacker's movement is severely restricted, preventing them from accessing the most sensitive control systems.",
-      "mitre_mitigation_id": "M1037"
-    }
-  ],
-  "iocs": [],
-  "cyber_observables": [
-    {
-      "type": "command_line_pattern",
-      "value": "net user * /domain",
-      "description": "Enumerating domain accounts from a session originating from a third-party IP range, which could indicate reconnaissance.",
-      "context": "Windows Event ID 4688, EDR logs",
-      "confidence": "medium"
-    },
-    {
-      "type": "file_path",
-      "value": "C:\\Windows\\Temp\\",
-      "description": "Monitoring for unusual script or binary execution from temporary directories by integrator accounts.",
-      "context": "File integrity monitoring, EDR logs",
-      "confidence": "medium"
-    },
-    {
-      "type": "network_traffic_pattern",
-      "value": "Anomalous data transfers from OT network segments to external IPs",
-      "description": "Baselining normal integrator traffic and alerting on anomalies, especially large data transfers, which could signal data exfiltration.",
-      "context": "Firewall logs, NetFlow data, Network Intrusion Detection Systems (NIDS)",
-      "confidence": "high"
-    },
-    {
-      "type": "log_source",
-      "value": "VPN or Remote Access Gateway Logs",
-      "description": "Auditing connection times, durations, and source IPs for all third-party access, alerting on off-hours or geographically anomalous activity.",
-      "context": "SIEM, Log Management Platform",
-      "confidence": "high"
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
     }
   ],
   "tags": [
+    "CISA",
+    "FBI",
     "ICS",
+    "Least Privilege",
     "OT Security",
     "SCADA",
-    "Third-Party Risk",
     "Supply Chain",
-    "Least Privilege",
-    "CISA",
-    "FBI"
+    "Third-Party Risk"
   ],
-  "extract_datetime": "2026-09-24T15:00:00.000Z",
-  "article_type": "Advisory",
+  "extract_datetime": "2026-09-24",
+  "article_type": "NewsArticle",
   "impact_scope": {
     "geographic_scope": "national",
-    "countries_affected": [
-      "United States"
-    ],
     "industries_affected": [
       "Critical Infrastructure",
       "Energy",
       "Transportation",
       "Manufacturing"
-    ]
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States"
+    ],
+    "other_affected": [],
+    "people_affected_estimate": null
   },
+  "keywords": [
+    "CISA",
+    "FBI",
+    "ICS",
+    "Least Privilege",
+    "OT Security",
+    "SCADA",
+    "Supply Chain",
+    "Third-Party Risk"
+  ],
   "pub_date": "2026-09-24",
-  "reading_time_minutes": 6,
+  "reading_time_minutes": null,
   "createdAt": "2026-09-24T15:00:00.000Z",
-  "updatedAt": "2026-09-24T15:00:00.000Z"
+  "updatedAt": "2026-09-25T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-09-25T12:00:00Z",
+      "summary": "Expanded CISA/FBI guidance details specific compliance requirements, affected sectors, and advanced mitigation strategies for third-party ICS integrator risks.",
+      "content": "The updated guidance from CISA and FBI clarifies its status as a recommendation, not a regulation, and specifies affected critical infrastructure sectors including Energy, Water, Transportation, and Manufacturing. It details enhanced compliance requirements such as implementing dedicated, temporary accounts with MFA for integrators, comprehensive logging of all third-party actions, and strict network segmentation. New mitigation strategies include adopting Zero Trust principles for all third-party access, utilizing secure session-based remote access, and establishing formal vendor risk management programs. Detection recommendations now include behavioral analysis of third-party accounts and proactive threat intelligence consumption, referencing D3FEND techniques like Resource Access Pattern Analysis and MITRE M1030 for network segmentation.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://industrialcyber.co/industrial-cyber-attacks/cisa-fbi-warn-critical-infrastructure-operators-of-third-party-ics-risks-urge-least-privilege-and-remote-access-controls/",
+          "title": "CISA, FBI warn critical infrastructure operators of third-party ICS risks, urge least privilege and remote access controls",
+          "website": "",
+          "date": "2026-09-25T12:00:00Z"
+        },
+        {
+          "url": "https://www.securityweek.com/ot-security-guidance-nist-drafts-updated-guide-cisa-fbi-advise-on-ics-integrators/",
+          "title": "OT Security Guidance: NIST Drafts Updated Guide, CISA/FBI Advise on ICS Integrators",
+          "website": "",
+          "date": "2026-09-25T12:00:00Z"
+        },
+        {
+          "url": "https://www.waterisac.org/tlpclear-fbi-and-cisa-highlight-risks-of-third-party-ics-integrator-access-to-critical-infrastructure",
+          "title": "(TLP:CLEAR) FBI and CISA Highlight Risks of Third-Party ICS Integrator Access to Critical Infrastructure",
+          "website": "",
+          "date": "2026-09-25T12:00:00Z"
+        }
+      ]
+    }
+  ]
 }
