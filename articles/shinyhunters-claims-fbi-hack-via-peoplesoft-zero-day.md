@@ -1,6 +1,6 @@
 # ShinyHunters Claims FBI Hack, Cites Revenge and PeopleSoft Zero-Day
 
-**Severity:** critical | **Category:** Threat Actor,Cyberattack,Vulnerability | **Updated:** 2026-09-24 | **Reading time:** 5 min
+**Severity:** critical | **Category:** Threat Actor,Cyberattack,Vulnerability | **Updated:** 2026-09-27
 
 The notorious extortion group ShinyHunters has claimed responsibility for a breach of the Federal Bureau of Investigation (FBI). In a post on September 23, 2026, the group alleged it exploited a zero-day vulnerability in PeopleSoft software to steal sensitive data on agents and job applicants. The attack was allegedly in retaliation for a recent FBI report on the group. The FBI has not confirmed the claim.
 
@@ -74,11 +74,11 @@ While mitigating a true zero-day is difficult, organizations can take steps to r
 3.  **Network Segmentation:** Isolate PeopleSoft servers in their own network segment with strict firewall rules, limiting their ability to communicate with other parts of the internal network.
 4.  **Principle of Least Privilege:** The service account running the PeopleSoft application should have the minimum permissions necessary to function.
 
-**Tags:** ShinyHunters, FBI, ZeroDay, PeopleSoft, Extortion, Data Breach, Unconfirmed
+**Tags:** Data Breach, Extortion, FBI, PeopleSoft, ShinyHunters, Unconfirmed, ZeroDay
 
 ## Sources
-- [ShinyHunters Claims FBI Hack Via PeopleSoft Zero Day](https://www.infosecurity-magazine.com/news/ransomware-attacks-reach-record/) — Infosecurity Magazine (2026-09-23)
-- [ShinyHunters claims FBI breach was revenge for “false” report](https://www.malwarebytes.com/blog/news/2026/09/googles-location-data-privacy-failures-draw-a-e403-million-fine) — Malwarebytes (2026-09-23)
+- [ShinyHunters Claims FBI Hack Via PeopleSoft Zero Day](https://www.infosecurity-magazine.com/news/ransomware-attacks-reach-record/) (2026-09-23)
+- [ShinyHunters claims FBI breach was revenge for “false” report](https://www.malwarebytes.com/blog/news/2026/09/googles-location-data-privacy-failures-draw-a-e403-million-fine) (2026-09-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-claims-fbi-hack-via-peoplesoft-zero-day/

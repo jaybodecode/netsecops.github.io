@@ -1,0 +1,190 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-27T12:31:08.541Z",
+    "article_slug": "microsoft-details-cloud-destruction-tactics-of-jadepuffer-ransomware-group",
+    "article_date": "2026-09-26",
+    "token_usage": {
+      "input_tokens": 148370,
+      "output_tokens": 2522,
+      "cached_tokens": 0,
+      "total_tokens": 150892,
+      "cache_hit": false,
+      "estimated_cost_usd": 0.210682
+    }
+  },
+  "report_name": "Microsoft Details Destructive Cloud Tactics of JADEPUFFER",
+  "threat_actors": [
+    {
+      "name": "Storm-3168",
+      "mitre_id": "",
+      "aliases": [
+        "JADEPUFFER"
+      ],
+      "description": "An 'agentic ransomware' group that conducted a highly destructive, automated campaign in Microsoft Azure. The group leveraged compromised service principals for rapid reconnaissance and destruction of cloud resources, including storage accounts, key vaults, and backups.",
+      "goals": "To destroy cloud data and prevent recovery, likely to increase leverage for a ransom demand.",
+      "primary_motivation": "personal-gain",
+      "resource_level": "team",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Cloud Accounts",
+      "mitre_id": "T1078.004",
+      "description": "Gained initial access by compromising at least two service principals within a single Azure tenant, with one potentially compromised via credentials exposed in a public GitHub issue."
+    },
+    {
+      "name": "Cloud Service Discovery",
+      "mitre_id": "T1526",
+      "description": "Used a compromised service principal to perform over 300 successful read operations over a 15-hour period to enumerate the victim's cloud environment, including virtual machines, subscriptions, resource groups, and storage accounts."
+    },
+    {
+      "name": "Data Destruction",
+      "mitre_id": "T1485",
+      "description": "Executed a rapid, automated destructive phase, issuing over 100 deletion requests for storage accounts, an Azure Key Vault, a Function App, and an App Service plan in seven minutes."
+    },
+    {
+      "name": "Disk Wipe",
+      "mitre_id": "T1561",
+      "description": "Attempted to delete Azure Site Recovery locks and Azure Backup protection to prevent victim recovery from the destructive attack."
+    },
+    {
+      "name": "Cloud Secrets Management Stores",
+      "mitre_id": "T1552.006",
+      "description": "Targeted and deleted an Azure Key Vault as part of the destructive phase to impair defenses and remove access to secrets."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Microsoft",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Security vendor that researched and published the detailed analysis of the Storm-3168 (JADEPUFFER) campaign."
+    },
+    {
+      "name": "Microsoft Azure",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The public cloud platform targeted by the Storm-3168 (JADEPUFFER) threat actor for reconnaissance and data destruction."
+    },
+    {
+      "name": "GitHub",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Public code repository where service principal credentials may have been accidentally exposed, leading to the initial compromise."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "JADEPUFFER - Azure Storage Account Deletion via CLI",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: JADEPUFFER - Azure Storage Account Deletion via CLI\nid: 2b3a1c4d-e5f6-4a90-8bcd-ef1234567890\nstatus: experimental\ndescription: Detects the execution of the Azure CLI command to delete a storage account, a technique used by the JADEPUFFER group for rapid data destruction.\nreferences:\n  - https://www.microsoft.com/en-us/security/blog/2026/09/25/storm-3168-agentic-driven-cloud-attacks-using-compromised-service-principals/\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1485\nlevel: high\nlogsource:\n  category: process_creation\ndetection:\n  selection:\n    Image|endswith:\n      - '\\az.exe'\n      - '/az'\n    CommandLine|contains|all:\n      - 'storage'\n      - 'account'\n      - 'delete'\n  condition: selection",
+      "description": "Detects the use of the Azure CLI to delete a storage account, a destructive action observed in the JADEPUFFER campaign."
+    },
+    {
+      "name": "JADEPUFFER - Azure Backup Protection Deletion Attempt",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: JADEPUFFER - Azure Backup Protection Deletion Attempt\nid: 8c9d0e1f-a3b4-4c5d-8e7f-8a9b0c1d2e3f\nstatus: experimental\ndescription: Detects API calls attempting to delete Azure backup protection, a technique used by JADEPUFFER to prevent recovery.\nreferences:\n  - https://www.microsoft.com/en-us/security/blog/2026/09/25/storm-3168-agentic-driven-cloud-attacks-using-compromised-service-principals/\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1561\nlevel: critical\nlogsource:\n  product: azure\n  service: activitylogs\ndetection:\n  selection:\n    OperationName|contains:\n      - 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete'\n      - 'Microsoft.RecoveryServices/vaults/backupPolicies/delete'\n  condition: selection",
+      "description": "Detects API calls aimed at deleting Azure backup policies or protected items, a key tactic of JADEPUFFER to inhibit system recovery."
+    },
+    {
+      "name": "JADEPUFFER - Storage Account Key Listing",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: JADEPUFFER - Storage Account Key Listing\nid: 4a5b6c7d-e8f9-4a0b-8c1d-2e3f4a5b6c7d\nstatus: experimental\ndescription: Detects the listing of storage account keys, a potential precursor to data access and destruction as seen in JADEPUFFER attacks. This is especially suspicious if performed by a service principal not designated for secrets management.\nreferences:\n  - https://www.microsoft.com/en-us/security/blog/2026/09/25/storm-3168-agentic-driven-cloud-attacks-using-compromised-service-principals/\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1526\nlevel: high\nlogsource:\n  product: azure\n  service: activitylogs\ndetection:\n  selection:\n    OperationName|endswith: '/listkeys/action'\n  condition: selection",
+      "description": "Detects the retrieval of Azure storage account keys, an action used for reconnaissance by JADEPUFFER before the destructive phase."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Storm-3168",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Storm-3168",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Service Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Storm-3168",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data Destruction",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Storm-3168",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Disk Wipe",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Storm-3168",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Cloud Secrets Management Stores",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Storm-3168",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Microsoft Azure",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "JADEPUFFER - Azure Storage Account Deletion via CLI",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data Destruction",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "JADEPUFFER - Azure Backup Protection Deletion Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disk Wipe",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "JADEPUFFER - Storage Account Key Listing",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Cloud Service Discovery",
+      "target_type": "attack-pattern"
+    }
+  ]
+}
