@@ -1,6 +1,6 @@
 # ShinyHunters Hijacks Clop Ransomware Site in Inter-Gang Feud
 
-**Severity:** medium | **Category:** Threat Actor,Ransomware,Cyberattack | **Updated:** 2026-09-22 | **Reading time:** 4 min
+**Severity:** medium | **Category:** Threat Actor,Ransomware,Cyberattack | **Updated:** 2026-09-28 | **Reading time:** 4 min
 
 In a rare public display of infighting, the ShinyHunters extortion group has hijacked the dark web data leak site of the notorious Clop ransomware gang. ShinyHunters defaced the site, claiming the takeover was retaliation for Clop's alleged theft of a zero-day exploit for Oracle's E-Business Suite. ShinyHunters has threatened to release data on Clop's operations, including lists of victims who paid ransoms. The incident highlights the volatile and competitive nature of the cybercrime ecosystem.
 
@@ -78,12 +78,12 @@ While organizations cannot mitigate inter-gang feuds, they can take steps to def
 *   **Defense against ShinyHunters**: **[ShinyHunters](https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters)** often relies on credential theft and social engineering. Mitigations include strong password policies, mandatory MFA, and user training on phishing and social engineering tactics ([`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/), [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/)).
 *   **Patch Management**: The root of the dispute is an alleged zero-day. This highlights the critical importance of a rapid and comprehensive patch management program to reduce the window of opportunity for attackers.
 
-**Tags:** ShinyHunters, Clop, Ransomware, Threat Actor, Infighting, Dark Web, Defacement
+**Tags:** Clop, Dark Web, Defacement, Infighting, Ransomware, ShinyHunters, Threat Actor
 
 ## Sources
-- [Why Ransomware Gangs Are Launching Cyber Attacks on Each Other](https://www.cybersecurity-insiders.com/why-ransomware-gangs-are-launching-cyber-attacks-on-each-other/) — Cybersecurity Insiders (2026-09-22)
-- [ShinyHunters Claim Hack of Rival Ransomware Gang Clop](https://www.infosecurity-magazine.com/news/shinyhunters-claim-hack-of-clop/) — Infosecurity Magazine (2026-09-21)
-- [ShinyHunters cybercrime gang takes over Cl0p ransomware site, demands extortion payment](https://therecord.media/shinyhunters-clop-cyberattack-website) — The Record (2026-09-21)
+- [Why Ransomware Gangs Are Launching Cyber Attacks on Each Other](https://www.cybersecurity-insiders.com/why-ransomware-gangs-are-launching-cyber-attacks-on-each-other/) (2026-09-22)
+- [ShinyHunters Claim Hack of Rival Ransomware Gang Clop](https://www.infosecurity-magazine.com/news/shinyhunters-claim-hack-of-clop/) (2026-09-21)
+- [ShinyHunters cybercrime gang takes over Cl0p ransomware site, demands extortion payment](https://therecord.media/shinyhunters-clop-cyberattack-website) (2026-09-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-hijacks-clop-ransomware-leak-site-in-extortion-feud/
