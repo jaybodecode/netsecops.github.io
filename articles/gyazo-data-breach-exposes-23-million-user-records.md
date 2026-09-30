@@ -1,6 +1,6 @@
 # Gyazo Screenshot Tool Breach Exposes 23.6M User Records, Image Data
 
-**Severity:** high | **Category:** Data Breach,Vulnerability,Cyberattack | **Updated:** 2026-09-18 | **Reading time:** 4 min
+**Severity:** high | **Category:** Data Breach,Vulnerability,Cyberattack | **Updated:** 2026-09-30 | **Reading time:** 4 min
 
 The popular image-sharing service Gyazo, operated by Helpfeel, has disclosed a massive data breach affecting 23.62 million user records and 490 million image metadata records. The breach was the result of a remote code execution vulnerability on an image upload server, which gave an attacker access to the service's database. Exposed data includes email addresses, hashed passwords, and social media integration tokens.
 
