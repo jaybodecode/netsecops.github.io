@@ -1,6 +1,6 @@
 # Industry Leaders Warn AI-Powered Attacks Are Outpacing Defenses
 
-**Severity:** informational | **Category:** Threat Intelligence,Policy and Compliance | **Updated:** 2026-09-30 | **Reading time:** 4 min
+**Severity:** informational | **Category:** Threat Intelligence,Policy and Compliance | **Updated:** 2026-10-01 | **Reading time:** 4 min
 
 At the Asia New Vision Forum, cybersecurity executives warned that the rapid advancement and adoption of AI is creating threats that outpace current defensive capabilities. Speakers highlighted the rise of autonomous hacking agents and a shift in risk from data breaches to systemic supply chain vulnerabilities and physical threats from AI-integrated devices. Recent events, such as an AI-assisted attack on Spain's rail network, underscore the speed and scale that AI brings to offensive operations.
 
@@ -38,12 +38,12 @@ Defending against AI-powered threats requires a paradigm shift towards AI-powere
 *   **Invest in Defensive AI Research:** The cybersecurity community and governments must increase investment in research and development of AI-based defensive technologies to keep pace with offensive capabilities.
 *   **Collaboration and Information Sharing:** Rapid sharing of threat intelligence related to AI-powered attacks is crucial for the collective defense of the ecosystem.
 
-**Tags:** AI, Threat Intelligence, Autonomous Hacking, Supply Chain Security, Cyber Risk
+**Tags:** AI, Autonomous Hacking, Cyber Risk, Supply Chain Security, Threat Intelligence
 
 ## Sources
-- [AI to Drive Expansion in Cyberattacks, Industry Execs Warn](https://www.caixinglobal.com/2026-09-30/ai-to-drive-expansion-in-cyberattacks-industry-execs-warn-102490091.html) — Caixin Global (2026-09-30)
-- [SWK Cybersecurity News Recap September 2026](https://www.swktech.com/swk-cybersecurity-news-recap-september-2026/) — SWK Technologies (2026-09-29)
-- [Shieldworkz finds Adif web infrastructure served as entry point for Renfe compromise in AI-assisted-cyber-breach](https://industrialcyber.co/transport/shieldworkz-finds-adif-web-infrastructure-served-as-entry-point-for-renfe-compromise-in-ai-assisted-cyber-breach/) — Industrial Cyber (2026-09-30)
+- [AI to Drive Expansion in Cyberattacks, Industry Execs Warn](https://www.caixinglobal.com/2026-09-30/ai-to-drive-expansion-in-cyberattacks-industry-execs-warn-102490091.html) (2026-09-30)
+- [SWK Cybersecurity News Recap September 2026](https://www.swktech.com/swk-cybersecurity-news-recap-september-2026/) (2026-09-29)
+- [Shieldworkz finds Adif web infrastructure served as entry point for Renfe compromise in AI-assisted-cyber-breach](https://industrialcyber.co/transport/shieldworkz-finds-adif-web-infrastructure-served-as-entry-point-for-renfe-compromise-in-ai-assisted-cyber-breach/) (2026-09-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/cybersecurity-leaders-warn-ai-outpacing-defensive-capabilities/
