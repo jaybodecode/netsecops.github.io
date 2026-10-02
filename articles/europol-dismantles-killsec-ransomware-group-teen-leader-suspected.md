@@ -1,6 +1,6 @@
 # Europol Dismantles KillSec Ransomware; Teenager Suspected Leader
 
-**Severity:** high | **Category:** Ransomware,Threat Actor,Regulatory | **Updated:** 2026-10-01 | **Reading time:** 4 min
+**Severity:** high | **Category:** Ransomware,Threat Actor,Regulatory | **Updated:** 2026-10-02
 
 An international law enforcement operation, codenamed Operation KillSwitch, has dismantled the infrastructure of the KillSec ransomware group. Led by German authorities and supported by Europol, the operation seized the group's darknet leak site and secured 110 TB of stolen data. A 16-year-old is suspected of being the group's main operator.
 
@@ -48,10 +48,10 @@ Preventing ransomware requires a multi-layered, defense-in-depth strategy.
 3.  **Patch Management**: [D3-SU: Software Update](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate). Keep all operating systems, software, and firmware patched, especially on internet-facing systems, to prevent exploitation of known vulnerabilities.
 4.  **Multi-Factor Authentication (MFA)**: [D3-MFA: Multi-factor Authentication](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication). Enforce MFA on all remote access services (VPNs, RDP), email accounts, and critical system logins to prevent credential-based attacks.
 
-**Tags:** ransomware, KillSec, Europol, law enforcement, takedown, cybercrime
+**Tags:** Europol, KillSec, cybercrime, law enforcement, ransomware, takedown
 
 ## Sources
-- [Teenager suspected of leading KillSec ransomware group; law enforcement seizes servers and leak site](https://www.europol.europa.eu/media-press/newsroom/news/teenager-suspected-of-leading-killsec-ransomware-group-law-enforcement-seizes-servers-and-leak-site) — Europol (2026-10-01)
+- [Teenager suspected of leading KillSec ransomware group; law enforcement seizes servers and leak site](https://www.europol.europa.eu/media-press/newsroom/news/teenager-suspected-of-leading-killsec-ransomware-group-law-enforcement-seizes-servers-and-leak-site) (2026-10-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/europol-dismantles-killsec-ransomware-group-teen-leader-suspected/

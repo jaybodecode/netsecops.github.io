@@ -1,6 +1,6 @@
 # Pentagon Reveals Breach; Kiteworks Halts Systems on Threat Intel
 
-**Severity:** high | **Category:** Data Breach,Supply Chain Attack,Policy and Compliance | **Updated:** 2026-09-28 | **Reading time:** 5 min
+**Severity:** high | **Category:** Data Breach,Supply Chain Attack,Policy and Compliance | **Updated:** 2026-10-02
 
 Two major third-party risk incidents emerged, highlighting supply chain vulnerabilities. The U.S. Department of Defense disclosed a significant data breach from October 2025 that affected the Defense Manpower Data Center (DMDC) through a third-party provider, compromising sensitive personnel data. Separately, secure file transfer company Kiteworks took the drastic step of advising a customer-wide shutdown on September 25 based on 'credible, imminent' federal threat intelligence. Kiteworks later confirmed the threat window passed without compromise and that they had discovered and patched a new critical flaw affecting less than 1% of customers during the shutdown.
 
@@ -54,11 +54,11 @@ For detecting supply chain risks and potential zero-day exploitation:
 2.  **Proactive Communication:** The Kiteworks incident highlights the value of strong public-private partnerships. Organizations should establish relationships with agencies like CISA and the FBI to receive timely and actionable threat intelligence.
 3.  **Assume Breach Mentality:** For the Pentagon breach, the long dwell time emphasizes the need to assume compromise and actively hunt for threats within the network and supply chain, rather than just defending the perimeter.
 
-**Tags:** supply chain attack, third-party risk, data breach, Pentagon, Kiteworks, proactive defense, zero-day
+**Tags:** Kiteworks, Pentagon, data breach, proactive defense, supply chain attack, third-party risk, zero-day
 
 ## Sources
-- [Pentagon Data Breach and Kiteworks Targeted in Cyberattacks](https://www.cybersecurity-insiders.com/pentagon-data-breach-and-kiteworks-targeted-in-cyberattacks/) — Cybersecurity Insiders
-- [Kiteworks' Decision to Ensure Customer Data Protection Through Customer-Wide Shutdown Navigates Credible Threat](https://www.einnews.com/pr_news/945833303/kiteworks-decision-to-ensure-customer-data-protection-through-customer-wide-shutdown-navigates-credible-threat) — EIN News
+- [Pentagon Data Breach and Kiteworks Targeted in Cyberattacks](https://www.cybersecurity-insiders.com/pentagon-data-breach-and-kiteworks-targeted-in-cyberattacks/)
+- [Kiteworks' Decision to Ensure Customer Data Protection Through Customer-Wide Shutdown Navigates Credible Threat](https://www.einnews.com/pr_news/945833303/kiteworks-decision-to-ensure-customer-data-protection-through-customer-wide-shutdown-navigates-credible-threat)
 
 ---
 Source: https://cyber.netsecops.io/articles/pentagon-discloses-data-breach-kiteworks-issues-proactive-shutdown/
