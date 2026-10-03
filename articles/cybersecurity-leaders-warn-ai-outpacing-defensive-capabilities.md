@@ -1,6 +1,6 @@
 # Industry Leaders Warn AI-Powered Attacks Are Outpacing Defenses
 
-**Severity:** informational | **Category:** Threat Intelligence,Policy and Compliance | **Updated:** 2026-10-01 | **Reading time:** 4 min
+**Severity:** informational | **Category:** Threat Intelligence,Policy and Compliance | **Updated:** 2026-10-03 | **Reading time:** 4 min
 
 At the Asia New Vision Forum, cybersecurity executives warned that the rapid advancement and adoption of AI is creating threats that outpace current defensive capabilities. Speakers highlighted the rise of autonomous hacking agents and a shift in risk from data breaches to systemic supply chain vulnerabilities and physical threats from AI-integrated devices. Recent events, such as an AI-assisted attack on Spain's rail network, underscore the speed and scale that AI brings to offensive operations.
 
