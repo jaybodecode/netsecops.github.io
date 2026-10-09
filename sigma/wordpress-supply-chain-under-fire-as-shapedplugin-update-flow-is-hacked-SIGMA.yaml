@@ -1,0 +1,82 @@
+title: New or Modified PHP File in WordPress Plugin Directory
+id: 2b1a9c8d-e3f4-4a5b-8c6d-7e8f9a0b1c2d
+status: experimental
+description: |
+  Detects the creation of new or recently modified PHP files within a WordPress plugin directory. This can be an indicator of a supply-chain attack where a malicious update is installed, or a web shell is dropped.
+references:
+  - https://techmaniacs.com/2026/06/19/cybersecurity-daily-briefing-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1195.002
+  - attack.t1505.003
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|contains: '/wp-content/plugins/'
+    TargetFilename|endswith: '.php'
+  condition: selection
+falsepositives:
+  - Legitimate plugin updates or installations.
+level: medium
+---
+title: Outbound Connection from Web Server Process
+id: ccaadc01-dfac-46e1-a99f-4450a7bd8f32
+status: experimental
+description: |
+  Detects an outbound network connection initiated by a common web server process. Web servers should generally not initiate outbound connections, and this behavior can indicate a compromised website (e.g., a web shell) calling out to a C2 server.
+references:
+  - https://techmaniacs.com/2026/06/19/cybersecurity-daily-briefing-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1505.003
+  - attack.command_and_control
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image|endswith:
+      - '/apache2'
+      - '/httpd'
+      - '/nginx'
+      - '/php-fpm'
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - 127.0.0.0/8
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not filter_local
+falsepositives:
+  - Legitimate server-side requests to external APIs, update servers, or other services.
+level: medium
+---
+title: Obfuscated PHP Code Execution via Command Line
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: |
+  Detects the execution of obfuscated PHP code, specifically using `eval(base64_decode(...))`, from the command line. This is a common technique used by attackers to execute backdoors and malicious scripts while evading simple signature-based detection.
+references:
+  - https://techmaniacs.com/2026/06/19/cybersecurity-daily-briefing-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1027
+  - attack.execution
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    CommandLine|contains|all:
+      - 'eval'
+      - 'base64_decode'
+  condition: selection
+falsepositives:
+  - Highly unlikely, but some legitimate administration scripts might use this for esoteric reasons.
+level: high

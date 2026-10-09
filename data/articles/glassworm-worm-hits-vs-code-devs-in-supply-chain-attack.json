@@ -1,0 +1,204 @@
+{
+  "id": "658ccbb4-5ad7-43e6-a1b0-67e41173d0d2",
+  "slug": "glassworm-worm-hits-vs-code-devs-in-supply-chain-attack",
+  "headline": "'GlassWorm' Worm Uses Unicode Obfuscation and Solana C2 in VS Code Supply Chain Attack",
+  "title": "Sophisticated 'GlassWorm' Malware Targets Visual Studio Code Developers via OpenVSX Marketplace in Novel Supply Chain Attack",
+  "summary": "A highly sophisticated, self-propagating worm named 'GlassWorm' is targeting Visual Studio developers through malicious extensions on the OpenVSX marketplace. The malware employs advanced evasion techniques, including using invisible Unicode characters to obfuscate its code and leveraging the Solana blockchain for a resilient command-and-control (C2) infrastructure. The worm is designed to steal NPM, GitHub, and Git credentials, as well as drain cryptocurrency from 49 different wallet extensions.",
+  "full_report": "## Executive Summary\nSecurity researchers have identified a novel and highly sophisticated supply chain attack deploying a worm named **GlassWorm**. The campaign targets developers using **[Visual Studio Code](https://code.visualstudio.com/)** by publishing malicious extensions on the OpenVSX marketplace. **GlassWorm** exhibits advanced capabilities, including code obfuscation using invisible Unicode characters to bypass human review and static analysis. In a significant innovation, the worm uses the **[Solana](https://solana.com/)** blockchain for its command-and-control (C2) infrastructure, making it extremely resilient to takedowns. The malware's primary goals are to steal developer credentials for platforms like **[NPM](https://www.npmjs.com/)**, **[GitHub](https://github.com/)**, and **[Git](https://git-scm.com/)**, drain cryptocurrency wallets, and propagate itself to other software packages.\n\n## Threat Overview\n**GlassWorm** represents a significant evolution in supply chain attacks. The worm propagates through compromised VS Code extensions. Its most notable feature is its evasion technique, as reported by Koi Security. The malicious JavaScript code is hidden using Unicode variation selectors, which are non-rendering characters. In a code editor, these selectors appear as harmless whitespace or blank lines, deceiving developers during code reviews, while remaining fully executable by the JavaScript engine.\n\nThe C2 mechanism is equally advanced. Instead of traditional domains or IP addresses, **GlassWorm** queries the **Solana** blockchain for specific transactions. The attackers embed instructions, such as the URL for the next-stage payload, into the memo field of a transaction. To update the payload location, the attacker simply needs to send a new transaction, making the C2 infrastructure decentralized and censorship-resistant. Once active, the worm steals credentials, exfiltrates data, installs SOCKS proxies and hidden VNC servers for remote access, and uses the stolen credentials to compromise other packages, continuing its propagation.\n\n## Technical Analysis\nThis attack combines multiple advanced TTPs:\n\n*   **Initial Access & Propagation:** [`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/). The attack vector is malicious extensions published to the OpenVSX marketplace. The worm's self-propagation capability, using stolen credentials to compromise more packages, is a key part of this technique.\n*   **Defense Evasion:** [`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/). The use of invisible Unicode variation selectors is a highly novel form of obfuscation designed to defeat both human analysis and automated scanning tools.\n*   **Command and Control:** [`T1071.006 - Web Protocols over Non-standard Port`](https://attack.mitre.org/techniques/T1071/006/) (conceptual equivalent). The use of the **Solana** blockchain as a C2 mechanism is a cutting-edge technique. It functions as a resilient, decentralized data store for C2 instructions, abusing a legitimate protocol for malicious purposes. This makes takedown of the C2 infrastructure nearly impossible.\n*   **Credential Access:** [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/). The malware specifically targets and steals credentials for NPM, GitHub, and Git, which are often stored in configuration files or credential managers on developer machines.\n*   **Impact:** The malware drains funds from 49 different cryptocurrency extensions, a direct form of financial theft.\n\n## Impact Assessment\nThe potential impact of **GlassWorm** is severe. A successful infection of a developer's machine can lead to the compromise of entire software projects and organizations. By stealing GitHub and NPM credentials, the attackers can inject malicious code into legitimate software packages, triggering a widespread supply chain attack affecting countless downstream users. The theft of cryptocurrency is a direct financial loss, while the installation of proxies and VNC servers creates a persistent backdoor for further attacks. The resilience of the blockchain-based C2 means that compromised machines can remain under attacker control for extended periods.\n\n## Cyber Observables for Detection\nDetecting **GlassWorm** requires looking beyond traditional indicators:\n\n| Type | Value | Description |\n|---|---|---|\n| `network_traffic_pattern` | `Outbound traffic to Solana RPC endpoints` | Monitor for unexpected processes on developer workstations making connections to known Solana public RPC nodes. |\n| `file_path` | `~/.vscode/extensions/` | Monitor for newly installed or modified VS Code extensions, especially those with poor reviews or from unknown publishers. |\n| `command_line_pattern` | `npm publish` or `git push` | Monitor for automated or unusual execution of publishing commands that could indicate propagation. |\n| `process_name` | `node.exe`, `code.exe` | Monitor processes associated with VS Code for unusual network activity, file modification, or child process spawning. |\n\n## Detection & Response\n1.  **Dynamic Analysis:** Since static analysis is defeated by Unicode obfuscation, run new or updated VS Code extensions in a sandboxed environment to perform [`D3-DA: Dynamic Analysis`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis). Monitor for suspicious activities like network connections to blockchain APIs, file system enumeration, or attempts to access credential stores.\n2.  **Network Filtering and Monitoring:** While blocking all blockchain traffic is impractical, it is possible to perform [`D3-OTF: Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering). Restrict and monitor outbound connections from developer tools and build servers. Alert on connections from `code.exe` or `node.exe` to known public Solana RPC endpoints, as this is highly anomalous behavior.\n3.  **Code Scanning:** Enhance static analysis tools to specifically search for Unicode variation selectors and other non-rendering characters within code files. While not foolproof, this can help flag suspicious files for manual review.\n\n## Mitigation\n*   **Developer Training & Policy:** Educate developers on the risks of third-party extensions. Implement a policy that restricts the installation of extensions to a pre-vetted, approved list. This is a form of [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting) applied to a development environment.\n*   **Credential Hardening:** Enforce the use of hardware-backed credentials (e.g., YubiKeys) for signing Git commits and publishing to package managers. This prevents stolen credentials from being used for propagation.\n*   **Principle of Least Privilege:** Ensure developer accounts do not have excessive permissions. Use separate, highly-secured accounts for publishing packages, and require MFA for all sensitive operations on platforms like GitHub and NPM.\n*   **Application Isolation:** Run development environments in containerized or virtualized environments to isolate them from the host operating system and the broader corporate network, limiting the blast radius of a compromise.",
+  "twitter_post": "🚨 New 'GlassWorm' malware targets VS Code devs in a supply chain attack! It uses invisible Unicode characters to hide code & a Solana blockchain C2 to steal credentials and crypto. ⛓️ #GlassWorm #SupplyChainAttack #Malware #Solana",
+  "meta_description": "A sophisticated worm, GlassWorm, is targeting VS Code developers in a supply chain attack, using Unicode obfuscation and a Solana blockchain C2 to steal credentials and cryptocurrency.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "GlassWorm",
+      "type": "malware"
+    },
+    {
+      "name": "Koi Security",
+      "type": "security_organization"
+    },
+    {
+      "name": "Visual Studio Code",
+      "type": "product",
+      "url": "https://code.visualstudio.com/"
+    },
+    {
+      "name": "OpenVSX",
+      "type": "product"
+    },
+    {
+      "name": "Solana",
+      "type": "technology",
+      "url": "https://solana.com/"
+    },
+    {
+      "name": "NPM",
+      "type": "product",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "GitHub",
+      "type": "vendor",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Git",
+      "type": "technology",
+      "url": "https://git-scm.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/supply-chain-attack-targets-vs-code-extensions-with-glassworm-malware/",
+      "title": "Supply Chain Attack Targets VS Code Extensions With 'GlassWorm' Malware",
+      "date": "2025-10-21",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information"
+    },
+    {
+      "id": "T1071",
+      "name": "Application Layer Protocol"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores"
+    },
+    {
+      "id": "T1090.002",
+      "name": "External Proxy"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Enforce policies requiring that all internal software packages and external dependencies are signed, and verify the signatures during the build process.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Run development and build processes in isolated environments (containers, VMs) to limit the malware's access to the host system and network.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Restrict and monitor outbound network connections from developer workstations and build servers to prevent communication with malicious C2 infrastructures like the Solana blockchain.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate developers on the dangers of untrusted software extensions and the importance of vetting third-party code.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Given that GlassWorm's static obfuscation defeats traditional code scanning, dynamic analysis is the most effective detection method. All new or updated VS Code extensions should be automatically installed and run within an instrumented sandbox before being allowed in the production developer environment. The sandbox should monitor for the specific malicious behaviors of GlassWorm: attempts to read credential files (e.g., `.npmrc`, `.git-credentials`), enumeration of cryptocurrency wallet extension directories, and, most critically, outbound network connections to Solana RPC endpoints. Any extension exhibiting these behaviors should be blocked and trigger an immediate security alert.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To counter the resilient blockchain-based C2, implement strict egress filtering on developer workstations and build servers. By default, deny all outbound traffic and only allow connections necessary for development, such as to corporate code repositories, official package managers, and specific collaboration tools. Specifically, traffic to known public blockchain RPC endpoints (including Solana, Ethereum, etc.) from developer tools like `node.exe` or `code.exe` should be blocked and logged. This severs the C2 communication channel, preventing the malware from receiving instructions or exfiltrating data, even if the initial infection succeeds.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Harden the configuration of VS Code and related development tools. Use VS Code's workspace trust features to limit the capabilities of extensions in untrusted projects. Enforce a policy that restricts extension installation to a pre-approved list from a private, internal marketplace. Furthermore, configure Git and NPM to use system-level credential helpers that integrate with secure hardware (like a YubiKey or TPM) or enterprise credential vaults, rather than storing plaintext credentials on disk. This prevents GlassWorm from easily stealing the credentials needed for propagation.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "api.mainnet-beta.solana.com",
+      "description": "Traffic to the public RPC endpoint for the Solana blockchain. Unexpected connections from developer tools could indicate GlassWorm C2 activity.",
+      "context": "Firewall logs, web proxy logs, Netflow data.",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "~/.config/git/credentials",
+      "description": "Common location for storing Git credentials. Monitor for unexpected read access by processes related to VS Code extensions.",
+      "context": "File Integrity Monitoring (FIM), EDR logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "vncserver",
+      "description": "The malware installs a hidden VNC server. The appearance of any VNC-related process on a developer machine that is not company-sanctioned is highly suspicious.",
+      "context": "Process monitoring, EDR logs.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "GlassWorm",
+    "SupplyChainAttack",
+    "Malware",
+    "VSCode",
+    "Solana",
+    "UnicodeObfuscation",
+    "OpenVSX"
+  ],
+  "extract_datetime": "2025-10-21T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "developers using Visual Studio Code"
+    ]
+  },
+  "pub_date": "2025-10-21",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-21T15:00:00.000Z",
+  "updatedAt": "2025-10-21T15:00:00.000Z"
+}

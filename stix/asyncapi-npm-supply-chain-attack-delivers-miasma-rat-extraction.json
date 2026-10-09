@@ -1,0 +1,263 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-15T14:28:22.057Z",
+    "article_slug": "asyncapi-npm-supply-chain-attack-delivers-miasma-rat",
+    "article_date": "2026-07-15",
+    "token_usage": {
+      "input_tokens": 146089,
+      "output_tokens": 3196,
+      "cached_tokens": 140082,
+      "total_tokens": 149285,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.056979
+    }
+  },
+  "report_name": "AsyncAPI Supply Chain Attack Delivers Miasma RAT via NPM",
+  "threat_actors": [
+    {
+      "name": "AsyncAPI Supply Chain Attacker",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "An unnamed, sophisticated threat actor who conducted a supply chain attack against the AsyncAPI open-source project. The actor gained write access to the project's GitHub 'next' branch and abused the CI/CD pipeline to publish malicious npm packages containing Miasma RAT.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Supply Chain",
+      "mitre_id": "T1195.002",
+      "description": "The attacker gained write access to the 'next' branch of official AsyncAPI GitHub repositories and pushed malicious commits. This triggered the legitimate CI/CD pipeline (GitHub Actions) to automatically build, sign, and publish poisoned npm packages, abusing the trusted automation to distribute malware."
+    },
+    {
+      "name": "JavaScript",
+      "mitre_id": "T1059.007",
+      "description": "The malicious payload was embedded as JavaScript within the compromised npm packages. It was designed to execute when the library was loaded in a Node.js application via `require` or `import`, rather than during installation."
+    },
+    {
+      "name": "Ingress Tool Transfer",
+      "mitre_id": "T1105",
+      "description": "The initial JavaScript payload acted as a multi-stage dropper, with the ultimate goal of downloading and installing the Miasma RAT onto the compromised developer machine."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Miasma RAT",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": true,
+      "aliases": [],
+      "description": "A cross-platform (Windows, macOS, Linux) Remote Access Trojan and botnet framework delivered as the final payload in the AsyncAPI supply chain attack. It enables persistence, data exfiltration of developer secrets, and lateral movement.",
+      "capabilities": [
+        "communicates-with-c2",
+        "exfiltrates-data",
+        "persists-after-system-reboot",
+        "controls-local-machine"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "npm",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The npm package registry was used as the distribution platform for the malicious AsyncAPI packages published by the compromised CI/CD pipeline."
+    },
+    {
+      "name": "GitHub",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The attackers compromised two official AsyncAPI GitHub repositories by gaining write access to the 'next' development branch."
+    },
+    {
+      "name": "GitHub Actions",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The legitimate GitHub Actions CI/CD workflow was abused by the attackers. By pushing malicious code to a monitored branch, they triggered the automated pipeline to build and publish the compromised packages to npm with valid provenance attestations."
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "AsyncAPI",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "An open-source project whose official npm packages and GitHub repositories were compromised in a supply chain attack."
+    },
+    {
+      "name": "Developers",
+      "identity_class": "class",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Developers using the compromised versions of the AsyncAPI npm packages were targeted for compromise by the Miasma RAT."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Miasma RAT C2 Infrastructure",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Command and control infrastructure used by the Miasma RAT to exfiltrate data and receive commands after compromising a developer environment."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "@asyncapi/generator@3.3.1"
+    },
+    {
+      "type": "file",
+      "name": "@asyncapi/generator-helpers@1.1.1"
+    },
+    {
+      "type": "file",
+      "name": "@asyncapi/generator-components@0.7.1"
+    },
+    {
+      "type": "file",
+      "name": "@asyncapi/specs@6.11.1"
+    },
+    {
+      "type": "file",
+      "name": "package-lock.json"
+    },
+    {
+      "type": "file",
+      "name": "yarn.lock"
+    },
+    {
+      "type": "file",
+      "name": "node"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Malicious AsyncAPI NPM Package Versions",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name IN ('@asyncapi/generator@3.3.1', '@asyncapi/generator-helpers@1.1.1', '@asyncapi/generator-components@0.7.1', '@asyncapi/specs@6.11.1')]",
+      "x_netsecio_sigma_rule": "title: Malicious AsyncAPI NPM Package Versions in Lockfiles\nid: 2f7b1c9a-3e4d-4b8a-9f6c-1d2e3f4a5b6c\nstatus: experimental\ndescription: Detects the presence of specific malicious versions of AsyncAPI packages within npm or yarn lock files.\nreferences:\n  - https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act\nauthor: cyber.netsecops.io\ndate: 2026-07-15\ntags:\n  - attack.t1195.002\nlevel: critical\nlogsource:\n  category: file_event\n  product: generic\ndetection:\n  selection_filenames:\n    TargetFilename|endswith:\n      - 'package-lock.json'\n      - 'yarn.lock'\n  selection_keywords:\n    Keywords:\n      - '@asyncapi/generator@3.3.1'\n      - '@asyncapi/generator-helpers@1.1.1'\n      - '@asyncapi/generator-components@0.7.1'\n      - '@asyncapi/specs@6.11.1'\n  condition: all of selection_*\nfalsepositives:\n  - Unlikely, these are specific versions tied to the attack.",
+      "pattern": "",
+      "description": "Detects the specific malicious versions of AsyncAPI npm packages that were published as part of a supply chain attack. Their presence is a strong indicator of compromise."
+    },
+    {
+      "name": "Suspicious Node.js Network Activity",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Outbound Network Connection from Node.js\nid: 8a1b4c3d-2e5f-4a9b-8c7d-6f5e4d3c2b1a\nstatus: experimental\ndescription: Detects outbound network connections initiated by a Node.js process, which could indicate a compromised npm package (like Miasma RAT) calling back to a C2 server.\nreferences:\n  - https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act\nauthor: cyber.netsecops.io\ndate: 2026-07-15\ntags:\n  - attack.t1071\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\node.exe'\n    Initiated: true\n  filter_local:\n    DestinationIp|cidr:\n      - '127.0.0.0/8'\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n      - '::1/128'\n  condition: selection and not filter_local\nfalsepositives:\n  - Legitimate Node.js applications making API calls.\n  - Developer tools and local development servers.",
+      "description": "Detects outbound network connections from Node.js processes, which could indicate C2 communication from a malicious npm package like Miasma RAT. This aligns with hunting hints to monitor for unexpected network activity from build agents or developer machines."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "JavaScript",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Miasma RAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "GitHub Actions",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "AsyncAPI",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "AsyncAPI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Developers",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Miasma RAT",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Miasma RAT C2 Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Malicious AsyncAPI NPM Package Versions",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Miasma RAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious Node.js Network Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Miasma RAT",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Malicious AsyncAPI NPM Package Versions",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "@asyncapi/generator@3.3.1",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Malicious AsyncAPI NPM Package Versions",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "@asyncapi/generator-helpers@1.1.1",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Malicious AsyncAPI NPM Package Versions",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "@asyncapi/generator-components@0.7.1",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Malicious AsyncAPI NPM Package Versions",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "@asyncapi/specs@6.11.1",
+      "target_type": "file"
+    }
+  ]
+}

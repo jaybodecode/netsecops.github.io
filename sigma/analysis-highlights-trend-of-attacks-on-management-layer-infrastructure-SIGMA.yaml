@@ -1,0 +1,76 @@
+title: Suspicious SharePoint Picker URL Access
+id: 2b8c1d3e-4f5a-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: Detects access to the SharePoint picker.aspx page, which could be indicative of exploitation attempts against CVE-2026-50522.
+references:
+  - https://diesec.com/2026/07/top-5-cybersecurity-news-stories-july-24-2026/
+author: cyber.netsecops.io
+date: 2026-07-25
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri-stem|contains: '/_layouts/15/picker.aspx'
+  condition: selection
+---
+title: Anomalous Check Point SmartConsole Administrative Action
+id: 5e4d3c2b-1a0f-4e9d-8c6b-5a4b3c2d1e0f
+status: experimental
+description: Detects potentially malicious administrative actions on Check Point SmartConsole, such as logins from unusual IP ranges or at anomalous times, which could indicate exploitation of CVE-2026-16232.
+references:
+  - https://diesec.com/2026/07/top-5-cybersecurity-news-stories-july-24-2026/
+author: cyber.netsecops.io
+date: 2026-07-25
+tags:
+  - attack.t1098.005
+  - attack.persistence
+level: high
+logsource:
+  product: checkpoint
+  service: smartconsole_audit
+detection:
+  selection_login:
+    event_type: 'login'
+    status: 'success'
+  filter_known_nets:
+    source_ip|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection_login and not filter_known_nets
+---
+title: Unauthorized PLC Project File Modification on Engineering Workstation
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects modification of files in common engineering software directories, which could indicate unauthorized changes to PLC logic or project files, a TTP used by Iranian APTs.
+references:
+  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-204a
+author: cyber.netsecops.io
+date: 2026-07-25
+tags:
+  - attack.t0831
+  - attack.impact
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|startswith:
+      - 'C:\Program Files\Siemens\'
+      - 'C:\Program Files\Schneider Electric\'
+      - 'C:\Program Files\Rockwell Software\'
+    TargetFilename|endswith:
+      - '.ap1*'
+      - '.mwp'
+      - '.acd'
+  filter_legit_process:
+    Image|endswith:
+      - '\S7.exe'
+      - '\Unity.exe'
+      - '\Studio5000.exe'
+  condition: selection and not filter_legit_process

@@ -1,0 +1,217 @@
+{
+  "id": "867e5c78-d3e4-4b60-9a1e-09aa9c36de55",
+  "slug": "malicious-npm-package-indexed-btree-evades-detection-with-runtime-payload",
+  "headline": "Malicious 'indexed-btree' NPM Package Amasses Millions of Downloads",
+  "title": "NPM Package 'indexed-btree' Uses Runtime Evasion to Deliver Malware",
+  "summary": "A malicious npm package, 'indexed-btree,' was downloaded nearly two million times per week before its removal. The package evaded security scanners by hiding its malicious loader in a runtime function instead of common install scripts. Once triggered by an application, it fingerprinted the host, exfiltrated data via Slack and Telegram, and used the Ethereum blockchain for its second-stage C2. The campaign earned its creator over €230,000, highlighting a sophisticated evolution in software supply chain attacks.",
+  "full_report": "## Executive Summary\nA highly successful software supply chain attack has been identified within the **[npm](https://www.npmjs.com/)** package repository, involving a malicious package named **`indexed-btree`**. This package, which masqueraded as a legitimate data structure utility, achieved nearly two million weekly downloads by employing a sophisticated evasion technique. Instead of using `preinstall` or `postinstall` scripts, which are heavily monitored, the threat actor embedded the malicious loader within a standard runtime function. This allowed the package to build a reputation and pass automated security checks. When triggered, the malware exfiltrated system information and used the Ethereum blockchain as a resilient C2 channel. The campaign is estimated to have netted the attacker approximately 109 ETH (around €230,933).\n\n## Threat Overview\nThe attack represents a tactical evolution in supply chain attacks, specifically designed to bypass modern security controls in package management ecosystems. The threat actor, using the handle \"charlessadler25,\" published the `indexed-btree` package on June 18, 2026. To appear legitimate, the package mimicked a real utility and was supported by a fabricated GitHub repository with a plausible commit history.\n\nThe key innovation was hiding the malicious trigger within the `BTree.prototype.set()` method. This code only executes when a developer actively uses that specific function in their application, meaning the payload remains dormant during the `npm install` phase, where most security scanning occurs. This runtime execution strategy allowed the package to remain undetected for a significant period, accumulating a massive number of downloads and being integrated into countless downstream projects.\n\n## Technical Analysis\n- **Evasion Technique**: The primary evasion is the avoidance of lifecycle scripts. By placing the loader in a runtime function, the malware bypasses static and install-time analysis. This is a form of [`T1140 - Deobfuscate/Decode Files or Information`](https://attack.mitre.org/techniques/T1140/) combined with runtime execution.\n- **Initial Payload**: Once the `set()` method is called, the first-stage loader executes. It performs host fingerprinting, collecting OS details, architecture, and hostname ([`T1082 - System Information Discovery`](https://attack.mitre.org/techniques/T1082/)).\n- **Exfiltration/C2 Stage 1**: The collected system data is exfiltrated to a hardcoded **[Slack](https://slack.com/)** channel and **[Telegram](https://telegram.org/)** bot. This uses legitimate services for C2 and exfiltration, a technique known as [`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/).\n- **C2 Stage 2 (EtherHiding)**: The malware then uses a novel C2 technique called \"EtherHiding.\" It queries a smart contract on the Sepolia **[Ethereum](https://ethereum.org/)** testnet to retrieve the encrypted second-stage payload. Using a public blockchain as a data store makes the C2 infrastructure highly resilient and difficult to take down. This is an advanced variant of [`T1102 - Web Service`](https://attack.mitre.org/techniques/T1102/).\n- **Cleanup**: After executing the second stage, the malware attempts to delete its traces from the system, a form of [`T1070.004 - Indicator Removal: File Deletion`](https://attack.mitre.org/techniques/T1070/004/).\n\n## Impact Assessment\nThis attack had a significant impact due to its scale. With nearly two million weekly downloads, the malicious package was likely integrated into a vast number of web applications and development environments. Any project using this dependency is compromised. The financial success of the campaign (€230,000+) will undoubtedly incentivize other threat actors to adopt and refine these runtime evasion and blockchain C2 techniques. The incident severely erodes trust in the open-source ecosystem and demonstrates that even packages with high download counts and seemingly legitimate repositories can be malicious. Developers and organizations using these dependencies are at risk of data theft, further system compromise, and being roped into the attacker's infrastructure.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect this or similar threats:\n\n| Type                   | Value                                                              | Description                                                                                                                             | Context                                |\n| ---------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |\n| `url_pattern`          | `hooks.slack.com` or `api.telegram.org`                            | Outbound connections to Slack webhooks or Telegram bot APIs from Node.js processes or build servers are highly suspicious.             | Web proxy logs, EDR network monitoring |\n| `url_pattern`          | `sepolia.infura.io` or other Ethereum testnet gateways             | Connections to Ethereum blockchain nodes from applications that have no business reason to interact with cryptocurrency networks.        | DNS logs, Firewall logs                |\n| `file_name`            | `node_modules/indexed-btree/`                                      | Presence of the malicious package directory.                                                                                            | File system scanning, SCA tools        |\n| `command_line_pattern` | `node -e \"...\"`                                                    | The malware may use obfuscated Node.js one-liners to execute its payload. Monitor for suspicious inline script execution.             | EDR, Process creation logs (4688)      |\n\n## Detection & Response\n1.  **Software Composition Analysis (SCA)**: Use SCA tools to scan your codebase and identify if the `indexed-btree` package is a dependency in any project. If found, it must be removed immediately.\n\n2.  **Runtime Analysis**: Since the malware evades static scans, runtime analysis is crucial. Execute applications in a sandboxed environment and monitor their behavior, including network connections, file system access, and process creation. This is a direct application of [`Dynamic Analysis`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis) (sandboxing).\n\n3.  **Egress Filtering**: Block outbound connections to suspicious destinations. Deny traffic to Slack, Telegram, and cryptocurrency network gateways from build servers and applications by default. This [`Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) can break the malware's C2 and exfiltration channels.\n\n## Mitigation\n1.  **Dependency Vetting**: Do not blindly trust packages based on download counts. Before adding a new dependency, vet the package by inspecting its code, repository history, and author. Look for red flags like a new author with no history or a recently created repository with a fabricated history.\n\n2.  **Lock Files**: Use package lock files (`package-lock.json`, `yarn.lock`) to ensure that you are using a specific, vetted version of a dependency and prevent automatic updates to potentially malicious versions.\n\n3.  **Least Privilege Execution**: Run build and application processes with the minimum necessary permissions. For example, use network policies to restrict the outbound connections a build container can make, preventing it from reaching arbitrary endpoints on the internet. This is a form of [`Process-based Network Isolation`](https://d3fend.mitre.org/technique/d3f:Process-basedNetworkIsolation).",
+  "twitter_post": "A malicious NPM package 'indexed-btree' got ~2M weekly downloads by hiding its payload in runtime code, bypassing security scans. It used Ethereum for C2 & earned its creator over €230k. #SupplyChainAttack #NPM #Malware #CyberSecurity",
+  "meta_description": "A malicious npm package, 'indexed-btree,' evaded security by hiding its payload in runtime code, leading to millions of downloads and a lucrative payout for its creator.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "npm",
+      "type": "technology",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "indexed-btree",
+      "type": "malware"
+    },
+    {
+      "name": "Ethereum",
+      "type": "technology",
+      "url": "https://ethereum.org/"
+    },
+    {
+      "name": "Slack",
+      "type": "product",
+      "url": "https://slack.com/"
+    },
+    {
+      "name": "Telegram",
+      "type": "product",
+      "url": "https://telegram.org/"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/09/malicious-npm-package-indexed-btree-hid.html",
+      "title": "Malicious npm Package indexed-btree Hid Its Loader in Runtime Code Before Removal",
+      "date": "2026-09-22",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.securityweek.com/malicious-b-tree-npm-package-accumulates-millions-of-downloads/",
+      "title": "Malicious B-tree NPM Package Accumulates Millions of Downloads",
+      "date": "2026-09-22",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://devops.com/new-npm-threat-bypasses-install-script-protections/",
+      "title": "New npm Threat Bypasses Install Script Protections",
+      "date": "2026-09-22",
+      "friendly_name": "DevOps.com",
+      "website": "devops.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-18T00:00:00Z",
+      "summary": "The malicious 'indexed-btree' package is first uploaded to npm by the user 'charlessadler25'."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain: Compromise Software Dependency",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1082",
+      "name": "System Information Discovery",
+      "tactic": "Discovery"
+    },
+    {
+      "id": "T1102",
+      "name": "Web Service",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1567",
+      "name": "Exfiltration Over Web Service",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Run applications in a sandboxed environment to monitor runtime behavior and detect malicious activity that evades static scans.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Block outbound connections from build servers and applications to non-essential services like Slack, Telegram, and crypto networks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "While not a direct mitigation for this attack, keeping SCA tools and scanners updated is crucial for detecting known malicious packages.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Given that the 'indexed-btree' package specifically evades install-time static analysis, dynamic analysis (sandboxing) is a critical defensive measure. Development and CI/CD pipelines should incorporate a step where applications and their dependencies are executed in an isolated, instrumented environment before being promoted to production. During this phase, security tools should monitor for suspicious runtime behaviors such as unexpected network callbacks to services like Slack, Telegram, or Ethereum gateways. Any process that attempts to fingerprint the host system and then connect to an external service unrelated to its declared function should be flagged as malicious. This provides a crucial detection layer for threats designed to activate only at runtime.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "A robust egress filtering policy can neutralize this threat by cutting off its C2 and exfiltration channels. Build servers, containerized application environments, and other non-interactive systems should be subject to a default-deny outbound network policy. All outbound traffic should be blocked unless explicitly allowed. For a Node.js application, this means allowing connections to required databases or internal APIs, but blocking connections to arbitrary internet destinations like `hooks.slack.com`, `api.telegram.org`, and Ethereum nodes. This containment strategy ensures that even if a malicious package is installed and executed, it cannot 'call home' to receive further instructions or exfiltrate stolen data.",
+      "mitre_mitigation_id": "M1037"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "hooks.slack.com/services/",
+      "description": "The malware exfiltrates fingerprinted data to a hardcoded Slack webhook.",
+      "context": "Web proxy logs, DNS logs",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "api.telegram.org/bot",
+      "description": "The malware also exfiltrates data to a hardcoded Telegram bot.",
+      "context": "Web proxy logs, DNS logs",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "sepolia.infura.io",
+      "description": "An example of an Ethereum testnet gateway used for the 'EtherHiding' C2 technique to retrieve the second-stage payload.",
+      "context": "DNS logs, Firewall logs",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "node_modules/indexed-btree/",
+      "description": "The presence of this directory indicates the malicious package is installed in a project.",
+      "context": "File system scanning, SCA tools",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "npm",
+    "Supply Chain Attack",
+    "Malware",
+    "JavaScript",
+    "EtherHiding",
+    "Runtime Evasion"
+  ],
+  "extract_datetime": "2026-09-23T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Users of npm packages"
+    ],
+    "people_affected_estimate": "Projects with nearly 2 million weekly downloads"
+  },
+  "pub_date": "2026-09-23",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-09-23T15:00:00.000Z",
+  "updatedAt": "2026-09-23T15:00:00.000Z"
+}

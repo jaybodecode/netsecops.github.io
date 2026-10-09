@@ -1,0 +1,50 @@
+title: Anomalous Child Process Spawned by npm Install
+id: 8c7b6a5d-4e3f-4d2c-8b9a-0c1d2e3f4a5b
+status: experimental
+description: Detects 'npm.exe' or 'npm' spawning unexpected child processes like curl, bash, or powershell, which could indicate malicious pre/post-install scripts.
+author: cyber.netsecops.io
+date: 2026-06-03
+references:
+  - https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/
+tags:
+  - attack.t1059.007
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith: 
+      - '\npm.cmd'
+      - '\npm.exe'
+  selection_child:
+    Image|endswith:
+      - '\curl.exe'
+      - '\bash.exe'
+      - '\powershell.exe'
+      - '\wget.exe'
+  condition: selection_parent and selection_child
+---
+title: Suspicious Access to npm Configuration File
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects processes accessing the .npmrc file, which contains authentication tokens. This can indicate credential theft by malicious packages.
+author: cyber.netsecops.io
+date: 2026-06-03
+references:
+  - https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/
+tags:
+  - attack.t1555
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\.npmrc'
+  filter_legit:
+    Image|endswith:
+      - '\npm.cmd'
+      - '\npm.exe'
+      - '\node.exe'
+  condition: selection and not filter_legit

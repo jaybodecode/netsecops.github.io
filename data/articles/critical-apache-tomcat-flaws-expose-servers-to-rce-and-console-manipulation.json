@@ -1,0 +1,199 @@
+{
+  "id": "ecc2a698-9ff5-46d9-89a9-00b2267b52b6",
+  "slug": "critical-apache-tomcat-flaws-expose-servers-to-rce-and-console-manipulation",
+  "headline": "Critical Apache Tomcat Flaws Expose Servers to RCE and Console Hijacking",
+  "title": "Apache Software Foundation Patches Critical Tomcat Vulnerabilities Leading to Potential RCE",
+  "summary": "The Apache Software Foundation has released patches for two critical vulnerabilities, CVE-2025-55752 and CVE-2025-55754, affecting Apache Tomcat versions 9, 10, and 11. The most severe flaw, CVE-2025-55752, is a directory traversal bug that can be escalated to remote code execution (RCE) if non-default settings like PUT requests are enabled. The second flaw could allow for console manipulation on Windows systems. Administrators are urged to upgrade to the latest versions immediately.",
+  "full_report": "## Executive Summary\nThe **[Apache Software Foundation](https://www.apache.org/)** has disclosed and patched two significant vulnerabilities in its widely deployed **[Apache Tomcat](https://tomcat.apache.org/)** web server. The most critical flaw, **[CVE-2025-55752](https://www.cve.org/CVERecord?id=CVE-2025-55752)**, is a directory traversal vulnerability that could lead to remote code execution (RCE) under certain non-default configurations. A second, lower-severity issue, **[CVE-2025-55754](https://www.cve.org/CVERecord?id=CVE-2025-55754)**, involves improper handling of ANSI escape sequences that could allow an attacker to manipulate console output on Windows systems. The vulnerabilities affect Tomcat versions 9, 10, and 11, prompting an urgent call for administrators to apply the updates released on October 27, 2025.\n\n---\n\n## Vulnerability Details\n\n### CVE-2025-55752: Directory Traversal with Potential RCE (Severity: Important)\nThis vulnerability is a regression of a previous bug fix. It arises from the way Tomcat handles URL rewrites that affect query parameters. The server normalizes the rewritten URL before it is decoded, creating an opportunity for an attacker to craft a malicious request URI. This can bypass security constraints designed to protect sensitive directories like `/WEB-INF/` (which contains application classes and libraries) and `/META-INF/` (which holds configuration data).\n\nThe direct impact is information disclosure. However, if the server has been configured to allow HTTP `PUT` requests (which is not the default setting), an attacker can exploit this directory traversal to upload a malicious file (e.g., a JSP web shell) to a web-accessible directory, achieving remote code execution ([`T1505.003 - Web Shell`](https://attack.mitre.org/techniques/T1505/003/)).\n\n### CVE-2025-55754: Improper Neutralization of ANSI Escape Sequences (Severity: Low)\nThis flaw affects Tomcat running on Windows systems where the console supports ANSI escape sequences. An attacker can craft a malicious URL or other input that, when logged by Tomcat, injects ANSI escape sequences into the log files. If an administrator views these logs in a compatible terminal, the escape sequences could be interpreted, allowing the attacker to manipulate the console display, potentially overwrite clipboard content, or trick the administrator into executing a command.\n\n## Affected Systems\nThe vulnerabilities impact a wide range of Tomcat versions:\n- **Apache Tomcat 11:** `11.0.0-M1` to `11.0.10`\n- **Apache Tomcat 10:** `10.1.0-M1` to `10.1.44`\n- **Apache Tomcat 9:** `9.0.0.M11` to `9.0.108`\n\nUsers are urged to upgrade to the following patched versions:\n- **Tomcat 11.0.11** or later\n- **Tomcat 10.1.45** or later\n- **Tomcat 9.0.109** or later\n\n## Exploitation Status\nThere are no public reports of active exploitation for these vulnerabilities. However, vulnerabilities in ubiquitous software like Apache Tomcat are prime targets for automated scanning and exploitation by threat actors once a proof-of-concept becomes available.\n\n## Impact Assessment\n- **CVE-2025-55752:** The primary risk is information disclosure from protected directories. In the worst-case scenario (with `PUT` enabled), the impact is a full server compromise via RCE, allowing an attacker to steal data, pivot to other network systems, or use the server for malicious activities.\n- **CVE-2025-55754:** The impact is lower but still significant. It could facilitate social engineering attacks against administrators, leading to further compromise if an admin is tricked into executing malicious commands.\n\n## Cyber Observables for Detection\n\n| Type                 | Value                                               | Description                                                                                                                              |\n|:---------------------|:----------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|\n| url_pattern          | `..;` or other path traversal sequences in query params | Look for suspicious path traversal sequences in the query string portion of URLs in web server access logs, especially in rewritten requests. |\n| log_source           | Tomcat log files (`catalina.out`)                   | Scan logs for raw ANSI escape sequences (e.g., `\\u001b[...`) which could indicate attempts to exploit CVE-2025-55754.                   |\n| http_method          | `PUT`                                               | Monitor for `PUT` requests to unexpected endpoints, which could signify an attempt to upload a file via CVE-2025-55752.                  |\n\n## Detection Methods\n- **Version Scanning:** Use asset inventory and vulnerability management tools to identify all instances of Apache Tomcat in your environment and check if they are running a vulnerable version.\n- **Configuration Review:** Specifically check Tomcat configurations (`web.xml`) to determine if `PUT` requests are enabled (the `readonly` initialization parameter is set to `false`). Systems with this configuration are at much higher risk and should be prioritized for patching.\n- **Web Application Firewall (WAF):** Deploy WAF rules to detect and block common directory traversal patterns and the upload of suspicious file types like `.jsp`.\n- **D3FEND Techniques:** Employ [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) to monitor for anomalous HTTP requests and [`D3-FA: File Analysis`](https://d3fend.mitre.org/technique/d3f:FileAnalysis) on uploaded files.\n\n## Remediation Steps\n1.  **Upgrade Tomcat:** The primary and most effective remediation is to upgrade all Tomcat instances to a patched version (11.0.11+, 10.1.45+, or 9.0.109+).\n2.  **Disable PUT Requests:** As a workaround and general best practice, ensure that `PUT` requests are disabled unless absolutely necessary for application functionality. This can be done by ensuring the `readonly` init parameter for the Default servlet is set to `true` in `conf/web.xml`.\n3.  **Sanitize Log Output:** To mitigate CVE-2025-55754, ensure that any tools used to view logs (e.g., `less -r`, `cat`) are configured to properly handle or strip escape sequences, or use log viewers that are not susceptible.\n4.  **D3FEND Countermeasures:**\n    -   The core remediation is [`D3-SU: Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate).\n    -   Hardening the server configuration relates to [`D3-ACH: Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).",
+  "twitter_post": "Apache Tomcat administrators: Patch now! 🚨 Two critical flaws (CVE-2025-55752, CVE-2025-55754) affect Tomcat 9, 10 & 11. The worst bug is a directory traversal that can lead to RCE if PUT requests are enabled. #Apache #Tomcat #RCE #Vuln",
+  "meta_description": "Apache has patched two critical vulnerabilities (CVE-2025-55752, CVE-2025-55754) in Tomcat versions 9, 10, and 11 that could lead to directory traversal, RCE, and console manipulation. Upgrade immediately.",
+  "category": [
+    "Vulnerability",
+    "Patch Management",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Apache Software Foundation",
+      "type": "security_organization",
+      "url": "https://www.apache.org/"
+    },
+    {
+      "name": "Apache Tomcat",
+      "type": "product",
+      "url": "https://tomcat.apache.org/"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-55752",
+      "kev": false,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2025-55754",
+      "kev": false,
+      "severity": "low"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://lists.apache.org/thread/o94q3h5qz9o2l6p13zdf1h725940lvt2",
+      "title": "[SECURITY] CVE-2025-55752 Apache Tomcat - Directory traversal via rewrite with possible RCE if PUT is enabled",
+      "date": "2025-10-27",
+      "friendly_name": "Apache Mail Archives",
+      "website": "lists.apache.org"
+    },
+    {
+      "url": "https://cyberpress.com/critical-apache-tomcat-vulnerabilities-put-servers-at-risk-of-rce-attacks/",
+      "title": "Critical Apache Tomcat Vulnerabilities Put Servers at Risk of RCE Attacks",
+      "date": "2025-10-28",
+      "friendly_name": "Cyberpress",
+      "website": "cyberpress.com"
+    },
+    {
+      "url": "https://www.redhotcyber.com/en/apache-tomcat-vulnerability-update-now-to-avoid-security-risks/",
+      "title": "Apache Tomcat Vulnerability: Update Now to Avoid Security Risks",
+      "date": "2025-10-28",
+      "friendly_name": "Red Hot Cyber",
+      "website": "redhotcyber.com"
+    },
+    {
+      "url": "https://tomcat.apache.org/security-9.html",
+      "title": "Apache Tomcat 9 vulnerabilities",
+      "date": "2025-10-27",
+      "friendly_name": "Apache Tomcat",
+      "website": "tomcat.apache.org"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-10-27T00:00:00Z",
+      "summary": "The Apache Software Foundation releases security advisories and patched versions for Tomcat."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1083",
+      "name": "File and Directory Discovery",
+      "tactic": "Discovery"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1055",
+      "name": "Process Injection",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Upgrading to a patched version of Apache Tomcat is the most effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "As a workaround, ensure the 'readonly' parameter is set to true to disable PUT requests, mitigating the RCE vector for CVE-2025-55752.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Use a Web Application Firewall (WAF) to filter for directory traversal and other malicious request patterns.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The definitive countermeasure for both CVE-2025-55752 and CVE-2025-55754 is to upgrade all Apache Tomcat instances to a patched version. Administrators must identify all vulnerable servers and update them to Tomcat 11.0.11+, 10.1.45+, or 9.0.109+. Given the ubiquity of Tomcat, a comprehensive asset inventory is the first step. Patching should be prioritized based on the server's exposure and configuration. Internet-facing servers and those confirmed to have PUT requests enabled (readonly=false) are at the highest risk for RCE and must be patched immediately. This action directly closes the directory traversal and ANSI escape sequence vulnerabilities at the source code level.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "As a critical mitigating control for CVE-2025-55752, administrators must review and harden their Tomcat configurations. Specifically, locate the `Default` servlet definition in `conf/web.xml` and ensure the `readonly` initialization parameter is set to `true` (or not present, as `true` is the default). Setting `<param-value>true</param-value>` explicitly disables HTTP methods like `PUT` and `DELETE`. This single configuration change prevents the directory traversal flaw from being escalated to remote code execution, as the attacker would no longer have a method to upload their malicious file. This is an essential defense-in-depth measure that should be standard practice for all production Tomcat deployments, as write operations should rarely be handled by the default servlet.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "..;",
+      "description": "Look for suspicious path traversal sequences like '..;' in the query string portion of URLs in web server access logs.",
+      "context": "Web server logs, WAF logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "catalina.out",
+      "description": "Scan Tomcat log files for raw ANSI escape sequences (e.g., \\u001b[...), which could indicate attempts to exploit CVE-2025-55754.",
+      "context": "Log analysis tools, SIEM",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Apache Tomcat",
+    "Vulnerability",
+    "RCE",
+    "Directory Traversal",
+    "Patch Management",
+    "Java"
+  ],
+  "extract_datetime": "2025-10-28T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Retail",
+      "Government"
+    ],
+    "other_affected": [
+      "Any organization using Apache Tomcat for web applications"
+    ]
+  },
+  "pub_date": "2025-10-28",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-28T15:00:00.000Z",
+  "updatedAt": "2025-10-28T15:00:00.000Z"
+}

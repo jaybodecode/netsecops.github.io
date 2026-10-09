@@ -1,0 +1,357 @@
+{
+  "id": "0719c4ed-b56c-4e69-974d-9d4266e71cdc",
+  "slug": "chinese-speaking-threat-actor-harnesses-ai-models-for-autonomous-cyberattacks",
+  "headline": "Chinese Actor Deploys AI Models for Autonomous Hacking Campaign",
+  "title": "Chinese Actor Uses AI for Autonomous Cyberattacks",
+  "summary": "Unit 42 has identified a sophisticated, AI-driven cyberattack campaign conducted by a Chinese-speaking threat actor known as 'knaithe' or 'KnYuan'. The actor utilized the Hermes Agent framework integrated with the DeepSeek AI model to create an autonomous offensive operator. This system was used to scan for vulnerabilities, download public exploits, and attempt attacks against targets, including systems running Langflow and n8n. The operation, orchestrated via Telegram, also involved testing other LLMs like Qwen, Claude Code, and Codex. An operational security failure by the actor exposed their infrastructure, providing researchers with deep insights into their tools and methods. Although the campaign had limited success, it represents a significant advancement in the use of AI for automated, end-to-end offensive operations.",
+  "full_report": "## Executive Summary\n\n**Unit 42** has uncovered a novel cyberattack campaign where a Chinese-speaking threat actor, identified by the aliases **[knaithe](https://www.netsecops.io/threat-actors/knaithe)** and **KnYuan**, employed Large Language Models (LLMs) to conduct autonomous hacking operations. The actor leveraged the **[Hermes Agent](https://www.netsecops.io/tools/hermes-agent)** framework, primarily with the **[DeepSeek](https://www.netsecops.io/products/deepseek)** AI model as its reasoning engine, to autonomously enumerate vulnerabilities, download public exploit code, and attempt exploitation against targeted systems. The campaign, orchestrated via **[Telegram](https://telegram.org/)**, targeted seven vulnerabilities across multiple product families, including a critical flaw in **[Langflow](https://www.netsecops.io/products/langflow)** (**CVE-2026-33017**) and two vulnerabilities in **[n8n](https://www.netsecops.io/products/n8n)**. An operational security mistake by the actor, which exposed their file server, provided researchers with unprecedented visibility into their toolset and methodology. While the immediate impact of this specific campaign was limited, it confirms the existence of a functional, end-to-end autonomous offensive capability, signaling a new frontier in cyber threats.\n\n---\n\n## Threat Overview\n\nA Chinese-speaking threat actor has been observed weaponizing AI for autonomous cyberattacks. Operating as **knaithe**/**KnYuan**, the actor used a combination of autonomous AI-driven scanning and manual exploitation. The core of their operation was the **Hermes Agent**, an open-source framework customized for red-teaming, which was integrated with the **DeepSeek** LLM to act as an autonomous offensive operator. This setup allowed the actor to issue high-level commands via **Telegram**, which the AI agent would then execute.\n\nThe agent's tasks included:\n1.  **Autonomous Vulnerability Enumeration**: Searching for vulnerable systems using tools like **[FOFA](https://www.netsecops.io/tools/fofa)**.\n2.  **Exploit Research**: Scanning **[GitHub](https://github.com/)** for trending Proof-of-Concept (PoC) exploits for critical CVEs.\n3.  **Target Prioritization**: Assessing targets based on deployment footprint, vulnerability severity, and exploitability.\n4.  **Automated Exploitation Attempts**: Downloading and executing public exploit code against identified targets.\n\nThe actor also experimented with a range of other LLMs, including **Qwen**, **GLM**, **Kimi**, **MiniMax**, **[Claude Code](https://www.netsecops.io/products/claude-code)**, and **[Codex](https://www.netsecops.io/products/codex)**, indicating a systematic evaluation of the AI market for offensive purposes. To evade detection, the actor routed traffic for Western AI tools through a proxy service and configured the tools to minimize logging and attribution. A misconfiguration by the actor exposed their entire operational environment, allowing researchers to analyze their tools, session logs, and targeting strategy in detail.\n\n---\n\n## Technical Analysis\n\nThe threat actor's infrastructure was centered around the **Hermes Agent** framework, which provided orchestration, terminal access, and C2 via **Telegram**. The **DeepSeek** model served as the primary reasoning engine for decision-making.\n\nThe actor customized Hermes Agent with three red-teaming skills:\n-   `shell_exec`: For executing shell commands.\n-   `web_search`: For conducting web searches.\n-   `file_op`: For file system operations.\n\n### Attack Sequence\nAn observed session on May 7, 2026, revealed the agent's workflow:\n1.  **Initial Target (Langflow)**: The agent identified a critical vulnerability in **Langflow** (**CVE-2026-33017**, CVSS 9.8). It autonomously downloaded a PoC, compiled it, and attempted exploitation. The attempts failed because the target environment did not meet the prerequisites (disabled `auto_login` and no public flow ID). The agent correctly assessed the target as low-value and abandoned the attempt.\n2.  **Pivot to New Target (n8n)**: After the initial failure, the agent performed autonomous research. It used **FOFA** to survey product deployment counts and searched **GitHub** for trending PoCs. It identified **n8n** as a high-value target due to its large deployment footprint (over 647,000 instances globally).\n3.  **n8n Exploitation**: The agent obtained a public PoC from the 'Chocapikk' repository that chains two **n8n** vulnerabilities: **CVE-2024-25443** and **CVE-2024-25444**. This attack requires an unauthenticated form with file upload capabilities. The agent queried **FOFA** for vulnerable **n8n** instances in China and began probing them. While it found vulnerable versions, it failed to find any with publicly accessible forms, thus preventing successful exploitation in the observed sessions.\n\n### Tooling and Anti-Attribution\nThe actor used multiple AI tools, configuring them to reduce traceability. For **Claude Code** and **Codex**, traffic was proxied through `code.newcli[.]com`. They also enabled anti-attribution settings, such as `CLAUDE_CODE_ATTRIBUTION_HEADER: \"0\"` and `disable_response_storage = true` for **Codex**, to limit data retention by the service providers.\n\n### MITRE ATT&CK Mapping\nThe actor's TTPs map to the following MITRE ATT&CK techniques:\n-   **Reconnaissance**\n    -   [`T1595.002 - Vulnerability Scanning`](https://attack.mitre.org/techniques/T1595/002/): The agent autonomously scanned for vulnerable instances of Langflow and n8n.\n    -   [`T1592 - Gather Victim Host Information`](https://attack.mitre.org/techniques/T1592/): Probing targets to identify running versions and service configurations.\n    -   [`T1589.002 - Search Open Technical Databases`](https://attack.mitre.org/techniques/T1589/002/): The agent searched GitHub for PoC exploit code.\n-   **Resource Development**\n    -   [`T1583.006 - Web Services`](https://attack.mitre.org/techniques/T1583/006/): Leveraging various public AI API services for code generation and decision-making.\n    -   [`T1588.002 - Tool`](https://attack.mitre.org/techniques/T1588/002/): Acquiring the Hermes Agent framework and public exploits.\n-   **Initial Access**\n    -   [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/): The core of the campaign involved attempting to exploit vulnerabilities in internet-facing applications.\n-   **Execution**\n    -   [`T1059.007 - JavaScript`](https://attack.mitre.org/techniques/T1059/007/): Implied use for developing or modifying exploit code.\n-   **Command and Control**\n    -   [`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/): Using HTTPS for API calls to AI services and Telegram for C2.\n    -   [`T1102.002 - Bidirectional Communication`](https://attack.mitre.org/techniques/T1102/002/): Using Telegram, a legitimate service, for C2.\n\n---\n\n## Impact Assessment\nWhile the observed campaign had limited direct impact due to target-side configurations preventing successful exploitation, its significance is profound. The operation validates a functional, end-to-end autonomous hacking capability. This represents a paradigm shift, moving from automated scripts to AI-driven agents that can reason, research, and adapt their attack path in real-time. \n\nThe potential business impact of such attacks is severe. An autonomous agent can operate 24/7, dramatically increasing the speed and scale of attacks. It can discover and exploit zero-day vulnerabilities or newly disclosed n-days far faster than human-led teams, shrinking the window for defenders to patch and respond. If a similar autonomous campaign were to succeed against a widely deployed, vulnerable application, it could lead to mass compromise across multiple organizations and industries within hours, resulting in widespread data breaches, ransomware events, or service disruptions.\n\n---\n\n## IOCs — Directly from Articles\n\nThe following indicator was explicitly mentioned in the source article:\n\n| Type   | Value              | Description                                      |\n|--------|--------------------|--------------------------------------------------|\n| Domain | `code.newcli[.]com`  | Third-party proxy service used to route traffic to Western AI tools. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns that could indicate related activity:\n\n| Type                   | Value                                      | Description                                                                                             |\n|------------------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------|\n| URL Pattern            | `/api/v1/run/*`                            | Potential endpoint for Langflow exploitation attempts.                                                  |\n| Network Traffic Pattern| Outbound traffic to `api.deepseek.com`         | Direct API calls to the DeepSeek service.                                                               |\n| Network Traffic Pattern| Outbound traffic to `code.newcli[.]com`        | Connections to the proxy service used by the actor.                                                     |\n| Log Source             | `Web Application Firewall Logs`              | Monitor for exploitation attempts against n8n, specifically for `CVE-2024-25443` and `CVE-2024-25444`. |\n| Command Line Pattern   | `*--auto_login*`                           | Command-line arguments related to Langflow that may indicate reconnaissance or exploitation.          |\n| Process Name           | `FofaMap-Platinum-Full-Expert`             | The name of the integrated FOFA tool used for reconnaissance.                                           |\n| Network Traffic Pattern| `api.telegram.org`                         | Outbound connections to Telegram APIs from servers, which could indicate C2 activity.                   |\n\n---\n\n## Detection & Response\n\nDetecting autonomous AI-driven attacks requires a multi-layered approach focusing on behavior and anomalies rather than just static signatures.\n\n1.  **API and Network Monitoring**: Monitor and baseline outbound API calls from servers and critical assets, especially to known LLM providers (**DeepSeek**, Anthropic, OpenAI, etc.). Anomalous connections from non-developer systems should be investigated. Use **[Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** to flag connections to suspicious proxies like `code.newcli[.]com` or C2 channels like **Telegram**.\n\n2.  **Vulnerability Scanning and Patching**: Aggressively scan for and patch the vulnerabilities targeted in this campaign, particularly **CVE-2026-33017** (Langflow), **CVE-2024-25443**, and **CVE-2024-25444** (n8n). An autonomous attacker thrives on n-day vulnerabilities, making patch velocity a critical defense.\n\n3.  **Endpoint and Application Logging**: Ensure comprehensive logging is enabled on public-facing applications. For Langflow, monitor for attempts to access flows or use the `auto_login` feature. For n8n, log and alert on access to form endpoints, especially those involving file uploads. Use **[File Analysis (D3-FA)](https://d3fend.mitre.org/technique/d3f:FileAnalysis)** on uploaded files to detect malicious payloads.\n\n4.  **Behavioral Analytics**: Deploy EDR and SIEM solutions with User and Entity Behavior Analytics (UEBA) capabilities. An autonomous agent's activity—rapidly pivoting from scanning to exploit download to execution—may generate a sequence of alerts that, when correlated, reveal the attack chain. Look for a single source IP performing vulnerability scanning, followed by connections to **GitHub**, and then exploit attempts.\n\n---\n\n## Mitigation\n\nDefending against AI-driven autonomous threats requires strengthening fundamental security controls and adopting new strategies.\n\n1.  **Attack Surface Management**: Continuously monitor and minimize the external attack surface. Disable or restrict access to unnecessary features on public-facing applications. In this case, ensuring Langflow's `auto_login` was disabled and n8n's forms were not publicly accessible were the key factors that prevented compromise. This aligns with **D3FEND's Application Hardening (D3-AH)**.\n\n2.  **Egress Traffic Filtering**: Implement strict egress filtering policies to block outbound connections from servers to non-essential services. Block traffic to known anonymizing proxies, Tor, and unnecessary external APIs, including AI services and platforms like **Telegram**, unless explicitly required for business operations. This is a core principle of **D3FEND's Outbound Traffic Filtering (D3-OTF)**.\n\n3.  **Software Updates**: Maintain a rigorous patch management program to apply security updates as soon as they become available. The actor's reliance on public PoCs for n-day vulnerabilities means that timely patching is one of the most effective defenses. This corresponds to **D3FEND's Software Update (D3-SU)**.\n\n4.  **API Security**: For organizations using LLMs, implement robust API security controls. This includes monitoring usage for anomalous activity, enforcing strict access controls, and using API gateways to inspect and log all requests. Consider using dedicated, secured environments for interacting with external AI services.",
+  "twitter_post": "Unit 42 uncovers a Chinese-speaking actor using AI models like DeepSeek with the Hermes Agent framework for autonomous hacking. The campaign targeted 7 vulns, including in Langflow & n8n, via Telegram C2. #ThreatIntel #CyberAttack #AIsecurity #China",
+  "meta_description": "Unit 42 reports on a Chinese-speaking threat actor using AI models like DeepSeek and the Hermes Agent framework to conduct autonomous cyberattacks.",
+  "category": [
+    "Threat Actor",
+    "Cyberattack",
+    "Vulnerability"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "knaithe",
+      "type": "threat_actor"
+    },
+    {
+      "name": "KnYuan",
+      "type": "threat_actor"
+    },
+    {
+      "name": "DeepSeek",
+      "type": "product"
+    },
+    {
+      "name": "Hermes Agent",
+      "type": "malware"
+    },
+    {
+      "name": "Telegram",
+      "type": "product",
+      "url": "https://telegram.org/"
+    },
+    {
+      "name": "Qwen",
+      "type": "product"
+    },
+    {
+      "name": "GLM",
+      "type": "product"
+    },
+    {
+      "name": "Kimi",
+      "type": "product"
+    },
+    {
+      "name": "MiniMax",
+      "type": "product"
+    },
+    {
+      "name": "Claude Code",
+      "type": "product"
+    },
+    {
+      "name": "Codex",
+      "type": "product"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Langflow",
+      "type": "product"
+    },
+    {
+      "name": "n8n",
+      "type": "product"
+    },
+    {
+      "name": "FOFA",
+      "type": "product"
+    },
+    {
+      "name": "Chocapikk",
+      "type": "other"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-33017",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2024-25443"
+    },
+    {
+      "id": "CVE-2024-25444"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/autonomous-ai-cyber-attack-campaign/",
+      "title": "Chinese-Speaking Threat Actor Harnesses AI Models for Autonomous Cyberattacks",
+      "date": "2026-07-29",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-07T00:00:00Z",
+      "summary": "Unit 42 recovered a Hermes Agent session where the AI operator attempted to exploit Langflow (CVE-2026-33017), failed, and then pivoted to researching and targeting n8n vulnerabilities."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1595.002",
+      "name": "Vulnerability Scanning",
+      "tactic": "Reconnaissance"
+    },
+    {
+      "id": "T1589.002",
+      "name": "Search Open Technical Databases",
+      "tactic": "Reconnaissance"
+    },
+    {
+      "id": "T1583.006",
+      "name": "Web Services",
+      "tactic": "Resource Development"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1102.002",
+      "name": "Bidirectional Communication",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Applying timely patches for vulnerabilities like those in n8n and Langflow removes the exploit vector for the autonomous agent.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement strict egress filtering to block outbound connections from servers to unauthorized external services like AI APIs and Telegram.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Filter and block traffic to known malicious or non-business-critical domains, such as the proxy service `code.newcli[.]com`.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Running web applications in isolated environments can limit the impact of a successful exploit, preventing lateral movement.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Hardening application configurations, such as disabling Langflow's `auto_login` and restricting n8n's form access, was proven to be an effective defense in this campaign.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [],
+      "description": "Enable comprehensive logging for web applications, network traffic, and API calls to provide visibility for detecting and investigating anomalous activities.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The threat actor's methodology relies heavily on exploiting known, n-day vulnerabilities for which public PoCs are available. Implementing a rapid and comprehensive software update strategy is therefore a critical defense. Organizations must prioritize patching for internet-facing applications like n8n and Langflow. Establish a 24-48 hour patching SLA for critical vulnerabilities on external systems. Utilize automated patch management systems and vulnerability scanners to continuously identify and remediate outdated software. Since the autonomous agent actively searches for vulnerable versions, any delay in patching directly increases the window of opportunity for compromise. Verifying successful patch deployment across all assets is as important as the deployment itself. This technique directly counters the actor's TTP of leveraging publicly known flaws, rendering their downloaded exploits ineffective.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "This campaign's failure was a direct result of strong application hardening. The target's Langflow instance had `auto_login` disabled, and the n8n instances did not expose unauthenticated forms. This demonstrates the power of secure configuration. Security teams must perform regular configuration reviews of all public-facing applications, guided by vendor best practices and security benchmarks like those from CIS. For applications like Langflow, disable any features that allow for unauthenticated access or automatic logins. For n8n, ensure that all forms, especially those with file upload capabilities, require strong authentication. This principle of least functionality—disabling all features and access points not strictly necessary for business operations—is a powerful countermeasure against both automated and manual attackers, as it removes the specific prerequisites their exploits depend on.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "The actor's reliance on external AI APIs (DeepSeek, Claude, etc.) and a C2 channel (Telegram) creates detectable network signatures. Implementing strict outbound traffic filtering on servers is a highly effective mitigation. By default, servers should be denied all outbound internet access. An explicit allowlist should be created for only necessary destinations, such as package repositories or required business APIs. In this context, connections to `api.deepseek.com`, `code.newcli[.]com`, and `api.telegram.org` from a production server should be blocked and trigger a high-priority alert. This control not only disrupts the AI agent's ability to function (by cutting off its 'brain') but also blocks its C2 channel, preventing the human operator from issuing new tasks. This defense moves security from being reactive to proactive, by preventing the tool from communicating in the first place.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "code.newcli[.]com",
+      "description": "Third-party proxy service used to route traffic to Western AI tools."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/api/v1/run/*",
+      "description": "Potential Langflow API endpoint targeted during exploitation attempts.",
+      "context": "Web server logs, WAF logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "domain",
+      "value": "api.deepseek.com",
+      "description": "API endpoint for the DeepSeek LLM, used as the primary reasoning engine.",
+      "context": "DNS logs, Network firewall logs, Proxy logs",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "code.newcli[.]com",
+      "description": "Proxy service used by the actor to conceal connections to Western AI platforms.",
+      "context": "DNS logs, Network firewall logs, Proxy logs",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Web Application Firewall Logs",
+      "description": "Source for detecting web-based exploitation attempts against n8n vulnerabilities.",
+      "context": "SIEM, Log Management Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "*--auto_login*",
+      "description": "Command-line argument related to the Langflow vulnerability prerequisite.",
+      "context": "Windows Event ID 4688, Linux auditd logs, EDR telemetry",
+      "confidence": "low"
+    },
+    {
+      "type": "process_name",
+      "value": "FofaMap-Platinum-Full-Expert",
+      "description": "Process name of the FOFA mapping tool integrated into the actor's framework.",
+      "context": "EDR process monitoring, Host-based logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "domain",
+      "value": "api.telegram.org",
+      "description": "Outbound connections to Telegram from servers could indicate C2 communications.",
+      "context": "Firewall logs, Proxy logs, Netflow data",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "AI",
+    "Autonomous Attack",
+    "LLM",
+    "DeepSeek",
+    "Hermes Agent",
+    "Vulnerability Exploitation",
+    "Threat Actor",
+    "knaithe",
+    "Chinese-Speaking Actor"
+  ],
+  "extract_datetime": "2026-07-30T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "China"
+    ],
+    "industries_affected": [
+      "Technology"
+    ]
+  },
+  "keywords": [
+    "autonomous cyberattack",
+    "AI hacking",
+    "Chinese threat actor",
+    "DeepSeek",
+    "Hermes Agent",
+    "CVE-2026-33017",
+    "n8n vulnerability",
+    "Unit 42",
+    "LLM security",
+    "knaithe"
+  ],
+  "pub_date": "2026-07-30",
+  "reading_time_minutes": 10,
+  "createdAt": "2026-07-30T15:00:00.000Z",
+  "updatedAt": "2026-07-30T15:00:00.000Z"
+}

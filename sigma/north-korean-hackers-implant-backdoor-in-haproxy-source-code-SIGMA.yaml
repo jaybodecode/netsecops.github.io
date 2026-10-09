@@ -1,0 +1,83 @@
+title: Anomalous HAProxy Outbound Connection
+id: 9b8a3c2d-1e4f-4a6b-8c7d-5e6f7a8b9c0d
+status: experimental
+description: Detects the HAProxy process initiating outbound network connections to non-local addresses, which is anomalous behavior and may indicate a backdoor like 'ted backdoor'.
+author: cyber.netsecops.io
+date: 2026-09-08
+references:
+  - https://securityaffairs.com/198656/apt/north-korea-linked-hackers-hide-a-backdoor-inside-haproxy.html
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image: '/usr/sbin/haproxy'
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_local
+falsepositives:
+  - Legitimate HAProxy configurations that require outbound connections (e.g., fetching CRLs, certain health checks).
+---
+title: Suspicious Modification of Critical Linux Daemons
+id: a65f6cd9-f5eb-497a-b081-1393e9e82793
+status: experimental
+description: Detects file write or modification events for critical Linux daemons that were reported as trojanized in the HAProxy backdoor campaign.
+author: cyber.netsecops.io
+date: 2026-09-08
+references:
+  - https://securityaffairs.com/198656/apt/north-korea-linked-hackers-hide-a-backdoor-inside-haproxy.html
+tags:
+  - attack.t1554
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename:
+      - '/usr/sbin/haproxy'
+      - '/usr/sbin/crond'
+      - '/usr/sbin/sshd'
+      - '/usr/sbin/agetty'
+      - '/usr/sbin/atd'
+      - '/usr/bin/polkitd'
+  filter_legit_installer:
+    Image:
+      - '/usr/bin/rpm'
+      - '/usr/bin/yum'
+      - '/usr/bin/apt'
+      - '/usr/bin/dpkg'
+  condition: selection and not filter_legit_installer
+falsepositives:
+  - Legitimate system updates or package installations.
+---
+title: "'ted backdoor' String Artifact"
+id: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the presence of the string 'ted backdoor' in files, which is a known artifact of the backdoored HAProxy implant.
+author: cyber.netsecops.io
+date: 2026-09-08
+references:
+  - https://securityaffairs.com/198656/apt/north-korea-linked-hackers-hide-a-backdoor-inside-haproxy.html
+tags:
+  - attack.t1554
+level: critical
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    Contents|contains: 'ted backdoor'
+  condition: selection
+falsepositives:
+  - Detection rule artifacts or threat intelligence reports containing the string.

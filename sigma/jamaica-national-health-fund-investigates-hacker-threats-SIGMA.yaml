@@ -1,0 +1,93 @@
+title: Anomalous Database Query Activity
+id: 4b9f0c1a-8d7e-4f6a-9b3c-1d2e3f4a5b6c
+status: experimental
+description: >
+  Detects anomalous database query activity, such as large SELECT queries, queries from unusual hostnames or user accounts, or access during non-business hours. This is a conceptual rule and requires a logging solution capable of monitoring database queries.
+references:
+  - https://jis.gov.jm/nhf-investigating-cybersecurity-threat/
+author: cyber.netsecops.io
+date: 2026-06-11
+tags:
+  - attack.t1213
+level: medium
+logsource:
+  category: application
+  product: database
+detection:
+  selection_large_query:
+    Message|contains|all:
+      - 'SELECT'
+      - 'FROM'
+    # This part of the rule is conceptual and would require aggregation capabilities in the SIEM.
+    # e.g., count(bytes) > 100MB in 1 hour
+  selection_unusual_host:
+    # Placeholder for known unusual hostnames
+    Hostname|contains:
+      - 'non-app-server'
+  selection_off_hours:
+    # Placeholder for non-business hours logic
+    Time|contains:
+      - 'T00:'
+      - 'T01:'
+      - 'T02:'
+      - 'T03:'
+      - 'T04:'
+      - 'T22:'
+      - 'T23:'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate large data exports or administrative tasks.
+  - Remote work from different timezones.
+---
+title: Anomalous Outbound Data Transfer
+id: e623d80b-3805-4cde-9518-75a38a8d6450
+status: experimental
+description: >
+  Detects potentially large data flows to unknown or suspicious external destinations, which may indicate data exfiltration. This rule is conceptual and relies on traffic volume analysis.
+references:
+  - https://jis.gov.jm/nhf-investigating-cybersecurity-threat/
+author: cyber.netsecops.io
+date: 2026-06-11
+tags:
+  - attack.t1048
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: 'true'
+    # This rule is conceptual for detecting large data flows. A SIEM with aggregation capabilities would be needed to implement this effectively.
+    # e.g., sum(BytesSent) > 100000000 by SourceIP over 1 hour
+  filter:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter
+falsepositives:
+  - Legitimate large file transfers to cloud services or partners.
+---
+title: Anomalous Service Account Interactive Logon
+id: 0c281ec0-2e02-40ff-bf9c-22a05cda0a1f
+status: experimental
+description: >
+  Monitors for service accounts being used for interactive logons, which is highly anomalous and could indicate credential misuse.
+references:
+  - https://jis.gov.jm/nhf-investigating-cybersecurity-threat/
+author: cyber.netsecops.io
+date: 2026-06-11
+tags:
+  - attack.t1078
+level: high
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType: 2 # Interactive
+    AccountName|endswith: '$'
+  condition: selection
+falsepositives:
+  - Rare administrative tasks that require interactive logon with a service account.

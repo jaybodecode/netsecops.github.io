@@ -1,0 +1,100 @@
+title: VSSAdmin Shadow Copy Deletion
+id: 2b8b3c1d-6e3a-4b1e-8f2d-9c8a7b6d5e4f
+status: experimental
+description: Detects the use of vssadmin.exe to delete volume shadow copies, a common technique used by ransomware to hinder recovery.
+references:
+  - https://www.hipaajournal.com/may-2026-data-breach-round-up/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1490
+  - attack.impact
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  condition: selection
+---
+title: Anomalous AWS API Activity for Data Access
+id: 8c1d9e0f-3a2b-4c1d-8f9e-0a1b2c3d4e5f
+status: experimental
+description: Detects potentially suspicious sequences of API calls in AWS CloudTrail, such as enumeration followed by unusual data access, which could indicate a cloud environment breach.
+references:
+  - https://www.hipaajournal.com/may-2026-data-breach-round-up/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1526
+  - attack.discovery
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName|startswith:
+      - 'Get'
+      - 'List'
+      - 'Describe'
+  filter:
+    sourceIPAddress|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter
+---
+title: Anomalous Large Data Egress from PHI Server
+id: f1e2d3c4-b5a6-4e8d-9c0b-1a2b3c4d5e6f
+status: experimental
+description: Detects unusually large outbound data transfers from servers known to contain Protected Health Information (PHI), which may indicate data exfiltration.
+references:
+  - https://www.hipaajournal.com/may-2026-data-breach-round-up/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_ip|cidr:
+      - '0.0.0.0/0'
+    bytes_out|gt: 100000000 # Example threshold: 100MB
+  filter:
+    dst_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      # - 'known_good_partner_ip/32'
+  condition: selection and not filter
+---
+title: Registry Hive Dump for Credentials
+id: a9b8c7d6-e5f4-4a3b-8c2d-1e0f9a8b7c6d
+status: experimental
+description: Detects commands used to save sensitive registry hives, such as SECURITY or SAM, to disk for offline credential harvesting.
+references:
+  - https://www.hipaajournal.com/may-2026-data-breach-round-up/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1003
+  - attack.credential_access
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\reg.exe'
+    CommandLine|contains|all:
+      - 'save'
+      - 'hklm\security'
+  condition: selection

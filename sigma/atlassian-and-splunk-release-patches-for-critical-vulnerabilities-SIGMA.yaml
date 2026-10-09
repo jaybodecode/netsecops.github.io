@@ -1,0 +1,83 @@
+title: Suspicious Windows Shell Spawned by Splunk Daemon
+id: 2b1c3d4e-5f6a-4b8c-9d0e-1f2a3b4c5d6e
+status: experimental
+description: Detects the Splunk daemon (splunkd.exe) spawning a Windows shell process, which could indicate exploitation of a command injection vulnerability like CVE-2026-20266.
+references:
+  - https://www.securityweek.com/atlassian-splunk-patch-critical-vulnerabilities/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1059.001
+  - attack.t1059.003
+  - attack.execution
+falsepositives:
+  - Legitimate administrative scripts or Splunk apps that execute shell commands.
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\splunkd.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\pwsh.exe'
+  condition: selection
+---
+title: Suspicious Linux Shell Spawned by Splunk Daemon
+id: 3c10e215-cc3d-498e-a225-a524fd16c1da
+status: experimental
+description: Detects the Splunk daemon (splunkd) spawning a Linux shell process, which could indicate exploitation of a command injection vulnerability like CVE-2026-20266.
+references:
+  - https://www.securityweek.com/atlassian-splunk-patch-critical-vulnerabilities/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1059.004
+  - attack.execution
+falsepositives:
+  - Legitimate administrative scripts or Splunk apps that execute shell commands.
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    ParentImage|endswith: '/splunkd'
+    Image|endswith:
+      - '/bash'
+      - '/sh'
+      - '/zsh'
+      - '/ksh'
+      - '/csh'
+  condition: selection
+---
+title: Suspicious Shell Spawned by Atlassian Java Process
+id: ae5df05d-e32c-4234-9a74-8b68c9951f58
+status: experimental
+description: Detects a Java process, likely related to an Atlassian product (Jira, Confluence), spawning a shell. This could indicate RCE from a compromised third-party dependency.
+references:
+  - https://www.securityweek.com/atlassian-splunk-patch-critical-vulnerabilities/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1059
+  - attack.execution
+falsepositives:
+  - Legitimate application functionality in Jira or Confluence that executes shell commands (e.g., scripts, plugins). High potential for FPs, requires tuning.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\java.exe'
+    ParentCommandLine|contains:
+      - 'atlassian.jira'
+      - 'atlassian.confluence'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\pwsh.exe'
+  condition: selection

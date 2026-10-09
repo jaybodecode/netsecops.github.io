@@ -1,0 +1,249 @@
+{
+  "id": "ec5a2168-e1b0-41b4-9912-deb7896ee41d",
+  "slug": "i-paid-twice-phishing-campaign-targets-booking-com-hotels-and-guests",
+  "headline": "Massive 'I Paid Twice' Phishing Scheme Defrauds Booking.com Hotels and Guests",
+  "title": "Global 'I Paid Twice' Phishing Campaign Uses Compromised Hotel Accounts on Booking.com to Defraud Travelers",
+  "summary": "A sophisticated global phishing campaign named 'I Paid Twice' is targeting hotels on Booking.com and Expedia, compromising their administrative accounts to defraud guests. Since at least April 2025, attackers have been using social engineering and the PureRAT malware to gain access to hotel systems. Once in, they impersonate hotel staff to send fraudulent payment requests to travelers with upcoming reservations, tricking them into paying a second time via a malicious portal. Security firm Sekoia.io, which discovered the operation, reports that the campaign is highly active and has resulted in financial losses for an unknown number of victims.",
+  "full_report": "## Executive Summary\nCybersecurity researchers at **[Sekoia.io](https://www.sekoia.io/)** have uncovered a large-scale, ongoing phishing operation dubbed \"I Paid Twice\" that targets both hotel partners and customers of major travel platforms, including **[Booking.com](https://www.booking.com/)** and **[Expedia](https://www.expedia.com/)**. Active since at least April 2025, the campaign uses a multi-stage attack to compromise hotel administrative systems with the **[PureRAT](https://malpedia.caad.fkie.fraunhofer.de/details/win.purerat)** malware. After gaining access to a hotel's Booking.com extranet account, the threat actors leverage legitimate reservation details to send highly convincing fraudulent payment requests to guests. These messages trick travelers into submitting their payment details to a fake portal, resulting in double-charging and significant financial loss. The campaign's infrastructure is resilient, leveraging hundreds of malicious domains and a suspected bulletproof hosting provider in Russia, indicating a well-organized and profitable criminal enterprise.\n\n---\n\n## Threat Overview\nThe \"I Paid Twice\" campaign is a classic adversary-in-the-middle attack applied to the hospitality sector. The attack chain begins with a spearphishing email sent to hotel staff, often disguised as an official notification from Booking.com. The email contains a link that leads to a page employing a social engineering tactic called \"ClickFix.\" This technique tricks the user into copying and executing a **[PowerShell](https://attack.mitre.org/techniques/T1059/001/)** command, believing it's a CAPTCHA verification step. This command downloads and executes the PureRAT malware, a Remote Access Trojan (RAT) also known as PureHVNC.\n\nOnce PureRAT is active, the attackers gain control over the hotel's computer systems. Their primary goal is to steal credentials for the hotel's Booking.com extranet portal. With these credentials, they log in, impersonate hotel staff, and access the list of upcoming guest reservations. They then contact these guests directly via email or WhatsApp, using authentic booking details (names, dates, room types) to build credibility. The message typically claims a \"bank verification issue\" or similar problem requires the guest to re-submit their payment information through a provided link. This link leads to a professionally designed phishing page that mimics the Booking.com payment interface, where the victim's credit card details are harvested.\n\n## Technical Analysis\n- **Malware:** The core of the operation is **PureRAT** (aka PureHVNC), a RAT-as-a-Service sold by a developer named \"PureCoder\" since 2021. It provides attackers with remote access, keylogging, credential theft, and file system access capabilities.\n- **Delivery:** The initial infection vector is a social engineering lure named \"ClickFix,\" which abuses user trust to execute a malicious PowerShell script. This is a clear example of [`T1204.002 - Malicious File`](https://attack.mitre.org/techniques/T1204/002/) where the user is tricked into running the code themselves.\n- **Command and Control:** The phishing infrastructure is protected by **[Cloudflare](https://www.cloudflare.com/)** to mask the true origin of the servers. The backend hosting is provided by OPTIMA LLC (AS216341), a Russian provider suspected of offering bulletproof hosting services.\n\n### MITRE ATT&CK TTPs\n- **Initial Access:** [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/): Emails with malicious links are sent to hotel staff.\n- **Execution:** [`T1059.001 - PowerShell`](https://attack.mitre.org/techniques/T1059/001/): The \"ClickFix\" lure tricks users into running a PowerShell download cradle.\n- **Persistence & Defense Evasion:** PureRAT likely establishes persistence through common methods like Registry Run Keys ([`T1547.001`](https://attack.mitre.org/techniques/T1547/001/)).\n- **Credential Access:** [`T1555.003 - Credentials from Web Browsers`](https://attack.mitre.org/techniques/T1555/003/): PureRAT is used to steal saved credentials for the Booking.com extranet from the hotel's browser.\n- **Collection:** [`T1114.001 - Email Collection: Local Email Collection`](https://attack.mitre.org/techniques/T1114/001/): Attackers access guest reservation data from the compromised extranet account.\n- **Impersonation:** The attackers use the stolen access and data to impersonate hotel staff in communications with guests, a form of Masquerading ([`T1036`](https://attack.mitre.org/techniques/T1036/)).\n\n## Impact Assessment\nThe financial and reputational impact of this campaign is significant. Guests who fall victim lose money directly. Hotels suffer severe reputational damage, negative reviews, and potential liability for the breach of their systems. The trust between customers and booking platforms like Booking.com is eroded. Given the global nature of the campaign and the hundreds of malicious domains involved, the total financial losses are likely substantial. The operational disruption for a hotel dealing with a system compromise and angry customers can be immense, requiring costly incident response and customer remediation efforts.\n\n## Cyber Observables for Detection\n- **PowerShell Monitoring:** Monitor for PowerShell execution with suspicious arguments, especially those involving `IEX (New-Object Net.WebClient).DownloadString`. **D3FEND Technique:** [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n- **Network Traffic:** Look for outbound network connections from hotel administrative workstations to known malicious domains or IP ranges, such as those associated with AS216341 (OPTIMA LLC). **D3FEND Technique:** [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n- **Endpoint Detection:** EDR solutions should be configured to detect and block the execution of PureRAT/PureHVNC and its associated droppers.\n\n## Mitigation and Recommendations\n**For Hotels:**\n1.  **User Training:** Train staff to be suspicious of unsolicited emails, especially those that ask for urgent action or involve unusual steps like copying code. Specifically educate them on the \"ClickFix\" tactic. **D3FEND Technique:** [`D3-UT: User Training`](https://d3fend.mitre.org/technique/d3f:UserTraining).\n2.  **MFA on All Accounts:** Enforce **[Multi-Factor Authentication (MFA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)** on all administrative accounts, especially for booking platform extranets. This is the single most effective control to prevent account takeover even if credentials are stolen. **D3FEND Technique:** [`D3-MFA: Multi-factor Authentication`](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication).\n3.  **Endpoint Security:** Deploy and maintain a reputable Endpoint Detection and Response (EDR) solution to detect and block malware like PureRAT.\n4.  **Restrict PowerShell:** Use application control policies to restrict or heavily monitor the use of PowerShell on workstations that do not require it for administrative tasks. **D3FEND Technique:** [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n\n**For Travelers:**\n- **Verify Payment Requests:** Be extremely wary of any message asking for payment outside of the official booking platform's website or app. Never click links in emails or messages to enter payment details. Instead, log in to your Booking.com account directly to check reservation status.\n- **Check the URL:** Before entering payment information, always double-check the URL to ensure it is the legitimate `booking.com` domain.",
+  "twitter_post": "🏨 Attention Travelers: A global phishing scam called 'I Paid Twice' is targeting Booking.com users. Hackers compromise hotel accounts to send fake payment requests. Verify all payment links directly on the website! #Phishing #Booking #TravelScam",
+  "meta_description": "A global phishing campaign named 'I Paid Twice' is targeting Booking.com and Expedia hotel partners to defraud customers by sending fraudulent payment requests. Learn how to spot and avoid the scam.",
+  "category": [
+    "Phishing",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Booking.com",
+      "type": "company"
+    },
+    {
+      "name": "Expedia",
+      "type": "company"
+    },
+    {
+      "name": "Sekoia.io",
+      "type": "security_organization"
+    },
+    {
+      "name": "PureRAT",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.purerat"
+    },
+    {
+      "name": "PowerShell",
+      "type": "technology",
+      "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor"
+    },
+    {
+      "name": "OPTIMA LLC",
+      "type": "company"
+    },
+    {
+      "name": "PureCoder",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://gbhackers.com/i-paid-twice-phishing-campaign/",
+      "title": "Phishing Campaign “I Paid Twice” Targets Booking.com Hotels and Guests",
+      "date": "2025-11-07",
+      "friendly_name": "GBHackers on Security",
+      "website": "gbhackers.com"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/i-paid-twice-phishing-booking/",
+      "title": "“I Paid Twice” Phishing Campaign Targets Booking.com",
+      "date": "2025-11-06",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    },
+    {
+      "url": "https://cybersecuritynews.com/booking-com-phishing-campaign/",
+      "title": "Hotel’s Compromised Booking.com Account Sparks Phishing Campaign Against Travelers",
+      "date": "2025-11-07",
+      "friendly_name": "Cybersecurity News",
+      "website": "cybersecuritynews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2021-03",
+      "summary": "PureRAT malware first offered for sale by developer 'PureCoder'."
+    },
+    {
+      "datetime": "2025-04",
+      "summary": "The 'I Paid Twice' phishing campaign is observed to be active."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.001",
+      "name": "PowerShell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1555.003",
+      "name": "Credentials from Web Browsers",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1036",
+      "name": "Masquerading",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforcing MFA on Booking.com extranet accounts would prevent takeover even if credentials are stolen.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train hotel staff to recognize phishing attempts and social engineering tactics like 'ClickFix'.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use EDR/AV solutions to detect and block the PureRAT malware.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Restrict the execution of PowerShell on non-administrative workstations to prevent the initial infection.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "Hotel administrators must immediately enable multi-factor authentication (MFA) on their Booking.com and Expedia extranet accounts. This is the most critical defense against this attack. Even if an attacker successfully steals credentials using PureRAT malware, they will be unable to log into the extranet without the second factor (e.g., a code from an authenticator app or SMS). This single control breaks the attack chain at the most crucial point, preventing the attackers from accessing guest data and impersonating the hotel. This should be implemented as a mandatory policy for all accounts with access to sensitive customer or financial data.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an Endpoint Detection and Response (EDR) solution capable of deep process analysis on all hotel administrative workstations. Specifically, configure it to monitor for suspicious PowerShell execution. Create alerts for PowerShell commands that contain encoded payloads (`-enc`) or download strings from the internet (`Net.WebClient.DownloadString`). Furthermore, monitor for legitimate Windows processes like `RegAsm.exe` or `explorer.exe` making unusual network connections or spawning child processes, as this is a common injection technique used by PureRAT. This allows for the detection of the initial compromise before credentials can be stolen.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-UT",
+      "technique_name": "User Training",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserTraining",
+      "recommendation": "Conduct targeted security awareness training for all hotel staff, focusing on the specific tactics of this campaign. Use examples of the fake Booking.com emails and the 'ClickFix' social engineering lure. Emphasize a 'zero trust' policy for emails requesting actions, especially those involving running commands or bypassing security warnings. Train staff to always verify such requests through a separate, trusted communication channel. For travelers, booking platforms should launch awareness campaigns advising users to only ever make payments or enter card details through the official app or by logging into the website directly, and to treat any payment requests via email or WhatsApp as fraudulent.",
+      "mitre_mitigation_id": "M1017"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "other",
+      "value": "AS216341",
+      "description": "ASN of suspected bulletproof hosting provider OPTIMA LLC in Russia."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "powershell -noP -sta -w 1 -enc",
+      "description": "Common pattern for executing encoded PowerShell commands, often used by malware droppers.",
+      "context": "Process creation logs (Event ID 4688) and PowerShell script block logging (Event ID 4104).",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "ClickFix",
+      "description": "The name of the social engineering tactic. May appear in phishing email body or linked pages.",
+      "context": "Email content scanning and web proxy logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "string_pattern",
+      "value": "PureHVNC",
+      "description": "An alternative name for the PureRAT malware. Can be used in YARA rules or endpoint searches.",
+      "context": "File system scanning, memory analysis, and EDR telemetry.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "RegAsm.exe",
+      "description": "PureRAT is known to be injected into legitimate Windows processes like RegAsm.exe to evade detection.",
+      "context": "EDR process monitoring. Look for RegAsm.exe making outbound network connections.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Phishing",
+    "Malware",
+    "PureRAT",
+    "Booking.com",
+    "Hospitality",
+    "Social Engineering"
+  ],
+  "extract_datetime": "2025-11-07T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "Europe",
+      "Asia",
+      "North America"
+    ],
+    "industries_affected": [
+      "Hospitality"
+    ],
+    "other_affected": [
+      "Travelers",
+      "Hotel operators"
+    ]
+  },
+  "pub_date": "2025-11-07",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-11-07T15:00:00.000Z",
+  "updatedAt": "2025-11-07T15:00:00.000Z"
+}

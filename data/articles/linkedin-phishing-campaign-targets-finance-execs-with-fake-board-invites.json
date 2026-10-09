@@ -1,0 +1,191 @@
+{
+  "id": "f2834826-eb37-48e6-b2f8-c6654c2fb7b8",
+  "slug": "linkedin-phishing-campaign-targets-finance-execs-with-fake-board-invites",
+  "headline": "Finance Execs Targeted in Sophisticated LinkedIn Phishing Scheme with Fake Board Invites",
+  "title": "Phishing Campaign on LinkedIn Lures Finance Executives with Fake Board Invitations to Steal Microsoft Credentials",
+  "summary": "A sophisticated phishing campaign is targeting finance executives through LinkedIn direct messages, using fake invitations to an executive board as a lure. The multi-stage attack, detailed by Push Security, aims to harvest Microsoft credentials and session cookies to bypass MFA. The attack chain leverages trusted services to appear legitimate, starting with a Google open redirect, leading to a fraudulent portal hosted on Google Firebase, and using a Cloudflare CAPTCHA to evade security bots. This non-email-based phishing vector is reportedly becoming significantly more common, accounting for over a third of recent attempts tracked by researchers.",
+  "full_report": "## Executive Summary\n\nA highly targeted and sophisticated phishing campaign is abusing the **[LinkedIn](https://www.linkedin.com/)** platform to attack finance executives. Attackers are sending direct messages with enticing but fake invitations to join an executive board, with the ultimate goal of stealing **[Microsoft](https://www.microsoft.com/security)** account credentials and session cookies, which can be used to bypass multi-factor authentication (MFA). The campaign, analyzed by **[Push Security](https://www.pushsecurity.com/)**, employs a multi-stage attack chain that leverages trusted services like **[Google](https://www.google.com)** and **Firebase** to evade detection and build credibility. This attack highlights a significant shift towards non-email-based phishing vectors, which now constitute a growing portion of social engineering threats.\n\n---\n\n## Threat Overview\n\nThe attack preys on the ambition and professional networking context of LinkedIn. High-value targets, such as CFOs and VPs of Finance, receive a direct message about a lucrative opportunity to join the executive board of a fictitious investment fund. The message contains a link that initiates a carefully crafted attack chain designed to bypass both security tools and user suspicion.\n\n1.  **Initial Lure**: The attacker sends a personalized message via LinkedIn, inviting the target to learn more about a board position.\n2.  **Redirection Abuse**: The link in the message uses a **Google open redirect**. This means the URL starts with `google.com`, making it appear safe to click, before redirecting the user to an attacker-controlled domain.\n3.  **Fraudulent Portal**: The user lands on a fraudulent \"LinkedIn Cloud Share\" portal hosted on **Google's Firebase** service (`firebasestorage.googleapis.com`). Hosting on a trusted Google domain adds another layer of false legitimacy.\n4.  **Bot Evasion**: When the user tries to view the fake documents, they are presented with a **Cloudflare Turnstile CAPTCHA**. This step is designed to block automated security scanners and sandboxes from reaching the final phishing page.\n5.  **Credential Theft**: After solving the CAPTCHA, the user is presented with a pixel-perfect replica of a Microsoft login page. Any credentials entered are captured by the attackers. The page is also designed to capture the session cookie after a successful login, allowing the attacker to hijack the authenticated session and bypass MFA.\n\n## Technical Analysis\n\nThis campaign demonstrates a mastery of modern phishing techniques.\n*   **Social Engineering**: The attack is a classic example of [`T1598.003 - Spearphishing via Service`](https://attack.mitre.org/techniques/T1598/003/), using a trusted social media platform for highly targeted outreach.\n*   **Abuse of Trusted Services**: By using Google open redirects and Firebase hosting, the attackers make their infrastructure difficult to block without impacting legitimate services. This is a form of Masquerading ([`T1036`](https://attack.mitre.org/techniques/T1036/)).\n*   **Evasion**: The use of a Cloudflare CAPTCHA is a specific evasion technique ([`T1480.001 - Environmental Keying`](https://attack.mitre.org/techniques/T1480/001/)) to ensure only human users see the final phishing payload.\n*   **Session Hijacking**: The goal extends beyond simple password theft to session hijacking ([`T1185 - Browser Session Hijacking`](https://attack.mitre.org/techniques/T1185/)), which is far more effective against MFA-protected accounts.\n\n### MITRE ATT&CK Techniques\n*   [`T1598.003 - Spearphishing via Service`](https://attack.mitre.org/techniques/T1598/003/): The initial attack vector is a targeted message sent through LinkedIn.\n*   [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/): The message contains a malicious link designed to be clicked by the target.\n*   [`T1036.007 - Double File Extension`](https://attack.mitre.org/techniques/T1036/007/): While not explicitly mentioned, the use of fake document portals mimics this tactic's intent to deceive.\n*   [`T1185 - Browser Session Hijacking`](https://attack.mitre.org/techniques/T1185/): The ultimate goal is to steal session cookies to bypass MFA.\n*   [`T1204.001 - Malicious Link`](https://attack.mitre.org/techniques/T1204/001/): Relies on the user clicking a malicious link within the phishing message.\n\n## Impact Assessment\n\nIf successful, this attack provides threat actors with powerful access:\n*   **Account Takeover**: Full access to the executive's Microsoft 365 account, including email, OneDrive, SharePoint, and Teams.\n*   **Business Email Compromise (BEC)**: The compromised account can be used to launch highly convincing BEC attacks, such as fraudulent wire transfer requests.\n*   **Data Exfiltration**: Attackers can steal sensitive corporate data, financial reports, and strategic plans from the executive's account.\n*   **Internal Phishing**: The trusted internal account can be used to phish other employees, expanding the attacker's foothold within the organization.\n\n## IOCs\n\n| Type   | Value                         | Description                   |\n| :----- | :---------------------------- | :---------------------------- |\n| Domain | `login.kggpho[.]icu`          | Malicious phishing domain.    |\n| Domain | `payrails-canaccord[.]icu`    | Malicious phishing domain.    |\n| Domain | `boardproposalmeet[.]com`     | Malicious phishing domain.    |\n| Domain | `sqexclusiveboarddirect[.]icu`| Malicious phishing domain.    |\n| Domain | `firebasestorage.googleapis.com` | Legitimate service abused to host malicious content. |\n\n## Detection & Response\n\n*   **URL Analysis**: Security tools should be configured to flag and analyze URLs that use open redirects, even from trusted domains like Google. This is part of [`D3-UA: URL Analysis`](https://d3fend.mitre.org/technique/d3f:URLAnalysis).\n*   **User Training**: Educate executives and other high-risk employees about the threat of social media-based phishing. Emphasize verifying unexpected opportunities through separate, official channels. This is covered by [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n*   **MFA with Phishing Resistance**: While session hijacking can bypass some MFA, using phishing-resistant authenticators like FIDO2/WebAuthn can defeat these attacks, as they bind the session to the physical hardware token.\n*   **Monitor for Anomalous Logins**: Use SIEM and identity management tools to monitor for logins from unusual locations or IP addresses, even if credentials are valid. This is a form of [`D3-UGLPA: User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis).\n\n## Mitigation\n\n*   **Implement Phishing-Resistant MFA**: Prioritize the rollout of FIDO2 security keys for all high-risk users, especially executives. This is the most effective technical control against this type of attack and is a strong implementation of [`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/).\n*   **Restrict Web Content**: Use web filtering and DNS security to block known malicious domains and newly registered domains. This aligns with [`M1021 - Restrict Web-Based Content`](https://attack.mitre.org/mitigations/M1021/).\n*   **Security Awareness**: Conduct regular, targeted training sessions for executives that simulate modern, multi-stage phishing attacks that originate outside of email.\n*   **Assume Zero Trust**: Treat any link, regardless of its source (email, social media, chat), as potentially untrustworthy. Encourage a culture of verification before clicking.",
+  "twitter_post": "Sophisticated phishing on LinkedIn targets finance execs with fake board invites to steal Microsoft credentials. Attack uses Google redirects & Firebase to bypass security. 🎣 #Phishing #LinkedIn #CyberSecurity #Finance",
+  "meta_description": "A sophisticated phishing campaign on LinkedIn is targeting finance executives with fake board invitations to steal Microsoft credentials and bypass MFA using trusted services.",
+  "category": [
+    "Phishing",
+    "Threat Actor",
+    "Cloud Security"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "LinkedIn",
+      "type": "product",
+      "url": "https://www.linkedin.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Google",
+      "type": "vendor",
+      "url": "https://www.google.com"
+    },
+    {
+      "name": "Firebase",
+      "type": "product"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor"
+    },
+    {
+      "name": "Push Security",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.scmagazine.com/news/phishing/new-linkedin-phishing-campaign-targets-finance-executives",
+      "title": "New LinkedIn phishing campaign targets finance executives",
+      "date": "2025-10-31",
+      "friendly_name": "SC Media",
+      "website": "scmagazine.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/linkedin-phishing-targets-finance-execs-with-fake-board-invites/",
+      "title": "LinkedIn phishing targets finance execs with fake board invites",
+      "date": "2025-10-30",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://www.computing.co.uk/news/4252579/linkedin-phishers-target-executives-fake-board-invitations",
+      "title": "LinkedIn phishers target executives with fake board invitations",
+      "date": "2025-10-31",
+      "friendly_name": "Computing UK",
+      "website": "computing.co.uk"
+    },
+    {
+      "url": "https://www.techradar.com/pro/security/new-linkedin-phishing-scam-targets-executives-with-fake-board-positions",
+      "title": "New LinkedIn phishing scam targets executives with fake board positions",
+      "date": "2025-10-31",
+      "friendly_name": "TechRadar",
+      "website": "techradar.com"
+    },
+    {
+      "url": "https://www.pushsecurity.com/blog/push-security-sees-increase-in-sophisticated-linkedin-based-phishing-campaigns",
+      "title": "Push Security Sees Increase in Sophisticated LinkedIn-based Phishing Campaigns",
+      "date": "2025-10-30",
+      "friendly_name": "Push Security",
+      "website": "pushsecurity.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1598.003",
+      "name": "Spearphishing via Service"
+    },
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link"
+    },
+    {
+      "id": "T1185",
+      "name": "Browser Session Hijacking"
+    },
+    {
+      "id": "T1621",
+      "name": "Multi-Factor Authentication Request Generation"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Conduct targeted security awareness training for executives on identifying and reporting sophisticated social engineering attacks on platforms like LinkedIn.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Implement phishing-resistant MFA, such as FIDO2/WebAuthn, to mitigate credential theft and session hijacking.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Utilize web filtering to block access to known malicious domains and newly registered domains often used in phishing campaigns.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "login.kggpho[.]icu",
+      "description": "Malicious phishing domain"
+    },
+    {
+      "type": "domain",
+      "value": "payrails-canaccord[.]icu",
+      "description": "Malicious phishing domain"
+    },
+    {
+      "type": "domain",
+      "value": "boardproposalmeet[.]com",
+      "description": "Malicious phishing domain"
+    },
+    {
+      "type": "domain",
+      "value": "sqexclusiveboarddirect[.]icu",
+      "description": "Malicious phishing domain"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "https://www.google.com/url?q=",
+      "description": "Google open redirect pattern. While legitimate, a spike in these redirects leading to newly registered domains should be investigated.",
+      "context": "Web proxy logs, email security gateway logs.",
+      "confidence": "low"
+    },
+    {
+      "type": "url_pattern",
+      "value": "firebasestorage.googleapis.com",
+      "description": "Attackers abuse this legitimate Google service to host phishing kits and landing pages. Traffic to this domain containing suspicious file paths should be scrutinized.",
+      "context": "Web proxy logs, DNS logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "Microsoft Entra ID Sign-in Logs",
+      "description": "Hunt for successful logins immediately followed by session usage from a different geographic location or ASN, which could indicate session cookie theft and reuse.",
+      "context": "SIEM, Identity Protection solutions.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "phishing",
+    "LinkedIn",
+    "social engineering",
+    "credential theft",
+    "MFA bypass",
+    "finance"
+  ],
+  "extract_datetime": "2025-10-31T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Finance"
+    ],
+    "other_affected": [
+      "Corporate executives"
+    ]
+  },
+  "pub_date": "2025-10-31",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-31T15:00:00.000Z",
+  "updatedAt": "2025-10-31T15:00:00.000Z"
+}

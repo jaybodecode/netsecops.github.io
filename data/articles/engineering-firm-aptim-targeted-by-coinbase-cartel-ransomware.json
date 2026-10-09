@@ -1,0 +1,185 @@
+{
+  "id": "e823f500-1a3f-4057-a08b-d9b0c0242263",
+  "slug": "engineering-firm-aptim-targeted-by-coinbase-cartel-ransomware",
+  "headline": "Coinbase Cartel Ransomware Group Claims Attack on Engineering Firm Aptim, Threatens Data Leak",
+  "title": "Engineering Firm Aptim Targeted by 'Coinbase Cartel' Ransomware Group",
+  "summary": "The ransomware group known as 'Coinbase Cartel' has claimed responsibility for a cyberattack against Aptim, a U.S.-based engineering, program management, and construction firm. On April 23, the group posted the claim on its leak site, threatening to release confidential data if its ransom demands are not met. The attackers also included a technical detail—what appears to be a Kerberos pre-authentication hash—suggesting they may have compromised account credentials within Aptim's network through a Kerberoasting attack.",
+  "full_report": "## Executive Summary\n\nThe ransomware group **Coinbase Cartel** has added **Aptim**, a U.S. engineering and professional services company, to its list of victims. In a post on its dark web leak site dated April 23, 2026, the group claimed to have breached Aptim's network and exfiltrated confidential data. The attackers are threatening to publish the stolen information unless a ransom is paid. Notably, the group included a technical artifact in their post, a string that strongly resembles a Kerberos pre-authentication hash. This suggests that the initial access or privilege escalation may have been achieved via a Kerberoasting attack, targeting service account credentials within Aptim's Active Directory environment.\n\n---\n\n## Threat Overview\n\nAptim, a Louisiana-based firm, provides critical engineering, environmental, and infrastructure solutions to both government and commercial clients. A breach of its network could expose highly sensitive data, including intellectual property, project blueprints, and confidential client information.\n\nThe Coinbase Cartel group is employing a double extortion tactic: not only is data likely encrypted on Aptim's systems, but the exfiltrated data is being held hostage with the threat of public release. This puts maximum pressure on the victim to pay.\n\nThe most significant detail provided by the attackers is the hash string: `$krb5pa$23$APTIM.COM...`. This format is characteristic of a hash captured during a Kerberoasting attack. This indicates a likely compromise of at least one service account within Aptim's domain, which could have been used for initial access or, more likely, for privilege escalation and lateral movement within the network.\n\n---\n\n## Technical Analysis\n\nBased on the evidence, the attack likely involved the following TTPs from the MITRE ATT&CK framework:\n\n1.  **Credential Access:** The provided hash strongly suggests the use of [`T1558.003 - Kerberoasting`](https://attack.mitre.org/techniques/T1558/003/). In this technique, an attacker with any valid domain user account can request service tickets (TGS) for service accounts. If these service accounts have weak passwords, the attacker can take the encrypted portion of the ticket offline and crack the password, gaining access to the service account.\n2.  **Lateral Movement:** Once the service account credential was cracked, the attackers would have used it for lateral movement via [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/). A compromised service account can often provide extensive, privileged access across the network.\n3.  **Collection & Exfiltration:** The attackers would have then collected sensitive data from file shares and databases before exfiltrating it ([`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/)) to their own servers.\n4.  **Impact:** Finally, the group would deploy their ransomware to encrypt systems, achieving impact via [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/).\n\n> The inclusion of the Kerberos hash in the leak post is a form of psychological pressure, demonstrating to the victim (and security researchers) that the attackers have deep access and technical knowledge of their internal network.\n\n---\n\n## Impact Assessment\n\nFor an engineering firm like Aptim, the impact of this breach is severe. The exfiltration of confidential data could lead to the theft of valuable intellectual property and proprietary designs. If government client data is involved, it could trigger regulatory and contractual penalties. The public leak of this data would cause significant reputational damage and could be used by competitors. Operationally, the company is likely facing significant disruption from the encryption of its systems, leading to project delays and financial losses associated with recovery and incident response.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| other | `$krb5pa$23$APTIM.COM...` | A Kerberos pre-authentication hash associated with a service account in the APTIM.COM domain. This is an Indicator of a Kerberoasting attack. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams can hunt for Kerberoasting activity with the following methods:\n\n| Type | Value | Description |\n|---|---|---|\n| event_id | `4769` | In the Windows Security Event Log, a Kerberos service ticket was requested. This is a normal event, but a high volume of these events from a single source for multiple service accounts is a strong indicator of a Kerberoasting attempt. |\n| log_source | `Windows Security Event Log` | Specifically look for Event ID 4769 where the Service Name does not end in `$` (i.e., is not a computer account) and the ticket encryption type is `0x17` (RC4-HMAC). |\n| user_account_pattern | `svc_*` or `service_*` | Monitor for anomalous activity from accounts with naming conventions that indicate they are service accounts. |\n\n---\n\n## Detection & Response\n\nDetecting Kerberoasting is key to stopping this attack chain early.\n*   **SIEM Alerting:** Configure SIEM rules to detect the signs of Kerberoasting. Alert on a single user account requesting an abnormally high number of service tickets in a short period. This aligns with [`D3-DAM: Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring).\n*   **EDR Monitoring:** EDR tools can detect the execution of tools commonly used for Kerberoasting, such as Rubeus or components of the Impacket framework.\n*   **Decoy Accounts:** Create service accounts with tempting names (e.g., `svc_sql_admin`) and extremely long, complex passwords. Place them as honeypots and configure alerts for any access attempts, as no legitimate process should ever use them.\n\nUpon detecting a Kerberoasting attempt, the security team should immediately investigate the source account to determine if it is compromised and analyze which service accounts were targeted.\n\n---\n\n## Mitigation\n\nMitigating Kerberoasting is a critical Active Directory hardening task:\n\n1.  **Strong Service Account Passwords:** The most effective mitigation is to ensure all service accounts have long (25+ characters), complex, and unique passwords. Because the hashes are cracked offline, password complexity is the primary defense. This is a core part of a [`D3-SPP: Strong Password Policy`](https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy).\n2.  **Use Group Managed Service Accounts (gMSAs):** Where possible, replace traditional service accounts with gMSAs. Windows manages the passwords for gMSAs automatically, making them extremely long and complex, and rotates them regularly, making them immune to Kerberoasting.\n3.  **Principle of Least Privilege:** Limit the privileges of service accounts to only what is absolutely necessary for their function.\n4.  **Audit Service Accounts:** Regularly audit all service accounts to ensure they are still needed and have appropriate permissions.",
+  "twitter_post": "🚨 Ransomware group 'Coinbase Cartel' claims attack on US engineering firm Aptim. The group posted a Kerberos hash, suggesting credential compromise via Kerberoasting, and threatens to leak data. #Ransomware #CoinbaseCartel #DataBreach #Aptim",
+  "meta_description": "The Coinbase Cartel ransomware group claims a cyberattack on engineering firm Aptim, threatening to leak data and posting a Kerberos hash that suggests a Kerberoasting attack was used to compromise credentials.",
+  "category": [
+    "Ransomware",
+    "Data Breach",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Coinbase Cartel",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Aptim",
+      "type": "company"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://dexpose.io/blog/coinbase-cartel-infiltrates-engineering-leader-aptim",
+      "title": "Coinbase Cartel Infiltrates Engineering Leader Aptim",
+      "date": "2026-04-24",
+      "friendly_name": "Dexpose"
+    },
+    {
+      "url": "https://breachsense.com/breach/aptim-com",
+      "title": "APTIM Data Breach in 2026",
+      "date": "2026-04-24",
+      "friendly_name": "BreachSense"
+    },
+    {
+      "url": "https://www.hookphish.com/blog/ransomware-group-coinbasecartel-hits-aptim",
+      "title": "Ransomware Group coinbasecartel Hits: Aptim",
+      "date": "2026-04-24",
+      "friendly_name": "HookPhish"
+    },
+    {
+      "url": "https://ransomware.live/victim/aptim/",
+      "title": "Victim: Aptim",
+      "date": "2026-04-24",
+      "friendly_name": "Ransomware.live"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04-23T00:00:00Z",
+      "summary": "The Coinbase Cartel ransomware group posted its claim of attacking Aptim on its data leak site."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1558.003",
+      "name": "Kerberoasting",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Lateral Movement"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1027",
+      "name": "Password Policies",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SPP",
+          "name": "Strong Password Policy",
+          "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy"
+        }
+      ],
+      "description": "Enforcing extremely long and complex passwords (25+ characters) for all service accounts is the primary defense against offline cracking of Kerberos tickets.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Switching from standard user accounts to Group Managed Service Accounts (gMSAs) for services eliminates the threat of Kerberoasting for those accounts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Regularly auditing service accounts and monitoring for Kerberoasting activity (Event ID 4769) is a key detection strategy.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SPP",
+      "technique_name": "Strong Password Policy",
+      "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy",
+      "recommendation": "The most direct countermeasure to the Kerberoasting attack used against Aptim is to enforce a robust password policy specifically for Active Directory service accounts. Because Kerberoasting relies on cracking a password hash offline, the only effective defense is to make the password uncrackable within a reasonable timeframe. Organizations must implement a policy requiring all service accounts to have passwords of at least 25 characters, composed of a mix of upper/lowercase letters, numbers, and symbols. These passwords should be randomly generated. Furthermore, transitioning to Group Managed Service Accounts (gMSAs) where possible is highly recommended, as Windows automatically manages these accounts with 127-character, complex passwords that are rotated regularly, rendering them immune to Kerberoasting.",
+      "mitre_mitigation_id": "M1027"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "To detect a Kerberoasting attack in progress, organizations must actively monitor their domain controllers. By forwarding Windows Security Event Logs to a SIEM, security teams can build a detection rule for Event ID 4769 (A Kerberos service ticket was requested). While this event is common, an attack pattern emerges when a single source user account requests a large number of tickets for many different service principal names (SPNs) in a short period. The rule should be tuned to alert on this 'one-to-many' request pattern. Enriching the alert with information about the source user and the targeted service accounts can help analysts quickly identify and respond to the potential compromise, disabling the source account before the attacker can crack the hashes and move laterally.",
+      "mitre_mitigation_id": "M1026"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "other",
+      "value": "$krb5pa$23$APTIM.COM...",
+      "description": "Kerberos pre-authentication hash, indicating a Kerberoasting attack."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "event_id",
+      "value": "4769",
+      "description": "A Kerberos service ticket was requested. A high volume of these events from one source to many services is indicative of Kerberoasting.",
+      "context": "Windows Security Event Log on Domain Controllers",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "GetUserSPNs.py",
+      "description": "Execution of Impacket's GetUserSPNs.py script is a common tool used to perform Kerberoasting.",
+      "context": "Endpoint Detection and Response (EDR) logs",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "Rubeus.exe kerberoast",
+      "description": "Execution of the Rubeus tool with the 'kerberoast' command is another common method for this attack.",
+      "context": "Endpoint Detection and Response (EDR) logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Coinbase Cartel",
+    "Ransomware",
+    "Aptim",
+    "Kerberoasting",
+    "Data Breach",
+    "Engineering"
+  ],
+  "extract_datetime": "2026-04-25T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Manufacturing",
+      "Other"
+    ]
+  },
+  "pub_date": "2026-04-25",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-04-25T15:00:00.000Z",
+  "updatedAt": "2026-04-25T15:00:00.000Z"
+}

@@ -1,0 +1,71 @@
+title: Volume Shadow Copy Deletion via WMI
+id: 5b43b6c0-9436-4247-8138-21f4c32e7339
+status: experimental
+description: Detects the use of WMI to delete volume shadow copies. This is a common technique used by ransomware to inhibit system recovery.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-07-25
+tags:
+  - attack.t1490
+  - attack.impact
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  condition: selection
+---
+title: Suspicious Mass File Encryption Activity
+id: 9e8a0c4f-7f6d-4b9a-8d1c-3e5f7b9a2d0e
+status: experimental
+description: Detects a high volume of file modification events from a single process, which is indicative of ransomware encrypting files.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-07-25
+tags:
+  - attack.t1486
+  - attack.impact
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    EventType: 'File Modified'
+  condition: selection | count(TargetFilename) by Image > 1000
+---
+title: Attempt to Disable Security Tools via Command Line
+id: c4d5e6f7-a8b9-4012-8def-123456789012
+status: experimental
+description: Detects command-line activity aimed at stopping or disabling common antivirus and EDR services. This is a common precursor to ransomware deployment.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-07-25
+tags:
+  - attack.t1562.001
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\net.exe'
+      - '\sc.exe'
+    CommandLine|contains:
+      - ' stop windefend'
+      - ' stop mpssvc'
+      - ' delete windefend'
+      - ' delete mpssvc'
+      - ' config windefend start= disabled'
+      - ' config mpssvc start= disabled'
+  condition: selection

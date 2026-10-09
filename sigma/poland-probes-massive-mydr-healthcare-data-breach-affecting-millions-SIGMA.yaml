@@ -1,0 +1,79 @@
+title: Anomalous Cloud Storage API Calls for Potential Data Exfiltration
+id: 2b1a3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects a pattern of anomalous cloud storage API calls, such as ListBuckets or GetObject, from unusual IP addresses or user agents, which could indicate reconnaissance or data staging ahead of a large-scale exfiltration, as potentially seen in the MyDr breach.
+references:
+  - https://therecord.media/poland-probes-mydr-healthcare-software-breach
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1530
+  - attack.collection
+level: medium
+logsource:
+  service: cloudtrail
+  product: aws
+detection:
+  selection:
+    eventName:
+      - ListBuckets
+      - GetObject
+    sourceIPAddress|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  filter:
+    # Add known corporate IP ranges here
+    sourceIPAddress|cidr:
+      - '1.2.3.4/32'
+  condition: selection and not filter
+---
+title: Anomalous Large Egress Data Transfer from Cloud Storage
+id: d8a85e6e-9a23-4137-8cfe-6a08e9719a3f
+status: experimental
+description: >
+  Monitors for unusually large data transfers from cloud storage (e.g., S3, Azure Blob) or databases to external IP addresses. This activity is a strong indicator of data exfiltration, similar to the 2.5TB theft in the MyDr breach.
+references:
+  - https://therecord.media/poland-probes-mydr-healthcare-software-breach
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1530
+  - attack.exfiltration
+level: high
+logsource:
+  category: network_traffic
+  product: cloud
+detection:
+  selection:
+    # This is a conceptual rule; actual implementation requires stateful analysis (e.g., bytes_out > threshold)
+    bytes_out|gt: 1000000000 # Example threshold: 1GB
+  filter:
+    # Exclude traffic to known business partners or backup locations
+    destination.ip|cidr:
+      - '1.2.3.4/32'
+  condition: selection and not filter
+---
+title: Anomalous Activity from Dormant Cloud Account
+id: 1e2f3a4b-5c6d-4e7f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: >
+  Identifies when a dormant or service account, which has been inactive for an extended period, suddenly shows high levels of activity. This could indicate account compromise and its use for reconnaissance and exfiltration.
+references:
+  - https://therecord.media/poland-probes-mydr-healthcare-software-breach
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1078
+  - attack.initial_access
+level: medium
+logsource:
+  service: audit
+  product: cloud
+detection:
+  selection:
+    # This is a conceptual rule; requires a baseline of user activity
+    user.activity_level: 'high'
+    user.dormant_for_days|gt: 30
+  condition: selection

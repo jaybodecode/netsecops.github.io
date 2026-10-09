@@ -1,0 +1,97 @@
+title: ShadowRecruit PowerShell Execution Pattern
+id: 2b3c4d5e-6f7a-4b8c-9d6e-5f4a3b2c1d0e
+status: experimental
+description: Detects the PowerShell execution pattern used in Operation ShadowRecruit to deploy the SheetAgent RAT.
+references:
+  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+falsepositives:
+  - Legitimate administrative scripts using similar parameters.
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains|all:
+      - '-ExecutionPolicy Bypass'
+      - '-File'
+  condition: selection
+---
+title: SheetAgent C2 Traffic to Google Sheets
+id: 7c5b1a3d-8f9e-4b1c-9a2d-3e4f5a6b7c8d
+status: experimental
+description: Detects DNS queries to sheets.googleapis.com from unusual processes, which could indicate C2 communication by the SheetAgent RAT.
+references:
+  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1102.001
+  - attack.t1071.001
+  - attack.command_and_control
+level: medium
+falsepositives:
+  - Legitimate applications using the Google Sheets API.
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName: 'sheets.googleapis.com'
+  filter:
+    Image|endswith:
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+      - '\Google\Chrome\Application\chrome.exe'
+  condition: selection and not filter
+---
+title: ShadowRecruit Malicious LNK File Creation
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the creation of a malicious LNK file used in the Operation ShadowRecruit campaign.
+references:
+  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1204.002
+  - attack.initial_access
+level: high
+falsepositives:
+  - None expected.
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\Cabinet Secretariat Recruitment.lnk'
+  condition: selection
+---
+title: Suspicious ControlR Execution
+id: f9e8d7c6-b5a4-4938-8271-d6c5b4a3e2f1
+status: experimental
+description: Detects the execution of ControlR.exe, a legitimate remote management tool observed being abused in the Operation ShadowRecruit campaign.
+references:
+  - https://www.itvoice.in/seqrite-uncovers-operation-shadowrecruit-fake-recruitment-campaign-targets-indian-job-seekers-with-multi-stage-malware
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1219
+  - attack.execution
+level: medium
+falsepositives:
+  - Legitimate use of ControlR by system administrators.
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\ControlR.exe'
+  condition: selection

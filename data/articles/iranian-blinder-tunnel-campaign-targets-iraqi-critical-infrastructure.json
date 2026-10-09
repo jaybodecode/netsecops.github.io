@@ -1,0 +1,302 @@
+{
+  "id": "f01b7f8e-34cb-4492-8635-a9b446022b01",
+  "slug": "iranian-blinder-tunnel-campaign-targets-iraqi-critical-infrastructure",
+  "headline": "Iranian Actor Targets Iraqi Infrastructure with \"Blinder Tunnel\"",
+  "title": "Blinder Tunnel Campaign Targets Iraqi Critical Infrastructure",
+  "summary": "Unit 42 has detailed a sophisticated cyber-espionage campaign, named \"Blinder Tunnel,\" orchestrated by an Iranian state-aligned threat actor (CL-STA-1178). Active since at least March 2026, the campaign targets critical infrastructure in Iraq by impersonating the Dubai Airports IT department in a fake recruitment process. Attackers lure targets, primarily software engineers, into downloading a trojanized coding challenge. This initiates a multi-stage infection chain deploying custom malware called ShelbyLoader V2. The operation is notable for its use of the GitHub API for command-and-control (C2) communications to evade detection, a technique known as living-off-the-cloud. The actor also employs emerging evasion techniques like AppDomainManager hijacking. Analysis revealed operational security failures by the attackers, which allowed researchers to link this activity to another campaign targeting an Israeli entity.",
+  "full_report": "## Executive Summary\n\nUnit 42 has identified a targeted cyber campaign, dubbed **Blinder Tunnel**, orchestrated by an Iranian state-aligned threat actor tracked as **[CL-STA-1178](https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/)**. This operation, active since at least March 2026, focuses on critical infrastructure entities in Iraq, with related activities observed against targets in Israel and the United Arab Emirates. The campaign employs a sophisticated social engineering scheme, impersonating the **[Dubai Airports](https://www.dubaiairports.ae/)** IT department to lure software engineers with fake job opportunities.\n\nThe primary payload is a custom malware family named **[ShelbyLoader V2](https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/)**, delivered through a multi-stage infection process that leverages emerging evasion techniques like AppDomainManager hijacking. A key feature of this campaign is its abuse of the **[GitHub](https://github.com/)** API for command-and-control (C2) communications, allowing malicious traffic to blend in with legitimate network activity. The actor's infrastructure and malware exhibit a thematic connection to the TV show \"Peaky Blinders.\" Despite the actor's sophistication, operational security errors allowed researchers to link this campaign to other regional operations, providing a broader view of this threat actor's activities.\n\n## Threat Overview\n\nThe Blinder Tunnel campaign represents a significant evolution in the tactics of the Iranian-nexus threat actor CL-STA-1178, previously associated with activity tracked as \"The Shelby Strategy.\" The campaign's primary objective appears to be establishing long-term, covert access to high-value targets within the telecommunications, aviation, and other critical infrastructure sectors across the Middle East.\n\nThe initial attack vector is a highly targeted social engineering attack. The threat actor impersonates recruiters from Dubai Airports and approaches specific individuals, likely software engineers, with a tailored job offer. The target is instructed to download and execute an installer for a supposed coding assessment, which is in fact the first stage of the malware infection. This installer, `Dubai Airport Careers`, deploys a fake career portal to maintain the pretext of a legitimate recruitment process while covertly initiating the attack chain.\n\n## Technical Analysis\n\nThe infection chain is a multi-step process designed for stealth and evasion:\n\n1.  **Initial Access**: The target receives a file named `Dubai Airport Careers`, an Inno Setup installer. This is delivered via a social engineering lure. This corresponds to [`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/).\n\n2.  **Execution & Evasion**: The installer deploys a fake offline career portal. Upon user interaction, it triggers the execution of a malicious `.csproj` file. This leverages a trusted Microsoft developer file type to evade initial detection. This action leads to AppDomainManager hijacking, a technique where a trusted Windows application is forced to load and execute a malicious payload in memory. This is followed by DLL sideloading to establish persistence and further execution. This activity maps to [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/) and [`T1574.002 - DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/).\n\n3.  **Payload Deployment**: The evasion techniques are used to load and execute the primary payload, **ShelbyLoader V2**, a custom malware designed for espionage and remote access.\n\n4.  **Command and Control (C2)**: The Blinder Tunnel campaign utilizes a \"living off the cloud\" strategy by misusing the legitimate **GitHub** API for C2 communications ([`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/)). This makes it difficult for network defenders to distinguish malicious traffic from legitimate developer activity. The GitHub repository also hosted an in-memory wrapper for the open-source **[Chisel](https://github.com/jpillora/chisel)** tunneling utility, which was used to bridge the compromised network with the attacker's external infrastructure ([`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)).\n\n## Impact Assessment\n\nThe Blinder Tunnel campaign poses a significant threat to critical infrastructure in the Middle East. By targeting software engineers and developers within these organizations, the attackers gain an initial foothold that can be leveraged for several malicious purposes:\n\n*   **Espionage**: Gaining long-term access to sensitive networks to steal intellectual property, operational plans, and other confidential data.\n*   **Sabotage**: The access could potentially be used to disrupt or disable critical services, although this has not been observed in this campaign.\n*   **Supply Chain Attacks**: Compromising developers could allow the actor to inject malicious code into the organization's software products, creating a widespread supply chain attack.\n\nWhile **Dubai Airports** was not breached, the impersonation of its brand damages its reputation and places its recruitment partners and potential candidates at risk. The targeting of individuals in Iraq, Israel, and the UAE indicates a broad regional focus for this threat actor. The primary business impact is the high risk of data exfiltration and the potential for operational disruption within compromised entities.\n\n## IOCs — Directly from Articles\n\nThe source article did not provide specific Indicators of Compromise (IOCs) such as file hashes, IP addresses, or domains, noting that the malicious GitHub infrastructure had been taken down.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns which could indicate related activity:\n\n| Type | Value | Description |\n| --- | --- | --- |\n| File Name | `Dubai Airport Careers` | Name of the initial Inno Setup installer used in the lure. |\n| File Extension | `*.csproj` | Monitor for execution of C# project files outside of legitimate development tools like Visual Studio. |\n| Process Name | `Chisel` | Detection of the Chisel tunneling tool or its artifacts in memory or on disk. |\n| Network Traffic | `api.github.com` | Scrutinize traffic to the GitHub API from non-developer workstations or servers, especially if it involves unusual user agents or data patterns. |\n| Windows Event Log | `mscoree.dll` | Monitor for processes that are not part of the .NET framework unexpectedly loading `mscoree.dll`, which can be an indicator of AppDomainManager hijacking. |\n\n## Detection & Response\n\nDetecting the Blinder Tunnel campaign requires a multi-layered approach focusing on behavior rather than static signatures.\n\n*   **Endpoint Detection (EDR)**: Deploy EDR solutions capable of monitoring process execution chains. Create detection rules for the suspicious execution of `.csproj` files by non-standard parent processes. Monitor for known DLL sideloading patterns and the loading of `mscoree.dll` by unexpected applications. D3FEND's [`D3-PA - Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) is a key technique here.\n*   **Network Monitoring**: Implement network traffic analysis to baseline and monitor communications to cloud services like GitHub. While blocking GitHub is not feasible for many organizations, outbound traffic can be proxied and inspected. Look for anomalies such as large data transfers, non-standard user agents, or connections from servers that should not be communicating with GitHub. This aligns with [`D3-NTA - Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n*   **Log Analysis**: Collect and analyze Windows Event Logs, specifically process creation events (Event ID 4688) and DLL loading events, to hunt for AppDomainManager hijacking and sideloading TTPs.\n\nIf a compromise is suspected, the immediate response should be to isolate the affected endpoints, preserve forensic evidence, and initiate an incident response investigation to determine the full scope of the breach.\n\n## Mitigation\n\nDefending against this threat requires both technical controls and security awareness.\n\n*   **User Training**: Educate employees, especially developers and engineers, about sophisticated social engineering attacks that abuse recruitment processes. This aligns with MITRE Mitigation [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n*   **Application Control**: Implement application allowlisting policies to prevent the execution of unauthorized software and installers. Restricting the execution of `.csproj` files to only authorized developer tools can be an effective control. This relates to [`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/).\n*   **Harden Endpoints**: Configure systems to mitigate DLL sideloading vulnerabilities. Ensure that application directories are properly permissioned.\n*   **Network Segmentation**: Segment networks to limit lateral movement. Critical servers should not have direct, unrestricted access to the internet. Egress filtering to restrict outbound connections to only what is required for business purposes can help disrupt C2 channels. This is a form of [`M1030 - Network Segmentation`](https://attack.mitre.org/mitigations/M1030/).\n*   **Patch Management**: While not a direct factor in this campaign's initial access, maintaining up-to-date systems is crucial for overall security posture and preventing other exploitation vectors. This aligns with [`M1051 - Update Software`](https://attack.mitre.org/mitigations/M1051/).",
+  "twitter_post": "Unit 42 uncovers 'Blinder Tunnel,' an Iranian-nexus campaign targeting Iraqi critical infrastructure. Attackers use fake job lures, a custom ShelbyLoader V2 malware, and GitHub for C2 communications. #ThreatIntel #Iran #CyberSecurity #APT",
+  "meta_description": "Unit 42 analysis of the Blinder Tunnel campaign, where an Iranian state-aligned actor targets Iraqi critical infrastructure using fake job lures and GitHub-based C2.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "CL-STA-1178",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Iran",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Dubai Airports",
+      "type": "company",
+      "url": "https://www.dubaiairports.ae/"
+    },
+    {
+      "name": "ShelbyLoader V2",
+      "type": "malware"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Chisel",
+      "type": "product"
+    },
+    {
+      "name": "Screening Serpens",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Cortex AgentiX",
+      "type": "product"
+    },
+    {
+      "name": "VirusTotal",
+      "type": "product",
+      "url": "https://www.virustotal.com/"
+    },
+    {
+      "name": "Google Drive",
+      "type": "product"
+    },
+    {
+      "name": "Elastic Security Labs",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/",
+      "title": "Blinder Tunnel Campaign Targets Iraqi Infrastructure",
+      "date": "2026-10-05",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-11",
+      "summary": "Threat actor begins staging and testing attack infrastructure for the Blinder Tunnel campaign."
+    },
+    {
+      "datetime": "2026-03",
+      "summary": "The Blinder Tunnel campaign is activated, targeting an individual within Iraq's critical infrastructure sector."
+    },
+    {
+      "datetime": "2026-05",
+      "summary": "A separate but related campaign is launched by the same actor against an Israeli entity using Google Drive lures."
+    },
+    {
+      "datetime": "2026-10-06",
+      "summary": "Unit 42 publishes its research on the Blinder Tunnel campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1553.006",
+      "name": "Code Signing",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train employees, especially those in high-value roles like software development, to recognize and report sophisticated social engineering and recruitment fraud.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application control solutions to restrict the execution of unauthorized installers and scripts. Specifically, block the execution of .csproj files outside of approved developer environments.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        },
+        {
+          "id": "D3-NTA",
+          "name": "Network Traffic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis"
+        }
+      ],
+      "description": "Filter and monitor outbound web traffic. While blocking GitHub may be impractical, proxying and inspecting traffic can help identify anomalous C2 communications.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement egress filtering to block outbound connections from servers and workstations to non-essential destinations, disrupting potential C2 channels.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use modern EDR and antivirus solutions that employ behavioral analysis to detect suspicious process chains, DLL sideloading, and in-memory execution.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "To counter the Blinder Tunnel campaign's TTPs, organizations should implement advanced process analysis using an Endpoint Detection and Response (EDR) solution. This goes beyond simple signature-based detection. Configure EDR to monitor for anomalous process chains, specifically the execution of `.csproj` files by any process other than `devenv.exe` or other sanctioned developer tools. Create high-fidelity alerts for when a non-standard process (e.g., from an Inno Setup installer) spawns a process that loads the .NET runtime and begins compiling or executing a C# project. Furthermore, process analysis should be used to baseline normal DLL loading behavior for trusted applications. An alert should be triggered if a trusted system process is observed loading DLLs from non-standard directories, a key indicator of the DLL sideloading technique used by this actor. This technique is critical for detecting the initial execution and evasion stages of the Blinder Tunnel attack chain before the main payload is deployed.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Given the actor's use of the GitHub API for command and control, Network Traffic Analysis (NTA) is a crucial defensive measure. Organizations should deploy NTA tools or leverage SIEM capabilities to analyze NetFlow, proxy logs, and firewall logs. The goal is to establish a baseline of normal GitHub traffic within the environment. Detections should focus on identifying outliers from this baseline. For instance, a server in a production DMZ that has never communicated with `api.github.com` suddenly starting to do so would be a high-priority alert. Analyze the metadata of TLS connections to GitHub, looking for non-standard user agents or periodic, 'heartbeat'-like connections characteristic of C2 traffic. Correlate network data with endpoint process data; if a process that is not `git.exe` or a known developer tool is making sustained connections to GitHub, it warrants immediate investigation. This technique directly addresses the actor's 'living off the cloud' strategy by making it harder for their C2 traffic to hide in plain sight.",
+      "mitre_mitigation_id": "M1021"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Implementing executable allowlisting provides a robust defense against the initial stages of the Blinder Tunnel attack. By defining a strict policy of what software is permitted to run, organizations can prevent the execution of the unauthorized `Dubai Airport Careers` Inno Setup installer. This should be deployed in 'enforce' mode on critical servers and for privileged user groups. For developer workstations, where more flexibility is needed, a more tailored policy can be created. For example, allow the execution of `.csproj` files only when initiated by a code-signed instance of Visual Studio (`devenv.exe`). This prevents the exact evasion technique used in this campaign, where a legitimate file type is abused by a malicious loader. While implementing a comprehensive allowlisting policy requires significant initial effort in baselining and policy tuning, it is one of the most effective ways to break this and many other attack chains at the execution stage.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "Dubai Airport Careers",
+      "description": "The name of the malicious Inno Setup installer used as the initial lure in the social engineering campaign.",
+      "context": "File integrity monitoring, EDR alerts, and email gateway logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "*.csproj",
+      "description": "Execution of C# project files (.csproj) by processes other than legitimate developer IDEs like devenv.exe (Visual Studio).",
+      "context": "Windows Event ID 4688 (Process Creation) logs, EDR process monitoring.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "api.github.com",
+      "description": "Anomalous or high-frequency API calls to GitHub from servers or workstations not associated with software development or Git client usage.",
+      "context": "Web proxy logs, NetFlow data, SIEM queries on network traffic logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "chisel.exe",
+      "description": "Execution of the Chisel tunneling tool, which may be used for C2 communication or lateral movement.",
+      "context": "EDR process monitoring, Windows Event ID 4688 logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "mscoree.dll",
+      "description": "Monitoring for unexpected processes loading the mscoree.dll library, which could indicate AppDomainManager hijacking.",
+      "context": "Windows Security Event Logs, Sysmon Event ID 7 (Image Loaded), EDR telemetry.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Blinder Tunnel",
+    "Iran",
+    "APT",
+    "Critical Infrastructure",
+    "Social Engineering",
+    "GitHub C2",
+    "ShelbyLoader",
+    "AppDomainManager Hijacking",
+    "DLL Sideloading",
+    "Chisel"
+  ],
+  "extract_datetime": "2026-10-06T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Iraq",
+      "Israel",
+      "United Arab Emirates"
+    ],
+    "industries_affected": [
+      "Critical Infrastructure",
+      "Telecommunications",
+      "Technology"
+    ]
+  },
+  "pub_date": "2026-10-06",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-10-06T15:00:00.000Z",
+  "updatedAt": "2026-10-06T15:00:00.000Z"
+}

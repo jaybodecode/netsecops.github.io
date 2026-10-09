@@ -1,0 +1,311 @@
+{
+  "id": "d97424e5-1a38-4bdf-90b3-d834b5a50056",
+  "slug": "team-pcp-cascading-supply-chain-attack-compromises-litellm",
+  "headline": "TeamPCP's Supply Chain Attack Cascade Hits LiteLLM, Stealing AI Credentials",
+  "title": "Multi-Stage Supply Chain Attack by TeamPCP Compromises Trivy, Checkmarx, and LiteLLM",
+  "summary": "The threat actor group 'TeamPCP' has executed a sophisticated, multi-stage supply chain attack, beginning with the compromise of the popular open-source vulnerability scanner Trivy. The attackers leveraged this access to poison downstream GitHub Actions, stealing credentials from CI/CD pipelines. They then pivoted to compromise other developer tools, including Checkmarx KICS, before publishing malicious versions of the widely-used LiteLLM AI gateway on PyPI. The trojanized LiteLLM packages were designed to steal sensitive AI API credentials, exfiltrating them to an attacker-controlled server. This cascading attack highlights the systemic risk in the open-source software supply chain, where a single point of failure can lead to widespread compromise across thousands of dependent projects.",
+  "full_report": "## Executive Summary\nOn March 19, 2026, a threat actor group identified as **[TeamPCP](https://malpedia.caad.fkie.fraunhofer.de/actor/teampcp)** initiated a sophisticated, multi-stage supply chain attack by compromising the release infrastructure for Aqua Security's popular open-source vulnerability scanner, **[Trivy](https://github.com/aquasecurity/trivy)**. The attackers manipulated GitHub Actions tags to inject credential-stealing malware into CI/CD pipelines of dependent projects. The campaign escalated over several days, with the actors pivoting to compromise a **[Checkmarx KICS](https://checkmarx.com/product/kics-ast/)** GitHub Action and ultimately publishing trojanized versions of the **[LiteLLM](https://github.com/BerriAI/litellm)** AI gateway on the Python Package Index (PyPI). The malicious LiteLLM packages (`1.82.7` and `1.82.8`) were specifically engineered to exfiltrate AI API keys and other secrets to an attacker-controlled domain. This incident demonstrates a dangerous evolution in supply chain attacks, showcasing how compromising a single trusted tool can create a cascading effect that compromises a vast ecosystem of developer tools and AI infrastructure.\n\n---\n\n## Threat Overview\nThis attack represents a significant threat to the open-source software ecosystem. The initial point of entry was the compromise of the `aquasecurity/trivy-action` and `aquasecurity/setup-trivy` GitHub Actions. Instead of altering the code in the main branch, **TeamPCP** employed a stealthy technique by force-pushing existing version tags to point to malicious commits. This meant that any CI/CD pipeline referencing these version tags (e.g., `@v0.18.0`) would unknowingly pull and execute the attackers' malicious code. The malware was designed for broad-spectrum credential theft, targeting SSH keys, cloud provider tokens, and cryptocurrency wallets.\n\nFollowing the initial success, the attackers used the stolen credentials to expand their reach. On March 23, a similar compromise was found in a GitHub Action for Checkmarx KICS. The final and most impactful stage occurred on March 24, when malicious versions of **LiteLLM** were uploaded to PyPI. LiteLLM, which acts as a unified interface to over 100 Large Language Model (LLM) APIs, is a critical component in many AI applications. By compromising it, the attackers positioned themselves to harvest a massive number of API keys for services like **[OpenAI](https://openai.com/)**, **[Anthropic](https://www.anthropic.com/)**, and **[Google Gemini](https://deepmind.google/technologies/gemini/)**, giving them access to powerful and costly AI resources.\n\n---\n\n## Technical Analysis\nThe attack chain began with the exploitation of credentials from a previous, insufficiently remediated security incident, allowing the attackers to gain access to Trivy's release infrastructure. This aligns with the MITRE ATT&CK technique [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/).\n\nThe core of the attack involved manipulating CI/CD pipelines, a classic supply chain compromise technique.\n\n1.  **Compromise Software Development Tools:** The attackers gained control over the GitHub Actions repositories for Trivy. This corresponds to [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/).\n2.  **Malicious Tag Manipulation:** They force-pushed 76 of 77 version tags to point to malicious commits. This is a sub-technique of CI/CD compromise, abusing trust in versioning systems.\n3.  **Execution via CI/CD Pipeline:** Downstream projects using the compromised actions automatically executed the malicious code during their build processes. This represents [`T1059.006 - Python`](https://attack.mitre.org/techniques/T1059/006/) and [`T1059.004 - Unix Shell`](https://attack.mitre.org/techniques/T1059/004/) for script execution within the build environment.\n4.  **Credential Theft:** The injected malware was designed to steal secrets, including SSH keys ([`T1555.004 - SSH-Agent Hijacking`](https://attack.mitre.org/techniques/T1555/004/)), cloud tokens, and other credentials from the build environment.\n5.  **Lateral Movement & Pivot:** Using stolen credentials, the attackers compromised the Checkmarx KICS action and then targeted the LiteLLM project.\n6.  **Trojanized Package Publication:** The final payload was delivered by publishing malicious versions (`1.82.7`, `1.82.8`) of the `litellm` package to PyPI. The malicious code was embedded in `proxy_server.py`.\n7.  **Exfiltration:** The stolen AI API keys were exfiltrated to the attacker-controlled C2 server at `models.litellm[.]cloud` via [`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/).\n\n> This attack's stealth was enhanced by manipulating tags rather than code, a method that bypasses many standard code review and integrity checks. It underscores the importance of verifying the commit hash associated with a tag, not just the tag itself.\n\n---\n\n## Impact Assessment\nThe business impact of this attack is severe and widespread. Any organization using the compromised versions of the Trivy or Checkmarx GitHub Actions may have had sensitive credentials and secrets exfiltrated from their build environments. This could lead to further network compromise, data breaches, and financial loss.\n\nThe compromise of **LiteLLM** is particularly damaging. Organizations using the malicious versions are at risk of having their AI API keys stolen. This could result in significant financial costs from unauthorized use of expensive LLM services, theft of proprietary data sent to or from these models, and potential abuse of the models for malicious purposes like generating disinformation or malware.\n\nThe attack erodes trust in the open-source ecosystem and highlights the fragility of software supply chains. The reputational damage to the compromised projects is significant, and the incident forces thousands of downstream developers to perform urgent security audits, patch systems, and rotate credentials, leading to widespread productivity loss.\n\n---\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| domain | `models.litellm[.]cloud` | Attacker-controlled C2 server for data exfiltration. |\n\n---\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| url_pattern | `/v1/` | The malicious LiteLLM code intercepted requests to the `/v1/` endpoint. | Web server logs on proxy servers using LiteLLM. | high |\n| file_name | `proxy_server.py` | The file containing the malicious code in the compromised LiteLLM package. | File integrity monitoring on systems with LiteLLM installed. | high |\n| command_line_pattern | `git show-ref --verify refs/tags/` | Command to verify the commit hash of a Git tag. | CI/CD build logs, developer terminal history. | medium |\n| network_traffic_pattern | `DNS queries to models.litellm.cloud` | Outbound DNS requests to the known malicious domain. | DNS logs, network security monitoring tools. | high |\n| log_source | `GitHub Audit Logs` | Look for `git.force_push` events on critical repositories. | GitHub Enterprise or organization audit logs. | high |\n| file_path | `~/.ssh/id_rsa` | A common target for credential theft malware in build environments. | File access monitoring on build agents. | medium |\n\n---\n\n## Detection & Response\n**Detection:**\n1.  **CI/CD Pipeline Monitoring:** Implement robust monitoring of CI/CD build logs. Look for anomalous network connections, unexpected file modifications, or execution of suspicious commands. Use tools to pin dependencies to specific commit hashes, not just version tags. D3FEND's [`File Analysis`](https://d3fend.mitre.org/technique/d3f:FileAnalysis) can be applied to build artifacts.\n2.  **Network Traffic Analysis:** Monitor outbound traffic from build servers and production environments for connections to suspicious domains like `models.litellm[.]cloud`. Use D3FEND's [`Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) and [`Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis).\n3.  **Dependency Scanning:** Immediately scan all projects for the malicious LiteLLM versions (`1.82.7`, `1.82.8`). Use `pip list` or other dependency analysis tools to identify affected systems.\n4.  **GitHub Audit Logs:** Security teams should retroactively review GitHub audit logs for `git.force_push` events, especially on repositories that publish release artifacts or GitHub Actions.\n\n**Response:**\n1.  **Isolate and Analyze:** Immediately isolate any build agent or server found to be running the malicious code.\n2.  **Credential Rotation:** Assume all secrets, keys, and tokens in the affected build environments have been compromised. Initiate a full rotation of all SSH keys, cloud API keys, and other credentials.\n3.  **Remove Malicious Packages:** Uninstall the malicious LiteLLM versions and upgrade to a known-good version (e.g., `1.82.9` or later) after verifying its integrity.\n4.  **Review Downstream Impact:** Audit all projects that depended on the compromised Trivy and Checkmarx actions to assess the full blast radius.\n\n---\n\n## Mitigation\n**Strategic Mitigation:**\n1.  **Dependency Pinning:** Mandate that all CI/CD pipelines and software projects pin dependencies to specific, verified commit hashes or use checksum validation (e.g., `requirements.txt` with `--hash`). This is a form of D3FEND's [`Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).\n2.  **Least Privilege for Build Agents:** Configure CI/CD runners and build agents with minimal permissions. They should not have persistent access to production secrets. Use short-lived, dynamically generated credentials where possible.\n3.  **Signed Commits and Tags:** Enforce policies requiring that all commits and tags to critical repositories are cryptographically signed. This makes unauthorized modifications more difficult to conceal.\n4.  **Supply Chain Security Platforms:** Implement tools like Sigstore for signing and verifying software artifacts, and platforms like NetRise Provenance to vet contributor reputation and project health.\n\n**Tactical Mitigation:**\n1.  **Upgrade Immediately:** Users of LiteLLM should upgrade to a safe version immediately. Users of the Trivy and Checkmarx GitHub Actions should review their usage and ensure they are pulling from verified, non-compromised versions.\n2.  **Network Egress Filtering:** Restrict outbound network access from build environments to only a small list of known, required domains. This can prevent or detect exfiltration attempts.\n3.  **Protected Branches:** Configure GitHub repository settings to protect release tags and branches, requiring multiple approvers for any changes and preventing force pushes.",
+  "twitter_post": "🚨 BREAKING: A cascading supply chain attack by 'TeamPCP' has compromised Trivy, Checkmarx, and the popular AI gateway LiteLLM. Malicious versions were published to PyPI to steal AI API credentials. ⚠️ #SupplyChain #PyPI #LiteLLM #CyberAttack",
+  "meta_description": "Detailed analysis of the multi-stage supply chain attack by TeamPCP that compromised Trivy, Checkmarx, and LiteLLM, leading to the theft of AI API credentials via malicious PyPI packages.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/teampcp"
+    },
+    {
+      "name": "Trivy",
+      "type": "product",
+      "url": "https://github.com/aquasecurity/trivy"
+    },
+    {
+      "name": "LiteLLM",
+      "type": "product",
+      "url": "https://github.com/BerriAI/litellm"
+    },
+    {
+      "name": "Checkmarx KICS",
+      "type": "product",
+      "url": "https://checkmarx.com/product/kics-ast/"
+    },
+    {
+      "name": "Aqua Security",
+      "type": "vendor"
+    },
+    {
+      "name": "Checkmarx",
+      "type": "vendor"
+    },
+    {
+      "name": "PyPI",
+      "type": "technology"
+    },
+    {
+      "name": "GitHub",
+      "type": "company",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "security_organization",
+      "url": "https://www.kaspersky.com"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-33634",
+      "cvss_score": 9.4,
+      "cvss_version": "4.0",
+      "kev": false,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.kaspersky.com/blog/team-pcp-supply-chain-attack/51531/",
+      "title": "Trojanization of Trivy, Checkmarx, and LiteLLM solutions",
+      "date": "2026-03-25",
+      "friendly_name": "Kaspersky",
+      "website": "kaspersky.com"
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/03/25/guidance-for-detecting-investigating-and-defending-against-the-trivy-supply-chain-compromise/",
+      "title": "Guidance for detecting, investigating, and defending against the Trivy supply chain compromise",
+      "date": "2026-03-25",
+      "friendly_name": "Microsoft Security",
+      "website": "microsoft.com"
+    },
+    {
+      "url": "https://www.activestate.com/blog/open-source-is-under-attack-how-to-manage-the-risk/",
+      "title": "Open Source Is Under Attack. Here's How to Manage the Risk Without Abandoning the Benefit.",
+      "date": "2026-03-25",
+      "friendly_name": "ActiveState",
+      "website": "activestate.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-19T00:00:00Z",
+      "summary": "TeamPCP compromises Aqua Security's Trivy release infrastructure and begins manipulating GitHub Action tags."
+    },
+    {
+      "datetime": "2026-03-23T00:00:00Z",
+      "summary": "A similar compromise is discovered in a GitHub Action for Checkmarx KICS."
+    },
+    {
+      "datetime": "2026-03-24T00:00:00Z",
+      "summary": "TeamPCP publishes malicious versions 1.82.7 and 1.82.8 of the LiteLLM package to PyPI."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1059.006",
+      "name": "Python",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1199",
+      "name": "Trust-Relationship Abuse",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-SBV",
+          "name": "Service Binary Verification",
+          "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification"
+        }
+      ],
+      "description": "Enforce cryptographic signing of all commits, tags, and release artifacts. This allows downstream users to verify the integrity and authenticity of the code they are consuming, making it harder for attackers to inject malicious code undetected.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Regularly audit CI/CD pipeline logs, repository access logs, and especially GitHub audit logs for suspicious activities like force pushes to protected branches or tags.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement strict egress filtering on build agents to block outbound connections to any destination not on an explicit allowlist. This could have prevented the exfiltration of stolen credentials to the attacker's C2 server.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        },
+        {
+          "id": "D3-CP",
+          "name": "Certificate Pinning",
+          "url": "https://d3fend.mitre.org/technique/d3f:CertificatePinning"
+        }
+      ],
+      "description": "Configure dependency management tools to pin dependencies to specific, verified hashes rather than mutable tags. This ensures that builds are reproducible and not susceptible to tag manipulation.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "models.litellm[.]cloud",
+      "description": "Attacker-controlled C2 server for data exfiltration."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "GitHub Audit Log",
+      "description": "Monitor for `git.force_push` events on repositories publishing release artifacts or GitHub Actions. This was the core technique used to compromise Trivy.",
+      "context": "GitHub Enterprise or organization audit logs",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "proxy_server.py",
+      "description": "The file within the malicious LiteLLM package (`v1.82.7`, `v1.82.8`) that contained the credential-stealing code.",
+      "context": "File integrity monitoring on servers running LiteLLM; dependency scanning results.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections to models.litellm.cloud",
+      "description": "The trojanized LiteLLM versions exfiltrated stolen credentials to this attacker-controlled domain.",
+      "context": "DNS logs, firewall logs, web proxy logs, NetFlow data from build agents and application servers.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "pip install litellm==1.82.7",
+      "description": "Command used to install one of the known malicious versions of the LiteLLM package.",
+      "context": "Shell history, CI/CD build scripts, deployment logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "pip install litellm==1.82.8",
+      "description": "Command used to install one of the known malicious versions of the LiteLLM package.",
+      "context": "Shell history, CI/CD build scripts, deployment logs.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "supply chain",
+    "PyPI",
+    "GitHub Actions",
+    "CI/CD",
+    "credential theft",
+    "open source",
+    "AI security"
+  ],
+  "extract_datetime": "2026-03-26T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Manufacturing",
+      "Finance",
+      "Healthcare"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "AI application developers",
+      "cloud service customers"
+    ]
+  },
+  "pub_date": "2026-03-26",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-03-26T15:00:00.000Z",
+  "updatedAt": "2026-04-02T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-04-02T00:00:00Z",
+      "datetime": "2026-04-02T00:00:00Z",
+      "title": "Update 1",
+      "summary": "AI firm Mercor confirmed as victim of the LiteLLM supply chain attack, with Lapsus$ claiming 4TB data theft and extortion. This escalates the incident's real-world impact.",
+      "sources": [
+        {
+          "title": "Mercor Hit by LiteLLM Supply Chain Attack",
+          "url": "https://www.securityweek.com/mercor-hit-by-litellm-supply-chain-attack/"
+        }
+      ]
+    }
+  ]
+}

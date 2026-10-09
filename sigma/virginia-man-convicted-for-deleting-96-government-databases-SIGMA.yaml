@@ -1,0 +1,57 @@
+title: Destructive Database Commands Execution
+id: 2b8a1c3d-f4e5-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: Detects the execution of highly destructive database commands such as 'DROP DATABASE' or 'TRUNCATE TABLE', which could indicate a malicious insider or compromised account activity.
+references:
+  - https://recordedfuture.news/briefs/virginia-man-found-guilty-of-deleting-96-government-databases
+author: cyber.netsecops.io
+date: 2026-05-09
+tags:
+  - attack.t1485
+  - attack.impact
+logsource:
+  category: database_query
+detection:
+  keywords:
+    - 'DROP DATABASE'
+    - 'TRUNCATE TABLE'
+    - 'DROP TABLE'
+  condition: keywords
+falsepositives:
+  - Legitimate, albeit rare, database maintenance by authorized administrators.
+level: high
+---
+title: Potential Backup Service Tampering
+id: 9e8f7d6c-5b4a-4c3d-2b1a-0f9e8d7c6b5a
+status: experimental
+description: Detects attempts to stop or disable common backup services, which could be a precursor to a ransomware attack or data destruction event.
+references:
+  - https://recordedfuture.news/briefs/virginia-man-found-guilty-of-deleting-96-government-databases
+author: cyber.netsecops.io
+date: 2026-05-09
+tags:
+  - attack.t1490
+  - attack.impact
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_net:
+    Image|endswith: '\net.exe'
+    CommandLine|contains|all:
+      - 'stop'
+  selection_sc:
+    Image|endswith: '\sc.exe'
+    CommandLine|contains|all:
+      - 'stop'
+  selection_services:
+    CommandLine|contains:
+      - 'Veeam'
+      - 'BackupExec'
+      - 'wbengine'
+      - 'vss'
+      - 'SQLWriter'
+  condition: (selection_net or selection_sc) and selection_services
+falsepositives:
+  - Legitimate administrative action to restart or troubleshoot backup services.
+level: medium

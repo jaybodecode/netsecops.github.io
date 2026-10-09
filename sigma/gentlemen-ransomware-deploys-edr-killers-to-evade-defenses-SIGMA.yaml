@@ -1,0 +1,100 @@
+title: EDR/AV Service Stop Attempt
+id: 5d9e8f7a-6b4c-4d3e-9f1a-2b3c4d5e6f7a
+status: experimental
+description: Detects command-line attempts to stop common EDR or AV services, a common precursor to ransomware deployment as seen with Gentlemen Ransomware.
+references:
+  - https://threat-modeling.com/vulnerability-intelligence-report-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1489
+  - attack.t1562.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_sc:
+    Image|endswith: '\sc.exe'
+    CommandLine|contains: ' stop '
+  selection_net:
+    Image|endswith: '\net.exe'
+    CommandLine|contains: ' stop '
+  keywords:
+    CommandLine|contains:
+      - 'CsbAgent'
+      - 'SentinelAgent'
+      - 'Sophos'
+      - 'MsSense'
+      - 'SAVService'
+      - 'wscsvc'
+  condition: (selection_sc or selection_net) and keywords
+---
+title: EDR/AV Process Kill Attempt
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects command-line attempts to terminate common EDR or AV processes using taskkill, a technique used by Gentlemen Ransomware's EDR killer framework.
+references:
+  - https://threat-modeling.com/vulnerability-intelligence-report-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1562.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\taskkill.exe'
+    CommandLine|contains|all:
+      - '/IM '
+      - '/F'
+  keywords:
+    CommandLine|contains:
+      - 'csfalcon.exe'
+      - 'SentinelOne.exe'
+      - 'Sophos.exe'
+      - 'MsMpEng.exe'
+  condition: selection and keywords
+---
+title: Loading of Abused EDR Killer Driver
+id: 9f8e7d6c-5b4a-4c3d-b2a1-9f8e7d6c5b4a
+status: experimental
+description: Detects the loading of legitimate but frequently abused drivers used to terminate protected processes, as seen with the GentleKiller framework.
+references:
+  - https://threat-modeling.com/vulnerability-intelligence-report-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1562.001
+level: high
+logsource:
+  category: image_load
+  product: windows
+detection:
+  selection:
+    ImageLoaded|endswith:
+      - '\PCHunter.sys'
+      - '\PROCEXP.sys'
+  condition: selection
+---
+title: Execution of Abused EDR Killer Tool
+id: 2b8c1f3a-9e4d-4f8b-8c1d-9a3b2c1d0e9f
+status: experimental
+description: Detects the execution of legitimate tools like Process Explorer or PC Hunter which are known to be abused by EDR killer frameworks like GentleKiller.
+references:
+  - https://threat-modeling.com/vulnerability-intelligence-report-june-19-2026/
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1562.001
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\procexp.exe'
+  condition: selection

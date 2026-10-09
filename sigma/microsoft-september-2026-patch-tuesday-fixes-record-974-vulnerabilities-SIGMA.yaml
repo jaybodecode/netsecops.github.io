@@ -1,0 +1,105 @@
+title: Suspicious Child Process of svchost.exe for Update Stack
+id: 26f5a31b-8b1a-4e9c-9f8d-7a1b2c3d4e5f
+status: experimental
+description: 'Monitors for unusual child processes spawned by svchost.exe, which could indicate exploitation of the Windows Update Stack vulnerability (CVE-2026-81963).'
+author: cyber.netsecops.io
+date: 2026-09-09
+references:
+  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/
+tags:
+  - attack.t1068
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith: '\svchost.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\conhost.exe'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate system activity may spawn these processes from svchost.exe. Requires tuning.
+---
+title: Suspicious Parent Process of conhost.exe for ALPC Exploit
+id: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: 'Looks for conhost.exe spawning from unexpected parent processes, especially those running in sandboxed environments, which might indicate an ALPC exploit (CVE-2026-85880) attempting a sandbox escape.'
+author: cyber.netsecops.io
+date: 2026-09-09
+references:
+  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/
+tags:
+  - attack.t1068
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\conhost.exe'
+  filter:
+    ParentImage|endswith:
+      - '\csrss.exe'
+      - '\smss.exe'
+      - '\wininit.exe'
+  condition: selection and not filter
+falsepositives:
+  - Some third-party applications may legitimately spawn conhost.exe from unusual parents.
+---
+title: Anomalous Windows DNS Server Crash
+id: 3c4d5e6f-7a8b-4c9d-a1b2-c3d4e5f6a7b8
+status: experimental
+description: 'Monitors for crashes or unexpected termination of the Windows DNS Server service (dns.exe), which could indicate exploit attempts against CVE-2026-69730.'
+author: cyber.netsecops.io
+date: 2026-09-09
+references:
+  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/
+tags:
+  - attack.t1499
+level: high
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    Provider_Name: 'Service Control Manager'
+    EventID: 7034
+    param1: 'DNS Server'
+  condition: selection
+falsepositives:
+  - Legitimate service stops or crashes due to misconfiguration.
+---
+title: Post-Exploitation Discovery Command Execution
+id: 9a8b7c6d-5e4f-4a3b-b2c1-d0e9f8a7b6c5
+status: experimental
+description: 'Detects the execution of common discovery commands that often follow successful privilege escalation.'
+author: cyber.netsecops.io
+date: 2026-09-09
+references:
+  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/
+tags:
+  - attack.t1082
+  - attack.t1033
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\whoami.exe'
+      - '\systeminfo.exe'
+    CommandLine|contains:
+      - '/all'
+  filter_legit_parents:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\explorer.exe'
+  condition: selection and not filter_legit_parents
+falsepositives:
+  - Legitimate administrative scripts or user activity.

@@ -1,0 +1,66 @@
+title: Okta MFA Fatigue Attempt
+id: 2a9b4c1d-8e7f-4a3b-9c1d-8e7f4a3b9c1d
+status: experimental
+description: 'Detects a high volume of Okta MFA challenges for a single user, which may indicate an MFA fatigue attack. This rule detects the challenge events; correlation with a subsequent successful login (`eventtype: user.authentication.auth_via_mfa` and `outcome.result: SUCCESS`) is recommended.'
+references:
+  - https://industrialcyber.co/medical/health-isac-warns-shinyhunters-targets-health-sector-with-vishing-credential-theft-and-mfa-bypass-tactics/
+author: cyber.netsecops.io
+date: 2026-09-09
+tags:
+  - attack.t1621
+  - attack.defense_evasion
+level: high
+logsource:
+  product: okta
+  service: okta
+detection:
+  selection:
+    eventtype: 'user.authentication.mfa_challenge'
+    outcome.result: 'CHALLENGE'
+  condition: selection
+---
+title: Suspicious Snowflake API Usage for Data Exfiltration
+id: 5b3c9a2e-1d8f-4b9c-8a2d-1f8e9a2b3c4d
+status: experimental
+description: 'Detects access to the Snowflake statements API endpoint, which can be used for querying and exfiltrating large amounts of data. This activity should be correlated with user session information to identify anomalies.'
+references:
+  - https://industrialcyber.co/medical/health-isac-warns-shinyhunters-targets-health-sector-with-vishing-credential-theft-and-mfa-bypass-tactics/
+author: cyber.netsecops.io
+date: 2026-09-09
+tags:
+  - attack.t1530
+  - attack.collection
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host|endswith: 'snowflake.com'
+    c-uri-stem: '/api/v2/statements'
+  condition: selection
+---
+title: Large Data Egress from Cloud Environment
+id: 8d1e7f4a-3b9c-4d8e-9f4a-3b9c8d1e7f4a
+status: experimental
+description: 'Detects large, sustained data flows from known cloud data warehouse IP ranges (e.g., Snowflake, Salesforce) to non-corporate IP space. This rule requires baselining and knowledge of corporate IP ranges to be effective.'
+references:
+  - https://industrialcyber.co/medical/health-isac-warns-shinyhunters-targets-health-sector-with-vishing-credential-theft-and-mfa-bypass-tactics/
+author: cyber.netsecops.io
+date: 2026-09-09
+tags:
+  - attack.t1567.002
+  - attack.exfiltration
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip|cidr:
+      - 3.208.0.0/12 # Example AWS US-EAST-1 range often used by SaaS
+      - 52.0.0.0/11   # Example AWS US-EAST-1 range often used by SaaS
+  filter_corporate:
+    dst_ip|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not filter_corporate

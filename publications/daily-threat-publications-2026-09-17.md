@@ -1,0 +1,41 @@
+# Critical Exploits, Ransomware Surge, and New Defense Guidance
+
+**Published:** 2026-09-17 | **Articles:** 8
+
+**Critical Vulnerabilities Under Active Exploitation**:
+
+*   **Cisco ISE Zero-Day (CVSS 10.0) Under Active Attack, Bypasses Auth**: Cisco has released an emergency patch for a critical zero-day vulnerability (CVE-2026-76460) in its Identity Services Engine (ISE). This flaw allows unauthenticated attackers to bypass authentication and is actively being exploited. CISA has added it to its KEV catalog, mandating urgent patching for federal agencies.
+*   **CISA Adds Actively Exploited Cisco and Acronis Flaws to KEV Catalog**: CISA has added two actively exploited vulnerabilities to its KEV catalog: CVE-2026-76460, a critical authentication bypass in Cisco ISE, and CVE-2026-87886, an incorrect permissions flaw in Acronis Backup. Remediation is now required for U.S. federal agencies.
+*   **GitLab CVSS 10.0 vulnerability exploited one day after disclosure**: A critical vulnerability in GitLab (CVE-2026-85706) with a CVSS score of 10.0 was exploited shortly after its disclosure. The vulnerability could lead to the exfiltration of SSH keys and cloud credentials. New detection strategies include monitoring specific log files and observing unusual user activity.
+
+**Ransomware Trends and Targeted Attacks**:
+
+*   **[UPDATE] Ransomware Attacks Hit 2026 High in July, NCC Group Reports**: Manufacturing remains the top ransomware target, with attacks increasing 39.7% year-over-year in H1 2026. Europe, particularly Germany, has seen a significant rise in victims, while the US share has decreased. Small-to-medium enterprises (SMEs) are increasingly targeted, and the group 'The Gentlemen' is highly active.
+*   **Ransomware Attacks in Japan Rise; 'The Gentlemen' Group Dominates**: Cisco Talos reports a 4.7% increase in ransomware incidents in Japan during H1 2026. The 'The Gentlemen' ransomware group is the most active, primarily targeting SMEs, which constitute 80% of their victims. This group utilizes a Ransomware-as-a-Service model and double-extortion tactics.
+
+**New Threats and Defense Strategies**:
+
+*   **Gyazo Screenshot Tool Breach Exposes 23.6M User Records, Image Data**: The image-sharing service Gyazo has disclosed a breach affecting 23.62 million user records and 490 million image metadata records. The incident stemmed from a remote code execution vulnerability on an image upload server, exposing email addresses, hashed passwords, and social media tokens.
+*   **Scammers Use Fake AI Trading Bots to Steal Crypto Wallets**: Cybercriminals are leveraging interest in AI tools by distributing malware through fake AI trading bots. One campaign deployed the Needle Stealer info-stealer, which replaces legitimate cryptocurrency wallet extensions with malicious versions to harvest credentials and drain funds.
+*   **CISA Publishes Guide for Using Cyber Decoys to Detect Intruders**: CISA has released new guidance on implementing cyber decoys to enhance detection and response capabilities. The guide outlines techniques like honeytokens, breadcrumbs, and tripwires to identify, observe, and disrupt intruders early in their attack lifecycle, particularly those employing stealthy methods.
+
+## Articles in this publication
+- [Ransomware Attacks Hit 2026 High in July, NCC Group Reports](https://cyber.netsecops.io/articles/ransomware-attacks-hit-2026-high-in-july-ncc-group-reports/) (high)
+  According to a new threat report from NCC Group, global ransomware activity surged in July 2026, reaching the highest monthly volume of the year. The report recorded 894 cases, a 22% increase from June. The Industrials sector and organizations in North America and Europe remained the top targets. The report also notes the appearance of a new group, 'CRPxO,' and the continued dominance of established actors.
+- [GitLab CVSS 10.0 vulnerability exploited one day after disclosure](https://cyber.netsecops.io/articles/critical-gitlab-path-traversal-vulnerability-under-active-exploitation/) (critical)
+  GitLab is urging users of self-managed instances to immediately patch a critical path traversal vulnerability, CVE-2026-85706, which holds a maximum CVSS score of 10.0. The flaw allows unauthenticated attackers to read arbitrary files on the server, including credentials and source code. Active scanning and exploitation attempts were detected just one day after GitLab released patches. CISA has added the vulnerability to its KEV catalog, mandating a short patching deadline for federal agencies due to the high risk of widespread, indiscriminate attacks.
+- [Cisco ISE Zero-Day (CVSS 10.0) Under Active Attack, Bypasses Auth](https://cyber.netsecops.io/articles/cisco-ise-zero-day-cve-2026-76460-actively-exploited/) (critical)
+  Cisco has issued an emergency patch for a critical, maximum-severity (CVSS 10.0) zero-day vulnerability in its Identity Services Engine (ISE). The flaw, tracked as CVE-2026-76460, allows a remote, unauthenticated attacker to completely bypass authentication and is confirmed to be actively exploited in the wild. The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added the vulnerability to its Known Exploited Vulnerabilities (KEV) catalog, mandating urgent patching for federal agencies.
+- [CISA Adds Actively Exploited Cisco and Acronis Flaws to KEV Catalog](https://cyber.netsecops.io/articles/cisa-adds-cisco-acronis-flaws-to-kev-catalog/) (high)
+  The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added two actively exploited vulnerabilities to its KEV catalog. The flaws, a critical authentication bypass in Cisco's Identity Services Engine (CVE-2026-76460) and an incorrect permissions flaw in Acronis Backup (CVE-2026-87886), now require remediation by U.S. federal agencies under a binding directive.
+- [Gyazo Screenshot Tool Breach Exposes 23.6M User Records, Image Data](https://cyber.netsecops.io/articles/gyazo-data-breach-exposes-23-million-user-records/) (high)
+  The popular image-sharing service Gyazo, operated by Helpfeel, has disclosed a massive data breach affecting 23.62 million user records and 490 million image metadata records. The breach was the result of a remote code execution vulnerability on an image upload server, which gave an attacker access to the service's database. Exposed data includes email addresses, hashed passwords, and social media integration tokens.
+- [CISA Publishes Guide for Using Cyber Decoys to Detect Intruders](https://cyber.netsecops.io/articles/cisa-releases-guidance-on-cyber-decoy-strategies/) (informational)
+  CISA has published new guidance to help critical infrastructure organizations and other defensive teams implement cyber decoys. The guide, "Using Cyber Decoys to Strengthen Detection and Response," details how to use techniques like honeytokens, breadcrumbs, and tripwires to detect, observe, and disrupt intruders early in the attack lifecycle, especially those using stealthy living-off-the-land techniques.
+- [Scammers Use Fake AI Trading Bots to Steal Crypto Wallets](https://cyber.netsecops.io/articles/cybercriminals-use-ai-lures-to-deploy-crypto-stealing-malware/) (high)
+  A new HP threat report details a campaign where cybercriminals exploit interest in Agentic AI tools to trick users into downloading malware. One campaign used a fake AI trading bot to deploy an info-stealer called Needle Stealer. The malware replaces legitimate cryptocurrency wallet browser extensions, such as MetaMask and Coinbase Wallet, with malicious versions designed to harvest credentials and drain funds.
+- [Ransomware Attacks in Japan Rise; 'The Gentlemen' Group Dominates](https://cyber.netsecops.io/articles/ransomware-attacks-rise-in-japan-the-gentlemen-group-leads/) (high)
+  A Cisco Talos report reveals that ransomware incidents in Japan increased by 4.7% in the first half of 2026 compared to the previous year. The ransomware group known as 'The Gentlemen' has emerged as the most active threat actor, primarily targeting small-to-medium enterprises (SMEs), which accounted for 80% of all victims. The group operates a Ransomware-as-a-Service (RaaS) model and employs double-extortion tactics.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-09-17/

@@ -1,0 +1,84 @@
+title: Inbound Remote Access Traffic to OT Network
+id: 2b8a1c3d-f4e5-4b6a-8c7d-9e0f1a2b3c4d
+status: experimental
+description: |
+  Detects inbound network connections using common remote access protocols (RDP, VNC, Telnet) from the internet to the Operational Technology (OT) network segment.
+  This activity is highly suspicious and could indicate an attempt to exploit internet-exposed ICS/SCADA systems, as seen in the attacks on Colorado water utilities.
+references:
+  - https://news.iheart.com/content/2026-09-18-foreign-hackers-breach-colorado-water-utilities-prompt-statewide-alert/
+author: cyber.netsecops.io
+date: 2026-09-19
+tags:
+  - attack.t0886
+  - attack.initial_access
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allow'
+    dst_port:
+      - 3389  # RDP
+      - 5900  # VNC
+      - 23    # Telnet
+  filter_internal:
+    src_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate, authorized remote access from third-party vendors, which should be explicitly allow-listed.
+---
+title: Anomalous ICS/SCADA System Login
+id: 8e7f6a5b-4c3d-4e2f-8a1b-9c8d7e6f5a4b
+status: experimental
+description: |
+  Detects multiple failed login attempts followed by a success on an HMI or SCADA system. This could indicate a brute-force attempt to gain access using weak or default credentials.
+references:
+  - https://news.iheart.com/content/2026-09-18-foreign-hackers-breach-colorado-water-utilities-prompt-statewide-alert/
+author: cyber.netsecops.io
+date: 2026-09-19
+tags:
+  - attack.t0886
+  - attack.initial_access
+level: medium
+logsource:
+  category: authentication
+  product: scada # Generic product, assumes logs are forwarded to SIEM
+detection:
+  selection_success:
+    action: 'login'
+    status: 'success'
+  selection_failure:
+    action: 'login'
+    status: 'failure'
+  timeframe: 10m
+  condition: selection_failure | count(user) > 5 and selection_success
+---
+title: Anomalous ICS Setpoint Modification
+id: a7f9d247-3e93-438e-a18a-f31b2b8f9100
+status: experimental
+description: |
+  Detects modifications to critical operational setpoints on ICS/SCADA systems that fall outside of normal parameters or occur outside of standard operator shifts. This is a strong indicator of control system manipulation.
+references:
+  - https://news.iheart.com/content/2026-09-18-foreign-hackers-breach-colorado-water-utilities-prompt-statewide-alert/
+author: cyber.netsecops.io
+date: 2026-09-19
+tags:
+  - attack.t0831
+  - attack.impair_process_control
+level: critical
+logsource:
+  category: process_control
+  product: scada
+detection:
+  keywords:
+    - 'Setpoint changed'
+    - 'Pumping cycle altered'
+    - 'Alarm disabled'
+    - 'Equipment settings modified'
+  filter_normal_hours:
+    # Define normal operational hours or authorized users if possible
+    user|contains: 'SYSTEM'
+  condition: keywords and not filter_normal_hours

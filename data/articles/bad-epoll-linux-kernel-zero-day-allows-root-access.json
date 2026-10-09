@@ -1,0 +1,174 @@
+{
+  "id": "9a5a231b-a139-45ea-a634-4459bc79808d",
+  "slug": "bad-epoll-linux-kernel-zero-day-allows-root-access",
+  "headline": "New 'Bad Epoll' Linux Kernel Zero-Day (CVE-2026-46242) Grants Full Root Access",
+  "title": "High-Severity 'Bad Epoll' Zero-Day Vulnerability in Linux Kernel Allows Local Privilege Escalation to Root",
+  "summary": "A new high-severity zero-day vulnerability, dubbed 'Bad Epoll' and tracked as CVE-2026-46242, has been discovered in the Linux kernel. The flaw is a use-after-free (UAF) bug in the epoll event notification subsystem, which can be exploited by a local unprivileged user to gain full root privileges. The vulnerability affects a wide range of systems, including Linux servers, desktops, and Android devices. Its exploitability from within sandboxed environments makes it particularly dangerous, as it could be chained with other exploits for a full system compromise. A proof-of-concept exists with a 99% success rate.",
+  "full_report": "## Executive Summary\n\nA high-severity zero-day vulnerability, **CVE-2026-46242**, known as **\"Bad Epoll\"**, has been disclosed in the **[Linux](https://www.kernel.org/)** kernel. This flaw is a use-after-free (UAF) bug within the `ep_remove()` function of the epoll subsystem, a core component for managing I/O events. A local attacker, even with low privileges, can exploit a race condition to trigger the UAF, leading to arbitrary code execution with kernel privileges and ultimately, full root access. The vulnerability impacts a vast ecosystem of devices running the Linux kernel, including servers, desktops, and **[Android](https://www.android.com/)** devices. The existence of a highly reliable proof-of-concept exploit and its potential for being chained with browser exploits from within a sandbox make it a critical threat.\n\n---\n\n## Vulnerability Details\n\nThe \"Bad Epoll\" vulnerability (CVE-2026-46242) is a classic race condition leading to a use-after-free. It resides in the `ep_remove()` function of the kernel's epoll event notification facility. The race window is reportedly extremely narrow (around six machine instructions), but the PoC exploit demonstrates that it can be reliably won.\n\nHere's a simplified breakdown of the exploitation process:\n1.  **Triggering the Race:** An attacker-controlled program makes specific sequences of `epoll` system calls to create a race condition between the CPU processing the `ep_remove()` function and other operations.\n2.  **Winning the Race:** The PoC exploit manages to widen this narrow window, likely through CPU grooming or other timing techniques, to reliably win the race.\n3.  **Use-After-Free:** By winning the race, the attacker's code can cause the kernel to reference a piece of memory after it has been freed. The attacker can then spray the heap to place a controlled object in that memory location.\n4.  **Privilege Escalation:** When the kernel later uses the pointer to this memory (the 'use' part of UAF), it reads the attacker-controlled object, leading to a corruption of kernel data structures and ultimately allowing the attacker to execute code in the context of the kernel. This provides full root privileges.\n\nThis vulnerability is the second major race condition found in the same code path, which was introduced by a single commit in 2023. This suggests a potential weakness in the review process for that specific change.\n\n---\n\n## Affected Systems\n\nThe vulnerability affects a wide range of systems running the Linux kernel where the `epoll` subsystem is present, which is nearly all modern distributions. This includes:\n\n*   Linux Servers (all major distributions like Ubuntu, Red Hat, Debian, etc.)\n*   Linux Desktops\n*   Android devices\n*   Other embedded systems and IoT devices based on the Linux kernel.\n\nThe specific kernel versions are those that include the problematic commit from 2023. Administrators should check with their distribution vendors for specific patched versions.\n\n---\n\n## Exploitation Status\n\nAs of the report, this is a zero-day vulnerability, meaning it was disclosed without a patch being readily available. A proof-of-concept (PoC) exploit exists and is reportedly 99% reliable. The public availability of a reliable PoC significantly increases the risk of widespread exploitation. The fact that it can be triggered from a sandboxed environment, like a web browser's renderer, is particularly alarming. An attacker could chain a remote code execution exploit in a browser with this local privilege escalation (LPE) exploit to achieve a full system compromise from a simple website visit. This maps to [`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/).\n\n---\n\n## Impact Assessment\n\nThe impact of CVE-2026-46242 is critical. A successful exploit grants an attacker full root access to the system. This allows them to:\n\n*   Read, modify, or delete any file on the system.\n*   Install persistent backdoors or rootkits.\n*   Disable security software.\n*   Sniff network traffic.\n*   Use the compromised machine to pivot and attack other systems on the network.\n\nFor multi-tenant cloud environments, this vulnerability is a nightmare scenario. A malicious user on one container or virtual machine could potentially exploit this flaw to break out of their containment and gain control of the underlying host, affecting all other tenants. The wide range of affected systems, from enterprise servers to personal Android phones, makes the potential impact global and severe.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nThe following patterns may help identify vulnerable or compromised systems:\n\n*   **Suspicious Kernel Messages:** Monitor `dmesg` and kernel logs for messages related to memory corruption, kernel panics, or warnings from the epoll subsystem. An exploit attempt, even if it fails, might leave traces in kernel logs.\n*   **Anomalous System Calls:** Use auditing tools like `auditd` to monitor for unusual patterns of `epoll_ctl`, `epoll_wait`, and related system calls from a single process, especially from unprivileged users. A high frequency of these calls could indicate an exploit attempt.\n*   **Unexpected Privileged Processes:** Look for processes that are running as `root` but were spawned by an unprivileged user or a web server process. This is a strong indicator of a successful privilege escalation.\n\n---\n\n## Detection Methods\n\n*   **Vulnerability Scanning:** Use vulnerability scanners to identify systems running unpatched kernel versions susceptible to CVE-2026-46242.\n*   **Kernel Runtime Protection:** Tools like Falco or eBPF-based security solutions can be configured to detect the anomalous system call behavior characteristic of the \"Bad Epoll\" exploit.\n*   **Log Analysis:** Ingest kernel and system audit logs into a SIEM. Create rules to alert on a rapid succession of `epoll` calls from a low-privilege process or any process that unexpectedly gains root privileges.\n*   **D3FEND Techniques:** Employ [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) and [`D3-SCF: System Call Filtering`](https://d3fend.mitre.org/technique/d3f:SystemCallFiltering) to detect and potentially block the malicious sequence of system calls required for exploitation.\n\n---\n\n## Remediation Steps\n\n1.  **Patch Immediately:** The primary remediation is to update the Linux kernel to a patched version. Monitor announcements from your Linux distribution vendor (e.g., Canonical, Red Hat, Debian) and apply the security updates as soon as they are available. This is a direct application of [`M1051 - Update Software`](https://attack.mitre.org/mitigations/M1051/).\n2.  **Reboot:** After updating the kernel, a system reboot is required to load the new kernel and activate the patch.\n3.  **Temporary Mitigation (if patching is delayed):**\n    *   **Restrict User Access:** Limit shell access for untrusted users on multi-user systems.\n    *   **Use `seccomp-bpf`:** For critical applications, consider using `seccomp-bpf` profiles to restrict the allowed system calls, potentially blocking the specific sequence needed for the exploit. This is an advanced technique and can cause application instability if not properly configured. This is a form of [`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/).\n    *   **Enhanced Monitoring:** Increase monitoring and auditing on vulnerable systems until they can be patched.",
+  "twitter_post": "🚨 CRITICAL ZERO-DAY: 'Bad Epoll' (CVE-2026-46242) in Linux Kernel allows any local user to gain full root access. The use-after-free bug affects servers, desktops & Android. PoC exists. Patch immediately! 🐧💥 #Linux #CyberSecurity #ZeroDay #Infosec",
+  "meta_description": "A critical zero-day use-after-free vulnerability in the Linux kernel, CVE-2026-46242 or 'Bad Epoll', allows local privilege escalation to root on servers, desktops, and Android devices.",
+  "category": [
+    "Vulnerability",
+    "Patch Management"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Android",
+      "type": "product"
+    },
+    {
+      "name": "Anthropic",
+      "type": "company"
+    },
+    {
+      "name": "Google Chrome",
+      "type": "product"
+    },
+    {
+      "name": "Linux",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-43074",
+      "cvss_score": null,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": null
+    },
+    {
+      "id": "CVE-2026-46242",
+      "cvss_score": null,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://cybersecuritynews.com/bad-epoll-0-day-vulnerability/",
+      "title": "New “Bad Epoll” 0-Day Vulnerability Allows Root Access on Linux Servers and Android Devices",
+      "date": null,
+      "website": "cybersecuritynews.com"
+    },
+    {
+      "url": "https://cyberrecaps.com/news/cybersecurity-news-july-06-2026/",
+      "title": "Daily Cybersecurity News – July 6, 2026",
+      "date": null,
+      "website": "cyber-recaps.com"
+    },
+    {
+      "url": "https://www.securityweek.com/proof-of-concept-exploit-released-for-linux-bad-epoll-root-access-vulnerability/",
+      "title": "Proof-of-Concept Exploit Released for Linux 'Bad Epoll' Root Access Vulnerability",
+      "date": null,
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://research.checkpoint.com/2026/6th-july-threat-intelligence-report-2/",
+      "title": "6th July – Threat Intelligence Report",
+      "date": null,
+      "website": "research.checkpoint.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "Bad Epoll",
+    "CVE-2026-46242",
+    "Kernel",
+    "Linux",
+    "Privilege Escalation",
+    "Use-After-Free",
+    "Vulnerability",
+    "Zero-Day"
+  ],
+  "extract_datetime": "2026-07-05",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Telecommunications",
+      "Critical Infrastructure"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "Linux server administrators",
+      "Android device users",
+      "Cloud service providers"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Bad Epoll",
+    "CVE-2026-46242",
+    "Kernel",
+    "Linux",
+    "Privilege Escalation",
+    "Use-After-Free",
+    "Vulnerability",
+    "Zero-Day"
+  ],
+  "pub_date": "2026-07-05",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-05T15:00:00.000Z",
+  "updatedAt": "2026-07-08T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-07-08T00:00:00Z",
+      "summary": "Patches for the 'Bad Epoll' Linux kernel vulnerability (CVE-2026-46242) are now available, and a public exploit has been released, urging immediate updates.",
+      "content": "New information confirms that patches for the critical 'Bad Epoll' Linux kernel zero-day vulnerability (CVE-2026-46242) have been released by kernel maintainers. This provides a crucial remediation path for affected systems, including servers, desktops, and Android devices. Concurrently, a public exploit for the use-after-free flaw has also been made available, significantly increasing the immediate threat to unpatched systems. Administrators are strongly advised to apply the latest kernel updates without delay to mitigate the risk of local privilege escalation to root. The availability of a public exploit means threat actors are likely to integrate this into their toolkits, making timely patching essential.",
+      "severity_change": "decreased",
+      "sources": [
+        {
+          "url": "https://securityboulevard.com/2026/07/bad-epoll-zero-day-vulnerability-enables-local-privilege-escalation-on-linux-systems/",
+          "title": "Bad Epoll Zero-Day Vulnerability Enables Local Privilege Escalation on Linux Systems",
+          "website": "",
+          "date": "2026-07-08T00:00:00Z"
+        },
+        {
+          "url": "https://research.checkpoint.com/2026/6th-july-threat-intelligence-report-2/",
+          "title": "6th July – Threat Intelligence Report",
+          "website": "",
+          "date": "2026-07-08T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "datetime": "2026-07-06T12:00:00Z",
+      "summary": "Patch now available for 'Bad Epoll' (CVE-2026-46242); no in-the-wild exploitation observed.",
+      "content": "A patch for the 'Bad Epoll' Linux kernel vulnerability (CVE-2026-46242) has been integrated into the mainline kernel, and administrators are urged to update immediately. The flaw affects kernel versions 6.4 and newer. Researcher Jaeyoung Chung discovered the bug and provided a highly reliable proof-of-concept exploit, available on GitHub. While a PoC exists, there is currently no evidence of in-the-wild exploitation of this critical use-after-free vulnerability.",
+      "severity_change": "decreased",
+      "sources": [
+        {
+          "url": "https://thehackernews.com/2026/07/new-bad-epoll-linux-kernel-flaw-lets.html",
+          "title": "New \"Bad Epoll\" Linux Kernel Flaw Lets Unprivileged Users Gain Root, Hits Android",
+          "website": "",
+          "date": "2026-07-06T12:00:00Z"
+        },
+        {
+          "url": "https://securityaffairs.com/194795/hacking/bad-epoll-flaw-gives-attackers-root-access-on-linux-and-android.html",
+          "title": "Bad Epoll Flaw Gives Attackers Root Access on Linux and Android",
+          "website": "",
+          "date": "2026-07-06T12:00:00Z"
+        },
+        {
+          "url": "https://github.com/J-jaeyoung/bad-epoll",
+          "title": "J-jaeyoung/bad-epoll: Bad Epoll: The bug missed by Mythos",
+          "website": "",
+          "date": "2026-07-06T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

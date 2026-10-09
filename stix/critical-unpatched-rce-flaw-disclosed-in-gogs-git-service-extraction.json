@@ -1,0 +1,116 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-01T17:33:11.482Z",
+    "article_slug": "critical-unpatched-rce-flaw-disclosed-in-gogs-git-service",
+    "article_date": "2026-06-01",
+    "token_usage": {
+      "input_tokens": 143163,
+      "output_tokens": 1821,
+      "cached_tokens": 137782,
+      "total_tokens": 144984,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.042159
+    }
+  },
+  "report_name": "Unpatched Critical RCE Vulnerability Disclosed in Gogs Self-Hosted Git Service",
+  "threat_actors": [],
+  "attack_patterns": [],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "Gogs Critical RCE Vulnerability (June 2026)",
+      "cve": "",
+      "description": "A critical unpatched remote code execution (RCE) vulnerability in the Gogs self-hosted Git service that affects default installations. Successful exploitation could allow an attacker to take full control of the server, execute arbitrary code, and access all repositories.",
+      "aliases": [],
+      "cvss_score": 9.4,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "gogs web"
+    },
+    {
+      "type": "file",
+      "name": "gogs serv"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Suspicious Child Process of Gogs Service",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Child Process of Gogs Service\nid: 2b1a6c3d-8e4f-4f9a-8d6c-7e5b4a3c2d1e\nstatus: experimental\ndescription: Detects suspicious child processes being spawned by the Gogs Git service process. This could indicate exploitation of a remote code execution vulnerability.\nreferences:\n  - https://the-hacker-news.com/2026/06/weekly-recap-new-linux-flaw-pan-os.html\nauthor: cyber.netsecops.io\ndate: 2026-06-01\ntags:\n  - attack.t1190\nlevel: high\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  parent:\n    ParentImage|endswith:\n      - '/gogs web'\n      - '/gogs serv'\n      - '/gogs'\n  suspicious_child:\n    Image|endswith:\n      - '/sh'\n      - '/bash'\n      - '/powershell'\n      - '/curl'\n      - '/wget'\n  condition: parent and suspicious_child",
+      "description": "Monitors for unexpected child processes (e.g., shells like sh, bash, powershell) being spawned by the main Gogs process, which could indicate RCE."
+    },
+    {
+      "name": "Anomalous Outbound Connection from Gogs Server",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Outbound Connection from Gogs Server\nid: 9f8b7a6d-5c4e-4d3c-2b1a-0e9f8d7c6b5a\nstatus: experimental\ndescription: Detects any outbound network connection from the Gogs Git service process to non-local addresses. This could indicate a reverse shell or data exfiltration due to RCE exploitation.\nreferences:\n  - https://the-hacker-news.com/2026/06/weekly-recap-new-linux-flaw-pan-os.html\nauthor: cyber.netsecops.io\ndate: 2026-06-01\ntags:\n  - attack.t1041\nlevel: medium\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    Image|endswith:\n      - '/gogs web'\n      - '/gogs serv'\n      - '/gogs'\n    Initiated: true\n  filter:\n    DestinationIp|cidr:\n      - '127.0.0.0/8'\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n      - '::1/128'\n  condition: selection and not filter",
+      "description": "Watches for any outbound connections from the Gogs server to unknown IP addresses, which could indicate a reverse shell or data exfiltration."
+    },
+    {
+      "name": "Gogs Process Execution",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[file:name IN ('gogs web', 'gogs serv')]",
+      "x_netsecio_sigma_rule": "title: Gogs Git Service Process Execution\nid: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the execution of the Gogs Git service process. This rule is intended for monitoring and can be correlated with other suspicious activity.\nreferences:\n  - https://the-hacker-news.com/2026/06/weekly-recap-new-linux-flaw-pan-os.html\nauthor: cyber.netsecops.io\ndate: 2026-06-01\ntags:\n  - attack.t1190\nlevel: informational\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|endswith:\n      - '/gogs web'\n      - '/gogs serv'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the execution of the main Gogs service processes, `gogs web` or `gogs serv`."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Suspicious Child Process of Gogs Service",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Gogs Critical RCE Vulnerability (June 2026)",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Anomalous Outbound Connection from Gogs Server",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Gogs Critical RCE Vulnerability (June 2026)",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Gogs Process Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Gogs Critical RCE Vulnerability (June 2026)",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Gogs Process Execution",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "gogs web",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Gogs Process Execution",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "gogs serv",
+      "target_type": "file"
+    }
+  ]
+}

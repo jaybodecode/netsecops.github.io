@@ -1,0 +1,195 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-08T16:18:41.689Z",
+    "article_slug": "windows-hello-for-business-flaw-allows-persistent-entra-id-access",
+    "article_date": "2026-08-08",
+    "token_usage": {
+      "input_tokens": 146294,
+      "output_tokens": 2580,
+      "cached_tokens": 140179,
+      "total_tokens": 148874,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.050966
+    }
+  },
+  "report_name": "Windows Hello Flaw Allows Persistent Entra ID Access",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Native API",
+      "mitre_id": "T1106",
+      "description": "Malware with user-level privileges programmatically calls Windows APIs to generate an assertion using the hardware-bound Windows Hello for Business key stored in the TPM, without requiring user interaction, a PIN, or biometrics."
+    },
+    {
+      "name": "Steal Application Access Token",
+      "mitre_id": "T1528",
+      "description": "The generated assertion from the WHfB key is used to request and obtain a Primary Refresh Token (PRT) from Microsoft Entra ID, effectively stealing a long-lived token that grants access to the user's cloud resources."
+    },
+    {
+      "name": "Use Alternate Authentication Material",
+      "mitre_id": "T1550",
+      "description": "The stolen Primary Refresh Token (PRT) is used as alternate authentication material to silently acquire access tokens for various cloud services (Office 365, Azure) linked to the user's Entra ID account, enabling persistent access."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "ROADtools",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A collection of tools for interacting with Microsoft Entra ID. The repository contains the proof-of-concept scripts `fido_assertion.ps1` and `hellopoc.ps1` that demonstrate the Windows Hello for Business abuse.",
+      "tool_types": [
+        "exploitation",
+        "credential-exploitation"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "Windows Hello for Business PRT Token Abuse",
+      "cve": "",
+      "description": "A design weakness in Windows Hello for Business (WHfB) allows malware running with user-level privileges to programmatically use the hardware-bound WHfB key to obtain a Primary Refresh Token (PRT) from Microsoft Entra ID. This bypasses the need for a PIN, biometrics, or admin rights, challenging the security model of hardware-bound credentials.",
+      "affected_products": [
+        "Windows Hello for Business",
+        "Microsoft Entra ID"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Dirk-jan Mollema",
+      "identity_class": "individual",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Security researcher who discovered and publicly disclosed the design weakness in Windows Hello for Business."
+    },
+    {
+      "name": "Microsoft",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Vendor of Windows Hello for Business and Microsoft Entra ID. The company reportedly acknowledged the behavior as part of the current design and has not issued a CVE."
+    },
+    {
+      "name": "Organizations using Windows Hello for Business",
+      "identity_class": "class",
+      "sectors": [],
+      "description": "Class of organizations affected by the design weakness that allows for Entra ID persistence from a compromised endpoint using Windows Hello for Business for authentication."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "fido_assertion.ps1"
+    },
+    {
+      "type": "file",
+      "name": "hellopoc.ps1"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "ROADtools WHfB PoC Script Files",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name IN ('fido_assertion.ps1', 'hellopoc.ps1')]",
+      "x_netsecio_sigma_rule": "title: ROADtools WHfB PoC Script File Creation\nid: 4f5b6c7d-8e9f-4a1b-2c3d-4e5f6a7b8c9d\nstatus: experimental\ndescription: Detects the presence of proof-of-concept script files associated with the ROADtools WHfB abuse technique.\nreferences:\n  - https://thehackernews.com/2026/08/malware-can-abuse-windows-hello-for.html\nauthor: cyber.netsecops.io\ndate: 2026-08-08\ntags:\n  - attack.t1528\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith:\n      - '\\fido_assertion.ps1'\n      - '\\hellopoc.ps1'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the presence of the PoC script files `fido_assertion.ps1` and `hellopoc.ps1` on an endpoint."
+    },
+    {
+      "name": "ROADtools WHfB PoC Script Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: ROADtools WHfB PoC Script Execution\nid: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects the execution of PowerShell scripts associated with the ROADtools WHfB abuse technique.\nreferences:\n  - https://thehackernews.com/2026/08/malware-can-abuse-windows-hello-for.html\nauthor: cyber.netsecops.io\ndate: 2026-08-08\ntags:\n  - attack.t1059.001\n  - attack.t1528\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\powershell.exe'\n    CommandLine|contains:\n      - 'fido_assertion.ps1'\n      - 'hellopoc.ps1'\n  condition: selection",
+      "description": "Detects the command-line execution of the PoC scripts `fido_assertion.ps1` and `hellopoc.ps1` used to abuse WHfB."
+    },
+    {
+      "name": "Anomalous WHfB Sign-in Without Device ID",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous WHfB Sign-in Without Device ID\nid: 6f7a8b9c-0d1e-4f2a-3b4c-5d6e7f8a9b0c\nstatus: experimental\ndescription: Detects Microsoft Entra ID sign-in events using Windows Hello for Business that have an empty or null device ID, which can indicate programmatic token generation by malware.\nreferences:\n  - https://thehackernews.com/2026/08/malware-can-abuse-windows-hello-for.html\nauthor: cyber.netsecops.io\ndate: 2026-08-08\ntags:\n  - attack.t1528\nfalsepositives:\n  - Legitimate sessions from incognito browsers or non-SSO browser sessions.\nlevel: medium\nlogsource:\n  product: azure\n  service: signinlogs\ndetection:\n  selection:\n    AuthenticationDetails|contains: 'WindowsHelloForBusiness'\n    DeviceId: null\n  condition: selection",
+      "description": "Detects a hunting hint provided by the researcher: WHfB sign-in events in Entra ID that have an empty or null device ID, which may indicate programmatic PRT acquisition."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "ROADtools",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "Native API",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ROADtools",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "Steal Application Access Token",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ROADtools",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "Use Alternate Authentication Material",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Dirk-jan Mollema",
+      "source_type": "identity",
+      "relationship_type": "discovered",
+      "target_name": "Windows Hello for Business PRT Token Abuse",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Organizations using Windows Hello for Business",
+      "source_type": "identity",
+      "relationship_type": "vulnerable-to",
+      "target_name": "Windows Hello for Business PRT Token Abuse",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "ROADtools WHfB PoC Script Files",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "fido_assertion.ps1",
+      "target_type": "file"
+    },
+    {
+      "source_name": "ROADtools WHfB PoC Script Files",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "hellopoc.ps1",
+      "target_type": "file"
+    },
+    {
+      "source_name": "ROADtools WHfB PoC Script Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "ROADtools",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Anomalous WHfB Sign-in Without Device ID",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Steal Application Access Token",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

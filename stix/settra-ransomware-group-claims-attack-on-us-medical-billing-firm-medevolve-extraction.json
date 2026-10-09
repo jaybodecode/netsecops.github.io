@@ -1,0 +1,198 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-04T16:37:21.384Z",
+    "article_slug": "settra-ransomware-group-claims-attack-on-us-medical-billing-firm-medevolve",
+    "article_date": "2026-09-04",
+    "token_usage": {
+      "input_tokens": 147302,
+      "output_tokens": 2250,
+      "cached_tokens": 141361,
+      "total_tokens": 149552,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.047596
+    }
+  },
+  "report_name": "Settra Ransomware Claims Attack on Medical Firm MedEvolve",
+  "threat_actors": [
+    {
+      "name": "Settra",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The Settra ransomware group claimed responsibility for a double extortion cyberattack against MedEvolve, a U.S. medical billing company. The group alleged the exfiltration of 820GB of sensitive data and posted the victim on its dark web leak site to pressure them into paying a ransom.",
+      "external_references": [
+        {
+          "source_name": "malpedia",
+          "external_id": "win.settra"
+        }
+      ],
+      "goals": "Financial extortion through ransomware and data exfiltration.",
+      "primary_motivation": "personal-gain",
+      "resource_level": "organization",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "The Settra ransomware group engages in ransomware attacks, which involve encrypting victim data to disrupt operations and extort payment."
+    },
+    {
+      "name": "Exfiltration Over C2 Channel",
+      "mitre_id": "T1041",
+      "description": "As part of a double extortion tactic, the Settra group claimed to have exfiltrated 820GB of sensitive internal documents from MedEvolve before threatening to release it publicly."
+    },
+    {
+      "name": "Inhibit System Recovery",
+      "mitre_id": "T1490",
+      "description": "The report suggests hunting for the use of `vssadmin` to delete volume shadow copies, a common ransomware technique to prevent system recovery."
+    },
+    {
+      "name": "OS Credential Dumping",
+      "mitre_id": "T1003",
+      "description": "The report suggests monitoring for credential dumping activity, such as tools targeting the lsass.exe process, which is a common precursor to ransomware deployment."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Settra",
+      "mitre_id": "",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [],
+      "description": "Settra is a ransomware family used by the eponymous group to conduct double extortion attacks, involving both data encryption and data exfiltration.",
+      "capabilities": [
+        "compromises-data-availability",
+        "exfiltrates-data"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "MedEvolve",
+      "identity_class": "organization",
+      "sectors": [
+        "healthcare",
+        "technology"
+      ],
+      "description": "A U.S.-based medical billing and practice management software company targeted by the Settra ransomware group."
+    }
+  ],
+  "locations": [
+    {
+      "name": "United States",
+      "country": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Settra Leak Site",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "A dark web data leak site used by the Settra ransomware group to post victim information and threaten the release of exfiltrated data."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "VSSAdmin Shadow Copy Deletion",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: VSSAdmin Shadow Copy Deletion\nid: 2b8a1e3c-7d4f-4b9a-8c6d-1e2f3a4b5c6d\nstatus: experimental\ndescription: Detects the use of vssadmin.exe to delete volume shadow copies, a common technique used by ransomware to inhibit system recovery.\nreferences:\n  - https://www.dexpose.io/settra-ransomware-attack-on-medevolve/\nauthor: cyber.netsecops.io\ndate: 2026-09-04\ntags:\n  - attack.t1490\n  - attack.impact\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\vssadmin.exe'\n    CommandLine|contains|all:\n      - 'delete'\n      - 'shadows'\n  condition: selection\nfalsepositives:\n  - Legitimate administrative activity, though rare in automated scripts.\nlevel: high",
+      "description": "Detects the use of vssadmin.exe to delete volume shadow copies, a common ransomware precursor technique mentioned as a hunting hint in the report."
+    },
+    {
+      "name": "LSASS Memory Access for Credential Dumping",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: LSASS Memory Access for Credential Dumping\nid: 9f8b7c6d-5e4f-4a3b-2c1d-0e9f8b7c6d5e\nstatus: experimental\ndescription: Detects processes accessing LSASS memory, which is often indicative of credential dumping attempts using tools like Mimikatz.\nreferences:\n  - https://www.dexpose.io/settra-ransomware-attack-on-medevolve/\nauthor: cyber.netsecops.io\ndate: 2026-09-04\ntags:\n  - attack.t1003.001\n  - attack.credential_access\nlogsource:\n  category: process_access\n  product: windows\ndetection:\n  selection:\n    TargetImage|endswith: '\\lsass.exe'\n    GrantedAccess: '0x1010'\n  filter_legit:\n    SourceImage|endswith:\n      - '\\wmiprvse.exe'\n      - '\\svchost.exe'\n  condition: selection and not filter_legit\nfalsepositives:\n  - Legitimate security and system management tools.\nlevel: high",
+      "description": "Detects suspicious access to the LSASS process memory, a technique for credential dumping suggested as a hunting hint in the report."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Settra",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "MedEvolve",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Inhibit System Recovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "OS Credential Dumping",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Settra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Settra Leak Site",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "MedEvolve",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "United States",
+      "target_type": "location"
+    },
+    {
+      "source_name": "VSSAdmin Shadow Copy Deletion",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Inhibit System Recovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "LSASS Memory Access for Credential Dumping",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "OS Credential Dumping",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

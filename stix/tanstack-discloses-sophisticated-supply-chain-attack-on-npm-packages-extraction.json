@@ -1,0 +1,174 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-24T15:33:22.874Z",
+    "article_slug": "tanstack-discloses-sophisticated-supply-chain-attack-on-npm-packages",
+    "article_date": "2026-05-24",
+    "token_usage": {
+      "input_tokens": 143724,
+      "output_tokens": 1741,
+      "cached_tokens": 137731,
+      "total_tokens": 145465,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.042118
+    }
+  },
+  "report_name": "TanStack Details Sophisticated Supply Chain Attack That Compromised 42 npm Packages",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "Attackers submitted a malicious pull request to a GitHub Actions workflow that used the insecure 'pull_request_target' trigger. The executed code then poisoned the shared GitHub Actions cache with a malicious payload."
+    },
+    {
+      "name": "Steal Application Access Token",
+      "mitre_id": "T1528",
+      "description": "The malicious payload, executed from the poisoned cache within the CI/CD environment, stole a short-lived OIDC token used for passwordless publishing to npm."
+    },
+    {
+      "name": "Subvert Trust Controls",
+      "mitre_id": "T1553",
+      "description": "The stolen OIDC token was used to authenticate to npm and publish malicious versions of 42 TanStack packages, bypassing normal trust and authentication mechanisms."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Unnamed Credential Harvester",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": false,
+      "aliases": [],
+      "description": "A credential-stealing payload delivered via a GitHub Actions cache poisoning attack. It was designed to steal cloud credentials (AWS, GCP), Kubernetes tokens, GitHub tokens, SSH keys, and npm configurations from developer environments and CI/CD runners. It also included a self-propagation mechanism.",
+      "capabilities": [
+        "steals-authentication-credentials"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "Insecure GitHub Actions pull_request_target Trigger",
+      "cve": "",
+      "description": "An insecure configuration in a GitHub Actions workflow using the 'pull_request_target' trigger allowed code from a malicious pull request from a fork to execute with elevated permissions, enabling the cache poisoning stage of the attack.",
+      "affected_products": [
+        "GitHub Actions"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "TanStack",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The open-source project whose npm packages were compromised in the supply chain attack."
+    },
+    {
+      "name": "npm",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The public package registry where 84 malicious package versions were published using a stolen OIDC token."
+    },
+    {
+      "name": "GitHub",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The platform hosting the source code and the CI/CD service (GitHub Actions) that was exploited in the attack."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Poisoned GitHub Actions Cache",
+      "infrastructure_types": [
+        "staging"
+      ],
+      "description": "The shared GitHub Actions cache was used as a staging area. Attackers wrote a malicious payload to the cache, which was then executed by a subsequent, legitimate build workflow."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": ".npmrc"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Malicious Access to .npmrc Configuration File",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = '.npmrc']",
+      "x_netsecio_sigma_rule": "title: Malicious Access to .npmrc Configuration File\nid: 2b9c1a8e-1f3a-4d5b-8c6d-7e9f0a1b2c3d\nstatus: experimental\ndescription: Detects access to the .npmrc file, which may indicate theft of npm authentication tokens as seen in the TanStack supply chain attack.\nreferences:\n  - https://tech.wrapt.dev/posts/tanstack-details-sophisticated-npm-supply-chain-attack\nauthor: cyber.netsecops.io\ndate: 2026-05-19\ntags:\n  - attack.t1555\nlevel: medium\nlogsource:\n  category: file_event\ndetection:\n  selection:\n    TargetFilename|endswith: '\\.npmrc'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects access to the .npmrc file, which was a target of the credential harvesting malware in the TanStack supply chain attack."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Unnamed Credential Harvester",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Steal Application Access Token",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Credential Harvester",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Subvert Trust Controls",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Credential Harvester",
+      "source_type": "malware",
+      "relationship_type": "exploits",
+      "target_name": "Insecure GitHub Actions pull_request_target Trigger",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Poisoned GitHub Actions Cache",
+      "source_type": "infrastructure",
+      "relationship_type": "delivers",
+      "target_name": "Unnamed Credential Harvester",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Unnamed Credential Harvester",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "TanStack",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Malicious Access to .npmrc Configuration File",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Unnamed Credential Harvester",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Malicious Access to .npmrc Configuration File",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": ".npmrc",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Insecure GitHub Actions pull_request_target Trigger",
+      "source_type": "vulnerability",
+      "relationship_type": "enables",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

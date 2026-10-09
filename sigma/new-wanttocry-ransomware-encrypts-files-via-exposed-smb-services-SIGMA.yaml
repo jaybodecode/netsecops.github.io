@@ -1,0 +1,52 @@
+title: Anomalous Outbound SMB Traffic to External Network
+id: 8d7c6b5a-4f3e-4d2c-1b0a-987654321fed
+status: experimental
+description: Detects outbound SMB traffic (TCP 445) to non-private IP addresses, which is highly indicative of attacks like WantToCry or data exfiltration.
+references:
+  - https://news.sophos.com/en-us/2026/05/19/wanttocry-ransomware-remotely-encrypts-files/
+author: cyber.netsecops.io
+date: 2026-05-19
+tags:
+  - attack.t1048
+  - attack.t1021.002
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 445
+    Initiated: true
+  filter_private:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter_private
+---
+title: Potential SMB Brute-Force Attack (Windows Event 4625)
+id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects multiple failed logon attempts (Event ID 4625) for network logons, which may indicate an SMB brute-force attack.
+references:
+  - https://news.sophos.com/en-us/2026/05/19/wanttocry-ransomware-remotely-encrypts-files/
+author: cyber.netsecops.io
+date: 2026-05-19
+tags:
+  - attack.t1110.001
+  - attack.initial_access
+level: medium
+logsource:
+  product: windows
+  service: security
+falsepositives:
+  - Legitimate users mistyping passwords.
+  - Misconfigured services.
+  - Rule should be tuned with a threshold for a single source IP over a short time period in a SIEM.
+detection:
+  selection:
+    EventID: 4625
+    FailureReason: '%%2313' # Unknown user name or bad password
+    LogonType: 3 # Network logon
+  condition: selection

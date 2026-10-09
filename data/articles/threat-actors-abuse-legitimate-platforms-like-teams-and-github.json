@@ -1,0 +1,174 @@
+{
+  "id": "016fa972-282f-4e0d-b639-cd7c53bd7b1e",
+  "slug": "threat-actors-abuse-legitimate-platforms-like-teams-and-github",
+  "headline": "Living Off the Land: Threat Actors Increasingly Abuse Legitimate Platforms Like Teams and GitHub",
+  "title": "Threat Actors Abuse Microsoft Teams, GitHub, and Phone Link to Blend In and Evade Detection",
+  "summary": "A significant 2026 trend shows threat actors are increasingly abusing trusted enterprise platforms to conduct malicious operations and evade detection. Attackers are 'living off the trusted platform' by leveraging services like Microsoft Teams for malware delivery, GitHub for distribution, and the Windows Phone Link app for SMS interception. This strategic shift allows them to blend malicious traffic with legitimate business workflows, exploiting the implicit trust that users and security tools place in these well-known services, and making detection significantly more challenging.",
+  "full_report": "## Executive Summary\nThreat actors in 2026 are refining their tactics by 'living off the trusted platform,' a strategy that involves abusing legitimate, well-known services to carry out attacks. Instead of relying on their own custom infrastructure, which can be easily identified and blocked, attackers are co-opting services like **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)**, **[GitHub](https://github.com/)**, and the **[Windows Phone Link](https://www.microsoft.com/en-us/windows/sync-across-your-devices)** application. This approach makes their malicious activity extremely difficult to detect, as it is hidden within the vast streams of legitimate traffic associated with these trusted platforms. The trend includes using Teams for malware delivery, GitHub for hosting malicious code, and Phone Link for bypassing multi-factor authentication, demonstrating a strategic move to exploit implicit trust and bypass traditional security controls.\n\n## Threat Overview\nThe 'living off the trusted platform' strategy is a sophisticated evolution of the 'living off the land' technique. Instead of just using native OS tools, attackers are now using globally trusted cloud services.\n\n- **Malware Delivery via Microsoft Teams:** Attackers are using compromised accounts or social engineering to send malicious files and links through Teams chat. Because Teams is a primary internal communication tool, users are more likely to trust and open files received through it. This bypasses email gateways, the traditional chokepoint for malware scanning.\n\n- **Malware Distribution via GitHub:** GitHub is being used to host malware, C2 configurations, and as a distribution point for compromised software installers. Attackers create public or private repositories that appear legitimate, using them as a stable and reputable source for downloading malicious payloads.\n\n- **MFA Bypass via Windows Phone Link:** Financially motivated cybercrime groups are exploiting the Windows Phone Link application. This tool syncs a user's phone with their Windows PC, including SMS messages. If an attacker has compromised the user's PC, they can use Phone Link to intercept one-time passcodes (OTPs) sent via SMS for multi-factor authentication, allowing them to take over online accounts.\n\n- **C2 via Blockchain:** Some actors are using transactions on public blockchains for command-and-control (C2) communications. They can embed commands or exfiltrated data into transaction metadata, creating a highly resilient and difficult-to-block C2 channel.\n\n## Technical Analysis\nThe effectiveness of this strategy lies in its ability to blend in. Security tools are typically configured to trust traffic to and from major platforms like Microsoft, Google, and GitHub.\n\n### Phone Link SMS Interception Attack Chain:\n1.  **Initial Compromise:** The attacker gains access to the victim's Windows PC through phishing, malware, or other means.\n2.  **Persistence & Discovery:** The attacker discovers that the victim uses the Phone Link application to sync with their Android phone.\n3.  **Action on Objectives:** The attacker initiates a login to a sensitive account of the victim (e.g., a bank account).\n4.  **MFA Interception:** The bank sends an MFA OTP via SMS to the victim's phone. The Phone Link app syncs this SMS to the compromised Windows PC.\n5.  **Capture:** The attacker's malware on the PC reads the incoming notification or the message database for Phone Link, capturing the OTP.\n6.  **Account Takeover:** The attacker enters the captured OTP into the bank login page and gains access to the account.\n\n### MITRE ATT&CK Techniques\n- [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/): The abuse of legitimate platforms like Teams and Phone Link falls under this category.\n- [`T1102 - Web Service`](https://attack.mitre.org/techniques/T1102/): Using platforms like GitHub for C2 or data exfiltration.\n- [`T1566.002 - Phishing: Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/): Delivering malicious links via Teams chat.\n- [`T1114.001 - Email Collection: Local Email Collection`](https://attack.mitre.org/techniques/T1114/001/): The principle of intercepting messages is similar to how Phone Link abuse works for SMS.\n\n## Impact Assessment\nThe primary impact of this trend is the degradation of existing security controls. Security tools that rely on blacklisting bad IPs or domains are rendered ineffective when the malicious activity is hosted on `microsoft.com` or `github.com`. This forces a paradigm shift for defenders, from blocking known-bad to identifying anomalous behavior within known-good platforms. Successful attacks can lead to malware infection, data breaches, financial fraud, and account takeover, all while being much harder to detect and trace.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise were provided in the source articles, as this trend focuses on abusing legitimate infrastructure.\n\n## Cyber Observables — Hunting Hints\n- **Teams Monitoring:** Look for users sending executable files or password-protected archives through Teams, which is often against policy and a common attacker TTP. Monitor for a single user sending the same link or file to a large number of other users in a short time.\n- **GitHub Traffic:** Analyze traffic to GitHub. While blocking it is not feasible, monitor for the download of executable files or `.zip` archives from non-official or newly created repositories, especially from non-developer workstations.\n- **Phone Link Usage:** While legitimate, security teams could generate a list of users with Phone Link installed to understand the potential attack surface for SMS interception.\n\n## Detection & Response\n- **Detection:**\n  - **Behavioral Analytics:** Detection must be behavior-based. Monitor for anomalies within the trusted platforms. For example, a user account that has never used GitHub before suddenly downloading release assets should be flagged. This aligns with **[D3FEND User Behavior Analysis](https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis)**.\n  - **API Monitoring:** Utilize the security APIs of platforms like Microsoft 365 and GitHub to ingest audit logs into a SIEM. Correlate activity across platforms to build a richer picture and detect suspicious sequences of events.\n  - **Endpoint Monitoring:** EDR is still crucial. It can detect the malicious payload *after* it has been delivered via Teams or downloaded from GitHub.\n\n- **Response:**\n  - When abuse is detected, the response must be swift. If a Teams user is sending malware, their account must be immediately disabled and investigated.\n  - Use the platform's own security tools to respond. For example, if a GitHub repo is found to be malicious, report it to GitHub for takedown.\n\n## Mitigation\n- **Zero Trust Principles:** Do not implicitly trust any application or service. All traffic should be inspected, and all access should be authenticated and authorized. Assume that any platform can be used for malicious purposes.\n- **Phishing-Resistant MFA:** The Phone Link SMS interception attack is a perfect example of why SMS-based MFA is weak. Move to stronger, phishing-resistant forms of MFA like FIDO2 security keys or authenticator apps with number matching and push notifications. This is a core part of **[D3FEND Multi-factor Authentication (D3-MFA)](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication)**.\n- **User Training:** Educate users that even trusted platforms like Teams can be abused. Train them to be suspicious of unexpected file shares or links, even from known colleagues, and to verify through a separate communication channel.\n- **Application Control:** Where possible, use application control to restrict the use of certain high-risk applications or features if they are not required for business.",
+  "twitter_post": "Attackers are 'living off the trusted platform,' abusing Teams for malware delivery, GitHub for distribution, and Windows Phone Link for MFA bypass. This tactic blends malicious traffic with legitimate workflows, evading detection. 🕵️‍♂️ #CyberSecurity",
+  "meta_description": "Threat actors are increasingly abusing legitimate platforms like Microsoft Teams, GitHub, and Windows Phone Link to deliver malware, host C2, and bypass MFA, making detection harder.",
+  "category": [
+    "Threat Actor",
+    "Threat Intelligence",
+    "Security Operations"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft Teams",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Windows Phone Link",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/windows/sync-across-your-devices"
+    },
+    {
+      "name": "Blockchain",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.resecurity.com/blog/threat-intelligence-may-11-2026",
+      "title": "Threat Intelligence: May 11, 2026",
+      "date": "2026-05-11",
+      "friendly_name": "ReSecurity",
+      "website": "resecurity.com"
+    },
+    {
+      "url": "https://research.checkpoint.com/2026/05/11th-may-threat-intelligence-report/",
+      "title": "11th May – Threat Intelligence Report",
+      "date": "2026-05-11",
+      "friendly_name": "Check Point Research",
+      "website": "checkpoint.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1219",
+      "name": "Remote Access Software"
+    },
+    {
+      "id": "T1102",
+      "name": "Web Service"
+    },
+    {
+      "id": "T1566.002",
+      "name": "Phishing: Spearphishing Link"
+    },
+    {
+      "id": "T1114.001",
+      "name": "Email Collection: Local Email Collection"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Migrate from SMS-based MFA to phishing-resistant alternatives like FIDO2 to defeat interception attacks via tools like Phone Link.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Ingest and analyze audit logs from trusted platforms (M365, GitHub) to detect anomalous behavior within legitimate traffic streams.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate users that legitimate platforms can be abused and to be cautious of unexpected requests or files, even from known contacts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "While broad blocking is not feasible, use proxies to inspect traffic to these platforms and block downloads of high-risk file types from untrusted sources.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The abuse of Windows Phone Link to intercept SMS-based OTPs is a textbook case for why organizations must adopt phishing-resistant Multi-factor Authentication. This technique directly counters the threat by moving away from interceptable factors. Instead of SMS, companies should enforce the use of FIDO2/WebAuthn security keys or authenticator apps that use push notifications with number matching. These methods are not vulnerable to simple interception on a compromised endpoint. A FIDO2 key requires physical presence, and a number matching push notification requires the user to actively confirm the login on their trusted device. By making this transition, organizations can completely neutralize the threat of SMS interception for account takeover.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-WSAA",
+      "technique_name": "Web Session Activity Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis",
+      "recommendation": "To detect the abuse of platforms like Teams and GitHub, Web Session Activity Analysis is essential. This involves moving beyond network-level indicators and analyzing application-level logs. Security teams must ingest audit logs from Microsoft 365 and GitHub into their SIEM. Then, they can build detection rules for anomalous behavior. For example, a rule could flag a user who has never shared a file in Teams before suddenly sending an executable to 50 people. Another rule could detect a non-developer workstation downloading a `.zip` file from a GitHub releases page. This focus on application-layer behavior within trusted services is the only reliable way to spot malicious activity that is otherwise hidden in legitimate traffic.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "While attackers are using trusted platforms for ingress, Outbound Traffic Filtering remains a key control for detecting C2 and exfiltration. For the abuse of GitHub, organizations can use sophisticated web proxies to apply more granular policies. For example, a policy could allow developers to browse `github.com` and clone repositories using Git, but block the direct download of release binaries (`.exe`, `.zip`) for all non-developer users. For abuse of Teams, while the C2 may be internal, any subsequent data exfiltration would still need to leave the network. Strict egress filtering that denies all traffic by default and only allows connections to known-good, categorized sites can prevent attackers from successfully stealing data, even if they establish a foothold.",
+      "mitre_mitigation_id": "M1037"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Microsoft Teams Audit Logs",
+      "description": "Monitor for users sharing executable files (.exe, .scr) or archives (.zip, .rar) in Teams chats, which is a common malware delivery vector.",
+      "context": "Microsoft 365 Compliance Center, SIEM.",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "github.com/*/releases/download/*",
+      "description": "Monitor for downloads from GitHub release pages, especially from non-developer endpoints or to temporary directories, which could indicate malware staging.",
+      "context": "Web proxy logs, EDR process events.",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "PhoneExperienceHost.exe",
+      "description": "The presence and activity of the Windows Phone Link host process. While legitimate, its presence on a compromised machine increases the risk of SMS-based MFA interception.",
+      "context": "EDR, asset inventory.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "Living off the Land",
+    "Microsoft Teams",
+    "GitHub",
+    "Windows Phone Link",
+    "MFA Bypass",
+    "TTP",
+    "Evasion"
+  ],
+  "extract_datetime": "2026-05-12T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Government",
+      "Healthcare"
+    ]
+  },
+  "pub_date": "2026-05-12",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-12T15:00:00.000Z",
+  "updatedAt": "2026-05-12T15:00:00.000Z"
+}

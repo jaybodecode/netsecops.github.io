@@ -1,0 +1,65 @@
+title: Inbound S7comm Traffic from External IP
+id: 9b1f73e8-738c-44a9-8f0a-2e1b9b2c1d3e
+status: experimental
+description: Detects inbound network connections to TCP port 102 (S7comm) from external, non-RFC1918 addresses, which could indicate scanning or exploitation attempts against Siemens PLCs.
+references:
+  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-231a
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port: 102
+  filter_rfc1918:
+    src_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_rfc1918
+---
+title: Python Process Connecting to S7comm Port
+id: a2c4d6e8-1b3f-4e7a-9c8d-0f1e2d3c4b5a
+status: experimental
+description: Detects python.exe making an outbound network connection to TCP port 102, which is used for the S7comm protocol. This may indicate malicious scripts interacting with Siemens PLCs.
+references:
+  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-231a
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t0853
+  - attack.t0843
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\python.exe'
+    DestinationPort: 102
+    Initiated: true
+  condition: selection
+---
+title: Snap7 Library File Creation
+id: 7635a160-3cb6-47b1-bf38-b9678b0a33f9
+status: experimental
+description: Detects the creation of the snap7.dll library file. This library is used to communicate with Siemens S7 PLCs and its presence on non-OT workstations could indicate attacker staging.
+references:
+  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-231a
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1608
+  - attack.resource_development
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\snap7.dll'
+  condition: selection

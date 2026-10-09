@@ -1,0 +1,381 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T17:12:03.121Z",
+    "article_slug": "qilin-ransomware-deploys-advanced-edr-killer-to-blind-defenses",
+    "article_date": "2026-04-21",
+    "token_usage": {
+      "input_tokens": 142156,
+      "output_tokens": 4741,
+      "cached_tokens": 136033,
+      "total_tokens": 146897,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.072068
+    }
+  },
+  "report_name": "Qilin Ransomware Blinds Defenses with Advanced EDR Killer, Abusing Vulnerable Drivers",
+  "threat_actors": [
+    {
+      "name": "Water Galura",
+      "mitre_id": "G1050",
+      "aliases": [
+        "Qilin",
+        "Agenda",
+        "Gold Feather"
+      ],
+      "description": "A ransomware-as-a-service (RaaS) group deploying a sophisticated EDR killer to neutralize endpoint security solutions before encryption. The group uses DLL side-loading and a 'bring your own vulnerable driver' (BYOVD) technique to gain kernel-level access.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Disable or Modify Tools",
+      "mitre_id": "T1562.001",
+      "description": "The Qilin EDR killer payload systematically unregisters or overwrites kernel callback routines for over 300 EDR products to blind them before encryption."
+    },
+    {
+      "name": "DLL Side-Loading",
+      "mitre_id": "T1574.002",
+      "description": "The attack is initiated by a legitimate application (e.g., FoxitPDFReader.exe) loading a malicious DLL (msimg32.dll) placed in the same directory."
+    },
+    {
+      "name": "Dynamic-link Library Injection",
+      "mitre_id": "T1055.001",
+      "description": "The malicious loader DLL (msimg32.dll) initiates a four-stage, in-memory loading process for the final EDR killer payload, avoiding writing malicious executables to disk."
+    },
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The 'bring your own vulnerable driver' (BYOVD) technique is used, abusing a vulnerability in the legitimate rwdrv.sys (ThrottleStop.sys) driver to escalate privileges from user-mode to kernel-mode."
+    },
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "The final stage of the attack involves the Qilin ransomware payload encrypting the victim's system after security defenses have been disabled."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Qilin Ransomware",
+      "mitre_id": "S1242",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [
+        "Agenda"
+      ],
+      "description": "The final payload deployed by the Water Galura group to encrypt victim systems after security defenses have been disabled.",
+      "capabilities": [
+        "compromises-data-availability"
+      ]
+    },
+    {
+      "name": "Qilin EDR Killer",
+      "mitre_id": "",
+      "type": "rootkit",
+      "is_family": false,
+      "aliases": [],
+      "description": "A payload that abuses a vulnerable driver (rwdrv.sys) to gain kernel memory access and unregister EDR monitoring callbacks, effectively disabling security products.",
+      "capabilities": [
+        "degrades-security-software",
+        "hides-artifacts"
+      ]
+    },
+    {
+      "name": "msimg32.dll loader",
+      "mitre_id": "",
+      "type": "loader",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious DLL loader, named msimg32.dll, used in a DLL side-loading attack to execute the EDR killer payload in memory. It forwards legitimate calls to the real DLL to maintain normal application behavior.",
+      "capabilities": [
+        "installs-other-components",
+        "evades-av"
+      ]
+    },
+    {
+      "name": "hlpdrv.sys",
+      "mitre_id": "",
+      "type": "dropper",
+      "is_family": false,
+      "aliases": [],
+      "description": "A second driver loaded by the malware to terminate unprotected EDR processes after their kernel callbacks have been disabled.",
+      "capabilities": [
+        "degrades-security-software"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "ThrottleStop.sys",
+      "mitre_id": "",
+      "aliases": [
+        "rwdrv.sys"
+      ],
+      "description": "A legitimately signed but vulnerable driver abused in a 'bring your own vulnerable driver' (BYOVD) attack. The malware renames it to rwdrv.sys and uses its vulnerability to gain arbitrary read/write access to kernel memory.",
+      "tool_types": [
+        "exploitation"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "ThrottleStop.sys Arbitrary Kernel Memory Read/Write",
+      "cve": "",
+      "description": "A vulnerability in the legitimately signed ThrottleStop.sys driver (renamed to rwdrv.sys by the malware) that allows a user-mode application to gain arbitrary read/write access to kernel memory, enabling privilege escalation.",
+      "affected_products": [
+        "ThrottleStop.sys"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "msimg32.dll"
+    },
+    {
+      "type": "file",
+      "name": "rwdrv.sys"
+    },
+    {
+      "type": "file",
+      "name": "hlpdrv.sys"
+    },
+    {
+      "type": "file",
+      "name": "ThrottleStop.sys"
+    },
+    {
+      "type": "file",
+      "name": "FoxitPDFReader.exe"
+    },
+    {
+      "type": "windows-registry-key",
+      "value": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\rwdrv"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Qilin Ransomware Associated File Names",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name IN ('msimg32.dll', 'rwdrv.sys', 'hlpdrv.sys')]",
+      "x_netsecio_sigma_rule": "title: Qilin Ransomware Associated File Creation\nid: f1a2b3c4-d5e6-4789-a0b1-c2d3e4f5a6b7\nstatus: experimental\ndescription: Detects the creation of files associated with the Qilin ransomware's EDR killer module, including the loader DLL and vulnerable drivers.\nreferences:\n  - https://blog.talosintelligence.com/qilin-edr-killer-infection-chain/\nauthor: cyber.netsecops.io\ndate: 2026-04-21\ntags:\n  - attack.t1574.002\n  - attack.t1068\nfalsepositives:\n  - Legitimate use of ThrottleStop.sys, though its presence in unusual locations should be investigated.\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith:\n      - '\\msimg32.dll'\n      - '\\rwdrv.sys'\n      - '\\hlpdrv.sys'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects files associated with the Qilin ransomware EDR killer module."
+    },
+    {
+      "name": "Qilin BYOVD Vulnerable Driver Service Creation",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[windows-registry-key:key = 'HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\rwdrv']",
+      "x_netsecio_sigma_rule": "title: Qilin Ransomware Vulnerable Driver Service Creation\nid: 1a2b3c4d-5e6f-4789-b0c1-d2e3f4a5b6c7\nstatus: experimental\ndescription: Detects the creation of a new service registry key used by Qilin ransomware to load its vulnerable driver (rwdrv.sys) for kernel access.\nreferences:\n  - https://blog.talosintelligence.com/qilin-edr-killer-infection-chain/\nauthor: cyber.netsecops.io\ndate: 2026-04-21\ntags:\n  - attack.t1068\nfalsepositives:\n  - Unlikely, as 'rwdrv' is a specific name used by the malware.\nlevel: critical\nlogsource:\n  category: registry_event\n  product: windows\ndetection:\n  selection:\n    EventType: 'CreateKey'\n    TargetObject|endswith: '\\SYSTEM\\CurrentControlSet\\Services\\rwdrv'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the creation of the service registry key used to load the vulnerable driver in the Qilin ransomware attack."
+    },
+    {
+      "name": "Suspicious Loading of Vulnerable rwdrv/ThrottleStop Driver",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Loading of Vulnerable rwdrv/ThrottleStop Driver\nid: 2b3c4d5e-6f7a-4890-c1d2-e3f4a5b6c7d8\nstatus: experimental\ndescription: Detects the loading of the rwdrv.sys or ThrottleStop.sys driver, which is known to be vulnerable and is abused by Qilin ransomware in a BYOVD attack.\nreferences:\n  - https://blog.talosintelligence.com/qilin-edr-killer-infection-chain/\nauthor: cyber.netsecops.io\ndate: 2026-04-21\ntags:\n  - attack.t1068\nfalsepositives:\n  - Legitimate use of the ThrottleStop utility. Correlation with other suspicious activity is recommended.\nlevel: medium\nlogsource:\n  product: windows\n  category: driver_load\ndetection:\n  selection:\n    ImageLoaded|endswith:\n      - '\\rwdrv.sys'\n      - '\\ThrottleStop.sys'\n  condition: selection",
+      "description": "Detects the loading of the vulnerable driver used in the Qilin BYOVD attack."
+    },
+    {
+      "name": "EDR or Antivirus Service Stopped Unexpectedly",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: EDR or Antivirus Service Stopped Unexpectedly\nid: 3c4d5e6f-7a8b-4901-d2e3-f4a5b6c7d8e9\nstatus: experimental\ndescription: Detects when a common EDR or Antivirus service enters a stopped state. This can be an indicator of tampering by malware like the Qilin EDR killer.\nreferences:\n  - https://blog.talosintelligence.com/qilin-edr-killer-infection-chain/\nauthor: cyber.netsecops.io\ndate: 2026-04-21\ntags:\n  - attack.t1562.001\nfalsepositives:\n  - Legitimate administrative action, software updates, or system reboots. This rule is noisy and requires context.\nlevel: medium\nlogsource:\n  product: windows\n  service: system\ndetection:\n  selection:\n    EventID: 7036\n    param1|contains:\n      - 'Windows Defender'\n      - 'MsMp'\n      - 'Sense'\n      - 'Carbon Black'\n      - 'CrowdStrike'\n      - 'Sentinel'\n      - 'Cylance'\n      - 'Sophos'\n      - 'ESET'\n      - 'McAfee'\n      - 'Symantec'\n      - 'Trend Micro'\n    param2: 'stopped'\n  condition: selection",
+      "description": "Detects when a common EDR or Antivirus service enters a stopped state, which could indicate tampering."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Qilin Ransomware",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Qilin EDR Killer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "msimg32.dll loader",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "hlpdrv.sys",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "ThrottleStop.sys",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DLL Side-Loading",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Dynamic-link Library Injection",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Water Galura",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Qilin Ransomware",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Qilin EDR Killer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Qilin EDR Killer",
+      "source_type": "malware",
+      "relationship_type": "exploits",
+      "target_name": "ThrottleStop.sys Arbitrary Kernel Memory Read/Write",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Qilin EDR Killer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "ThrottleStop.sys",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "msimg32.dll loader",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "DLL Side-Loading",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "msimg32.dll loader",
+      "source_type": "malware",
+      "relationship_type": "drops",
+      "target_name": "Qilin EDR Killer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "ThrottleStop.sys",
+      "source_type": "tool",
+      "relationship_type": "has",
+      "target_name": "ThrottleStop.sys Arbitrary Kernel Memory Read/Write",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "hlpdrv.sys",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Qilin Ransomware Associated File Names",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Qilin Ransomware",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Qilin Ransomware Associated File Names",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "msimg32.dll",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Qilin Ransomware Associated File Names",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "rwdrv.sys",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Qilin Ransomware Associated File Names",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "hlpdrv.sys",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Qilin BYOVD Vulnerable Driver Service Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Qilin EDR Killer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Qilin BYOVD Vulnerable Driver Service Creation",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\rwdrv",
+      "target_type": "windows-registry-key"
+    },
+    {
+      "source_name": "Suspicious Loading of Vulnerable rwdrv/ThrottleStop Driver",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "EDR or Antivirus Service Stopped Unexpectedly",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+title: Creation of Potentially Malicious Python Startup Hook (.pth file)
+id: cb587ad7-e7cc-4456-82b1-fa9f5522524b
+status: experimental
+description: Detects the creation of a Python .pth file. The Hades Cluster campaign abuses these files for persistence by adding 'import' statements. Manual inspection of the created file is required to check for executable code.
+author: cyber.netsecops.io
+date: 2026-06-08
+references:
+  - https://www.reddit.com/r/cybersecurity/comments/1u06m8r/hades_cluster_pypi_worm_abuses_python_startup/
+tags:
+  - attack.t1547.018
+  - attack.persistence
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.pth'
+  condition: selection
+falsepositives:
+  - Legitimate creation of .pth files by Python packaging tools.
+---
+title: Anomalous Python Interpreter Network Connection
+id: 18c3fdd2-1103-44c7-b0b0-56d7d04af9c2
+status: experimental
+description: Detects network connections from the main python.exe process, which could indicate a malicious startup hook phoning home, as seen in the Hades Cluster campaign.
+author: cyber.netsecops.io
+date: 2026-06-08
+references:
+  - https://www.reddit.com/r/cybersecurity/comments/1u06m8r/hades_cluster_pypi_worm_abuses_python_startup/
+tags:
+  - attack.t1547.018
+  - attack.command_and_control
+level: low
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\python.exe'
+    Initiated: true
+  filter_known_parents:
+    ParentImage|endswith:
+      - '\pip.exe'
+      - '\pycharm64.exe'
+      - '\code.exe'
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: selection and not filter_known_parents
+falsepositives:
+  - Legitimate Python scripts that make network connections early in their execution.

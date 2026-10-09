@@ -1,0 +1,168 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-16T16:56:31.796Z",
+    "article_slug": "rogueplanet-zero-day-in-microsoft-defender-allows-full-system-control",
+    "article_date": "2026-06-16",
+    "token_usage": {
+      "input_tokens": 143787,
+      "output_tokens": 2091,
+      "cached_tokens": 137831,
+      "total_tokens": 145878,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.045584
+    }
+  },
+  "report_name": "Microsoft Defender Plagued by 'RoguePlanet' Zero-Day Privilege Escalation Vulnerability",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The 'RoguePlanet' vulnerability is a TOCTOU race condition that is exploited to escalate privileges to NT AUTHORITY\\SYSTEM. An attacker's script replaces a file with a symbolic link between Defender's time-of-check and time-of-use, causing the privileged Defender service to operate on a protected system file."
+    },
+    {
+      "name": "Process Injection",
+      "mitre_id": "T1055",
+      "description": "After successfully escalating privileges using the 'RoguePlanet' exploit, an attacker can leverage their SYSTEM-level access to perform arbitrary code execution, for example by injecting into other processes."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "cmd",
+      "mitre_id": "S0106",
+      "aliases": [],
+      "description": "The Windows Command Shell is used to execute the 'mklink' command to create a symbolic link as part of the TOCTOU race condition exploit.",
+      "tool_types": []
+    },
+    {
+      "name": "fsutil.exe",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The fsutil.exe utility can be used to create a reparse point (symbolic link) as part of the 'RoguePlanet' exploit chain.",
+      "tool_types": []
+    },
+    {
+      "name": "PowerShell",
+      "mitre_id": "S0194",
+      "aliases": [],
+      "description": "PowerShell can be used to create a symbolic link via the 'New-Item -ItemType SymbolicLink' command as part of the 'RoguePlanet' exploit.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "RoguePlanet",
+      "cve": "",
+      "description": "A time-of-check-to-time-of-use (TOCTOU) race condition vulnerability in Microsoft Defender's file handling logic that allows a local low-privileged user to escalate privileges to SYSTEM by swapping a scanned file with a symbolic link.",
+      "aliases": [],
+      "cvss_score": 0,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Microsoft",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Vendor of the affected products Microsoft Defender, Windows 10, and Windows 11."
+    },
+    {
+      "name": "Nightmare Eclipse",
+      "identity_class": "individual",
+      "sectors": [],
+      "description": "The security researcher who publicly disclosed the 'RoguePlanet' vulnerability."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "MsMpEng.exe"
+    },
+    {
+      "type": "file",
+      "name": "C:\\ProgramData\\Microsoft\\Windows Defender\\"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Symbolic Link Creation via Command Line",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Windows Symbolic Link Creation via Command Line\nid: 2b1a3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the creation of symbolic links using built-in Windows command-line utilities 'mklink' or 'fsutil', which can be used for privilege escalation exploits like 'RoguePlanet'.\nreferences:\n  - https://securityboulevard.com/2026/06/microsoft-defender-zero-day-privilege-escalation-vulnerability-rogueplanet/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1068\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_cmd:\n    Image|endswith: '\\cmd.exe'\n    CommandLine|contains: 'mklink'\n  selection_fsutil:\n    Image|endswith: '\\fsutil.exe'\n    CommandLine|contains|all:\n      - 'reparsepoint'\n      - 'set'\n  condition: 1 of them\nfalsepositives:\n  - Legitimate administrative or development activity.\n",
+      "description": "Detects the creation of symbolic links using 'mklink' or 'fsutil.exe', a technique used in the 'RoguePlanet' exploit."
+    },
+    {
+      "name": "Symbolic Link Creation via PowerShell",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Windows Symbolic Link Creation via PowerShell\nid: 8d7c6b5a-4f3e-4d2c-1b0a-9e8d7c6b5a4f\nstatus: experimental\ndescription: Detects the creation of symbolic links using PowerShell's New-Item cmdlet, which can be used for privilege escalation exploits like 'RoguePlanet'.\nreferences:\n  - https://securityboulevard.com/2026/06/microsoft-defender-zero-day-privilege-escalation-vulnerability-rogueplanet/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1068\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: \n      - '\\powershell.exe'\n      - '\\pwsh.exe'\n    CommandLine|contains|all:\n      - 'New-Item'\n      - '-ItemType'\n      - 'SymbolicLink'\n  condition: selection\nfalsepositives:\n  - Legitimate administrative or development activity.\n",
+      "description": "Detects the creation of symbolic links using PowerShell's 'New-Item' cmdlet, a technique mentioned in relation to the 'RoguePlanet' exploit."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Nightmare Eclipse",
+      "source_type": "identity",
+      "relationship_type": "discovered",
+      "target_name": "RoguePlanet",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Exploitation for Privilege Escalation",
+      "source_type": "attack-pattern",
+      "relationship_type": "uses",
+      "target_name": "cmd",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Exploitation for Privilege Escalation",
+      "source_type": "attack-pattern",
+      "relationship_type": "uses",
+      "target_name": "fsutil.exe",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Exploitation for Privilege Escalation",
+      "source_type": "attack-pattern",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Exploitation for Privilege Escalation",
+      "source_type": "attack-pattern",
+      "relationship_type": "uses",
+      "target_name": "Process Injection",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Symbolic Link Creation via Command Line",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Symbolic Link Creation via PowerShell",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

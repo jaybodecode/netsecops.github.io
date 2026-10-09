@@ -1,0 +1,315 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-19T21:46:04.333Z",
+    "article_slug": "dragonforce-ransomware-abuses-microsoft-teams-for-stealthy-c2-communication",
+    "article_date": "2026-06-19",
+    "token_usage": {
+      "input_tokens": 144482,
+      "output_tokens": 3950,
+      "cached_tokens": 137831,
+      "total_tokens": 148432,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.065043
+    }
+  },
+  "report_name": "DragonForce Ransomware Hides C2 Traffic in Microsoft Teams to Evade Detection for Months",
+  "threat_actors": [
+    {
+      "name": "DragonForce",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A ransomware group active since at least June 2023 that has evolved to use sophisticated techniques, such as abusing Microsoft Teams TURN servers for covert C2, to target organizations like a U.S. services firm.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "DLL Side-Loading",
+      "mitre_id": "T1574.002",
+      "description": "The attackers loaded their malicious code using a legitimate executable (DbgView64.exe) to evade defenses."
+    },
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The attackers exploited a then-undocumented vulnerability in a Huawei driver to escalate privileges to SYSTEM."
+    },
+    {
+      "name": "Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "The Backdoor.Turn malware used web protocols (TURN, QUIC) to establish and maintain its command and control channel, blending in with legitimate Microsoft Teams traffic."
+    },
+    {
+      "name": "External Proxy",
+      "mitre_id": "T1090.002",
+      "description": "The malware abused legitimate Microsoft Teams TURN servers as an external proxy to relay its initial C2 connection setup, hiding the true destination of the C2 server."
+    },
+    {
+      "name": "Windows Command Shell",
+      "mitre_id": "T1059.003",
+      "description": "The Backdoor.Turn malware provided remote command execution capabilities, likely through the Windows Command Shell."
+    },
+    {
+      "name": "OS Credential Dumping",
+      "mitre_id": "T1003",
+      "description": "The Backdoor.Turn malware had the capability to perform credential theft from the compromised system."
+    },
+    {
+      "name": "Network Service Discovery",
+      "mitre_id": "T1046",
+      "description": "The Backdoor.Turn malware included network scanning capabilities to discover other services on the network."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Backdoor.Turn",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": false,
+      "aliases": [],
+      "description": "A custom Go-based backdoor that abuses Microsoft Teams' TURN relay servers to disguise its command-and-control communications, making malicious traffic appear as legitimate Teams activity.",
+      "capabilities": [
+        "communicates-with-c2",
+        "controls-local-machine"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "DbgView64.exe",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A legitimate Sysinternals tool abused by DragonForce for DLL Side-Loading to load their malicious code.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "Unpatched SQL Server Vulnerability",
+      "cve": "",
+      "description": "An unknown vulnerability in an SQL or MSSQL server was the likely initial access vector for the DragonForce attack.",
+      "affected_products": [
+        "SQL server",
+        "MSSQL server"
+      ]
+    },
+    {
+      "name": "Huawei Driver Vulnerability",
+      "cve": "",
+      "description": "A then-undocumented vulnerability in a Huawei driver was exploited by the attackers to escalate privileges to SYSTEM.",
+      "affected_products": [
+        "Huawei driver"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "U.S. services firm",
+      "identity_class": "organization",
+      "sectors": [
+        "commercial"
+      ],
+      "description": "A U.S.-based services firm targeted by the DragonForce ransomware group in an attack starting December 2025."
+    }
+  ],
+  "locations": [
+    {
+      "name": "United States",
+      "country": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Microsoft Teams TURN Relay Servers",
+      "infrastructure_types": [
+        "command-and-control",
+        "proxy"
+      ],
+      "description": "Legitimate Microsoft Teams TURN servers abused by the Backdoor.Turn malware to relay and disguise C2 communications, making them appear as normal Teams traffic."
+    },
+    {
+      "name": "DragonForce C2 Server",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "The true C2 server that communicates with the Backdoor.Turn implant via a direct, encrypted QUIC session after the initial connection is brokered by a Microsoft TURN server."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "DbgView64.exe"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Abused DbgView64.exe Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'DbgView64.exe']",
+      "x_netsecio_sigma_rule": "title: Abused DbgView64.exe Execution\nid: 9b1f3c4d-5e6a-4b78-9c0d-1e2f3a4b5c6d\nstatus: experimental\ndescription: Detects the execution of DbgView64.exe, a legitimate Sysinternals tool that was abused by DragonForce for DLL side-loading.\nreferences:\n  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1574.002\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\DbgView64.exe'\n  filter_legit_path:\n    Image|startswith:\n      - 'C:\\Program Files\\'\n      - 'C:\\Windows\\System32\\'\n      - 'C:\\Program Files (x86)\\'\n  condition: selection and not filter_legit_path",
+      "pattern": "",
+      "description": "Detects the execution of DbgView64.exe, which was used by DragonForce to perform DLL side-loading. The rule attempts to reduce false positives by filtering for executions outside of standard paths."
+    },
+    {
+      "name": "Anomalous Outbound TURN Traffic",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Outbound TURN Traffic\nid: 8a0e9b1c-2d3f-4e5a-6b78-9c0d1e2f3a4b\nstatus: experimental\ndescription: Monitors for unexpected or high-volume outbound traffic on UDP port 3478 (STUN/TURN) from servers or endpoints that do not typically use real-time communication applications. This may indicate abuse of TURN servers for C2, as seen with DragonForce's Backdoor.Turn.\nreferences:\n  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1071.001\n  - attack.t1090.002\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    DestinationPort: 3478\n    Protocol: 'udp'\n    Initiated: true\n  filter_teams:\n    Image|endswith:\n      - '\\Teams.exe'\n      - '\\ms-teams.exe'\n  condition: selection and not filter_teams",
+      "description": "Detects outbound UDP traffic to port 3478, characteristic of the TURN protocol abused by Backdoor.Turn. The rule filters out legitimate Teams processes to reduce noise."
+    },
+    {
+      "name": "Anomalous QUIC Session to Non-Microsoft IP",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous QUIC Session to Non-Microsoft IP\nid: 7f8d9e0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a\nstatus: experimental\ndescription: Detects direct QUIC (UDP/443) sessions to non-Microsoft IP addresses, which could indicate a relayed C2 channel like the one used by Backdoor.Turn after an initial TURN handshake.\nreferences:\n  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1071.001\n  - attack.command_and_control\nlevel: low\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    DestinationPort: 443\n    Protocol: 'udp'\n    Initiated: true\n  filter_microsoft:\n    # This rule requires enrichment with known Microsoft IP ranges to be effective.\n    DestinationIp|cidr:\n      - '13.64.0.0/11'\n      - '20.32.0.0/12'\n      - '20.64.0.0/10'\n      - '40.72.0.0/13'\n      - '40.96.0.0/12'\n      - '51.103.0.0/16'\n      - '52.96.0.0/11'\n      - '52.132.0.0/14'\n      - '52.224.0.0/11'\n  condition: selection and not filter_microsoft",
+      "description": "A hunting rule to detect outbound QUIC traffic to non-Microsoft IP addresses, which could be a sign of the direct C2 channel established by Backdoor.Turn after the initial TURN relay."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Backdoor.Turn",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DbgView64.exe",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "U.S. services firm",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "United States",
+      "target_type": "location"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DLL Side-Loading",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "Unpatched SQL Server Vulnerability",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "DragonForce",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "Huawei Driver Vulnerability",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "External Proxy",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Windows Command Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "OS Credential Dumping",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Network Service Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Microsoft Teams TURN Relay Servers",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Backdoor.Turn",
+      "source_type": "malware",
+      "relationship_type": "communicates-with",
+      "target_name": "DragonForce C2 Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Abused DbgView64.exe Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "DLL Side-Loading",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Abused DbgView64.exe Execution",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "DbgView64.exe",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Anomalous Outbound TURN Traffic",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Backdoor.Turn",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Anomalous QUIC Session to Non-Microsoft IP",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Backdoor.Turn",
+      "target_type": "malware"
+    }
+  ]
+}

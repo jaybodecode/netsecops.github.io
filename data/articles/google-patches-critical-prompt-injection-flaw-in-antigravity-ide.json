@@ -1,0 +1,165 @@
+{
+  "id": "50f3ad84-b406-4cb4-95f0-767682c79a9b",
+  "slug": "google-patches-critical-prompt-injection-flaw-in-antigravity-ide",
+  "headline": "Google Patches Critical Prompt Injection Flaw in Antigravity IDE",
+  "title": "Google Patches Code Execution Flaw in Antigravity IDE Enabled by Prompt Injection",
+  "summary": "Google has patched a critical vulnerability in its Antigravity IDE, an AI-powered development environment. The flaw allowed a prompt injection attack to achieve arbitrary code execution, bypassing the IDE's security sandbox. Researchers found that by injecting a specific flag into a file search tool, an attacker could trick the IDE into executing a malicious binary, highlighting the emerging security challenges in securing agentic AI systems.",
+  "full_report": "## Executive Summary\n\n**[Google](https://www.google.com)** has patched a significant vulnerability in its agentic Integrated Development Environment (IDE), **Antigravity**. The flaw, discovered by researcher Dan Lisichkin of Pillar Security, allowed for arbitrary code execution via a sophisticated prompt injection attack. By crafting a malicious prompt, an attacker could bypass the IDE's \"Strict Mode\" sandbox and execute arbitrary code on the underlying system. The vulnerability stemmed from insufficient input sanitization in a native file-searching tool, which could be abused to execute a staged malicious file. This incident underscores the complex security risks associated with AI-powered development tools and the novel attack vectors they introduce.\n\n## Vulnerability Details\n\nThe vulnerability was a chain of two weaknesses within the **Antigravity IDE**:\n\n1.  **Permitted File Creation**: The IDE allows AI agents to create files within the workspace.\n2.  **Input Sanitization Failure**: The native file-searching tool, `find_by_name`, did not properly sanitize its input parameters before passing them to the underlying `fd` command-line utility.\n\nThe attack chain works as follows:\n\n1.  An attacker convinces a user to input a malicious prompt.\n2.  The AI agent, as part of its operation, creates a file containing a malicious script (e.g., `malicious_script.sh`).\n3.  The malicious prompt then instructs the agent to search for a file using the `find_by_name` tool, but injects the `-X` (or `--exec-batch`) flag into the search pattern.\n4.  The `fd` tool is called with this injected flag, which forces it to execute the `malicious_script.sh` file against the search results.\n\nThis entire sequence bypasses the IDE's \"Strict Mode,\" which is designed to prevent network access and out-of-workspace file writes.\n\n## Affected Systems\n\nThe vulnerability affected versions of **Google's Antigravity IDE** prior to the patch. This tool is used by developers for AI-assisted coding, making it a potentially high-value target.\n\n## Exploitation Status\n\nThe vulnerability was discovered by a security researcher and responsibly disclosed to **Google**, who then patched it. There is no indication that it was exploited in the wild.\n\n## Impact Assessment\n\nA successful exploit would grant an attacker arbitrary code execution within the context of the IDE's environment. This could lead to:\n\n*   **Theft of Intellectual Property**: The attacker could exfiltrate source code, API keys, and other sensitive data from the developer's workspace.\n*   **Supply Chain Attack**: The attacker could use their access to inject malicious code into the software being developed, leading to a downstream supply chain attack.\n*   **Pivoting to other Systems**: Depending on the environment, the attacker might be able to pivot from the compromised IDE to other systems on the developer's machine or network.\n\n> This vulnerability is a prime example of how prompt injection is evolving from a novelty to a serious security threat, capable of bridging the gap between the AI model and the underlying system to achieve code execution.\n\n## Cyber Observables — Hunting Hints\n\nDetecting this specific attack would be difficult without direct access to the prompts, but similar attacks could be hunted by looking for:\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| Command-Line Pattern | `fd ... -X ...` or `fd ... --exec-batch ...` | Monitoring command-line logs for the use of the `exec-batch` flag in the `fd` tool, especially when combined with unusual patterns. |\n| Process Activity | An IDE or code editor process spawning unexpected child processes. | For example, `antigravity_ide` spawning `sh` or `bash` to execute a script. |\n| File Monitoring | Creation of executable script files (`.sh`, `.py`) followed by a file search operation. | This sequence of events could indicate a staged attack. |\n\n## Detection Methods\n\n*   **Input Sanitization and Validation**: The primary defense is on the application side. All user-supplied input, including prompts that are passed to underlying tools, must be strictly sanitized to prevent command injection.\n*   **Behavioral Monitoring**: EDR tools on developer workstations should monitor for IDE processes spawning unexpected shells or executing files. D3FEND's [`D3-PA - Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) can help model normal behavior and detect deviations.\n*   **Least Privilege for AI Agents**: The AI agents themselves should run in a highly constrained environment with the absolute minimum privileges necessary, a concept aligned with [`M1048 - Application Isolation and Sandboxing`](https://attack.mitre.org/mitigations/M1048/).\n\n## Remediation Steps\n\n1.  **Update Immediately**: Developers using **Antigravity IDE** should ensure they have updated to the latest version that includes the patch for this vulnerability.\n2.  **Audit Prompts**: Be cautious of prompts from untrusted sources. Treat prompts with the same suspicion as you would any other user-supplied input.\n3.  **Secure AI Development Practices**: This incident should serve as a lesson for all organizations building or using agentic AI systems. Robust input sanitization, strict sandboxing, and least-privilege execution are not optional; they are essential security requirements.",
+  "twitter_post": "Google patches critical RCE flaw in Antigravity IDE. 🤖 A prompt injection attack could bypass the sandbox to execute code, showing the growing risks in AI-powered tools. #AIsecurity #PromptInjection #Vulnerability #Google",
+  "meta_description": "Google has patched a critical prompt injection vulnerability in its Antigravity IDE that could allow an attacker to bypass the sandbox and achieve arbitrary code execution.",
+  "category": [
+    "Vulnerability",
+    "Cloud Security",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Google",
+      "type": "vendor",
+      "url": "https://www.google.com"
+    },
+    {
+      "name": "Antigravity IDE",
+      "type": "product"
+    },
+    {
+      "name": "Pillar Security",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/04/google-patches-antigravity-ide-flaw.html",
+      "title": "Google Patches Antigravity IDE Flaw Enabling Prompt Injection Code Execution",
+      "date": "2026-04-21",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.securityweek.com/google-antigravity-ide-vulnerability-allows-code-execution/",
+      "title": "Google Antigravity IDE Vulnerability Exposes Users to Code Execution Attacks",
+      "date": "2026-04-21",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1611",
+      "name": "Escape to Host",
+      "tactic": "Privilege Escalation"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Ensure that AI agents and the tools they call run in a strictly sandboxed environment with no access to the underlying host system.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Apply the patch from Google to fix the input sanitization flaw.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Developers of AI tools must implement robust input sanitization for any user-provided content that is passed to system commands.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-IS",
+      "technique_name": "Input Sanitization",
+      "url": "https://d3fend.mitre.org/technique/d3f:InputSanitization",
+      "recommendation": "The root cause of the Antigravity IDE vulnerability was the failure to sanitize user-controlled input (the prompt) before passing it to a backend command-line tool (`fd`). To prevent this entire class of vulnerability, developers of AI agentic systems must treat all output from the Large Language Model (LLM) as untrusted user input. Before the IDE's code passes the 'Pattern' parameter to the `fd` tool, it must be strictly sanitized. This involves stripping any characters that have special meaning to the shell, such as flags (`-X`), pipes (`|`), and command separators (`;`). By implementing a robust sanitization layer between the AI's output and any system call, Google could have prevented the malicious `-X` flag from ever reaching the `fd` process, thus breaking the exploit chain at its source.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-SCF",
+      "technique_name": "System Call Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering",
+      "recommendation": "For a strong defense-in-depth posture, the environment where the Antigravity IDE and its AI agents operate should be heavily sandboxed using system call filtering. Technologies like seccomp-bpf on Linux can be used to create a policy that defines exactly which system calls a process is allowed to make. For the Antigravity IDE, a policy could be created that explicitly denies the `execve` system call (used to execute programs) for any process spawned by the AI agent, except for a very narrow list of approved tools. This would mean even if an attacker successfully injects a command via a prompt, the underlying operating system would block the attempt to execute a malicious binary like `malicious_script.sh`, providing a fail-safe that prevents sandbox escape and code execution.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "-X",
+      "description": "The '-X' or '--exec-batch' flag used with the 'fd' find utility, which instructs it to execute a command on the files it finds. This is the core of the exploit.",
+      "context": "Process execution logs (Sysmon, EDR) on developer workstations or build servers.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "fd",
+      "description": "The 'fd' command-line utility. Its execution with suspicious arguments or by an IDE process could indicate an attack.",
+      "context": "Process execution logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Suspicious prompt content",
+      "description": "Prompts containing shell command syntax, escape characters, or flags like '-X' should be considered highly suspicious.",
+      "context": "Application-level logging of AI prompts (if available)",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "AI Security",
+    "Prompt Injection",
+    "Google",
+    "Vulnerability",
+    "RCE",
+    "Sandbox Escape"
+  ],
+  "extract_datetime": "2026-04-22T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers using AI tools"
+    ]
+  },
+  "pub_date": "2026-04-22",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-04-22T15:00:00.000Z",
+  "updatedAt": "2026-04-22T15:00:00.000Z"
+}

@@ -1,0 +1,73 @@
+title: Anomalous Outbound Connection to OpenAI API
+id: 44e532df-1191-4c23-8799-93096f7587cb
+status: experimental
+description: Detects outbound network connections to the OpenAI API from hosts or processes not expected to use the service. This could indicate a compromised system being used for a 'denial of wallet' attack.
+references:
+  - https://www.scworld.com/brief/new-windows-botnet-offers-ai-credit-draining-and-other-attack-methods
+author: cyber.netsecops.io
+date: 2026-09-25
+tags:
+  - attack.t1071.001
+  - aml.t0034
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationHostname: 'api.openai.com'
+    Initiated: true
+  filter_legit_procs:
+    Image|endswith:
+      - '\python.exe'
+      - '\node.exe'
+      # Add other legitimate developer tools or server processes here
+  condition: selection and not filter_legit_procs
+---
+title: Potential API Key Hunting Behavior
+id: 40c88db8-3e7a-4ed5-91a2-f78d44e1de6c
+status: experimental
+description: Detects processes accessing common configuration files that may contain hardcoded API keys.
+references:
+  - https://www.scworld.com/brief/new-windows-botnet-offers-ai-credit-draining-and-other-attack-methods
+author: cyber.netsecops.io
+date: 2026-09-25
+tags:
+  - attack.t1552.001
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.env'
+      - 'config.json'
+      - 'settings.py'
+  filter_legit_procs:
+    Image|endswith:
+      - '\devenv.exe'
+      - '\Code.exe'
+      - '\pycharm64.exe'
+      - '\powershell.exe'
+      - '\cmd.exe'
+  condition: selection and not filter_legit_procs
+---
+title: x47.c Botnet Process Execution
+id: 2a9b3c4d-e5f6-4a90-8bcd-ef1234567890
+status: experimental
+description: Detects the execution of the x47.c botnet process as identified in threat reporting.
+references:
+  - https://www.scworld.com/brief/new-windows-botnet-offers-ai-credit-draining-and-other-attack-methods
+author: cyber.netsecops.io
+date: 2026-09-25
+tags:
+  - attack.t1059
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\x47c.exe'
+  condition: selection

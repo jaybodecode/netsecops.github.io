@@ -1,0 +1,118 @@
+title: AWS CloudTrail Logging Disabled or Tampered
+id: 2b8a1c3d-f4e5-4b9a-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects attempts to disable or tamper with AWS CloudTrail logging by stopping a trail, deleting a trail, or modifying its configuration. This is a strong indicator of defense evasion.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/
+author: cyber.netsecops.io
+date: 2026-06-10
+tags:
+  - attack.t1562.008
+  - attack.t1562.001
+  - attack.defense_evasion
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName:
+      - StopLogging
+      - DeleteTrail
+      - UpdateTrail
+  condition: selection
+---
+title: GCP Cloud Logging Sink Tampered
+id: feba8a00-9f1c-430b-9b5f-09a653c54337
+status: experimental
+description: Detects attempts to tamper with Google Cloud Logging by deleting or updating a log sink. This is a strong indicator of defense evasion.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/
+author: cyber.netsecops.io
+date: 2026-06-10
+tags:
+  - attack.t1562.001
+  - attack.defense_evasion
+level: high
+logsource:
+  product: gcp
+  service: audit
+detection:
+  selection:
+    protoPayload.methodName:
+      - google.logging.v2.ConfigServiceV2.DeleteSink
+      - google.logging.v2.ConfigServiceV2.UpdateSink
+  condition: selection
+---
+title: AWS S3 Log Storage Bucket Deleted
+id: 7c6b5a49-3d2b-4a19-8f0e-9d8c7b6a5948
+status: experimental
+description: Detects the deletion of an S3 bucket. If this bucket is known to store security logs (e.g., CloudTrail), this is a high-fidelity indicator of defense evasion.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/
+author: cyber.netsecops.io
+date: 2026-06-10
+falsepositives:
+  - Deletion of non-log-related S3 buckets.
+notes: This rule should be scoped to specific, known log buckets in a production environment to reduce noise.
+tags:
+  - attack.t1070.004
+  - attack.defense_evasion
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName: DeleteBucket
+  condition: selection
+---
+title: AWS KMS Key for Log Encryption Scheduled for Deletion
+id: 3fb8667c-9c94-4da3-9984-17a315f05597
+status: experimental
+description: Detects attempts to schedule the deletion of a KMS key. If the key is used for encrypting logs, this can render them unreadable, achieving defense evasion.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/
+author: cyber.netsecops.io
+date: 2026-06-10
+tags:
+  - attack.t1565
+  - attack.defense_evasion
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: kms.amazonaws.com
+    eventName: ScheduleKeyDeletion
+  condition: selection
+---
+title: Cloud Logging Tampering via CLI
+id: 1d0c9b8a-7e6d-4c5b-a493-8d7c6b5a4938
+status: experimental
+description: Detects command-line execution of tools used to tamper with cloud logging configurations in AWS and GCP.
+references:
+  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/
+author: cyber.netsecops.io
+date: 2026-06-10
+tags:
+  - attack.t1562.008
+  - attack.t1562.001
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_aws:
+    Image|endswith:
+      - '/aws'
+    CommandLine|contains:
+      - 'cloudtrail stop-logging'
+      - 'cloudtrail delete-trail'
+  selection_gcp:
+    Image|endswith:
+      - '/gcloud'
+    CommandLine|contains: 'logging sinks delete'
+  condition: 1 of them

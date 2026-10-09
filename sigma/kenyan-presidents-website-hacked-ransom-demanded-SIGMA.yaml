@@ -1,0 +1,82 @@
+title: Suspicious Script File Creation in Web Root
+id: ca7d041f-2970-44d3-bec5-f11c2ee7bdd9
+status: experimental
+description: Detects the creation of suspicious script files (php, jsp, aspx) in common web server root directories. This can indicate the placement of a web shell.
+author: cyber.netsecops.io
+date: 2026-07-18
+references:
+  - https://thekenyatimes.com/breaking-news/government-issues-statement-after-state-house-website-was-hacked/
+tags:
+  - attack.t1505.003
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_ext:
+    TargetFilename|endswith:
+      - '.php'
+      - '.jsp'
+      - '.aspx'
+  selection_path:
+    TargetFilename|contains:
+      - '\wwwroot\'
+      - '\inetpub\'
+      - '/var/www/'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate deployment of new web application files.
+---
+title: Web Server Process Spawning Reconnaissance Tools
+id: 7d8a3280-b761-4a27-9ae1-2f2e769e16c0
+status: experimental
+description: Detects a web server process spawning common reconnaissance command-line tools. This is highly indicative of post-exploitation activity via a web shell.
+author: cyber.netsecops.io
+date: 2026-07-18
+references:
+  - https://thekenyatimes.com/breaking-news/government-issues-statement-after-state-house-website-was-hacked/
+tags:
+  - attack.t1082
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_child:
+    Image|endswith:
+      - '\whoami.exe'
+      - '\ipconfig.exe'
+      - '\systeminfo.exe'
+      - '\net.exe'
+      - '\netstat.exe'
+  selection_parent:
+    ParentImage|endswith:
+      - '\w3wp.exe' # IIS
+      - '\httpd.exe' # Apache
+      - '\nginx.exe' # Nginx
+      - '\php-cgi.exe' # PHP
+  condition: all of selection_*
+falsepositives:
+  - Unusual administrative scripts.
+---
+title: Potential Web Shell 'shell.php' Creation
+id: 2b5c1f8a-3e4d-4b1a-8c7d-9e0f1a2b3c4d
+status: experimental
+description: Detects the creation of a file named 'shell.php', which is a common name for a web shell, in a web server directory.
+author: cyber.netsecops.io
+date: 2026-07-18
+references:
+  - https://thekenyatimes.com/breaking-news/government-issues-statement-after-state-house-website-was-hacked/
+tags:
+  - attack.t1505.003
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains:
+      - '\wwwroot\'
+      - '\inetpub\'
+    TargetFilename|endswith: '\shell.php'
+  condition: selection

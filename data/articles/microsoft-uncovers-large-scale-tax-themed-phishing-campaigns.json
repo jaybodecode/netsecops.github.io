@@ -1,0 +1,211 @@
+{
+  "id": "5cd10113-294f-4627-bf54-5220c9404b7b",
+  "slug": "microsoft-uncovers-large-scale-tax-themed-phishing-campaigns",
+  "headline": "Tax Season Phishing Frenzy: Microsoft Details Campaigns Abusing ScreenConnect and QR Codes",
+  "title": "Microsoft Threat Intelligence Exposes Multiple Large-Scale Phishing Campaigns Leveraging Tax Season Lures",
+  "summary": "Microsoft has uncovered several large-scale, sophisticated phishing campaigns exploiting the U.S. tax season. In a report on February 10, 2026, the company detailed one massive campaign targeting over 29,000 users that aimed to install the legitimate remote access tool ScreenConnect for malicious use. This campaign broadly targeted organizations in financial services, technology, and retail. Another concurrent campaign used QR codes embedded in Word documents with 'W-2' themes to redirect victims to a credential harvesting site running the 'SneakyLog' phishing kit. A third attack wave leveraged lures impersonating CPAs to deliver the 'Energy365' Phishing-as-a-Service (PhaaS) kit. These multi-faceted campaigns demonstrate attackers' increasing sophistication in social engineering and their abuse of legitimate tools to bypass security.",
+  "full_report": "## Executive Summary\nOn February 10, 2026, **[Microsoft](https://www.microsoft.com/security)** Threat Intelligence reported on a significant uptick in phishing activity themed around the U.S. tax season. Researchers identified multiple, distinct campaigns employing diverse tactics to compromise organizations. A primary campaign targeted over 29,000 users, attempting to trick them into installing the legitimate **ScreenConnect** remote access tool, which would then be abused by attackers for persistence and control. Other campaigns utilized QR code phishing ('quishing') in fake W-2 documents to steal credentials via the **SneakyLog** phishing kit, and highly customized lures to deploy the **Energy365** Phishing-as-a-Service (PhaaS) platform. These attacks are not targeted at a single industry but are widespread, affecting financial services, technology, retail, manufacturing, and healthcare, signaling a broad threat to U.S. organizations.\n\n---\n\n## Threat Overview\nMicrosoft has identified at least three major, concurrent phishing campaigns:\n\n1.  **ScreenConnect Abuse Campaign:**\n    - **Scale:** 29,000+ users across 10,000 organizations.\n    - **Targeting:** Broad, with a focus on U.S. companies in financial services (19%), technology (18%), and retail (15%).\n    - **Tactic:** Emails with IRS-themed lures trick users into initiating a download and installation of the legitimate ScreenConnect remote access tool. Attackers then use this tool for post-compromise activities.\n\n2.  **QR Code / 'SneakyLog' Campaign:**\n    - **Scale:** ~100 organizations targeted.\n    - **Targeting:** Manufacturing, retail, and healthcare sectors.\n    - **Tactic:** Phishing emails with subjects like \"2025 Employee Tax Docs\" contain a Word attachment (`2025_Employee_W-2.docx`). The document contains a QR code that, when scanned, directs the user to a credential harvesting page powered by the 'SneakyLog' phishing kit.\n\n3.  **'Energy365' PhaaS Campaign:**\n    - **Tactic:** Highly personalized emails impersonating Certified Public Accountants (CPAs) to build trust. These emails contain links that lead to credential harvesting pages hosted by the 'Energy365' PhaaS infrastructure.\n\n---\n\n## Technical Analysis\nThese campaigns demonstrate a blend of social engineering and technical abuse:\n\n- **Abuse of Legitimate Software ([`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/)):** The ScreenConnect campaign is a prime example of attackers 'living off the land'. By tricking users into installing a legitimate, signed application, they bypass application allowlisting and antivirus signatures. The tool provides them with robust, stealthy remote access for further attacks.\n\n- **QR Code Phishing ('Quishing') ([`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/)):** The SneakyLog campaign uses a multi-stage attack. The email and attachment may pass initial scans, as the malicious link is obfuscated within a QR code. This requires the user to use a separate device (a phone) to scan the code, bypassing endpoint and browser security controls on the corporate workstation. The use of a Word document as a container is classic.\n\n- **Phishing-as-a-Service (PhaaS) ([`T1598.003 - Spearphishing via Service`](https://attack.mitre.org/techniques/T1598/003/)):** The Energy365 campaign highlights the industrialization of cybercrime. PhaaS platforms provide less sophisticated actors with the tools and infrastructure to launch effective credential theft attacks, complete with customized lures and evasion techniques.\n\n### MITRE ATT&CK Mapping\n- [`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/): Used in the SneakyLog campaign with a malicious Word document.\n- [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/): The core of all three campaigns, delivering malicious links or installers.\n- [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/): The abuse of ScreenConnect for command and control.\n- [`T1598.003 - Spearphishing via Service`](https://attack.mitre.org/techniques/T1598/003/): The use of the Energy365 PhaaS platform.\n- [`T1204.001 - Malicious Link`](https://attack.mitre.org/techniques/T1204/001/): User is tricked into clicking a link that initiates the attack chain.\n\n---\n\n## Impact Assessment\nThe primary impact of these campaigns is credential theft and the establishment of initial access for more severe attacks. Compromised credentials can be used to access sensitive corporate data, cloud services (Office 365, G-Suite), and financial systems. The installation of ScreenConnect provides a persistent foothold that can be leveraged for data exfiltration, lateral movement, and the eventual deployment of ransomware. The broad targeting across multiple industries means that nearly any U.S. organization is a potential victim.\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context |\n|---|---|---|---|\n| process_name | `ScreenConnect.ClientService.exe` | Presence of the ScreenConnect client service, especially if it is not a sanctioned remote support tool in your organization. | EDR process monitoring, Software inventory |\n| network_traffic_pattern | Outbound connections to `*.screenconnect.com` or `*.connectwise.com` | Unexpected network traffic to ScreenConnect domains from user workstations. | DNS logs, Proxy logs, Firewall logs |\n| file_name | `2025_Employee_W-2.docx` | Look for email attachments with this name or similar patterns related to tax documents. | Email gateway and attachment scanning logs |\n| url_pattern | URLs containing 'SneakyLog' or known 'Energy365' patterns | Use threat intelligence to block known phishing kit URLs. | Web proxy and DNS filtering logs |\n\n## Detection & Response\n- **Monitor for Unauthorized Remote Access Tools:** Actively hunt for installations of ScreenConnect and other remote access software that are not part of your standard toolset. Create alerts for new installations.\n- **Email Security Gateway Rules:** Configure email filters to block or quarantine emails with suspicious tax-themed subjects, especially those containing attachments or QR codes. Use optical character recognition (OCR) on attachments to detect QR codes.\n- **User Education:** Alert employees to be highly suspicious of any unsolicited emails regarding tax documents, especially those that create a sense of urgency or ask them to scan a QR code.\n- **D3FEND Techniques:** Employ [`D3-UA: URL Analysis`](https://d3fend.mitre.org/technique/d3f:URLAnalysis) at the email gateway and web proxy to block known phishing domains. Use [`D3-EDL: Executable Denylisting`](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting) to prevent the installation of unauthorized software like ScreenConnect.\n\n## Mitigation\n1.  **Multi-Factor Authentication (MFA):** Enforce MFA on all external-facing services, especially email and VPN. This is the single most effective control against credential theft.\n2.  **User Training:** Conduct timely security awareness training focused on current threats. Specifically educate users on the dangers of QR code phishing and the tactic of impersonating trusted entities like the IRS and CPAs.\n3.  **Application Control:** Implement application control policies to prevent users from installing unauthorized software. An allowlisting approach is most effective.\n4.  **Email Filtering:** Enhance email security controls to better detect and block phishing attempts. This includes attachment sandboxing, link protection (URL rewriting), and impersonation detection.",
+  "twitter_post": "💸 TAX SEASON SCAMS: Microsoft uncovers massive phishing campaigns targeting 29k+ users. Attackers use IRS lures to install ScreenConnect, and QR codes in W-2 docs to steal credentials. Stay vigilant! 🛡️ #Phishing #CyberSecurity #InfoSec",
+  "meta_description": "Microsoft details multiple large-scale phishing campaigns exploiting the U.S. tax season, using lures to install ScreenConnect, and QR codes to steal credentials with phishing kits like SneakyLog.",
+  "category": [
+    "Phishing",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "ScreenConnect",
+      "type": "product"
+    },
+    {
+      "name": "SneakyLog",
+      "type": "malware"
+    },
+    {
+      "name": "Energy365",
+      "type": "malware"
+    },
+    {
+      "name": "IRS",
+      "type": "government_agency",
+      "url": "https://www.irs.gov/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/02/10/tax-season-phishing-campaigns-screenconnect/",
+      "title": "Tax Season Becomes Cyberattack Season: Phishing Campaigns Use IRS and W2 Lures",
+      "date": "2026-02-10",
+      "friendly_name": "Microsoft Security Blog"
+    },
+    {
+      "url": "https://threatpost.com/microsoft-tax-phishing-screenconnect/178345/",
+      "title": "Microsoft: Massive Tax Phishing Wave Tries to Install ScreenConnect",
+      "date": "2026-02-11",
+      "friendly_name": "Threatpost"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02-10",
+      "summary": "Microsoft Threat Intelligence reports on multiple large-scale tax-themed phishing campaigns."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1204.001",
+      "name": "Malicious Link",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1598.003",
+      "name": "Spearphishing via Service",
+      "tactic": "Resource Development"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report phishing attempts, especially those related to timely events like tax season and those using novel techniques like QR codes.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce MFA on all accounts to mitigate the impact of credential theft from phishing attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application control to prevent the installation and execution of unauthorized remote access software like ScreenConnect.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UA",
+          "name": "URL Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:URLAnalysis"
+        }
+      ],
+      "description": "Utilize web filters and email link protection to block access to known phishing domains and credential harvesting sites.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The primary goal of the SneakyLog and Energy365 campaigns is credential harvesting. The single most effective defense against the abuse of stolen credentials is the universal enforcement of Multi-Factor Authentication (MFA). Organizations must prioritize deploying strong MFA (e.g., FIDO2/WebAuthn, push notifications) across all internet-facing services, including email (Microsoft 365, Google Workspace), VPNs, and critical business applications. This ensures that even if a user is tricked by a sophisticated phishing lure and gives up their password, the attacker cannot gain access without the second factor. For high-risk users like finance and HR personnel, who are prime targets for tax-season scams, phishing-resistant MFA should be the standard. Implementing MFA directly neutralizes the primary threat of these credential theft campaigns.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "To combat the abuse of legitimate tools like ScreenConnect, organizations should implement application control through executable denylisting or, preferably, allowlisting. Security teams must first inventory all sanctioned remote access tools. Any other tool, including ScreenConnect if it is not approved, should be added to a denylist using AppLocker or a similar EDR feature. This blocks its execution even if a user is tricked into downloading it. For a more secure posture, an allowlist should be created, defining the specific set of applications permitted to run on workstations. This proactively prevents any unauthorized software, malicious or otherwise, from being installed. This control directly counters the T1219 technique used in the ScreenConnect campaign, breaking the attack chain after the initial social engineering phase.",
+      "mitre_mitigation_id": "M1033"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "ScreenConnect.ClientService.exe",
+      "description": "The presence of the ScreenConnect client process or service on a workstation, if not an officially supported tool, is a strong indicator of compromise from this campaign.",
+      "context": "EDR process monitoring and software inventory lists.",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "screenconnect.com",
+      "description": "Anomalous or widespread DNS queries and outbound connections to the ScreenConnect domain from non-IT workstations.",
+      "context": "DNS query logs, firewall logs, and web proxy data.",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "*W-2.docx",
+      "description": "Email attachments matching this pattern, especially when received unsolicited, are highly suspect and related to the SneakyLog QR code campaign.",
+      "context": "Email gateway attachment logs and endpoint file creation events.",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "QR Code in document",
+      "description": "The presence of a QR code inside an office document delivered via email is a modern phishing technique ('quishing') used to bypass URL scanners.",
+      "context": "Advanced email security solutions with image analysis capabilities or manual review of suspicious attachments.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Phishing",
+    "Tax Season",
+    "ScreenConnect",
+    "QR Code",
+    "Quishing",
+    "Credential Theft",
+    "Microsoft"
+  ],
+  "extract_datetime": "2026-02-11T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Finance",
+      "Technology",
+      "Retail",
+      "Manufacturing",
+      "Healthcare"
+    ],
+    "people_affected_estimate": "29,000+ users targeted in one campaign"
+  },
+  "pub_date": "2026-02-11",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-02-11T15:00:00.000Z",
+  "updatedAt": "2026-02-11T15:00:00.000Z"
+}

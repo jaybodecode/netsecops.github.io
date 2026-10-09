@@ -1,0 +1,210 @@
+{
+  "id": "e115acc6-4199-4361-9bb4-c78c33ba621d",
+  "slug": "miasma-and-hades-worms-continue-assault-on-npm-pypi-repositories",
+  "headline": "Miasma and Hades Worms Continue Supply Chain Attacks on npm and PyPI",
+  "title": "Miasma, Hades Worms Target npm, PyPI",
+  "summary": "Self-propagating malware worms dubbed Miasma and Hades are continuing their assault on the npm and PyPI open-source ecosystems. Attributed to the financially motivated group TeamPCP, the worms spread by compromising developer accounts and publishing malicious new packages. The Hades variant, targeting PyPI, uses a novel technique involving `*-setup.pth` files to execute its payload, which harvests developer credentials and exfiltrates them to GitHub. The campaign has compromised over 100 packages, highlighting the significant and ongoing threat to the software supply chain.",
+  "full_report": "## Executive Summary\nThe open-source software supply chain is under sustained attack from a campaign involving self-propagating worms named **Miasma** (targeting **[npm](https://www.npmjs.com/)**) and **Hades** (targeting **[PyPI](https://pypi.org/)**). This campaign, attributed to the threat actor group **TeamPCP**, is designed to harvest developer credentials at scale by infecting popular libraries and spreading to new packages. The Hades variant introduced a new persistence mechanism using `.pth` files to ensure its malicious code executes automatically. This ongoing attack underscores the fragility of the software supply chain, where the compromise of a single developer account can lead to the widespread distribution of malware through trusted dependency channels.\n\n## Threat Overview\nThe campaign began with the Miasma worm on npm and later expanded to PyPI with the Hades variant. The core objective is credential theft. The financially motivated group TeamPCP has been linked to the operation. Across both ecosystems, the campaign has resulted in over 100 compromised packages and more than 471 distinct malicious artifacts.\n\nThe attack specifically targets libraries related to bioinformatics, graph machine learning, and the Model Context Protocol (MCP), suggesting a focus on developers working in specialized, data-rich fields. The worm's ability to mutate and split its loader and payload during the campaign indicates a degree of sophistication aimed at evading static scanners and detection tools.\n\n## Technical Analysis\nThe worm's attack cycle is a clear example of [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/).\n1.  **Infection**: A developer installs a malicious package from npm or PyPI, either through typosquatting or because a legitimate package they depend on has been compromised.\n2.  **Execution & Persistence (Hades Variant)**: The Hades worm on PyPI uses a `*-setup.pth` file. A `.pth` file is a path configuration file that Python processes upon startup. By placing malicious code in this file, the attacker ensures their payload runs automatically whenever the developer's Python interpreter starts. This payload then fetches the Bun JavaScript runtime to execute the primary malicious logic.\n3.  **Credential Harvesting**: The worm's payload scours the developer's machine for credentials, such as environment variables, configuration files (`.npmrc`, `.git-credentials`), and SSH keys ([`T1552 - Unsecured Credentials`](https://attack.mitre.org/techniques/T1552/)).\n4.  **Exfiltration and Propagation**: The stolen credentials, particularly API tokens for npm, PyPI, and **[GitHub](https://github.com/)**, are exfiltrated by publishing them to new, attacker-controlled GitHub repositories ([`T1537 - Transfer Data to Cloud Account`](https://attack.mitre.org/techniques/T1537/)). The attackers then use the stolen PyPI/npm credentials to publish new malicious packages or update existing ones, thus propagating the worm.\n\n## Impact Assessment\nThis type of attack has a significant cascading impact. By compromising developer accounts, attackers can inject malicious code into legitimate software projects that are, in turn, used by thousands of other applications and organizations. This erodes the 'transitive trust' that underpins the entire open-source ecosystem. The theft of CI/CD tokens and other credentials can lead to more severe breaches, including unauthorized access to source code repositories, build environments, and production systems. The financial motivation of TeamPCP suggests the stolen credentials and access are likely sold to other cybercriminals or used for further attacks.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nDevelopers and security teams can hunt for signs of this activity:\n| Type | Value | Description | Context |\n|---|---|---|---|\n| file_name | `*-setup.pth` | The malicious path configuration file used by the Hades worm for persistence. | Search Python site-packages directories (`.../site-packages/`) for any `.pth` files containing executable code. |\n| process_name | `bun.exe` | The Bun JavaScript runtime, which is fetched and used by the malware. Its presence may be anomalous in some environments. | EDR process creation logs. |\n| network_traffic_pattern | Outbound connections from Python processes to `raw.githubusercontent.com` or `api.github.com` | The malware may fetch payloads from or exfiltrate data to GitHub. | EDR network logs, proxy logs. |\n| file_path | `~/.npmrc`, `~/.git-credentials` | Common locations for storing developer credentials that are targeted by the malware. | Monitor for unexpected read access to these files by Python or Node.js processes using File Integrity Monitoring (FIM). |\n\n## Detection & Response\n- **Dependency Scanning**: Use automated tools to scan project dependencies for known malicious packages and vulnerabilities. Tools like Socket.dev, Snyk, or Dependabot can help identify compromised components.\n- **Behavioral Monitoring in CI/CD**: Monitor build environments for anomalous behavior, such as unexpected network connections to external sites, attempts to read credential files, or the execution of unknown processes ([D3-PA: Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)).\n- **Code Review**: When adding new dependencies, perform a basic review of the package's health, including its download statistics, age, and whether it has a known author or organization behind it.\n\n## Mitigation\n- **MFA on Developer Accounts**: Enforce MFA on all developer accounts, especially for package repositories like npm and PyPI, and source code management systems like GitHub. This is the single most effective control against credential abuse ([M1032 - Multi-factor Authentication](https://attack.mitre.org/mitigations/M1032/)).\n- **Use Lockfiles**: Use `package-lock.json` (npm) or `poetry.lock`/`Pipfile.lock` (Python) to pin dependencies to specific, vetted versions. This prevents the automatic installation of a newly published malicious version.\n- **Scope-Limited Tokens**: When generating access tokens for CI/CD pipelines, grant them the narrowest possible permissions and set short expiration times.\n- **Vet Dependencies**: Before incorporating a new open-source package, conduct due diligence. Check for signs of typosquatting, inspect for unusually high permissions in setup scripts, and prefer packages that are well-maintained and widely used.",
+  "twitter_post": "Self-propagating worms 'Miasma' & 'Hades' are targeting npm & PyPI to harvest developer credentials. Linked to TeamPCP, the malware exfiltrates stolen data to GitHub, posing a major supply chain risk. #SupplyChain #Malware #PyPI #NPM #CyberSecurity",
+  "meta_description": "The Miasma and Hades worms, attributed to TeamPCP, are spreading through npm and PyPI to harvest developer credentials, highlighting ongoing software supply chain risks.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Miasma",
+      "type": "malware"
+    },
+    {
+      "name": "Hades",
+      "type": "malware"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    },
+    {
+      "name": "PyPI",
+      "type": "product"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securityboulevard.com/2026/07/the-streak-continues-four-more-supply-chain-attacks-hit-npm-and-pypi/",
+      "title": "The Streak Continues: Four More Supply Chain Attacks Hit npm and PyPI",
+      "friendly_name": "Security Boulevard",
+      "website": "securityboulevard.com"
+    },
+    {
+      "url": "https://www.itsecurityguru.org/2026/07/22/ransomware-attacks-rise-3-in-q2-as-supply-chain-compromises-escalate-ncc-group-warns/",
+      "title": "Ransomware Attacks Rise 3% in Q2 as Supply Chain Compromises Escalate, NCC Group Warns",
+      "friendly_name": "IT Security Guru",
+      "website": "itsecurityguru.org"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1552",
+      "name": "Unsecured Credentials",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1537",
+      "name": "Transfer Data to Cloud Account",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce MFA on developer accounts for package managers (npm, PyPI) and source code repositories (GitHub) to prevent takeover."
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-SBV",
+          "name": "Service Binary Verification",
+          "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification"
+        }
+      ],
+      "description": "While not universally adopted in these ecosystems, using and verifying package signatures where available can provide an additional layer of trust."
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Regularly audit dependencies and monitor CI/CD pipelines for anomalous behavior like unexpected network calls or file access."
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "*-setup.pth",
+      "description": "The Hades worm uses a malicious path configuration file (`.pth`) for persistence in Python environments. These files are executed on Python startup.",
+      "context": "Search Python `site-packages` directories for any `.pth` files. Legitimate `.pth` files should only contain paths, not executable code.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "bun.exe",
+      "description": "The Hades worm was observed fetching and using the Bun JavaScript runtime to execute its malicious payload. The presence of this process may be anomalous.",
+      "context": "Monitor process creation logs (EDR, Sysmon) for the execution of `bun.exe`, especially if initiated by a Python process.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous POST requests to api.github.com from build servers",
+      "description": "The malware exfiltrates stolen credentials by creating new GitHub repositories. This would appear as API calls from developer machines or CI/CD runners.",
+      "context": "Monitor outbound network traffic from CI/CD environments and developer endpoints for suspicious API interactions with GitHub.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Supply Chain Attack",
+    "Miasma",
+    "Hades",
+    "npm",
+    "PyPI",
+    "TeamPCP",
+    "Malware"
+  ],
+  "extract_datetime": "2026-07-22T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "open-source software users"
+    ]
+  },
+  "pub_date": "2026-07-22",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-22T15:00:00.000Z",
+  "updatedAt": "2026-08-11T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-08-11T00:00:00Z",
+      "datetime": "2026-08-11T00:00:00Z",
+      "title": "Update 1",
+      "summary": "TeamPCP launched a major supply chain attack targeting LiteLLM, exposing over 2,500 companies and 434,000 CI/CD pipelines via malicious PyPI packages.",
+      "sources": [
+        {
+          "title": "Supply Chain Attack Exposes 2,500+ Companies in Largest AI Infrastructure Breach of 2026 So Far",
+          "url": "https://www.cxtoday.com/security-privacy-compliance/supply-chain-attack-exposes-2500-companies-in-largest-ai-infrastructure-breach-of-2026-so-far/"
+        },
+        {
+          "title": "2,500+ Companies and 434,000 CI/CD Pipelines Exposed in the Largest AI Supply Chain Breach of 2026",
+          "url": "https://www.cloudsek.com/blog/ai-supply-chain-breach-2500-companies-434000-cicd-pipelines"
+        },
+        {
+          "title": "Why the LiteLLM Supply Chain Attack is a Wake-Up Call for AI API Credential Management",
+          "url": "https://blog.dreamfactory.com/why-the-litellm-supply-chain-attack-is-a-wake-up-call-for-ai-api-credential-management"
+        }
+      ]
+    }
+  ]
+}

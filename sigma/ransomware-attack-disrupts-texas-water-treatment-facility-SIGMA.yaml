@@ -1,0 +1,67 @@
+title: Suspicious Network Traffic from IT to OT Segment
+id: 2b8a1b9e-7c4d-4f8a-b9e8-1d2c3b4a5e6f
+status: experimental
+description: Detects unusual network traffic flowing from the corporate IT network to the Operational Technology (OT) network. Such traffic, if not explicitly allowed by policy, can indicate lateral movement from a compromised IT environment into sensitive industrial control systems.
+author: cyber.netsecops.io
+date: 2026-09-13
+references:
+  - https://www.cisa.gov/water-and-wastewater-systems-sector
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    SourceIp|cidr:
+      - '192.168.0.0/16' # Placeholder for IT network range
+      - '172.16.0.0/12'  # Placeholder for IT network range
+    DestinationIp|cidr:
+      - '10.0.0.0/8'       # Placeholder for OT network range
+  condition: selection
+---
+title: Anomalous Third-Party Remote Access Login
+id: 9e8f7d6c-5b4a-4c3d-b2a1-e9f8d7c6b5a4
+status: experimental
+description: Detects successful remote access logins from third-party vendor accounts originating from non-corporate IP space or at unusual hours. This could indicate compromised vendor credentials being used for initial access.
+author: cyber.netsecops.io
+date: 2026-09-13
+references:
+  - https://www.cisa.gov/water-and-wastewater-systems-sector
+level: medium
+logsource:
+  category: authentication
+  product: vpn
+detection:
+  selection:
+    user_name|contains: # Adjust field and value for specific vendor naming conventions
+      - '_vendor'
+      - '3rdparty_'
+    action: 'login'
+    status: 'success'
+  filter:
+    source_ip|cidr:
+      - '203.0.113.0/24' # Placeholder for expected vendor IP ranges
+  condition: selection and not filter
+---
+title: Ransomware File Artifact Creation
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the creation of files with common ransomware extensions or ransom note filenames. This is a strong indicator of an active ransomware infection.
+author: cyber.netsecops.io
+date: 2026-09-13
+references:
+  - https://www.cisa.gov/water-and-wastewater-systems-sector
+tags:
+  - attack.t1486
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_ext:
+    TargetFilename|endswith:
+      - '.locked'
+      - '.crypted'
+  selection_name:
+    TargetFilename|endswith:
+      - '\README.txt'
+  condition: 1 of them

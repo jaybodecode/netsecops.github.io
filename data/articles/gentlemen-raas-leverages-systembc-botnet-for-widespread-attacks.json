@@ -1,0 +1,220 @@
+{
+  "id": "d8ee2d84-5be4-477b-9d26-8228212cede2",
+  "slug": "gentlemen-raas-leverages-systembc-botnet-for-widespread-attacks",
+  "headline": "Gentlemen RaaS Expands with SystemBC Botnet for Covert Attacks",
+  "title": "Gentlemen RaaS Gang Linked to SystemBC Botnet for Covert Proxy and Payload Delivery",
+  "summary": "The Gentlemen ransomware-as-a-service (RaaS) operation is now leveraging the SystemBC proxy malware botnet to enhance its attacks, according to research from Check Point. Affiliates of the group have been observed deploying SystemBC to create covert SOCKS5 tunnels, hiding their C2 traffic and staging ransomware payloads. The associated botnet comprises over 1,570 compromised corporate systems. Gentlemen RaaS provides multi-platform lockers for Windows, Linux, and ESXi, and the addition of SystemBC to its toolkit signals a move towards more sophisticated and evasive attack methods.",
+  "full_report": "## Executive Summary\n\nThe rapidly growing **The Gentlemen** ransomware-as-a-service (RaaS) operation is increasing its sophistication by incorporating the **[SystemBC](https://malpedia.caad.fkie.fraunhofer.de/details/win.systembc)** proxy botnet into its attack chain. Research from **[Check Point](https://www.checkpoint.com/)** has revealed that Gentlemen affiliates are using **SystemBC** to establish covert SOCKS5 tunnels on compromised hosts. This allows them to obscure their command-and-control (C2) traffic, evade detection, and deliver additional malicious payloads, including the ransomware itself. The investigation uncovered a **SystemBC** botnet of over 1,570 compromised corporate systems linked to this activity. This adoption of a dedicated proxy botnet marks a significant enhancement of the RaaS group's operational capabilities, enabling more stealthy and resilient attacks across a wide range of target platforms.\n\n---\n\n## Threat Overview\n\n**The Gentlemen** RaaS group, which emerged in mid-2025, has quickly scaled its operations by advertising on underground forums and providing affiliates with a versatile toolkit. The group offers multi-platform ransomware lockers, including:\n-   A Go-based locker for Windows, Linux, NAS, and BSD systems.\n-   A C-based locker specifically for VMware ESXi hypervisors, targeting the core of modern data centers.\n\nThe integration of **SystemBC** into their playbook provides affiliates with a powerful tool for stealth and persistence. **SystemBC** is a well-known malware that functions as a backdoor and proxy. By routing their traffic through the compromised systems in the botnet, attackers can make it difficult for defenders to trace the origin of the attack or block C2 communications.\n\n## Technical Analysis\n\nDuring an incident response engagement, Check Point observed a Gentlemen affiliate's attack chain in detail.\n\n**Typical Attack Chain:**\n1.  **Initial Access:** The affiliate gains initial access to the network (vector not specified, but likely phishing or exploiting vulnerabilities).\n2.  **Privilege Escalation:** The attacker escalates privileges to become a Domain Admin.\n3.  **Reconnaissance & Staging:** The attacker deploys **[Cobalt Strike](https://attack.mitre.org/software/S0154/)** beacons for C2 and performs network discovery to identify high-value targets.\n4.  **Covert Tunneling:** The affiliate deploys **SystemBC** on a compromised host. **SystemBC** connects to its C2 server and establishes a SOCKS5 proxy, creating a covert tunnel for subsequent attacker communications.\n5.  **Payload Delivery:** The attacker uses the **SystemBC** tunnel to download and stage the Gentlemen ransomware payload.\n6.  **Impact:** The ransomware is detonated across the network, encrypting critical systems, including ESXi hosts to take down multiple virtual machines at once ([`T1486`](https://attack.mitre.org/techniques/T1486/)).\n\n**MITRE ATT&CK TTPs:**\n- [`T1090 - Proxy`](https://attack.mitre.org/techniques/T1090/): The core functionality provided by the **SystemBC** botnet to obscure C2 traffic.\n- [`T1059.003 - Windows Command Shell`](https://attack.mitre.org/techniques/T1059/003/): Used for executing commands and deploying tools like Cobalt Strike and SystemBC.\n- [`T1588.002 - Tool`](https://attack.mitre.org/techniques/T1588/002/): The affiliate acquires and uses commercial/public tools like Cobalt Strike and SystemBC.\n- [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/): The final goal of the ransomware deployment.\n- [`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/): Targeting ESXi hosts is a common technique to inhibit recovery by encrypting virtual machines and their snapshots.\n\n## Impact Assessment\n\nThe use of **SystemBC** makes Gentlemen ransomware attacks harder to detect and block. By tunneling C2 traffic through legitimate-looking SOCKS5 proxies, they can bypass many simple network-based IOCs. The ability to target ESXi hypervisors is particularly damaging, as a single command can encrypt dozens of virtual machines, causing massive operational disruption. The group's double-extortion model, using a Tor-based leak site to publish data from over 320 claimed victims, adds the threat of data breach and reputational damage to the operational impact of encryption.\n\n## IOCs — Directly from Articles\n\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams can hunt for Gentlemen and SystemBC activity using these patterns:\n\n| Type | Value | Description | Context |\n| :--- | :--- | :--- | :--- |\n| Process Name | `system.exe` or `svchost.exe` (with unusual parent process) | SystemBC often masquerades as a legitimate system process. Look for instances with no parent or an unusual parent like `explorer.exe`. | EDR process tree analysis. |\n| Network Traffic Pattern | Outbound connections on unusual ports to residential IP space. | SystemBC botnet nodes are often on compromised home or small business systems. Look for persistent connections from servers to such IPs. | NetFlow, firewall logs. |\n| Command Line Pattern | `powershell.exe -enc <base64>` | PowerShell is frequently used to download and execute SystemBC in a fileless manner. | EDR, PowerShell script block logging (Event ID 4104). |\n| File Name | Randomly named executables in `C:\\Users\\<user>\\AppData\\Roaming\\` | SystemBC is often dropped into user profile directories. | EDR, file integrity monitoring. |\n\n## Detection & Response\n\n**Detection:**\n1.  **Network Egress Filtering:** Monitor and restrict outbound traffic. Connections from corporate servers to residential IP addresses or known malicious C2 servers should be blocked and investigated.\n2.  **Behavioral Analysis:** Use EDR to detect the chain of activity: a process spawning PowerShell, which then makes a network connection to download and execute a payload in memory.\n3.  **Threat Intelligence:** Integrate threat intelligence feeds that provide up-to-date IOCs for **SystemBC** C2 servers.\n\n**Response:**\n1.  **Block C2:** If **SystemBC** is detected, immediately block the C2 IP addresses at the firewall to sever the attacker's connection.\n2.  **Isolate Host:** Isolate the compromised host from the network to prevent lateral movement.\n3.  **Forensic Analysis:** Analyze the host to identify the initial access vector and any other tools or backdoors the attacker may have installed.\n\n## Mitigation\n\n1.  **Egress Traffic Filtering:** Implement a default-deny policy for outbound network traffic from servers. Only allow connections to known, legitimate destinations.\n2.  **Patch Management:** Keep all systems, especially hypervisors like VMware ESXi, fully patched to prevent exploitation of known vulnerabilities.\n3.  **PowerShell Security:** Enable PowerShell script block logging and transcription to capture and analyze PowerShell activity. Use Constrained Language Mode where possible.\n4.  **Network Segmentation:** Segment the network to make it harder for attackers to move laterally from a compromised workstation to a critical server like an ESXi host.",
+  "twitter_post": "Gentlemen RaaS is upgrading its toolkit, using the SystemBC botnet for covert SOCKS5 proxying. The combo enables stealthy C2 and payload delivery for attacks on Windows, Linux, and ESXi. 💣 #Ransomware #SystemBC #Gentlemen #CyberSecurity",
+  "meta_description": "The Gentlemen ransomware-as-a-service (RaaS) operation has been linked to the SystemBC proxy malware botnet, enabling affiliates to conduct more stealthy and resilient attacks.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "The Gentlemen",
+      "type": "threat_actor"
+    },
+    {
+      "name": "SystemBC",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.systembc"
+    },
+    {
+      "name": "Check Point",
+      "type": "vendor",
+      "url": "https://www.checkpoint.com/"
+    },
+    {
+      "name": "Cobalt Strike",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0154/"
+    },
+    {
+      "name": "Gentlemen Ransomware",
+      "type": "malware"
+    },
+    {
+      "name": "VMware ESXi",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://gbhackers.com/gentlemen-raas-hits-windows-linux-and-esxi/",
+      "title": "Gentlemen RaaS Hits Windows, Linux, and ESXi With New C-Based Locker",
+      "date": "2026-04-21",
+      "friendly_name": "GBHackers on Security",
+      "website": "gbhackers.com"
+    },
+    {
+      "url": "https://www.scmagazine.com/brief/systembc-botnet-linked-to-gentlemen-ransomware-attacks",
+      "title": "SystemBC botnet linked to Gentlemen ransomware attacks | brief",
+      "date": "2026-04-21",
+      "friendly_name": "SC Magazine",
+      "website": "scmagazine.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1090",
+      "name": "Proxy",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1059.003",
+      "name": "Windows Command Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1588.002",
+      "name": "Tool",
+      "tactic": "Resource Development"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement strict egress filtering to block unexpected outbound connections from servers, which can disrupt SystemBC C2 communications.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Keeping VMware ESXi and other systems fully patched reduces the potential for initial access via vulnerability exploitation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        },
+        {
+          "id": "D3-ET",
+          "name": "Encrypted Tunnels",
+          "url": "https://d3fend.mitre.org/technique/d3f:EncryptedTunnels"
+        },
+        {
+          "id": "D3-ISVA",
+          "name": "Inbound Session Volume Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundSessionVolumeAnalysis"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Proper segmentation prevents attackers who compromise a workstation from easily moving laterally to critical data center assets like ESXi hosts.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "To counter the core functionality of the SystemBC botnet used by Gentlemen affiliates, organizations must implement strict outbound traffic filtering, especially from server segments. The purpose of SystemBC is to create a covert tunnel to an external C2 server. By configuring firewalls with a default-deny egress policy, you can block these unauthorized connections. Servers should only be allowed to communicate outbound to a small, well-defined list of IP addresses and ports required for their function (e.g., patch servers, specific API endpoints). Any attempt by SystemBC to connect to its C2, which is likely hosted on a compromised residential system or other non-standard IP, would be blocked and logged. This single control can neutralize the attacker's ability to maintain persistence and deliver the final ransomware payload.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "For detecting the presence of SystemBC, Network Traffic Analysis (NTA) is crucial. NTA tools can identify the characteristic beaconing of SOCKS5 proxy malware. Even if the traffic is encrypted, NTA can analyze metadata such as connection frequency, duration, and data volume. A corporate server suddenly making a persistent, low-and-slow connection to a residential IP address in another country is a high-confidence indicator of a proxy botnet infection. Furthermore, since the Gentlemen group targets ESXi hosts, monitoring the ESXi management network is critical. Any unexpected traffic from an ESXi host to an external address should be treated as a major red flag. NTA provides the visibility needed to spot these anomalous patterns that EDR on the host might miss.",
+      "mitre_mitigation_id": "M1031"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "system.exe",
+      "description": "SystemBC often masquerades as a legitimate system process like `system.exe` or `svchost.exe`. Look for instances with no parent process or an unusual parent like `explorer.exe` or `winlogon.exe`.",
+      "context": "EDR process tree analysis, Sysmon Event ID 1.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections on unusual ports to residential IP space.",
+      "description": "SystemBC botnet nodes are often on compromised home or small business systems. Persistent connections from corporate servers to such IPs are highly suspicious.",
+      "context": "NetFlow analysis, firewall logs, threat intelligence feeds.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "powershell.exe -enc",
+      "description": "PowerShell is frequently used to download and execute SystemBC in a fileless manner. Look for encoded commands, a common evasion technique.",
+      "context": "EDR, PowerShell script block logging (Event ID 4104).",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "C:\\Users\\*\\AppData\\Roaming\\*.exe",
+      "description": "SystemBC is often dropped as a randomly named executable into user profile directories to establish persistence.",
+      "context": "EDR file creation monitoring, file integrity monitoring.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Gentlemen",
+    "RaaS",
+    "SystemBC",
+    "ransomware",
+    "botnet",
+    "Cobalt Strike",
+    "ESXi",
+    "Check Point"
+  ],
+  "extract_datetime": "2026-04-21T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Manufacturing",
+      "Finance"
+    ],
+    "other_affected": [
+      "Corporate and Organizational environments"
+    ]
+  },
+  "pub_date": "2026-04-21",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-04-21T15:00:00.000Z",
+  "updatedAt": "2026-04-21T15:00:00.000Z"
+}

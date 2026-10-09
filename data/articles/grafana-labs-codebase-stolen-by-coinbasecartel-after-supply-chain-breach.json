@@ -1,0 +1,209 @@
+{
+  "id": "3cc3b23d-cabc-4327-b185-3ec6f033f776",
+  "slug": "grafana-labs-codebase-stolen-by-coinbasecartel-after-supply-chain-breach",
+  "headline": "Grafana Labs Source Code Stolen by 'CoinbaseCartel' in TanStack Supply Chain Attack Fallout",
+  "title": "Grafana Labs Confirms Source Code Theft by 'CoinbaseCartel' Extortion Group Following TanStack Supply Chain Compromise",
+  "summary": "Grafana Labs has confirmed it was a victim of a supply chain attack that resulted in the theft of its source code and other internal data. The breach was a direct consequence of the recent compromise of the TanStack open-source framework. The attackers, an extortion group calling itself 'CoinbaseCartel,' leveraged a single workflow token that was missed during Grafana's initial credential rotation effort. This token, stolen via the malicious TanStack npm package, provided the attackers with access to Grafana's repositories. The incident highlights the cascading and often delayed impact of supply chain attacks and demonstrates how even a single overlooked secret can lead to a significant breach.",
+  "full_report": "## Executive Summary\n\n**[Grafana Labs](https://grafana.com/)**, the company behind the popular open-source analytics and visualization platform, has confirmed the theft of its source code and other internal data by an extortion group named \"CoinbaseCartel.\" The breach was a downstream consequence of the \"Shai-Hulud\" supply chain campaign that had previously compromised the **[TanStack](https://tanstack.com/)** open-source library. Attackers exploited a single, unrotated workflow token that had been exfiltrated from a **[Grafana Labs](https://grafana.com/)** developer environment by a malicious **[npm](https://www.npmjs.com/)** package. This incident serves as a powerful case study in the cascading nature of supply chain risk, where a compromise in one upstream dependency (**[TanStack](https://tanstack.com/)**) directly led to a severe breach in a major downstream project (**[Grafana Labs](https://grafana.com/)**). It also underscores the critical importance of comprehensive and meticulous credential rotation following a potential security event.\n\n## Threat Overview\n\nThe attack on **[Grafana Labs](https://grafana.com/)** was not a direct assault but a secondary effect of a broader campaign.\n\n- **Initial Vector**: The attack originated from the compromise of the **[TanStack](https://tanstack.com/)** framework. A developer at **[Grafana Labs](https://grafana.com/)** presumably used a compromised version of a **[TanStack](https://tanstack.com/)** package, which contained malware designed to steal secrets from the environment.\n- **Credential Theft**: The malware successfully exfiltrated active workflow tokens from the developer's environment. These tokens are used by CI/CD systems like GitHub Actions to authenticate and perform operations on repositories.\n- **Incomplete Remediation**: Upon learning of the **[TanStack](https://tanstack.com/)** compromise, **[Grafana Labs](https://grafana.com/)'s** security team initiated a credential rotation. However, they missed a single token.\n- **Exploitation**: The extortion group \"CoinbaseCartel,\" which had obtained the stolen tokens, used the single valid token to gain access to **[Grafana Labs](https://grafana.com/)'s** private repositories and exfiltrate source code and other proprietary data.\n\n## Technical Analysis\n\nThis incident highlights the precision and patience of modern threat actors.\n\n1.  **Upstream Compromise**: The attack chain begins with the **[TanStack](https://tanstack.com/)** compromise, where malicious code was injected into a legitimate package (as seen in the **[TeamPCP](https://www.reversinglabs.com/blog/teampcp-the-developer-focused-malware-behind-the-iconburst-supply-chain-attack)** attack).\n2.  **Secret Exfiltration**: The malicious `postinstall` script in the **[npm](https://www.npmjs.com/)** package ran in the **[Grafana Labs](https://grafana.com/)** environment, scanned for secrets like `GITHUB_TOKEN`, and sent them to the attacker's server.\n3.  **Delayed Exploitation**: The attackers likely tested the stolen tokens over time. When **[Grafana Labs](https://grafana.com/)** rotated most of their credentials, the attackers found one that remained active.\n4.  **Data Theft**: Using the valid token, the \"CoinbaseCartel\" group authenticated to **[Grafana Labs](https://grafana.com/)'s** version control system and cloned private repositories containing valuable intellectual property.\n\n### MITRE ATT&CK Techniques\n- [`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/): The root cause of the incident.\n- [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/): The attackers used a valid, stolen workflow token to access the repositories.\n- [`T1552.006 - Group Policy Preferences`](https://attack.mitre.org/techniques/T1552/006/): The concept of stealing secrets from environment variables in a build environment is analogous.\n- [`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/): The initial theft of the token.\n- [`T1213.002 - Sharepoint`](https://attack.mitre.org/techniques/T1213/002/): While specific to Sharepoint, the technique of accessing data from a code collaboration platform like GitHub is the same. [`T1530 - Data from Cloud Storage Object`](https://attack.mitre.org/techniques/T1530/) is also relevant.\n\n## Impact Assessment\n\n- **Intellectual Property Theft**: The primary impact is the loss of proprietary source code. This code could be analyzed by competitors or attackers to find new vulnerabilities in Grafana's products. The attackers, being an extortion group, will likely try to ransom the data back to **[Grafana Labs](https://grafana.com/)** or sell it on the dark web.\n- **Reputational Damage**: As a major player in the developer and DevOps space, a security breach of this nature can damage customer trust.\n- **Operational Cost**: **[Grafana Labs](https://grafana.com/)** must now dedicate significant resources to a full-scale incident response, including a more thorough credential rotation, auditing all systems for further compromise, and communicating with customers and partners.\n- **Systemic Risk**: The stolen source code could be weaponized to create exploits targeting the thousands of organizations that use Grafana for monitoring their critical infrastructure, turning this single breach into a widespread threat.\n\n## IOCs — Directly from Articles\n\nNo specific IOCs such as the missed token, repository names, or attacker infrastructure were mentioned.\n\n## Detection & Response\n\n- **Detection**: Detecting the use of a stolen token can be challenging. Key detection methods include:\n    -   Monitoring for repository access from unusual IP addresses or geographic locations.\n    -   Alerting on large-scale `git clone` or `git pull` activity, especially of multiple repositories by a single token in a short period.\n    -   Analyzing access logs for tokens that have been inactive for a long time and suddenly become active.\n- **Response**: Once unauthorized access is detected, the immediate priority is to revoke the compromised token. Following that, a full audit of the attacker's activity is required to determine exactly what was accessed and exfiltrated. **[Grafana Labs](https://grafana.com/)** also needs to perform a complete and verified rotation of all potentially related secrets.\n\n## Mitigation\n\n- **Comprehensive Credential Rotation**: Following a potential compromise, the credential rotation process must be absolute and verifiable. Automated scripts should be used to revoke and reissue all potentially affected secrets. A manual checklist is prone to human error, as this incident demonstrates.\n- **Short-Lived Tokens**: Avoid using long-lived, static tokens. CI/CD systems should use short-lived credentials that expire after a few minutes or hours. GitHub Actions' support for OIDC federation with cloud providers is a best practice, as it provides temporary, dynamically generated tokens for each workflow run.\n- **Token Scopes**: When creating access tokens, apply the principle of least privilege. Grant tokens only the specific permissions (e.g., read-only) and repository access they need, rather than broad administrative rights.\n- **Supply Chain Security Tools**: Use tools that scan dependencies for known malicious packages to prevent the initial compromise from happening in the first place.",
+  "twitter_post": "Fallout from the TanStack supply chain attack hits Grafana Labs. Extortion group 'CoinbaseCartel' stole source code using a single missed credential from the initial breach. Highlights the cascading risk of supply chain security. #Grafana #SupplyChain #DataBreach",
+  "meta_description": "Grafana Labs confirms its source code was stolen by the 'CoinbaseCartel' extortion group, who exploited a single credential missed during remediation of the TanStack supply chain attack.",
+  "category": [
+    "Data Breach",
+    "Supply Chain Attack",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Grafana Labs",
+      "type": "vendor",
+      "url": "https://grafana.com/"
+    },
+    {
+      "name": "CoinbaseCartel",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "TanStack",
+      "type": "product",
+      "url": "https://tanstack.com/"
+    },
+    {
+      "name": "npm",
+      "type": "security_organization",
+      "url": "https://www.npmjs.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://medium.com/@marcelle.lee/weekly-cyber-threat-bulletin-22-may-2026-62118ffb4d24",
+      "title": "Weekly Cyber Threat Bulletin: 22 May 2026",
+      "date": "2026-05-23",
+      "friendly_name": "Medium",
+      "website": "medium.com"
+    },
+    {
+      "url": "https://www.securityweek.com/underminr-vulnerability-lets-attackers-hide-malicious-connections-behind-trusted-domains/",
+      "title": "'Underminr' Vulnerability Lets Attackers Hide Malicious Connections Behind Trusted Domains",
+      "date": "2026-05-23",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage Object",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Implement a rigorous and automated process for rotating all credentials after a potential security incident. Use short-lived tokens instead of static ones.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Continuously audit access logs for version control systems to detect anomalous behavior, such as access from unusual locations or mass downloads.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "While the token bypasses MFA for the API, ensuring the original developer account was protected by MFA could have prevented the initial credential theft.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Run build processes in isolated environments to prevent a compromised dependency from accessing secrets related to other projects or systems.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ANCI",
+      "technique_name": "Authentication Cache Invalidation",
+      "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationCacheInvalidation",
+      "recommendation": "The failure at Grafana Labs was a failure of Authentication Cache Invalidation, or more simply, incomplete credential rotation. The primary mitigation is to have a robust, automated, and verifiable process for this. When a supply chain incident like the TanStack compromise occurs, an organization must assume *all* secrets in the affected environment are compromised. A 'break-glass' automation script should be triggered that programmatically revokes every single token, key, and password associated with the CI/CD and developer environments. This process should not rely on manual checklists, which are prone to human error. The script should connect to GitHub, AWS, etc., via API and invalidate all active credentials, forcing a complete re-issuing. Regular testing of this 'panic button' is essential to ensure it works when needed.",
+      "mitre_mitigation_id": "M1036"
+    },
+    {
+      "technique_id": "D3-LAM",
+      "technique_name": "Local Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
+      "recommendation": "Applying the principle of Local Account Monitoring to service tokens like the one stolen is a critical detection strategy. Grafana Labs should have had monitoring in place to detect anomalous use of its CI/CD tokens. A SIEM alert should be configured to trigger if a token is used to clone an unusually large number of repositories in a short time, or if a token that has been dormant is suddenly used for heavy activity. Furthermore, correlating access logs with geolocation data could flag a token being used from an IP address or country inconsistent with normal operations. These behavioral analytics can turn a stolen token from a silent key into a noisy alarm bell, alerting the security team to the intrusion.",
+      "mitre_mitigation_id": "M1026"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "Strictly scoping access tokens is a powerful preventative measure. The workflow token stolen from the Grafana Labs environment should have been configured with the principle of least privilege. Instead of a long-lived token with broad access, best practice is to use short-lived tokens with tightly restricted scopes. For example, a token used in a build process might only need read access to one specific repository and should expire within an hour. GitHub's OIDC integration allows for the creation of such dynamic, short-lived, and narrowly-scoped credentials automatically for each workflow run. Had such a system been in place, the stolen token would have been expired or useless for accessing the broader set of Grafana's source code, dramatically limiting the blast radius of the initial compromise.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Version Control System Audit Logs (e.g., GitHub)",
+      "description": "Monitor for a high volume of 'git clone' or 'git pull' operations from a single access token across multiple repositories, which could indicate mass data exfiltration.",
+      "context": "SIEM, Security Analytics Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Access to repositories from IP addresses outside of known corporate or employee locations.",
+      "description": "A stolen token being used from an attacker's server will likely generate logs from an anomalous IP address or ASN.",
+      "context": "VCS Audit Logs, SIEM correlation",
+      "confidence": "medium"
+    },
+    {
+      "type": "string_pattern",
+      "value": "ghp_",
+      "description": "Prefix for GitHub Personal Access Tokens. These should be considered highly sensitive and never exposed.",
+      "context": "Secret scanning tools",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install [compromised-tanstack-package]",
+      "description": "The root cause action that led to the credential theft. Identifying which projects ran this is key to scoping the incident.",
+      "context": "CI/CD logs, developer shell history",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Grafana",
+    "CoinbaseCartel",
+    "Supply Chain Attack",
+    "Data Breach",
+    "Source Code Leak",
+    "TanStack",
+    "Extortion"
+  ],
+  "extract_datetime": "2026-05-24T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "open-source software users"
+    ]
+  },
+  "keywords": [
+    "Grafana Labs breach",
+    "CoinbaseCartel",
+    "TanStack supply chain attack",
+    "source code theft",
+    "Shai-Hulud campaign",
+    "credential rotation failure",
+    "extortion"
+  ],
+  "pub_date": "2026-05-24",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-24T15:00:00.000Z",
+  "updatedAt": "2026-05-26T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-05-26T00:00:00Z",
+      "datetime": "2026-05-26T00:00:00Z",
+      "title": "Update 1",
+      "summary": "Grafana Labs confirms no customer data or services impacted by source code theft. The company publicly refused to pay the ransom demanded by attackers for the stolen code.",
+      "sources": [
+        {
+          "title": "25th May – Threat Intelligence Report",
+          "url": "https://research.checkpoint.com/2026/25th-may-threat-intelligence-report/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+title: Sudden Cessation of Computer-Aided Dispatch (CAD) System Logs
+id: 9b8a0c1d-e2f3-4a5b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects a sudden stop in logging from Computer-Aided Dispatch (CAD) systems, which could indicate a system outage caused by a cyberattack such as ransomware or denial of service. This rule should be configured in a SIEM to alert when a critical log source is silent for an unusual period.
+references:
+  - https://therecord.media/massachusetts-emergency-communications-system-impacted-by-cyberattack
+author: cyber.netsecops.io
+date: 2026-04-04
+tags:
+  - attack.t1499
+  - attack.t0813
+  - attack.t0815
+  - attack.impact
+level: high
+logsource:
+  product: siem
+  service: alert
+detection:
+  selection:
+    RuleName: 'Health - Log Source Stopped Reporting'
+    Source: 'Computer-Aided Dispatch System'
+  condition: selection
+falsepositives:
+  - Legitimate system maintenance or network outage.
+  - Misconfiguration of log shipping or SIEM health monitoring.
+---
+title: Loss of Dispatch Console Network Heartbeat
+id: 1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a
+status: experimental
+description: >
+  Detects the absence of expected periodic network traffic (heartbeats) from critical 911 dispatch consoles. A simultaneous loss of heartbeats from multiple consoles is a strong indicator of a widespread system or network outage, potentially due to a cyberattack.
+references:
+  - https://therecord.media/massachusetts-emergency-communications-system-impacted-by-cyberattack
+author: cyber.netsecops.io
+date: 2026-04-04
+tags:
+  - attack.t1499
+  - attack.t0813
+  - attack.impact
+level: high
+logsource:
+  category: network_connection
+  product: zeek
+detection:
+  # This is a conceptual rule. A real implementation would require a SIEM to baseline normal traffic and alert on deviation.
+  # The logic is to alert if no traffic is seen from a list of critical assets for a given time window.
+  selection:
+    source_ip:
+      - '10.9.1.10' # Placeholder for dispatch console IP range
+      - '10.9.1.11'
+    destination_ip:
+      - '10.9.1.1' # Placeholder for CAD server IP
+  timeframe: 5m
+  condition: not selection
+falsepositives:
+  - Network device failure.
+  - Scheduled maintenance of dispatch systems.

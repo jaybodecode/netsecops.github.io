@@ -1,0 +1,175 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-05T14:27:02.121Z",
+    "article_slug": "multiple-vulnerabilities-found-in-nousresearch-hermes-agent",
+    "article_date": "2026-07-05",
+    "token_usage": {
+      "input_tokens": 145718,
+      "output_tokens": 2379,
+      "cached_tokens": 140082,
+      "total_tokens": 148097,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.048345
+    }
+  },
+  "report_name": "NousResearch Hermes-Agent Hit with Path Traversal and Auth Bypass Flaws",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "The path traversal vulnerability (CVE-2026-14628) in the hermes-agent's Live Webhook Endpoint can be exploited by a remote attacker, as a public exploit is available."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "hermes-agent",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "An open-source AI agent framework from NousResearch affected by multiple vulnerabilities (CVE-2026-14628, CVE-2026-14627).",
+      "tool_types": [
+        "unknown"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-14628",
+      "cve": "CVE-2026-14628",
+      "description": "A path traversal vulnerability in the `extract_media` function within the Live Webhook Endpoint component of hermes-agent versions up to 2026.5.16. A remote attacker can use path traversal sequences to read or potentially write to files outside of the intended directory.",
+      "affected_products": [
+        "hermes-agent versions up to 2026.5.16"
+      ]
+    },
+    {
+      "name": "CVE-2026-14627",
+      "cve": "CVE-2026-14627",
+      "description": "An improper authentication vulnerability in the `DiscordAdapter._is_allowed_user` function in the Discord Platform Integration component of hermes-agent versions up to 0.15.2. It allows a remote attacker to potentially bypass authentication controls.",
+      "affected_products": [
+        "hermes-agent versions up to 0.15.2"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "NousResearch",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The vendor of the hermes-agent open-source AI framework, which was found to contain multiple vulnerabilities (CVE-2026-14628, CVE-2026-14627). The vendor was reportedly unresponsive to disclosure attempts."
+    },
+    {
+      "name": "Discord",
+      "identity_class": "organization",
+      "sectors": [
+        "technology",
+        "communications"
+      ],
+      "description": "The platform for which the hermes-agent has an integration component containing an improper authentication vulnerability (CVE-2026-14627)."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "DiscordAdapter.py"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Hermes-Agent Path Traversal Attempt",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Hermes-Agent Webhook Path Traversal Attempt\nid: 2b8a1c9d-5e6f-4a3b-8c7d-9e8f7a6b5c4d\nstatus: experimental\ndescription: Detects potential path traversal attempts against the NousResearch hermes-agent Live Webhook Endpoint, as seen in CVE-2026-14628.\nreferences:\n  - https://nvd.nist.gov/vuln/detail/CVE-2026-14628\nauthor: cyber.netsecops.io\ndate: 2026-07-05\ntags:\n  - attack.t1190\nlevel: high\nlogsource:\n  category: proxy\ndetection:\n  selection:\n    c-uri|contains:\n      - '../'\n      - '..\\'\n  condition: selection",
+      "description": "Detects URL patterns in web server access logs that contain path traversal sequences like `../` or `..\\` in requests to the hermes-agent webhook endpoint."
+    },
+    {
+      "name": "Hermes-Agent Suspicious File Access",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Hermes-Agent Suspicious File Access Post-Exploitation\nid: 8c7d6b5a-4d3c-4b2a-9a8b-7c6d5e4f3b2a\nstatus: experimental\ndescription: Detects the hermes-agent process accessing unusual or restricted directories, which could indicate successful exploitation of CVE-2026-14628.\nreferences:\n  - https://nvd.nist.gov/vuln/detail/CVE-2026-14628\nauthor: cyber.netsecops.io\ndate: 2026-07-05\ntags:\n  - attack.t1190\nlevel: medium\nlogsource:\n  product: linux\n  category: file_event\ndetection:\n  selection_proc:\n    Image|endswith: '/hermes-agent'\n  selection_path:\n    TargetFilename|startswith:\n      - '/etc/'\n      - '/root/'\n  condition: selection_proc and selection_path",
+      "description": "On servers running hermes-agent, this rule detects the agent's process accessing files in unusual or restricted directories (e.g., `/etc/`, `/root/`), which may indicate post-exploitation activity."
+    },
+    {
+      "name": "Hermes-Agent Vulnerable File DiscordAdapter.py",
+      "indicator_types": [
+        "compromised"
+      ],
+      "stix_pattern": "[file:name = 'DiscordAdapter.py']",
+      "x_netsecio_sigma_rule": "title: Hermes-Agent Vulnerable File DiscordAdapter.py\nid: f1e2d3c4-b5a6-4987-8654-3210fedcba98\nstatus: experimental\ndescription: Detects the presence of DiscordAdapter.py, a file associated with the hermes-agent framework which contains an improper authentication vulnerability (CVE-2026-14627).\nreferences:\n  - https://www.cve.org/CVERecord?id=CVE-2026-14627\nauthor: cyber.netsecops.io\ndate: 2026-07-05\nlevel: informational\nlogsource:\n  category: file_event\ndetection:\n  selection:\n    TargetFilename|endswith: '/DiscordAdapter.py'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the presence of DiscordAdapter.py, a file associated with the hermes-agent framework which contains an improper authentication vulnerability (CVE-2026-14627)."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "NousResearch",
+      "source_type": "identity",
+      "relationship_type": "develops",
+      "target_name": "hermes-agent",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "hermes-agent",
+      "source_type": "tool",
+      "relationship_type": "has",
+      "target_name": "CVE-2026-14628",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "hermes-agent",
+      "source_type": "tool",
+      "relationship_type": "has",
+      "target_name": "CVE-2026-14627",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Hermes-Agent Path Traversal Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Hermes-Agent Suspicious File Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Hermes-Agent Vulnerable File DiscordAdapter.py",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-14627",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Hermes-Agent Vulnerable File DiscordAdapter.py",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "DiscordAdapter.py",
+      "target_type": "file"
+    },
+    {
+      "source_name": "CVE-2026-14627",
+      "source_type": "vulnerability",
+      "relationship_type": "targets",
+      "target_name": "Discord",
+      "target_type": "identity"
+    }
+  ]
+}

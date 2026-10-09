@@ -1,0 +1,49 @@
+title: GitLab Path Traversal Attempt CVE-2026-85706
+id: 2b1d3c4e-5f6a-4b9c-8d7e-1a2b3c4d5e6f
+status: experimental
+description: Detects attempts to exploit the GitLab path traversal vulnerability (CVE-2026-85706) by looking for traversal sequences in requests to the repository commits API endpoint.
+references:
+  - https://www.bleepingcomputer.com/news/security/gitlab-urges-users-to-patch-max-severity-path-traversal-flaw/
+author: cyber.netsecops.io
+date: 2026-09-11
+tags:
+  - attack.t1190
+  - attack.initial_access
+  - cve.2026.85706
+level: critical
+logsource:
+  category: webserver
+detection:
+  selection_endpoint:
+    cs-uri-stem|contains: '/api/v4/projects/'
+    cs-uri-stem|endswith: '/repository/commits'
+  selection_traversal:
+    cs-uri-query|contains:
+      - '..%2f'
+      - '../'
+  condition: all of selection_*
+falsepositives:
+  - Unlikely, but could be triggered by security scanners.
+---
+title: GitLab Secrets File Access Attempt
+id: 8a7b6c5d-4e3f-4a2b-9c8d-7e6f5a4b3c2d
+status: experimental
+description: Detects attempts to read the GitLab secrets file, which could occur after successful exploitation of a file read vulnerability like CVE-2026-85706.
+references:
+  - https://www.bleepingcomputer.com/news/security/gitlab-urges-users-to-patch-max-severity-path-traversal-flaw/
+author: cyber.netsecops.io
+date: 2026-09-11
+tags:
+  - attack.t1552.001
+  - attack.credential_access
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/cat'
+    CommandLine|contains: '/etc/gitlab/gitlab-secrets.json'
+  condition: selection
+falsepositives:
+  - Legitimate administrative activity.

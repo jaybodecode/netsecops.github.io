@@ -1,0 +1,41 @@
+title: Potentially Insecure NPM Install Execution
+id: 5d1e8a9b-3c7f-4b1a-9d6e-8f0a1b2c3d4e
+status: experimental
+description: Detects the execution of 'npm install' without the '--ignore-scripts' flag. In NPM versions prior to 12, this command automatically executes lifecycle scripts from dependencies, which is a known vector for supply chain attacks.
+author: cyber.netsecops.io
+date: 2026-06-14
+references:
+  - https://www.securityweek.com/npm-12-will-change-script-execution-behavior-to-prevent-supply-chain-attacks/
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_npm:
+    Image|endswith: '\npm.cmd'
+    CommandLine|contains: ' install'
+  filter_ignore:
+    CommandLine|contains: ' --ignore-scripts'
+  condition: selection_npm and not filter_ignore
+falsepositives:
+  - Legitimate installations of packages that are known to be safe.
+  - Will trigger on all default npm installs prior to version 12.
+---
+title: NPM Configuration File Access
+id: 2b8c1f3a-9e4d-4f8a-b1c3-d2e4f6a8b0c1
+status: experimental
+description: Detects access to npm configuration files 'package.json' or '.npmrc'. This is for auditing purposes as these files are commonly accessed during development.
+author: cyber.netsecops.io
+date: 2026-06-14
+references:
+  - https://www.securityweek.com/npm-12-will-change-script-execution-behavior-to-prevent-supply-chain-attacks/
+level: informational
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '\package.json'
+      - '\.npmrc'
+  condition: selection

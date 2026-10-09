@@ -1,0 +1,329 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-22T17:19:08.738Z",
+    "article_slug": "oxloader-uses-malicious-google-ads-to-spread-castlestealer",
+    "article_date": "2026-06-22",
+    "token_usage": {
+      "input_tokens": 145909,
+      "output_tokens": 4032,
+      "cached_tokens": 139907,
+      "total_tokens": 149941,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.065311
+    }
+  },
+  "report_name": "New 'OXLOADER' Malware Uses Malicious Google Ads to Distribute CastleStealer",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Spearphishing Link",
+      "mitre_id": "T1566.002",
+      "description": "The attack chain begins with a user clicking a malicious Google Ad that leads to a fraudulent website."
+    },
+    {
+      "name": "Ingress Tool Transfer",
+      "mitre_id": "T1105",
+      "description": "The fraudulent website prompts the user to download a batch script hosted on Storj, a decentralized cloud storage platform, to initiate the infection."
+    },
+    {
+      "name": "Abuse Elevation Control Mechanism: Bypass User Account Control",
+      "mitre_id": "T1548.002",
+      "description": "The initial script triggers a User Account Control (UAC) prompt to execute the main OXLOADER payload with elevated privileges."
+    },
+    {
+      "name": "Execution Guardrails: Environmental Keying",
+      "mitre_id": "T1480.001",
+      "description": "OXLOADER performs checks to determine the system's location and terminates if it is within the Commonwealth of Independent States (CIS) region."
+    },
+    {
+      "name": "Credentials from Password Stores",
+      "mitre_id": "T1555",
+      "description": "The final payload, CastleStealer, is designed to steal credentials from browsers, email clients, and cryptocurrency wallets."
+    },
+    {
+      "name": "Obfuscated Files or Information",
+      "mitre_id": "T1027",
+      "description": "OXLOADER is heavily obfuscated, modifying its own code in memory to decrypt the next stage and abusing the .reloc section to stage shellcode."
+    },
+    {
+      "name": "Windows Command Shell",
+      "mitre_id": "T1059.003",
+      "description": "A batch script is downloaded and executed by the user to start the infection chain."
+    },
+    {
+      "name": "PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "Hunting hints suggest looking for PowerShell commands with '-ExecutionPolicy Bypass -File' used to download and execute scripts from untrusted sources."
+    }
+  ],
+  "malware": [
+    {
+      "name": "OXLOADER",
+      "mitre_id": "",
+      "type": "loader",
+      "is_family": true,
+      "aliases": [],
+      "description": "A new, sophisticated malware loader distributed via Google Ads. It uses advanced evasion techniques, including self-modifying code and geofencing, to deploy a final payload.",
+      "capabilities": [
+        "communicates-with-c2",
+        "installs-other-components",
+        "anti-disassembly",
+        "escalates-privileges"
+      ]
+    },
+    {
+      "name": "CastleStealer",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": true,
+      "aliases": [],
+      "description": "A .NET-based information stealer delivered by OXLOADER. It is designed to steal credentials from browsers, email clients, and cryptocurrency wallets.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "exfiltrates-data"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [
+    {
+      "name": "REF8372",
+      "description": "A malvertising campaign that abuses Google Ads to distribute the OXLOADER malware, which in turn deploys the CastleStealer infostealer. The campaign targets users searching for legitimate software like 'node.js'.",
+      "aliases": [],
+      "objective": "Distribute infostealer malware for financial gain."
+    }
+  ],
+  "identities": [],
+  "locations": [
+    {
+      "name": "Commonwealth of Independent States",
+      "region": "eastern-europe"
+    },
+    {
+      "name": "Russia",
+      "region": "eastern-europe"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Malicious Node.js Download Site",
+      "infrastructure_types": [
+        "phishing",
+        "hosting-malware"
+      ],
+      "description": "A fraudulent website at node-js.prentiva99.info, promoted via Google Ads, that tricks users into downloading a malicious script."
+    },
+    {
+      "name": "Storj Decentralized Storage",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "The attackers used Storj, a decentralized cloud storage platform, to host the initial batch script, helping to evade domain-based reputation filters and takedowns."
+    }
+  ],
+  "observables": [
+    {
+      "type": "domain-name",
+      "value": "node-js.prentiva99.info"
+    },
+    {
+      "type": "domain-name",
+      "value": "gateway.storjshare.io"
+    },
+    {
+      "type": "windows-registry-key",
+      "value": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "OXLOADER Malicious and Staging Domain DNS Query",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[domain-name:value IN ('node-js.prentiva99.info', 'gateway.storjshare.io')]",
+      "x_netsecio_sigma_rule": "title: OXLOADER Malicious and Staging Domain DNS Query\nid: 5b9e1a2f-3c4d-4e5f-8a9b-0c1d2e3f4a5b\nstatus: experimental\ndescription: Detects DNS queries to domains associated with the OXLOADER malvertising campaign, including the fraudulent download site and the decentralized storage gateway.\nreferences:\n  - https://thehackernews.com/2026/06/new-oxloader-loader-uses-malicious.html\nauthor: cyber.netsecops.io\ndate: 2026-06-22\ntags:\n  - attack.t1105\n  - attack.command_and_control\nlevel: high\nlogsource:\n  category: dns_query\n  product: windows\ndetection:\n  selection:\n    QueryName|contains:\n      - 'node-js.prentiva99.info'\n      - 'gateway.storjshare.io'\n  condition: selection",
+      "pattern": ""
+    },
+    {
+      "name": "Suspicious PowerShell Execution Policy Bypass",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious PowerShell Execution Policy Bypass For File Execution\nid: 6c8d7b6a-5e4f-4d3c-b2a1-9e8f7d6c5b4a\nstatus: experimental\ndescription: Detects PowerShell being launched with the ExecutionPolicy Bypass flag to run a script file, a technique often used by malware to run untrusted code.\nreferences:\n  - https://thehackernews.com/2026/06/new-oxloader-loader-uses-malicious.html\nauthor: cyber.netsecops.io\ndate: 2026-06-22\ntags:\n  - attack.t1059.001\n  - attack.execution\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    CommandLine|contains|all:\n      - 'powershell'\n      - '-ExecutionPolicy Bypass'\n      - '-File'\n  condition: selection"
+    },
+    {
+      "name": "Suspicious Execution from User Temp Directory",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Execution from User Temp Directory\nid: 7d6c5b4a-8e7f-4c3b-a19e-8f7d6c5b4a9e\nstatus: experimental\ndescription: Detects processes being executed from common user temporary or application data directories, which is a common tactic for malware droppers like OXLOADER.\nreferences:\n  - https://thehackernews.com/2026/06/new-oxloader-loader-uses-malicious.html\nauthor: cyber.netsecops.io\ndate: 2026-06-22\ntags:\n  - attack.t1204.002\n  - attack.execution\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|contains:\n      - ':\\Users\\Public\\'\n      - '\\AppData\\Local\\Temp\\'\n      - '\\AppData\\Roaming\\'\n  filter_legit:\n    Image|endswith:\n      - '\\Updater.exe'\n      - '\\setup.exe'\n  condition: selection and not filter_legit"
+    },
+    {
+      "name": "Suspicious Modification of Registry Run Key",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Modification of Registry Run Key\nid: 8e7f6d5c-9f8e-4b2a-9e8f-7d6c5b4a9e8f\nstatus: experimental\ndescription: Detects the creation or modification of values in the user's Run key, a common persistence technique used by malware.\nreferences:\n  - https://thehackernews.com/2026/06/new-oxloader-loader-uses-malicious.html\nauthor: cyber.netsecops.io\ndate: 2026-06-22\ntags:\n  - attack.t1547.001\n  - attack.persistence\nlevel: medium\nlogsource:\n  category: registry_event\n  product: windows\ndetection:\n  selection:\n    TargetObject|contains: '\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'\n  condition: selection"
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "REF8372",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "OXLOADER",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "REF8372",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "CastleStealer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "REF8372",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Spearphishing Link",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "REF8372",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Malicious Node.js Download Site",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "REF8372",
+      "source_type": "campaign",
+      "relationship_type": "originates-from",
+      "target_name": "Russia",
+      "target_type": "location"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "delivers",
+      "target_name": "CastleStealer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Abuse Elevation Control Mechanism: Bypass User Account Control",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Execution Guardrails: Environmental Keying",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Obfuscated Files or Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Windows Command Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "OXLOADER",
+      "source_type": "malware",
+      "relationship_type": "avoids",
+      "target_name": "Commonwealth of Independent States",
+      "target_type": "location"
+    },
+    {
+      "source_name": "CastleStealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials from Password Stores",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious Node.js Download Site",
+      "source_type": "infrastructure",
+      "relationship_type": "communicates-with",
+      "target_name": "Storj Decentralized Storage",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "OXLOADER Malicious and Staging Domain DNS Query",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "OXLOADER",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "OXLOADER Malicious and Staging Domain DNS Query",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "node-js.prentiva99.info",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "OXLOADER Malicious and Staging Domain DNS Query",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "gateway.storjshare.io",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "Suspicious PowerShell Execution Policy Bypass",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious Modification of Registry Run Key",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "OXLOADER",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious Modification of Registry Run Key",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "target_type": "windows-registry-key"
+    }
+  ]
+}

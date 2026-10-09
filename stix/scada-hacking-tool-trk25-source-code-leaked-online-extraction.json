@@ -1,0 +1,199 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-05T03:56:21.129Z",
+    "article_slug": "scada-hacking-tool-trk25-source-code-leaked-online",
+    "article_date": "2026-07-04",
+    "token_usage": {
+      "input_tokens": 146057,
+      "output_tokens": 2614,
+      "cached_tokens": 140082,
+      "total_tokens": 148671,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051119
+    }
+  },
+  "report_name": "Source Code for TRK25 SCADA Hacking Tool Leaked Online, Increasing Risk to Industrial Control Systems",
+  "threat_actors": [
+    {
+      "name": "Infrastructure Destruction Squad",
+      "mitre_id": "",
+      "aliases": [
+        "Dark Engine"
+      ],
+      "description": "A threat actor group that developed and originally sold the TRK25 ADVANCED SCADA hacking tool. They are also known as Dark Engine.",
+      "goals": "Develop and sell tools for compromising Industrial Control Systems, likely for financial gain and to enable other actors.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Active Scanning",
+      "mitre_id": "T1595",
+      "description": "The TRK25 tool performs broad network scanning to find exposed Operational Technology (OT) devices."
+    },
+    {
+      "name": "Brute Force",
+      "mitre_id": "T0861",
+      "description": "The TRK25 tool's primary access vector is using password guessing and password spraying against exposed remote services like Modbus, RDP, VNC, and SSH.",
+      "external_references": [
+        {
+          "source_name": "mitre-ics",
+          "external_id": "T0861"
+        }
+      ]
+    },
+    {
+      "name": "Screen Capture",
+      "mitre_id": "T0882",
+      "description": "After gaining access, the TRK25 tool captures screenshots from the Human-Machine Interface (HMI) to collect information.",
+      "external_references": [
+        {
+          "source_name": "mitre-ics",
+          "external_id": "T0882"
+        }
+      ]
+    },
+    {
+      "name": "Exfiltration Over C2 Channel",
+      "mitre_id": "T1041",
+      "description": "The TRK25 tool exfiltrates captured screenshots and system metadata to the attacker."
+    }
+  ],
+  "malware": [
+    {
+      "name": "TRK25 ADVANCED SCADA",
+      "mitre_id": "",
+      "type": "trojan",
+      "is_family": true,
+      "aliases": [
+        "TRK25"
+      ],
+      "description": "A Python-based hacking tool designed to automate the discovery, compromise, and data collection from internet-exposed Industrial Control Systems (ICS). It specifically targets protocols like Modbus, RDP, VNC, and SSH via credential-based attacks.",
+      "capabilities": [
+        "probes-network-environment",
+        "steals-authentication-credentials",
+        "captures-output-peripherals",
+        "exfiltrates-data"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Siemens",
+      "identity_class": "organization",
+      "sectors": [
+        "manufacturing",
+        "technology"
+      ],
+      "description": "A major vendor of industrial control systems, whose S7 HMI systems are a specific high-value target for the TRK25 tool."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Anomalous External Modbus Traffic",
+      "indicator_types": [
+        "anomalous-activity",
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous External Modbus Traffic\nid: f1a2b3c4-d5e6-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects Modbus traffic (TCP port 502) originating from the public internet. This is highly anomalous and a strong indicator of reconnaissance or an attempted ICS compromise.\nreferences:\n  - https://femtosec.io/threat-intelligence/trk25-advanced-scada-malware-industrial-threat\nauthor: cyber.netsecops.io\ndate: 2026-07-04\ntags:\n  - attack.t1595\n  - attack.t0861\nlevel: high\nlogsource:\n  category: firewall\ndetection:\n  selection:\n    dst_port: 502\n  filter_internal:\n    src_ip|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  condition: selection and not filter_internal",
+      "description": "Detects Modbus traffic (TCP port 502) originating from the public internet, which is highly anomalous and indicative of scanning or an attack attempt."
+    },
+    {
+      "name": "External Scans for Remote Admin Ports on OT Networks",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: External Scans for Remote Admin Ports on OT Networks\nid: a1b2c3d4-e5f6-4789-8901-234567890123\nstatus: experimental\ndescription: Detects inbound connection attempts to common administrative ports (VNC, RDP, SSH) on OT network segments. While potentially legitimate, a high volume from unknown external sources is suspicious and may indicate TRK25-like scanning.\nreferences:\n  - https://femtosec.io/threat-intelligence/trk25-advanced-scada-malware-industrial-threat\nauthor: cyber.netsecops.io\ndate: 2026-07-04\ntags:\n  - attack.t1595\nlevel: medium\nlogsource:\n  category: firewall\ndetection:\n  selection:\n    dst_port:\n      - 22\n      - 3389\n      - 5900\n  filter_internal:\n    src_ip|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  condition: selection and not filter_internal",
+      "description": "Detects inbound connection attempts from the internet to common administrative ports (VNC, RDP, SSH), which could indicate scanning activity by tools like TRK25."
+    },
+    {
+      "name": "Failed Remote Login to OT Asset",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Failed Remote Login to OT Asset\nid: b2c3d4e5-f6a7-4890-9123-456789012345\nstatus: experimental\ndescription: Detects a failed remote login attempt (RDP, SSH) to a system identified as an OT asset. A high rate of these events may indicate a brute-force attack by a tool like TRK25.\nreferences:\n  - https://femtosec.io/threat-intelligence/trk25-advanced-scada-malware-industrial-threat\nauthor: cyber.netsecops.io\ndate: 2026-07-04\ntags:\n  - attack.t1110\n  - attack.t0861\nlevel: medium\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 4625\n    LogonType: 10\n  condition: selection",
+      "description": "Detects failed remote login attempts, which could indicate a brute-force or password spraying attack against an HMI or engineering workstation."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Infrastructure Destruction Squad",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "TRK25 ADVANCED SCADA",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "TRK25 ADVANCED SCADA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Active Scanning",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TRK25 ADVANCED SCADA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Brute Force",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TRK25 ADVANCED SCADA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Screen Capture",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TRK25 ADVANCED SCADA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TRK25 ADVANCED SCADA",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "Siemens",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Anomalous External Modbus Traffic",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Active Scanning",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "External Scans for Remote Admin Ports on OT Networks",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Active Scanning",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Failed Remote Login to OT Asset",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Brute Force",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

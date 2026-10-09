@@ -1,0 +1,241 @@
+{
+  "id": "136dc011-330f-4893-9d3a-dadf090bbf4a",
+  "slug": "mini-shai-hulud-worm-compromises-over-170-npm-and-pypi-packages",
+  "headline": "New 'Mini Shai-Hulud' Worm Hits npm & PyPI in Major Supply Chain Attack",
+  "title": "'Mini Shai-Hulud' Supply Chain Worm Compromises TanStack, Mistral AI, and UiPath",
+  "summary": "A sophisticated, self-propagating worm dubbed 'Mini Shai-Hulud' has compromised over 170 packages across the npm and PyPI repositories. Attributed to the threat group TeamPCP, the attack hijacked the release pipelines of major projects like TanStack, Mistral AI, and UiPath. The worm steals a wide range of developer credentials and then uses them to publish new infected packages, further spreading the compromise. A critical vulnerability, CVE-2026-45321, has been assigned to the TanStack compromise.",
+  "full_report": "## Executive Summary\nA highly sophisticated and automated supply chain attack, codenamed **Mini Shai-Hulud**, is actively compromising open-source software repositories. As of May 12, 2026, the attack has impacted hundreds of versions across more than 170 packages on both **[npm](https://www.npmjs.com/)** and **[PyPI](https://pypi.org/)**. The threat actor, known as **TeamPCP**, has demonstrated advanced capabilities by hijacking the legitimate CI/CD release pipelines of high-profile projects, including **[TanStack](https://tanstack.com/)**, **[Mistral AI](https://mistral.ai/)**, and **[UiPath](https://www.uipath.com/)**. The malware is a credential-stealing worm that self-propagates through the software ecosystem, posing a severe risk to developers and organizations that consume these packages. The compromise of TanStack's build process, which resulted in malicious packages being signed with valid provenance attestations, marks a significant escalation in supply chain attack techniques.\n\n## Threat Overview\nThe **Mini Shai-Hulud** worm represents the third documented wave of attacks from **TeamPCP**. This campaign is characterized by its focus on compromising developer accounts and CI/CD environments to inject malicious code into legitimate software packages. The primary goal is widespread credential theft, targeting API keys, cloud service credentials, cryptocurrency wallets, and secrets for AI development tools. A unique and dangerous feature is its worm-like capability: upon compromising a system, it seeks out publishing credentials for other packages and uses them to spread itself further. The attack on **TanStack** was particularly notable, as the attackers chained multiple weaknesses to steal a short-lived OIDC token from a GitHub Actions runner, allowing them to publish 84 malicious versions that appeared legitimate due to valid SLSA Build Level 3 provenance.\n\n## Technical Analysis\nThe attackers, **TeamPCP**, employed a multi-stage attack against the **TanStack** project. They combined a \"Pwn Request\" pattern with GitHub Actions cache poisoning to achieve code execution within the CI runner. From there, they were able to extract a sensitive OIDC token from the runner's memory, which was then used to authenticate to the npm registry and publish malicious packages.\n\n**MITRE ATT&CK Techniques Identified:**\n- **Initial Access:** [`T1199 - Trusted Relationship`](https://attack.mitre.org/techniques/T1199/): The core of the attack relies on compromising the trust relationship between users and the package managers (npm, PyPI).\n- **Execution:** [`T1059.006 - Python`](https://attack.mitre.org/techniques/T1059/006/) and [`T1059.007 - JavaScript/JScript`](https://attack.mitre.org/techniques/T1059/007/): The malicious code is executed when the compromised packages are installed or used.\n- **Credential Access:** [`T1552.006 - Stored OIDC Tokens`](https://attack.mitre.org/techniques/T1552/006/): The attackers specifically targeted and stole a short-lived OIDC token from the GitHub Actions runner process memory.\n- **Lateral Movement / Propagation:** [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/): The worm uses stolen API keys and tokens to authenticate to package registries and publish new malicious versions of other packages, effectively moving laterally through the developer ecosystem.\n- **Collection:** [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/): The payload is a comprehensive credential-stealer targeting a wide range of developer secrets.\n- **Impact:** [`T1499.001 - OS-level Information Wipe`](https://attack.mitre.org/techniques/T1499/001/): The malware contains a \"dead man's switch\" (`rm -rf ~/`) that attempts to wipe the user's home directory, a destructive and punitive measure.\n\n> The ability to publish malicious packages with valid SLSA provenance is a game-changer. It demonstrates that even the most advanced integrity and verification checks can be subverted if the build environment itself is compromised. This shifts the focus from verifying the package to securing the entire CI/CD pipeline.\n\n## Impact Assessment\nThe impact is severe and widespread. Any developer or organization that downloaded and used the compromised versions of the 170+ affected packages is at risk of having their credentials and sensitive data stolen. This can lead to further breaches, financial loss, and compromise of cloud infrastructure. The self-propagating nature of the worm means the attack's scope could expand exponentially. For the affected projects like **TanStack**, the reputational damage is significant, and they face a major effort to revoke the malicious versions, alert users, and re-secure their build processes. The inclusion of a destructive payload (`rm -rf ~/`) adds a layer of data loss risk on top of the credential theft.\n\n## IOCs — Directly from Articles\nNo specific technical Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect potential compromise by **Mini Shai-Hulud**:\n- **CI/CD Monitoring:** Look for build processes that are publishing new package versions with only minor version bumps shortly after a dependency was updated. The worm automates this process.\n- **Network Traffic:** Monitor for outbound connections from developer workstations and CI/CD runners to known credential exfiltration endpoints or paste sites (e.g., `paste.bing`, `dpaste.com`).\n- **File System:** Search for suspicious scripts in user home directories or temporary folders that perform directory listings for `.npmrc`, `.git-credentials`, or `~/.aws/credentials`.\n- **Process Monitoring:** On developer machines, look for unexpected `npm publish` or `twine upload` processes being executed, especially outside of a normal developer workflow.\n\n## Detection & Response\n- **Dependency Scanning:** Immediately use dependency analysis tools (e.g., Snyk, Dependabot) to check if any of the compromised package versions are in your projects' dependency trees. Pay close attention to the specific versions listed in security advisories.\n- **Credential Rotation:** If any compromised package is found, assume all developer secrets on the affected machine or CI runner have been stolen. Immediately rotate all API keys, cloud credentials, and other secrets.\n- **Provenance Verification:** While this attack subverted it, organizations should still implement SLSA provenance verification. However, this incident shows the need for D3FEND's [`Dynamic Analysis (D3-DA)`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis) of package install scripts in a sandbox to observe behavior before allowing them into a production environment.\n\n## Mitigation\n- **Pin Dependencies:** Use lockfiles (`package-lock.json`, `yarn.lock`, `poetry.lock`) to pin dependencies to known, vetted versions. This prevents automatic updates to potentially malicious new versions. This is a form of [`Application Configuration Hardening (D3-ACH)`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).\n- **Secure CI/CD Environments:** Harden CI/CD pipelines. Use short-lived, narrowly-scoped credentials. Isolate build environments from production. Restrict network egress from build runners to only necessary endpoints. This aligns with [`Platform Hardening (D3-PH)`](https://d3fend.mitre.org/technique/d3f:PlatformHardening).\n- **Developer Training:** Educate developers on the risks of supply chain attacks and the importance of scrutinizing dependencies. This is part of [`User Training (M1017)`](https://attack.mitre.org/mitigations/M1017/).\n- **Scope-down Permissions:** Ensure that tokens used for publishing packages (like the OIDC token in this attack) have the minimum possible permissions and are as short-lived as possible.",
+  "twitter_post": "🚨 WORM ALERT: A new self-propagating worm 'Mini Shai-Hulud' has hit npm & PyPI, compromising 170+ packages including TanStack, Mistral AI & UiPath. The malware steals dev credentials to spread itself. 웜 #SupplyChainAttack #CVE202645321",
+  "meta_description": "A major supply chain attack, 'Mini Shai-Hulud,' has compromised over 170 npm and PyPI packages, including TanStack and Mistral AI. Learn how the worm works and how to protect your projects.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Vulnerability"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    },
+    {
+      "name": "PyPI",
+      "type": "product"
+    },
+    {
+      "name": "TanStack",
+      "type": "company",
+      "url": "https://tanstack.com/"
+    },
+    {
+      "name": "Mistral AI",
+      "type": "company",
+      "url": "https://mistral.ai/"
+    },
+    {
+      "name": "UiPath",
+      "type": "company",
+      "url": "https://www.uipath.com/"
+    },
+    {
+      "name": "OpenSearch",
+      "type": "product"
+    },
+    {
+      "name": "Guardrails AI",
+      "type": "company"
+    },
+    {
+      "name": "GitHub",
+      "type": "vendor",
+      "url": "https://github.com/"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-45321",
+      "cvss_score": 9.6,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html",
+      "title": "Mini Shai-Hulud Worm Compromises TanStack, Mistral AI, Guardrails AI & More Packages",
+      "date": "2026-05-12",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.securityweek.com/tanstack-mistral-ai-uipath-hit-in-fresh-supply-chain-attack/",
+      "title": "TanStack, Mistral AI, UiPath Hit in Fresh Supply Chain Attack",
+      "date": "2026-05-12",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/mini-shai-hulud-hits-tanstack-npm/",
+      "title": "Mini Shai-Hulud Hits TanStack npm Packages",
+      "date": "2026-05-12",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    },
+    {
+      "url": "https://www.csoonline.com/article/2126487/mistral-ai-sdk-tanstack-router-hit-in-npm-software-supply-chain-attack.html",
+      "title": "Mistral AI SDK, TanStack Router hit in npm software supply chain attack",
+      "date": "2026-05-12",
+      "friendly_name": "CSO Online",
+      "website": "csoonline.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-11T19:20:00Z",
+      "summary": "The attacker begins publishing malicious versions of TanStack packages."
+    },
+    {
+      "datetime": "2026-05-11T19:26:00Z",
+      "summary": "The attacker finishes publishing 84 malicious versions across 42 TanStack packages."
+    },
+    {
+      "datetime": "2026-05-12T00:00:00Z",
+      "summary": "The supply chain attack is publicly disclosed."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript/JScript"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Stored OIDC Tokens"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores"
+    },
+    {
+      "id": "T1499.001",
+      "name": "OS-level Information Wipe"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use dependency analysis tools that can block the installation of known malicious packages.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Enforce the use of lockfiles to pin dependencies to specific, vetted versions, preventing automatic updates to malicious packages.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Audit CI/CD logs for anomalous publishing activity, such as packages being published outside of a planned release cycle.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Ensure that tokens and credentials used in CI/CD pipelines are short-lived and have the minimum necessary permissions.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "rm -rf ~/",
+      "description": "The malware contains a 'dead man's switch' that attempts to wipe the user's home directory. The presence of this command in any script or process is highly suspicious.",
+      "context": "EDR, Process Monitoring, Script Analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "~/.aws/credentials",
+      "description": "The credential-stealing payload specifically searches for AWS credentials files.",
+      "context": "File Integrity Monitoring, EDR",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "~/.npmrc",
+      "description": "The credential-stealing payload specifically searches for npm configuration files which may contain authentication tokens.",
+      "context": "File Integrity Monitoring, EDR",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "npm publish",
+      "description": "Anomalous execution of 'npm publish' outside of expected CI/CD pipelines or developer actions could indicate the worm's propagation activity.",
+      "context": "Process Monitoring, EDR, SIEM",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "npm",
+    "pypi",
+    "worm",
+    "credential theft",
+    "CI/CD security",
+    "SLSA",
+    "provenance"
+  ],
+  "extract_datetime": "2026-05-13T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Open-source software developers",
+      "Users of npm and PyPI packages"
+    ]
+  },
+  "pub_date": "2026-05-13",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-13T15:00:00.000Z",
+  "updatedAt": "2026-05-17T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-05-17T12:00:00Z",
+      "datetime": "2026-05-17T12:00:00Z",
+      "title": "Update 1",
+      "summary": "OpenAI discloses employee device compromise from 'Shai-Hulud' attack; worm's source code leaked, escalating threat.",
+      "sources": [
+        {
+          "title": "OpenAI and others deal with fallout from TanStack supply-chain attack.",
+          "url": "https://thecyberwire.com/newsletters/daily-briefing/15/94"
+        },
+        {
+          "title": "OpenAI hit by supply chain attack linked to malicious TanStack packages",
+          "url": "https://securityaffairs.com/163345/hacking/openai-tanstack-supply-chain-attack.html"
+        }
+      ]
+    }
+  ]
+}

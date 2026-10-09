@@ -1,0 +1,61 @@
+title: Anomalous M365 Sign-in from Potential Residential Proxy
+id: 2b9e1c4a-8f7d-4b1e-9c6a-3d2e1f0b8a7c
+status: experimental
+description: >
+  Detects successful Microsoft 365 sign-ins from IP addresses associated with residential ISPs, which could indicate account takeover via an AitM proxy as used by 'Payroll Pirates'. This rule requires correlation with a list of residential ISP ASNs.
+references:
+  - https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1078.004
+  - attack.t1090.002
+level: medium
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    ResultType: 0
+  filter_known_locations:
+    # This field is a placeholder for location filtering logic in the SIEM
+    Country: 
+      - 'US'
+      - 'CA'
+  condition: selection and not filter_known_locations
+falsepositives:
+  - Legitimate remote users working from home on residential ISPs.
+  - Users traveling.
+---
+title: M365 Mailbox Search for Financial Keywords
+id: f8d7c6b5-a4b3-4c2d-8e1f-0a9b8c7d6e5f
+status: experimental
+description: >
+  Detects mailbox searches using keywords commonly associated with financial data theft and payroll diversion, as seen in the 'Payroll Pirates' campaign. This could be via PowerShell (Search-Mailbox) or Graph API.
+references:
+  - https://thehackernews.com/2026/08/microsoft-365-aitm-phishing-hijacks.html
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1114.002
+  - attack.collection
+level: high
+logsource:
+  product: m365
+  service: audit.exchange
+detection:
+  selection_keywords:
+    keywords:
+      - 'payroll'
+      - 'invoice'
+      - 'payment'
+      - 'banking'
+      - 'direct deposit'
+  selection_operation:
+    Operation:
+      - 'Search-Mailbox' # PowerShell
+      - 'Search'         # Graph API
+      - 'MailItemsAccessed'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate searches by finance, HR, or compliance personnel.

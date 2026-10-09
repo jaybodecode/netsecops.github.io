@@ -1,0 +1,254 @@
+{
+  "id": "3c41ec27-f7f0-4e4d-8fa6-9a6250ae0032",
+  "slug": "cloudz-rat-abuses-windows-phone-link-to-steal-sms-and-otps",
+  "headline": "CloudZ RAT Exploits Windows Phone Link to Intercept SMS and OTPs from Phones",
+  "title": "New CloudZ RAT Campaign Abuses Microsoft Phone Link to Steal OTPs Without Infecting Mobile Device",
+  "summary": "A novel attack campaign is using the CloudZ remote access tool (RAT) and a custom plugin called \"Pheno\" to abuse the legitimate Microsoft Phone Link application on Windows. By compromising a Windows PC, attackers can access the synchronized mobile data stored locally, allowing them to read SMS messages and notifications containing one-time passwords (OTPs). This technique enables them to bypass two-factor authentication without ever needing to infect the victim's Android or iOS device. The campaign, active since January 2026, begins with a fake ConnectWise ScreenConnect update that drops the CloudZ RAT.",
+  "full_report": "## Executive Summary\nResearchers at **[Cisco Talos](https://www.talosintelligence.com/)** have identified a new campaign utilizing a remote access tool (RAT) called **CloudZ** that employs a novel technique to bypass multi-factor authentication (MFA). Active since at least January 2026, the attack leverages a custom plugin named \"Pheno\" to abuse the legitimate **[Microsoft](https://www.microsoft.com/security)** Phone Link application in Windows 10 and 11. By compromising a victim's PC, the malware can access a local database where Phone Link stores synchronized data from a connected mobile device. This allows the attacker to steal sensitive information, including SMS messages and one-time passwords (OTPs), directly from the PC. This method is particularly dangerous because it completely bypasses the security of the mobile device, requiring no malware or exploits on the phone itself.\n\n---\n\n## Threat Overview\nThe attack is a multi-stage process designed for stealth and credential theft:\n1.  **Initial Access:** The victim is tricked into executing a malicious file disguised as a legitimate update for ConnectWise ScreenConnect. This file acts as a dropper.\n2.  **RAT Deployment:** The dropper installs the **CloudZ RAT** on the Windows machine. CloudZ includes anti-analysis features like in-memory execution and sandbox detection to evade discovery.\n3.  **Plugin Activation:** The RAT deploys the \"Pheno\" plugin, which is specifically designed to target **Microsoft Phone Link**.\n4.  **Data Interception:** The Pheno plugin continuously monitors for an active Phone Link connection. When a phone is synced, the plugin accesses the local SQLite database file (`PhoneExperiences-*.db`) created by the application on the PC.\n5.  **Theft of Sensitive Data:** By reading this database, the malware can access the content of all synchronized SMS messages and application notifications. This includes OTPs sent for two-factor authentication, password reset links, and other sensitive communications.\n6.  **Exfiltration:** The stolen data is then sent by the CloudZ RAT to a command-and-control (C2) server.\n\n> This attack vector highlights a critical weakness in the trust relationship between synced devices. A compromise on the less-secure device (the PC) can lead to the full compromise of data from the more-secure device (the phone).\n\n## Technical Analysis\nThe core of this attack is the abuse of a legitimate feature. **Microsoft Phone Link** stores a cache of synchronized data in a local SQLite database located on the user's PC. The Pheno plugin is simply programmed to locate and read this file. The path to the database is typically within the user's local application data folder, for example:\n`C:\\Users\\<username>\\AppData\\Local\\Packages\\Microsoft.YourPhone_...\\LocalState\\PhoneExperiences-*.db`\n\nBy targeting this file, the attackers avoid the complexities of developing and deploying mobile malware for Android or iOS. They don't need to overcome mobile operating system security, app store restrictions, or device-specific exploits. The entire attack is contained on the Windows host, which is often an easier target.\n\nThe **CloudZ RAT** itself is designed for evasion. It performs checks for debuggers and virtualized environments ([`T1497 - Virtualization/Sandbox Evasion`](https://attack.mitre.org/techniques/T1497/)) and executes its malicious functions in memory to avoid leaving traces on disk.\n\n### MITRE ATT&CK Techniques Observed:\n*   [`T1204.002 - User Execution: Malicious File`](https://attack.mitre.org/techniques/T1204/002/): Initial infection relies on the user running a fake software update.\n*   [`T1610 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1610/): The ultimate goal is to use stolen OTPs to gain unauthorized access.\n*   [`T1560.001 - Archive Collected Data: Archive via Utility`](https://attack.mitre.org/techniques/T1560/001/): Data from the SQLite database is collected before exfiltration.\n*   [`T1056.001 - Input Capture: Keylogging`](https://attack.mitre.org/techniques/T1056/001/): While not keylogging, this is conceptually similar—stealing user input (OTPs) from an alternate channel.\n*   [`T1539 - Steal Web Session Cookie`](https://attack.mitre.org/techniques/T1539/): The theft of OTPs is a means to hijack authenticated sessions.\n*   [`T1497 - Virtualization/Sandbox Evasion`](https://attack.mitre.org/techniques/T1497/): CloudZ RAT performs checks to avoid analysis environments.\n\n## Impact Assessment\nThe primary impact of this attack is the complete bypass of SMS-based and notification-based **[two-factor authentication (2FA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)**. An attacker who has already compromised a user's primary credentials (e.g., through a separate phishing attack) can now defeat the second factor of authentication and gain full access to sensitive accounts, such as email, banking, or corporate VPNs. This significantly increases the risk of account takeover and subsequent data breaches or financial loss. The attack undermines user confidence in 2FA and demonstrates that the security of synchronized data is only as strong as the least secure device in the chain.\n\n## Detection & Response\n*   **[File Analysis](https://d3fend.mitre.org/technique/d3f:FileAnalysis) (D3-FA):** Monitor for any process other than the legitimate `PhoneExperienceHost.exe` attempting to access the `PhoneExperiences-*.db` file. EDR solutions can be configured to alert on this anomalous file access pattern.\n*   **Behavioral Analysis:** Look for fake ConnectWise ScreenConnect update executables. Any ScreenConnect update should come directly from the application's official update mechanism, not from a downloaded file.\n*   **[Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) (D3-PA):** The CloudZ RAT attempts to hide from analysis. Hunt for unsigned processes making network connections, especially those that perform anti-VM or anti-debugging checks upon execution.\n*   **Endpoint Protection:** Ensure antivirus and EDR solutions are up-to-date to detect the CloudZ RAT and its components.\n\n## Mitigation\n*   **Disable Phone Link:** The most direct mitigation is to disable or uninstall the Microsoft Phone Link application if it is not essential for business purposes. This removes the attack surface entirely.\n*   **Move Beyond SMS OTPs:** This attack highlights the inherent weakness of SMS-based OTPs. Organizations and individuals should prioritize the use of more secure MFA methods:\n    - **Authenticator Apps:** Use apps like Google Authenticator or Microsoft Authenticator that generate time-based codes on the device itself.\n    - **Hardware Keys:** The most secure option is to use FIDO2/WebAuthn-compliant hardware security keys (e.g., YubiKey).\n*   **User Education:** Train users to be suspicious of unsolicited software updates and to only download software from official vendor websites or trusted application stores.\n*   **Principle of Least Privilege:** Ensure users do not run with administrative privileges on their daily workstations, which can limit the ability of malware like CloudZ RAT to install and persist.",
+  "twitter_post": "⚠️ Novel Attack: CloudZ RAT abuses Windows Phone Link to steal SMS messages & OTPs directly from a PC, bypassing 2FA without infecting the phone. The attack starts with a fake ScreenConnect update. #CyberSecurity #Malware #2FA #Microsoft",
+  "meta_description": "A new malware campaign uses the CloudZ RAT to exploit Microsoft's Phone Link application, allowing attackers to steal SMS messages and OTPs from a PC to bypass 2FA.",
+  "category": [
+    "Malware",
+    "Phishing",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "CloudZ RAT",
+      "type": "malware"
+    },
+    {
+      "name": "Pheno",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Microsoft Phone Link",
+      "type": "product"
+    },
+    {
+      "name": "ConnectWise ScreenConnect",
+      "type": "product"
+    },
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://www.talosintelligence.com/"
+    },
+    {
+      "name": "Windows 10",
+      "type": "product"
+    },
+    {
+      "name": "Windows 11",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/05/windows-phone-link-exploited-by-cloudz.html",
+      "title": "Windows Phone Link Exploited by CloudZ RAT to Steal Credentials and OTPs",
+      "date": "2026-05-06",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://blog.talosintelligence.com/cloudz-rat-abuses-pheno-plugin/",
+      "title": "CloudZ RAT potentially steals OTP messages using Pheno plugin",
+      "date": "2026-05-05",
+      "friendly_name": "Cisco Talos",
+      "website": "blog.talosintelligence.com"
+    },
+    {
+      "url": "https://www.androidauthority.com/windows-phone-link-trojan-risk-3622416/",
+      "title": "Your Phone Link setup on Windows could be at risk from this Trojan",
+      "date": "2026-05-06",
+      "friendly_name": "Android Authority",
+      "website": "androidauthority.com"
+    },
+    {
+      "url": "https://expertinthe.cloud/blog/2026/05/05/cloudz-rat-exploits-microsoft-phone-link-to-steal-otps/",
+      "title": "CloudZ RAT Exploits Microsoft Phone Link to Steal OTPs",
+      "date": "2026-05-05",
+      "friendly_name": "Expert In the Cloud",
+      "website": "expertinthe.cloud"
+    },
+    {
+      "url": "https://www.reddit.com/r/SecOpsDaily/comments/1ckh449/windows_phone_link_exploited_by_cloudz_rat_to/",
+      "title": "Windows Phone Link Exploited by CloudZ RAT to Steal Credentials and OTPs",
+      "date": "2026-05-06",
+      "friendly_name": "Reddit",
+      "website": "reddit.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-01-01T00:00:00Z",
+      "summary": "The CloudZ RAT campaign using the Pheno plugin is assessed to have begun."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1204.002",
+      "name": "User Execution: Malicious File"
+    },
+    {
+      "id": "T1555.003",
+      "name": "Credentials from Password Stores: Credentials from Web Browsers"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel"
+    },
+    {
+      "id": "T1497",
+      "name": "Virtualization/Sandbox Evasion"
+    },
+    {
+      "id": "T1610",
+      "name": "Steal Application Access Token"
+    },
+    {
+      "id": "T1114.001",
+      "name": "Email Collection: Local Email Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Move away from SMS-based MFA. Implement stronger forms of MFA, such as authenticator apps (TOTP) or phishing-resistant hardware keys (FIDO2/WebAuthn), which are not vulnerable to this interception technique."
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "If Microsoft Phone Link is not a business-critical application, disable or uninstall it via policy to eliminate the attack surface."
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report suspicious software updates and phishing attempts. Specifically, teach them to only install updates from official, built-in application mechanisms."
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [],
+      "description": "Use an EDR solution to monitor for and block anomalous behavior, such as a non-Microsoft process attempting to read the Phone Link SQLite database."
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The CloudZ RAT attack is a textbook example of why SMS-based OTPs are no longer considered a secure second factor. The most effective countermeasure is to migrate all users and systems to stronger, phishing-resistant MFA methods. Prioritize the adoption of FIDO2/WebAuthn-compliant hardware security keys (like YubiKeys) for privileged users and critical applications. For broader user populations, enforce the use of Time-based One-Time Password (TOTP) authenticator apps (e.g., Microsoft Authenticator, Google Authenticator). Unlike SMS, which can be intercepted as shown in this attack, TOTP codes are generated and displayed entirely on the device and are not transmitted over an insecure channel. This single change completely invalidates the primary goal of the CloudZ RAT's Pheno plugin.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-LFP",
+      "technique_name": "Local File Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalFilePermissions",
+      "recommendation": "To specifically counter the Pheno plugin's technique, EDR and host-based security systems can be configured to enforce stricter local file permissions and monitoring on the Phone Link database. Create a detection rule that alerts whenever any process *except* the legitimate `PhoneExperienceHost.exe` attempts to read the `PhoneExperiences-*.db` file. This is a highly specific and low-false-positive indicator of compromise. While an attacker with user-level privileges can typically read files in the user's AppData directory, a modern EDR can treat this specific file as a honeypot token. Alerting on unauthorized read access would detect the CloudZ RAT's reconnaissance and theft activity in real-time, allowing for a swift incident response before OTPs are successfully exfiltrated and used.",
+      "mitre_mitigation_id": "M1022"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "A simple and highly effective hardening measure is to control the presence of the Microsoft Phone Link application itself. For corporate environments, if cross-device synchronization is not a business requirement, use endpoint management tools (like Intune or Group Policy) to uninstall or block the Phone Link application across the enterprise. This removes the vulnerable component and its associated data store (`PhoneExperiences-*.db`) from the endpoint entirely, making the Pheno plugin useless. This approach follows the security principle of minimizing the attack surface. By removing unnecessary applications, you eliminate not only their known vulnerabilities but also the potential for them to be abused in unforeseen ways, as demonstrated by this attack.",
+      "mitre_mitigation_id": "M1042"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "\\AppData\\Local\\Packages\\Microsoft.YourPhone_*\\LocalState\\PhoneExperiences-*.db",
+      "description": "Path to the SQLite database where Microsoft Phone Link stores synchronized mobile data. Anomalous access to this file is a key indicator.",
+      "context": "File Integrity Monitoring, EDR logs (monitor for read access from non-standard processes).",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "PhoneExperienceHost.exe",
+      "description": "The legitimate process for Microsoft Phone Link. Any other process accessing its database is suspicious.",
+      "context": "Process monitoring, EDR.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "ConnectWise.ScreenConnect.Client.exe",
+      "description": "The attack uses a fake update disguised as a legitimate ScreenConnect file. Scrutinize any standalone executables with this name.",
+      "context": "EDR alerts, file system scanning, email attachment analysis.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "SELECT * FROM text",
+      "description": "A potential SQLite query pattern that malware might use to dump all SMS messages from the PhoneExperiences database.",
+      "context": "Command line logging, script block logging.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "CloudZ RAT",
+    "Pheno",
+    "Microsoft Phone Link",
+    "OTP Theft",
+    "2FA Bypass",
+    "Malware",
+    "Cisco Talos"
+  ],
+  "extract_datetime": "2026-05-06T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [],
+    "other_affected": [
+      "Users of Microsoft Phone Link"
+    ]
+  },
+  "pub_date": "2026-05-06",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-05-06T15:00:00.000Z",
+  "updatedAt": "2026-05-07T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-05-07T00:00:00Z",
+      "datetime": "2026-05-07T00:00:00Z",
+      "title": "Update 1",
+      "summary": "New hunting hints and detailed MITRE ATT&CK mappings provided for the CloudZ RAT campaign, including specific file paths and process names for detection.",
+      "sources": [
+        {
+          "title": "Windows Phone Link Exploited by CloudZ RAT to Steal Credentials and OTPs",
+          "url": "https://thehackernews.com/2026/05/windows-phone-link-exploited-by-cloudz-rat-to-steal-credentials-and-otps.html"
+        },
+        {
+          "title": "CloudZ RAT and Pheno Plugin Target Windows Phone Link for Credential Theft",
+          "url": "https://blog.talosintelligence.com/2026/05/cloudz-rat-pheno-plugin-targets-phone-link.html"
+        }
+      ]
+    }
+  ]
+}

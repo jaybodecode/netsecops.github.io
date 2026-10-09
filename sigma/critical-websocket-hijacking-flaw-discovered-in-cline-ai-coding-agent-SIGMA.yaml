@@ -1,0 +1,56 @@
+title: Cline Agent Spawning Suspicious Child Process
+id: 2b8c5a1f-3d9e-4b7c-8a1d-9f6e0c4b2a1e
+status: experimental
+description: Detects the Cline AI agent process spawning suspicious child processes such as shells or networking tools, which could indicate exploitation of the WebSocket hijacking vulnerability for RCE.
+references:
+  - https://research.checkpoint.com/2026/11th-may-threat-intelligence-report/
+author: cyber.netsecops.io
+date: 2026-05-11
+tags:
+  - attack.t1059
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\cline.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\curl.exe'
+      - '\wget.exe'
+      - '\bash.exe'
+      - '\sh.exe'
+  condition: selection
+falsepositives:
+  - Legitimate use of the integrated terminal by a developer.
+---
+title: Browser Process Connecting to Localhost WebSocket
+id: 8e4d2c1a-9b3f-4e6d-8c5a-1b9f0d3a2c4e
+status: experimental
+description: Detects a web browser process initiating a network connection to localhost, which could indicate an attempt to exploit a local server vulnerability like the Cline AI agent WebSocket hijacking flaw.
+references:
+  - https://research.checkpoint.com/2026/11th-may-threat-intelligence-report/
+author: cyber.netsecops.io
+date: 2026-05-11
+tags:
+  - attack.t1189
+  - attack.t1190
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    SourceImage|endswith:
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+    DestinationIp: '127.0.0.1'
+    Initiated: true
+  condition: selection
+falsepositives:
+  - Legitimate local development tools that use WebSockets for communication with a browser.
+  - Certain browser extensions.

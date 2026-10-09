@@ -1,0 +1,84 @@
+title: Potential Kerberoasting Activity
+id: 2b9a1f8e-7d3c-4b1a-9f8d-6e5c4b3a2f1e
+status: experimental
+description: Detects Kerberos TGS requests (Event ID 4769) with RC4-HMAC encryption, which is commonly associated with Kerberoasting attacks.
+references:
+  - https://www.sophos.com/en-us/blog/sophos-state-of-ransomware-2026
+author: cyber.netsecops.io
+date: 2026-07-16
+tags:
+  - attack.t1558.003
+  - attack.credential_access
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4769
+    TicketEncryptionType: '0x17' # RC4-HMAC
+    ServiceName|contains:
+      - 'mssql'
+      - 'http'
+      - 'cifs'
+  filter_machine:
+    ServiceName|endswith: '$'
+  condition: selection and not filter_machine
+---
+title: PowerShell Execution with Encoded Command
+id: 8c4d5e6f-1a2b-4c3d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects the execution of PowerShell with an encoded command argument, a common technique used by attackers to obfuscate malicious scripts.
+references:
+  - https://www.sophos.com/en-us/blog/sophos-state-of-ransomware-2026
+author: cyber.netsecops.io
+date: 2026-07-16
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: 
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains:
+      - ' -e '
+      - ' -en '
+      - ' -enc '
+      - ' -enco'
+      - ' -encod'
+      - ' -encode'
+      - ' -encoded'
+      - ' -encodedc'
+      - ' -encodedco'
+      - ' -encodedcom'
+      - ' -encodedcomm'
+      - ' -encodedcomma'
+      - ' -encodedcomman'
+      - ' -encodedcommand'
+  condition: selection
+---
+title: Whoami Execution For Discovery
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects the execution of 'whoami' with the '/all' flag, which is often used by attackers to gather detailed user and group information after gaining initial access.
+references:
+  - https://www.sophos.com/en-us/blog/sophos-state-of-ransomware-2026
+author: cyber.netsecops.io
+date: 2026-07-16
+tags:
+  - attack.t1033
+  - attack.discovery
+level: low
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\whoami.exe'
+    CommandLine|contains: '/all'
+  condition: selection

@@ -1,0 +1,51 @@
+title: Anomalous Child Process or Network Connection from npm
+id: e8f9a0b1-c2d3-4e4f-b5c6-d7e8f9a0b1c2
+status: experimental
+description: Detects `npm install` processes that spawn unexpected child processes (e.g. curl, powershell) or initiate network connections, which may indicate a supply chain attack like Miasma.
+references:
+  - https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm
+author: cyber.netsecops.io
+date: 2026-06-04
+tags:
+  - attack.t1195.002
+  - attack.t1059.007
+falsepositives:
+  - Legitimate package installation scripts that perform network requests or run helper scripts.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\npm.cmd'
+      - '\npm'
+    Image|endswith:
+      - '\curl.exe'
+      - '\wget.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  condition: selection
+---
+title: Unexpected Outbound Connection from CI/CD Runner to GitHub
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects outbound network connections to github.com from CI/CD runners during a build process. This could indicate data exfiltration to a GitHub dead-drop, as seen in the Miasma campaign.
+references:
+  - https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm
+author: cyber.netsecops.io
+date: 2026-06-04
+tags:
+  - attack.t1567.001
+falsepositives:
+  - Legitimate build processes that fetch dependencies or source code from GitHub.
+level: medium
+logsource:
+  category: network_connection
+detection:
+  selection:
+    DestinationHostname|contains: 'github.com'
+    # This rule requires context to identify CI/CD runner processes.
+    # Example for a specific runner process name:
+    # Image|endswith: '\runner.exe'
+  condition: selection

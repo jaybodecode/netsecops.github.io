@@ -1,0 +1,187 @@
+{
+  "id": "b53c0915-53b1-414d-8d45-c5a137c4c23e",
+  "slug": "critical-rce-flaw-in-wordpress-allows-author-level-users-to-take-over-sites",
+  "headline": "WordPress patches critical RCE flaw (CVE-2026-65640) for author-level users",
+  "title": "WordPress RCE Flaw (CVE-2026-65640) Patched",
+  "summary": "A high-severity remote code execution (RCE) vulnerability, CVE-2026-65640 (CVSS 8.8), has been patched in WordPress 7.0.4. The flaw allows authenticated users with 'Author' or higher privileges to execute arbitrary code by uploading a specially crafted file. The vulnerability is present on sites that use the Imagick PHP extension and Ghostscript for file processing. An attacker can disguise malicious PostScript code within a PNG file, which is then executed by the server's backend processing engine. The patch, which has been backported to WordPress versions as far back as 4.7, addresses the issue by verifying file contents before processing. All administrators are urged to update their sites immediately.",
+  "full_report": "## Executive Summary\n\nThe **[WordPress](https://wordpress.org/)** security team has released WordPress 7.0.4, a critical security update that patches a high-severity remote code execution (RCE) vulnerability. The flaw, tracked as **CVE-2026-65640** with a CVSS score of 8.8, affects WordPress sites that use the **[Imagick](https://www.php.net/manual/en/book.imagick.php)** PHP extension and the **[Ghostscript](https://www.ghostscript.com/)** library for image processing. An authenticated attacker with at least 'Author'-level permissions (i.e., the ability to upload files) can upload a malicious file disguised as an image to trigger the vulnerability and achieve full server compromise. The fix has been backported to all WordPress versions since 4.7. Due to the widespread use of WordPress, immediate updates are strongly recommended for all site administrators.\n\n---\n\n## Vulnerability Details\n\nThe vulnerability is an authenticated RCE that stems from a file type validation bypass in the media upload process. Here's how it works:\n\n1.  An attacker with `upload_files` capability (typically 'Author' role and above) uploads a file.\n2.  The file is crafted to have a benign extension like `.png` but contains malicious PostScript code within its content.\n3.  WordPress checks the file extension, which appears safe, and accepts the upload.\n4.  When WordPress processes the uploaded file for thumbnail generation or other modifications, it passes the file to the **Imagick** library.\n5.  **Imagick**, in turn, inspects the file's content (not its extension), recognizes the PostScript code, and hands it off to the underlying **Ghostscript** interpreter for execution.\n6.  **Ghostscript** executes the malicious code, resulting in RCE on the server in the context of the web server user.\n\nThis attack is only possible on servers where the **Imagick** PHP extension is installed and enabled.\n\n## Affected Systems\n\n-   **[WordPress](https://wordpress.org/)** versions prior to 7.0.4.\n-   Patches have been backported, so all versions from 4.7 to 7.0.3 are vulnerable.\n-   The server environment must have the **Imagick** PHP extension and **Ghostscript** installed.\n\nThis vulnerability poses the greatest risk to multi-author blogs, news sites, and community forums where non-administrator users are permitted to upload media files.\n\n## Exploitation Status\n\nAs of the disclosure, there are no known active exploits in the wild. However, the vulnerability was responsibly disclosed by researchers at pwn.ai, and now that the details and patch are public, the development of exploit code by malicious actors is highly likely. The low complexity of the exploit, once an attacker has author-level credentials, increases the risk.\n\n## Impact Assessment\n\nSuccessful exploitation of **CVE-2026-65640** grants an attacker full remote code execution on the web server. This allows the attacker to:\n\n-   Install a web shell for persistent access (**[T1505.003 - Server Software Component: Web Shell](https://attack.mitre.org/techniques/T1505/003/)**).\n-   Steal sensitive data from the website's database, including user information and hashed passwords.\n-   Deface the website.\n-   Use the compromised server as a pivot point to attack other systems on the internal network.\n-   Host and distribute malware to site visitors.\n\nGiven that WordPress powers over 40% of the web, the potential impact is massive, even though it requires prior authentication.\n\n## Cyber Observables — Hunting Hints\n\nThe following patterns may help identify vulnerable or compromised systems:\n\n| Type | Value | Description |\n|---|---|---|\n| Process Name | `gs` | The Ghostscript executable. Monitor for this process being spawned by your web server user (e.g., `www-data`, `apache`). |\n| File Uploads | `PNG files with PostScript headers` | Analyze uploaded PNG files for headers like `%!PS-Adobe-` which indicate PostScript content. |\n| Log Source | `Web server logs` | Look for file upload requests (`POST`) from non-administrator users that are followed by errors in application or system logs. |\n| Configuration Check | `phpinfo()` | Check PHP configuration to see if the Imagick extension is enabled. |\n\n## Detection Methods\n\n-   **Vulnerability Scanning**: Use a WordPress vulnerability scanner to check if your site is running a vulnerable version and if the patch has been applied.\n-   **File Integrity Monitoring (FIM)**: Monitor the WordPress core files for any unauthorized changes, which could indicate a web shell has been dropped post-exploitation.\n-   **Log Analysis**: Review web server and application logs for suspicious file uploads from low-privilege users. Correlate these uploads with any subsequent unexpected process executions by the web server process, particularly `gs` (Ghostscript). D3FEND's **[File Analysis (D3-FA)](https://d3fend.mitre.org/technique/d3f:FileAnalysis)** can be applied to uploaded files.\n\n## Remediation Steps\n\n1.  **Update WordPress**: The primary remediation is to update to a patched version of WordPress immediately. WordPress 7.0.4 contains the fix. If you are on an older version, ensure you install the latest security update for your branch (e.g., 6.5.x, 6.4.x, etc.). This is an application of D3FEND's **[Software Update (D3-SU)](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.\n2.  **Verify Update**: After updating, confirm that the new version is active in your WordPress dashboard.\n3.  **Temporary Mitigation**: If you cannot update immediately, disabling the **Imagick** PHP extension in your server's `php.ini` file will prevent the vulnerability from being triggered. This is a form of D3FEND's **[Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**. However, this may break functionality on your site that relies on server-side image processing.\n4.  **Review User Permissions**: Audit user accounts and enforce the principle of least privilege. Do not grant users the `upload_files` capability unless it is absolutely necessary for their role.",
+  "twitter_post": "WordPress 7.0.4 patches a critical RCE flaw (CVE-2026-65640, CVSS 8.8). Authenticated authors could take over sites using a malicious image file on servers with Imagick. Update your WordPress sites immediately! #WordPress #RCE #CyberSecurity",
+  "meta_description": "WordPress has patched a critical RCE vulnerability, CVE-2026-65640, that allows authenticated users with author privileges to take over vulnerable websites.",
+  "category": [
+    "Vulnerability",
+    "Patch Management"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "WordPress",
+      "type": "product",
+      "url": "https://wordpress.org/"
+    },
+    {
+      "name": "Imagick",
+      "type": "technology"
+    },
+    {
+      "name": "Ghostscript",
+      "type": "technology",
+      "url": "https://www.ghostscript.com/"
+    },
+    {
+      "name": "pwn.ai",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-65640",
+      "cvss_score": 8.8,
+      "kev": false,
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.penligent.ai/hackinglabs/cve-2026-65640/",
+      "title": "CVE-2026-65640: WordPress 7.0.4 Fixes Authenticated Imagick RCE",
+      "date": "2026-08-13",
+      "friendly_name": "Penligent"
+    },
+    {
+      "url": "https://cybersecuritynews.com/wordpress-imagick-rce-vulnerability/",
+      "title": "Critical WordPress RCE Vulnerability Allows Authors to Execute Code via Malicious PNG File",
+      "date": "2026-08-13",
+      "friendly_name": "Cyber Security News"
+    },
+    {
+      "url": "https://www.securityweek.com/wordpress-7-0-4-patches-remote-code-execution-vulnerability/amp/",
+      "title": "WordPress 7.0.4 Patches Remote Code Execution Vulnerability",
+      "date": "2026-08-13",
+      "friendly_name": "SecurityWeek"
+    },
+    {
+      "url": "https://premiersol.co/blog/wordpress-7-0-4-security-release",
+      "title": "WordPress 7.0.4 Security Release: What to Know (Aug 2026)",
+      "date": "2026-08-12",
+      "friendly_name": "Premier Solutions"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-08-12T00:00:00Z",
+      "summary": "WordPress releases version 7.0.4, patching CVE-2026-65640."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1203",
+      "name": "Exploitation for Client Execution",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Update WordPress to a patched version (7.0.4 or the latest security release for older branches).",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "As a temporary mitigation, disable the Imagick PHP extension on the server to prevent the vulnerable code path from being reached.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LFP",
+          "name": "Local File Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalFilePermissions"
+        },
+        {
+          "id": "D3-SCP",
+          "name": "System Configuration Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions"
+        }
+      ],
+      "description": "Audit and restrict user roles, ensuring only trusted users have the 'upload_files' capability.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "gs",
+      "description": "The Ghostscript executable. Its execution spawned by a web server process (e.g., www-data, apache) following a file upload is highly suspicious.",
+      "context": "EDR process monitoring, command-line logging on the web server.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.png",
+      "description": "The attack vector involves a file with a PNG extension but malicious PostScript content. Analyze content of uploaded PNGs.",
+      "context": "File analysis on web server uploads, network security monitoring.",
+      "confidence": "medium"
+    },
+    {
+      "type": "string_pattern",
+      "value": "%!PS-Adobe-",
+      "description": "This is the magic number for PostScript files. Finding this at the beginning of a file uploaded as an image is a strong indicator of an attack attempt.",
+      "context": "File content analysis, YARA rules on file uploads.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "CVE-2026-65640",
+    "WordPress",
+    "RCE",
+    "Imagick",
+    "Ghostscript",
+    "Vulnerability",
+    "Patch Management"
+  ],
+  "extract_datetime": "2026-08-14T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Media and Entertainment",
+      "Retail",
+      "Other"
+    ]
+  },
+  "pub_date": "2026-08-14",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-08-14T15:00:00.000Z",
+  "updatedAt": "2026-08-14T15:00:00.000Z"
+}

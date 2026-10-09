@@ -1,0 +1,75 @@
+title: Inbound Connections to Common OT Ports
+id: 4f8c1b9a-3d7e-4b1f-8c9a-1d2e3f4a5b6c
+status: experimental
+description: 'Detects inbound network connections to common OT ports (Modbus, ISO-TSAP, EtherNet/IP) from external, non-partner IP addresses, which may indicate scanning or an attack attempt against PLCs.'
+author: cyber.netsecops.io
+date: 2026-07-23
+references:
+  - https://www.cisa.gov/news-events/news/cisa-fbi-epa-and-us-government-partners-update-warning-iran-affiliated-threat-actors-targeting
+tags:
+  - attack.t0885
+  - attack.initial_access
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allow'
+    dst_port:
+      - 102
+      - 502
+      - 44818
+  filter_rfc1918:
+    src_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_rfc1918
+---
+title: Anomalous Execution of PLC Engineering Software
+id: a24cd9d4-0119-43d5-9e39-5cb90f488b00
+status: experimental
+description: 'Detects the execution of legitimate PLC engineering software which may be used by attackers to connect to and maliciously modify PLC logic. Further investigation for unusual network connections from these processes is recommended.'
+author: cyber.netsecops.io
+date: 2026-07-23
+references:
+  - https://www.cisa.gov/news-events/news/cisa-fbi-epa-and-us-government-partners-update-warning-iran-affiliated-threat-actors-targeting
+tags:
+  - attack.t1072
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\LogixDesigner.exe'
+      - '\ControlExpert.exe'
+      - '\tia.exe'
+  condition: selection
+---
+title: Suspicious PLC Project File Modifications
+id: e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: 'Detects the creation or modification of PLC project files on systems that are not designated engineering workstations, or at unusual times. This could indicate an attacker staging or deploying malicious logic.'
+author: cyber.netsecops.io
+date: 2026-07-23
+references:
+  - https://www.cisa.gov/news-events/news/cisa-fbi-epa-and-us-government-partners-update-warning-iran-affiliated-threat-actors-targeting
+tags:
+  - attack.t0837
+  - attack.impact
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.ACD'
+      - '.STU'
+      - '.ap16' # TIA Portal v16, for example
+      - '.ap17'
+      - '.ap18'
+  condition: selection

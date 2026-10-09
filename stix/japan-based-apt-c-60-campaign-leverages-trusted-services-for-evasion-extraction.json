@@ -1,0 +1,324 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-13T14:40:48.999Z",
+    "article_slug": "japan-based-apt-c-60-campaign-leverages-trusted-services-for-evasion",
+    "article_date": "2026-07-13",
+    "token_usage": {
+      "input_tokens": 145992,
+      "output_tokens": 3819,
+      "cached_tokens": 140082,
+      "total_tokens": 149811,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.063088
+    }
+  },
+  "report_name": "APT-C-60 Targets Japan with 'SpyGlace' Malware, Abusing Trusted Cloud Services",
+  "threat_actors": [
+    {
+      "name": "APT-C-60",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A cyber-espionage group targeting organizations in Japan. The group utilizes a multi-stage infection process, abusing legitimate cloud and developer services like Proton Drive, jsDelivr, and GitHub to deliver its SpyGlace malware and evade detection.",
+      "goals": "Cyber-espionage and data theft against Japanese entities.",
+      "primary_motivation": "organizational-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Spearphishing Link",
+      "mitre_id": "T1566.002",
+      "description": "The campaign initiates with spear-phishing emails that contain a link to a malicious file hosted on Proton Drive."
+    },
+    {
+      "name": "Malicious File",
+      "mitre_id": "T1204.002",
+      "description": "The attack relies on the user executing a malicious .LNK shortcut file contained within a downloaded RAR archive."
+    },
+    {
+      "name": "System Binary Proxy Execution: Mshta",
+      "mitre_id": "T1218.005",
+      "description": "The legitimate Windows binary mshta.exe is abused to execute embedded JavaScript code from the malicious LNK file, which then fetches the next stage payload."
+    },
+    {
+      "name": "Ingress Tool Transfer",
+      "mitre_id": "T1105",
+      "description": "Malicious payloads and components are downloaded from a chain of trusted online services, including Proton Drive, jsDelivr, GitHub, GitLab, and Codeberg."
+    },
+    {
+      "name": "Application Layer Protocol: Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "The malware uses standard HTTPS traffic to communicate with legitimate services like GitHub and jsDelivr for payload delivery, blending in with normal web activity to evade network detection."
+    }
+  ],
+  "malware": [
+    {
+      "name": "SpyGlace",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": true,
+      "aliases": [],
+      "description": "A backdoor used for espionage and data theft, identified in versions v3.1.15, v3.1.17, and v3.1.18. It is the final payload deployed by APT-C-60 in a multi-stage infection chain that abuses trusted online services.",
+      "capabilities": [
+        "exfiltrates-data",
+        "communicates-with-c2"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "mshta.exe",
+      "mitre_id": "S0195",
+      "aliases": [],
+      "description": "Abused to execute JavaScript code from a malicious LNK file to fetch the next stage of the malware from jsDelivr.",
+      "tool_types": []
+    },
+    {
+      "name": "git.exe",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A legitimate git binary, likely bundled with the malware, is used to connect to repositories on GitHub, GitLab, or Codeberg to download and assemble the final SpyGlace payload.",
+      "tool_types": [
+        "information-gathering"
+      ]
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Organizations in Japan",
+      "identity_class": "class",
+      "sectors": [],
+      "description": "Unspecified organizations in Japan targeted by the APT-C-60 cyber-espionage campaign."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Japan",
+      "country": "Japan",
+      "region": "eastern-asia"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Trusted Service Payload Hosting",
+      "infrastructure_types": [
+        "hosting-malware",
+        "command-and-control"
+      ],
+      "description": "APT-C-60 abused a chain of legitimate services including Proton Drive, jsDelivr, GitHub, GitLab, and Codeberg to host malicious files, stage payloads, and blend C2 traffic."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "mshta.exe"
+    },
+    {
+      "type": "file",
+      "name": "git.exe"
+    },
+    {
+      "type": "domain-name",
+      "value": "jsdelivr.net"
+    },
+    {
+      "type": "domain-name",
+      "value": "proton.me"
+    },
+    {
+      "type": "domain-name",
+      "value": "codeberg.org"
+    },
+    {
+      "type": "domain-name",
+      "value": "github.com"
+    },
+    {
+      "type": "domain-name",
+      "value": "gitlab.com"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Suspicious Mshta.exe Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Mshta.exe Execution by LNK File\nid: 2b3c1a9e-8d7f-4c6a-b5e4-f3a2b1c0d9e8\nstatus: experimental\ndescription: Detects mshta.exe being launched with a command line, potentially from a malicious LNK file, as seen in the APT-C-60 SpyGlace campaign.\nreferences:\n  - https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda\nauthor: cyber.netsecops.io\ndate: 2026-07-13\ntags:\n  - attack.t1218.005\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\mshta.exe'\n    CommandLine|contains:\n      - 'javascript:'\n      - '.hta'\n  filter_parent:\n    ParentImage|endswith:\n      - '\\explorer.exe'\n      - '\\OUTLOOK.EXE'\n      - '\\WINWORD.EXE'\n      - '\\EXCEL.EXE'\n  condition: selection and filter_parent"
+    },
+    {
+      "name": "Anomalous Git Execution for Payload Retrieval",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Git Execution for Payload Retrieval\nid: 9e8d7f6a-5c4b-4a3b-2c1d-0e9f8d7c6b5a\nstatus: experimental\ndescription: Detects git.exe running from a non-standard directory, which could indicate its use for downloading malicious payloads as seen in the APT-C-60 campaign.\nreferences:\n  - https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda\nauthor: cyber.netsecops.io\ndate: 2026-07-13\ntags:\n  - attack.t1105\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\git.exe'\n  filter_legit_paths:\n    Image|startswith:\n      - 'C:\\Program Files\\Git\\'\n      - 'C:\\Program Files (x86)\\Git\\'\n  condition: selection and not filter_legit_paths"
+    },
+    {
+      "name": "APT-C-60 Trusted Service Abuse",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[domain-name:value IN ('jsdelivr.net', 'proton.me', 'codeberg.org', 'github.com', 'gitlab.com')]",
+      "x_netsecio_sigma_rule": "title: APT-C-60 Trusted Service Abuse\nid: f3a2b1c0-d9e8-4b3c-1a9e-8d7f6c5b4a3b\nstatus: experimental\ndescription: Detects DNS queries to legitimate services known to be abused by APT-C-60 for payload delivery. This rule is for hunting and may be noisy.\nreferences:\n  - https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda\nauthor: cyber.netsecops.io\ndate: 2026-07-13\ntags:\n  - attack.t1071.001\nlevel: low\nlogsource:\n  category: dns_query\n  product: windows\ndetection:\n  selection:\n    QueryName:\n      - 'jsdelivr.net'\n      - 'proton.me'\n      - 'codeberg.org'\n      - 'github.com'\n      - 'gitlab.com'\n  condition: selection",
+      "pattern": ""
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "SpyGlace",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "mshta.exe",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "git.exe",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Spearphishing Link",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Malicious File",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "System Binary Proxy Execution: Mshta",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Application Layer Protocol: Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Organizations in Japan",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Japan",
+      "target_type": "location"
+    },
+    {
+      "source_name": "APT-C-60",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Trusted Service Payload Hosting",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "SpyGlace",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SpyGlace",
+      "source_type": "malware",
+      "relationship_type": "communicates-with",
+      "target_name": "Trusted Service Payload Hosting",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Suspicious Mshta.exe Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "APT-C-60",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "Anomalous Git Execution for Payload Retrieval",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "SpyGlace",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "APT-C-60 Trusted Service Abuse",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "APT-C-60",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "APT-C-60 Trusted Service Abuse",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "jsdelivr.net",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "APT-C-60 Trusted Service Abuse",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "proton.me",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "APT-C-60 Trusted Service Abuse",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "codeberg.org",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "APT-C-60 Trusted Service Abuse",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "github.com",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "APT-C-60 Trusted Service Abuse",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "gitlab.com",
+      "target_type": "domain-name"
+    }
+  ]
+}

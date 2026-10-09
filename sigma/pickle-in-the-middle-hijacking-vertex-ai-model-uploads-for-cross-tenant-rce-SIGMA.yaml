@@ -1,0 +1,51 @@
+title: Potential Vertex AI Staging Bucket Squatting
+id: 9c5b1a3d-8f7e-4b1a-9c8d-6e5f4a3b2c1d
+status: experimental
+description: >
+  Detects the creation of a Google Cloud Storage bucket that matches the default naming convention for Vertex AI staging buckets ('-vertex-ai-staging'). This could indicate a 'bucket squatting' attempt as seen in the 'Pickle in the Middle' attack.
+references:
+  - https://unit42.paloaltonetworks.com/hijacking-vertex-ai-model/
+author: cyber.netsecops.io
+date: 2026-06-16
+tags:
+  - attack.t1496
+level: medium
+logsource:
+  category: cloud
+  service: gcp.audit
+detection:
+  selection:
+    methodName: 'storage.buckets.create'
+    resource.name|endswith: '-vertex-ai-staging'
+  condition: selection
+---
+title: Unexpected Egress from Vertex AI Endpoint
+id: 94666a4a-b1f6-42cb-831b-aad5240458fb
+status: experimental
+description: >
+  Detects unexpected outbound network connections from a Vertex AI serving container. This could indicate a compromised model exfiltrating data or communicating with an attacker C2, as possible after a 'Pickle in the Middle' attack.
+references:
+  - https://unit42.paloaltonetworks.com/hijacking-vertex-ai-model/
+author: cyber.netsecops.io
+date: 2026-06-16
+tags:
+  - attack.t1530
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image|contains: 'vertex-ai' # This field should be adapted to the specific environment to identify Vertex AI containers
+    Initiated: true
+  filter_known_destinations:
+    DestinationHostname|endswith:
+      - '.googleapis.com'
+      - '.gcr.io'
+      - '.google.com'
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_known_destinations
