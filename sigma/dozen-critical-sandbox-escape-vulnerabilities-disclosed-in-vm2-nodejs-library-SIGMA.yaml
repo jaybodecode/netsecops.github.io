@@ -1,0 +1,52 @@
+title: Node.js Process Spawning Shell
+id: 2b9c3a1d-8f4e-4b1a-9c7d-3e5f6a7b8c9d
+status: experimental
+description: Detects a Node.js process spawning a command shell, which is a strong indicator of remote code execution, potentially following a sandbox escape.
+references:
+  - https://thehackernews.com/2026/05/vm2-nodejs-library-vulnerabilities-enable-sandbox-escape-and-arbitrary-code-execution.html
+author: cyber.netsecops.io
+date: 2026-05-07
+tags:
+  - attack.t1059
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\node.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\sh.exe'
+      - '\bash.exe'
+  condition: selection
+---
+title: Unexpected Outbound Connection from Node.js Server
+id: 9d8c7b6a-5f4e-3d2c-1b0a-987654321fed
+status: experimental
+description: Detects unexpected outbound network connections from a Node.js process. This could indicate C2 communication after a sandbox escape.
+references:
+  - https://thehackernews.com/2026/05/vm2-nodejs-library-vulnerabilities-enable-sandbox-escape-and-arbitrary-code-execution.html
+author: cyber.netsecops.io
+date: 2026-05-07
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\node.exe'
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '::1/128'
+  condition: selection and not filter_local

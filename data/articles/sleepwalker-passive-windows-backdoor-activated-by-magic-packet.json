@@ -1,0 +1,187 @@
+{
+  "id": "0e7c8c2d-409b-4b1e-a9f4-af1fc56f7453",
+  "slug": "sleepwalker-passive-windows-backdoor-activated-by-magic-packet",
+  "headline": "Stealthy \"SLEEPWALKER\" Backdoor Waits for Magic Packet to Strike",
+  "title": "SLEEPWALKER: A Passive Windows Backdoor Activated by Network Sniffing",
+  "summary": "A sophisticated and previously undocumented Windows backdoor named \"SLEEPWALKER\" has been discovered. The malware remains completely inert in memory, exhibiting no command-and-control traffic. It passively sniffs network packets, waiting for a specially crafted \"magic packet\" to trigger its execution. Once activated, it runs commands from a custom bytecode language, demonstrating capabilities consistent with a well-resourced threat actor targeting high-value systems.",
+  "full_report": "## Executive Summary\n\nA highly sophisticated and evasive Windows backdoor, named **\"SLEEPWALKER\"**, has been discovered and analyzed by security researchers. This malware represents a significant threat due to its extremely stealthy design. Unlike traditional backdoors, SLEEPWALKER does not initiate any outbound connections to a command-and-control (C2) server, allowing it to evade detection by network security monitoring tools that look for beaconing activity. It operates as a passive implant, lying dormant in memory while sniffing network traffic. It only activates upon receiving a specific, encrypted \"magic packet,\" at which point it executes a payload written in its own custom bytecode language. This level of sophistication suggests it is a tool used in targeted attacks by a well-resourced threat actor.\n\n---\n\n## Threat Overview\n\nSLEEPWALKER is a post-compromise implant, meaning attackers must have already gained administrative access to a system to install it. Its primary persistence mechanism is DLL side-loading. The analyzed sample impersonates Microsoft's legitimate `dpapi.dll` and is designed to be loaded by the **[ESET](https://www.eset.com)** Management Agent executable, `ERAAgent.exe`. The malware checks if its host process is `ERAAgent.exe` before it begins its main function; otherwise, it remains completely inactive.\n\nIts core feature is its passive, network-triggered activation. It uses a raw socket to sniff all network traffic on all interfaces, searching for a specific trigger packet. This makes it invisible to firewalls and network monitoring solutions focused on outgoing connections.\n\n---\n\n## Technical Analysis\n\n-   **Persistence:** [`T1574.002 - DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/). The malicious `dpapi.dll` (59,904 bytes, 64-bit) is placed in the ESET Management Agent directory to be loaded by `ERAAgent.exe` on service start.\n-   **Execution Guardrails:** The malware only proceeds if the parent process name is `ERAAgent.exe`.\n-   **Trigger Mechanism:** Passively sniffs network traffic for a specific \"magic packet.\" This is likely a specially crafted TCP, UDP, or even Ethernet frame that contains a unique signature or encrypted data.\n-   **Payload Execution:** Upon receiving the magic packet, the backdoor decrypts a payload using AES-256-CCM.\n-   **Custom Bytecode Language:** The payload is not a simple command but a small program written in a custom bytecode language. The language consists of 23 distinct instructions, providing advanced capabilities:\n    -   Task scheduling\n    -   Staged file delivery with SHA-256 integrity checks\n    -   In-memory shellcode execution\n\nThis architecture allows the attacker to maintain long-term, stealthy access without the risks associated with a persistent C2 connection.\n\n---\n\n## Impact Assessment\n\nA successful SLEEPWALKER implantation provides an attacker with a powerful and difficult-to-detect foothold in a target network. The impact includes:\n\n-   **Stealthy Persistence:** The lack of C2 beaconing makes the backdoor extremely hard to find using conventional network security tools.\n-   **Full Remote Control:** The custom bytecode language gives the attacker flexible, on-demand control over the compromised host, allowing for further data theft, lateral movement, or deployment of additional malware.\n-   **Targeted Espionage:** This type of tool is ideal for long-term espionage campaigns where the goal is to remain undetected for as long as possible while waiting for the right moment to act.\n\nBecause it requires administrator rights to install, its presence indicates a prior, successful compromise of the network.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `dpapi.dll` | The malicious DLL impersonates this legitimate Windows file. |\n| File Size | `59,904 bytes` | Size of the analyzed 64-bit DLL sample. |\n| Process Name | `ERAAgent.exe` | The host process the malware targets for DLL side-loading. |\n\n## Cyber Observables — Hunting Hints\n\nThe following patterns could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| file_path | `C:\\Program Files\\ESET\\RemoteAdministrator\\Agent\\` | The likely directory for the malicious `dpapi.dll`. Hunt for a `dpapi.dll` in this location. |\n| process_name | `ERAAgent.exe` | Monitor this process for loading unexpected DLLs or initiating raw socket connections. |\n| network_traffic_pattern | `Promiscuous mode enabled` | The malware needs to sniff traffic, which may involve putting a network interface into promiscuous mode. |\n\n---\n\n## Detection & Response\n\nDetecting SLEEPWALKER requires advanced endpoint and memory analysis.\n\n**Detection Methods:**\n1.  **File System Auditing:** Hunt for the presence of a `dpapi.dll` file within the ESET Management Agent's installation directory. This is highly anomalous, as that DLL belongs in the Windows `System32` directory.\n2.  **DLL Side-Loading Detection (D3-DA):** Use EDR tools to monitor for processes loading DLLs from unusual paths. Specifically, alert if `ERAAgent.exe` loads `dpapi.dll` from its own application directory instead of the system directory.\n3.  **Memory Forensics:** In a suspected compromise, perform memory analysis on the `ERAAgent.exe` process to identify injected code, hooked functions, or the presence of the dormant SLEEPWALKER implant.\n4.  **Network Anomaly Detection:** While there is no C2 traffic, an endpoint enabling promiscuous mode on its network interface card (NIC) can be a strong indicator of a passive sniffer like SLEEPWALKER.\n\n---\n\n## Mitigation\n\nMitigation focuses on preventing the initial installation and detecting the side-loading behavior.\n\n-   **Harden Endpoints:** Secure endpoints to prevent the initial compromise that allows an attacker to gain administrative rights.\n-   **Application Control (M1038):** Implement application control policies to prevent unauthorized executables and DLLs from being written to sensitive directories.\n-   **DLL Side-Loading Protection:** Some modern EDR solutions and Windows 10/11 features can be configured to prevent or alert on common DLL side-loading patterns.\n-   **Restrict Library Loading (M1044):** Configure systems to load DLLs only from trusted, specified directories (e.g., `System32`), which can help thwart side-loading attacks.",
+  "twitter_post": "Researchers uncover 'SLEEPWALKER,' a hyper-stealthy Windows backdoor. It stays dormant, sniffing network traffic for a 'magic packet' to awaken and execute commands from its own bytecode language. #Malware #Backdoor #Cybersecurity #ThreatIntel",
+  "meta_description": "A sophisticated Windows backdoor, 'SLEEPWALKER,' evades detection by passively sniffing network traffic for a magic packet trigger before executing commands from a custom bytecode language.",
+  "category": [
+    "Malware",
+    "Threat Actor",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "SLEEPWALKER",
+      "type": "malware"
+    },
+    {
+      "name": "ESET Management Agent",
+      "type": "product",
+      "url": "https://www.eset.com/"
+    },
+    {
+      "name": "Dominik Reichel",
+      "type": "person"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/08/newly-sleepwalker-backdoor-waits-for.html",
+      "title": "Newly SLEEPWALKER Backdoor Waits for One Crafted Packet, Then Runs Its Own Bytecode",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://it.slashdot.org/story/26/08/25/062246/windows-backdoor-sleepwalker-hides-in-memory-until-activated-by-a-magic-packet",
+      "title": "Windows Backdoor 'Sleepwalker' Hides in Memory Until Activated by a 'Magic Packet'",
+      "friendly_name": "Slashdot",
+      "website": "slashdot.org"
+    },
+    {
+      "url": "https://r136a1.dev/2026/08/24/sleepwalker-a-passive-backdoor-with-its-own-command-language/",
+      "title": "SLEEPWALKER – A passive backdoor with its own command language",
+      "friendly_name": "r136a1.dev",
+      "website": "r136a1.dev"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1564.001",
+      "name": "Hidden Files and Directories",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1572",
+      "name": "Protocol Tunneling",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1044",
+      "name": "Restrict Library Loading",
+      "d3fend_techniques": [],
+      "description": "Configure operating systems to only load libraries from trusted locations, which can mitigate many DLL side-loading attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application allowlisting to prevent the execution of the malicious DLL, even if it is placed in the correct path.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Regularly audit running processes and loaded modules on endpoints to identify anomalies like a process loading a DLL from an unexpected path.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Detecting SLEEPWALKER requires moving beyond static signatures and network logs. Security teams should leverage EDR tools capable of dynamic analysis and behavioral monitoring. Specifically, a rule should be created to detect when the `ERAAgent.exe` process loads a DLL named `dpapi.dll` from its own application directory (`C:\\Program Files\\ESET\\...`) instead of the legitimate `C:\\Windows\\System32` path. This is a high-fidelity indicator of this specific DLL side-loading attack. Furthermore, monitoring for the `ERAAgent.exe` process initiating raw socket creation or attempting to put a network adapter into promiscuous mode would be a strong signal of a passive network sniffer, which is the core of SLEEPWALKER's stealth.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "Implement file integrity monitoring (FIM) or regular endpoint scans focused on detecting misplaced system files. A specific hunt query or FIM rule should be created to search all endpoints for the existence of `dpapi.dll` outside of its legitimate `System32` and `SysWOW64` locations. A discovery of `dpapi.dll` within the ESET agent's program files directory should be treated as a critical alert and an immediate indicator of compromise. This technique is effective because the attacker must place the malicious file on disk for the side-loading to work, creating a detectable artifact.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "dpapi.dll",
+      "description": "Malicious DLL impersonating a legitimate Windows file."
+    },
+    {
+      "type": "file_name",
+      "value": "ERAAgent.exe",
+      "description": "Legitimate ESET process targeted for DLL side-loading."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "C:\\Program Files\\ESET\\RemoteAdministrator\\Agent\\dpapi.dll",
+      "description": "The presence of 'dpapi.dll' in the ESET agent directory is a strong indicator of compromise, as this DLL should reside in System32.",
+      "context": "File integrity monitoring, endpoint scanning, forensic analysis.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "ERAAgent.exe",
+      "description": "The host process for the side-loading attack. Monitoring this process for anomalous behavior is key.",
+      "context": "EDR logs, process monitoring tools.",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "Promiscuous Mode",
+      "description": "The malware may place the network interface in promiscuous mode to sniff all traffic. Detecting unauthorized NIC mode changes can be an indicator.",
+      "context": "Host-based intrusion detection systems (HIDS), endpoint security agents.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Backdoor",
+    "Passive Implant",
+    "DLL Side-loading",
+    "Magic Packet",
+    "ESET",
+    "Stealth"
+  ],
+  "extract_datetime": "2026-08-26T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global"
+  },
+  "pub_date": "2026-08-26",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-08-26T15:00:00.000Z",
+  "updatedAt": "2026-08-26T15:00:00.000Z"
+}

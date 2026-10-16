@@ -1,0 +1,83 @@
+title: Potential CVE-2026-41089 Netlogon RCE Exploitation
+id: 2b8f6c1d-9a3e-4b7c-8d5f-1a2b3c4d5e6f
+status: experimental
+description: Detects suspicious child processes spawning from the LSASS process on domain controllers, which could indicate exploitation of the Netlogon RCE vulnerability CVE-2026-41089.
+references:
+  - https://www.darkreading.com/vulnerabilities-threats/patch-tuesday-microsoft-not-a-zero-day-in-sight
+author: cyber.netsecops.io
+date: 2026-05-13
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\lsass.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: selection
+falsepositives:
+  - Highly unlikely. LSASS should not be spawning command shells.
+level: critical
+---
+title: Potential CVE-2026-41096 DNS Client RCE Exploitation
+id: 9e8d7c6b-5a4f-3e2d-1c0b-9a8b7c6d5e4f
+status: experimental
+description: Detects the DNS Client service (svchost.exe hosting Dnscache) spawning suspicious child processes, which could indicate exploitation of the DNS Client RCE vulnerability CVE-2026-41096.
+references:
+  - https://www.darkreading.com/vulnerabilities-threats/patch-tuesday-microsoft-not-a-zero-day-in-sight
+author: cyber.netsecops.io
+date: 2026-05-13
+tags:
+  - attack.t1203
+  - attack.execution
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\svchost.exe'
+    ParentCommandLine|contains: 'Dnscache'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\rundll32.exe'
+      - '\mshta.exe'
+  condition: selection
+falsepositives:
+  - Legitimate but rare administrative actions. Should be investigated.
+level: high
+---
+title: Potential Office RCE via Preview Pane Exploitation
+id: 7a6b5c4d-3e2f-1d0c-9b8a-7f6e5d4c3b2a
+status: experimental
+description: Detects Microsoft Word or Outlook spawning suspicious child processes, which could indicate exploitation of vulnerabilities like CVE-2026-40361 or CVE-2026-40464 via the preview pane.
+references:
+  - https://www.darkreading.com/vulnerabilities-threats/patch-tuesday-microsoft-not-a-zero-day-in-sight
+author: cyber.netsecops.io
+date: 2026-05-13
+tags:
+  - attack.t1203
+  - attack.execution
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\winword.exe'
+      - '\outlook.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+  condition: selection
+falsepositives:
+  - Legitimate use of macros or add-ins, but such behavior is highly suspicious and warrants investigation.
+level: high

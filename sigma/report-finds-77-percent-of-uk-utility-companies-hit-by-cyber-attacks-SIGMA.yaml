@@ -1,0 +1,56 @@
+title: Anomalous IT to OT Network Traffic
+id: 2b8a1c3d-f4e5-4b9a-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects RDP or SMB traffic originating from the corporate IT network and destined for the OT network, which could indicate an attacker pivoting from IT to OT. This rule requires site-specific tuning of the 'IT_Subnets' and 'OT_Subnets' lists.
+references:
+  - https://www.energylivenews.com/2026/06/18/staggering-77-of-utility-companies-hit-by-cyber-attacks/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1021.001
+  - attack.t1021.002
+  - attack.lateral_movement
+falsepositives:
+  - Legitimate administrative access from designated jump servers or management workstations. Filter these out by source IP.
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip|cidr:
+      - 192.168.0.0/16 # Placeholder for IT_Subnets
+      - 10.0.0.0/8     # Placeholder for IT_Subnets
+    dst_ip|cidr:
+      - 172.16.0.0/12  # Placeholder for OT_Subnets
+    dst_port:
+      - 3389 # RDP
+      - 445  # SMB
+  filter_jump_server:
+    src_ip:
+      - 10.1.1.1 # Placeholder for legitimate jump server IP
+  condition: selection and not filter_jump_server
+---
+title: PowerShell Execution on HMI Workstation
+id: eb6f76f1-4355-46ea-a09b-ae32bcf7c11a
+status: experimental
+description: Detects the execution of PowerShell on a Human-Machine Interface (HMI) workstation. This is highly suspicious and may indicate an attacker attempting to script interactions with the control system. The rule's effectiveness depends on correctly identifying HMI hostnames.
+references:
+  - https://www.energylivenews.com/2026/06/18/staggering-77-of-utility-companies-hit-by-cyber-attacks/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1059.001
+  - attack.execution
+falsepositives:
+  - Legitimate administrative scripting on HMIs, although this should be rare.
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    ComputerName|contains:
+      - 'HMI' # Placeholder for HMI naming convention
+      - 'SCADA' # Placeholder for HMI naming convention
+  condition: selection

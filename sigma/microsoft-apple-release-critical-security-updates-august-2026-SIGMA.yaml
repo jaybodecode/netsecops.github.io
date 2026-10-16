@@ -1,0 +1,67 @@
+title: Suspicious Child Process of macOS Screen Sharing Daemon
+id: 2b8a1c9d-e4f5-4a1b-8c7d-9e0f1a2b3c4d
+status: experimental
+description: Detects unexpected child processes spawned by the macOS Screen Sharing daemon (screensharingd), which could indicate exploitation of an authentication bypass like CVE-2026-65400.
+references:
+  - https://www.securityweek.com/microsoft-apple-release-fresh-security-updates/
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1548
+level: medium
+logsource:
+  category: process_creation
+  product: macos
+detection:
+  selection:
+    ParentImage|endswith: '/screensharingd'
+  filter_known_good:
+    Image|endswith:
+      - '/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/MacOS/ARDAgent'
+  condition: selection and not filter_known_good
+---
+title: Anomalous Connection to macOS Screen Sharing Port
+id: 8d1e2f3a-b4c5-4d6e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: 'Detects unusual network connections to port 5900 (VNC/Screen Sharing) on macOS devices, which may indicate attempts to exploit vulnerabilities like CVE-2026-65400.'
+references:
+  - https://www.securityweek.com/microsoft-apple-release-fresh-security-updates/
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1021
+level: low
+logsource:
+  category: network_connection
+  product: macos
+detection:
+  selection:
+    DestinationPort: 5900
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '::1/128'
+  condition: selection and not filter_local
+---
+title: Potential Active Directory Privilege Escalation Attempt
+id: 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d
+status: experimental
+description: 'Monitors for anomalous privilege escalation events in Active Directory, such as special privileges being assigned to non-administrative accounts, which could indicate exploitation of vulnerabilities like CVE-2026-50481.'
+references:
+  - https://www.securityweek.com/microsoft-apple-release-fresh-security-updates/
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1068
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4672 # Special privileges assigned to new logon
+  filter_admins:
+    AccountName|endswith:
+      - 'Administrator'
+      - '$' # Exclude machine accounts
+  condition: selection and not filter_admins

@@ -1,0 +1,194 @@
+{
+  "id": "fc168390-4e29-40cf-a7de-ea62c12abe0c",
+  "slug": "chinese-apt-silverfox-targets-japanese-manufacturer-with-valleyrat",
+  "headline": "SilverFox APT Hits Japanese Manufacturer with Advanced ValleyRAT",
+  "title": "SilverFox APT Uses ValleyRAT in Attack on Japan",
+  "summary": "The Chinese-speaking APT group SilverFox has been identified in a sophisticated attack against a Japanese industrial manufacturer. The campaign uses invoice-themed phishing emails to deliver a complex, multi-stage payload. Key TTPs include DLL sideloading using legitimate executables ('ConvertToPDF.exe'), the use of a new modular payload named 'PDFCORE8.dll', and privilege escalation via vulnerable kernel drivers. The final payload is an advanced, dual-layer version of the ValleyRAT backdoor, designed for resilient persistence and defense evasion. The attack highlights the group's evolving capabilities and focus on long-term espionage in the manufacturing sector.",
+  "full_report": "## Executive Summary\nThe Chinese-speaking Advanced Persistent Threat (APT) group **SilverFox** is behind a new, sophisticated cyber-espionage campaign targeting a Japanese industrial manufacturing company. As reported by Cato CTRL, the attack chain demonstrates significant advancements in the group's tactics, techniques, and procedures (TTPs). The campaign leverages invoice-themed phishing lures, novel DLL sideloading techniques, and culminates in the deployment of a highly resilient, dual-layer version of the **ValleyRAT** remote access trojan. The use of multiple defense evasion and persistence mechanisms, including vulnerable kernel drivers and registry-based payload storage, underscores the group's determination to maintain long-term, stealthy access to its targets.\n\n---\n\n## Threat Overview\nThe attack begins with a classic spear-phishing email containing an invoice-themed lure. This lure directs the victim to download content from legitimate cloud services like **QQ** and **Tencent Cloud** to bypass initial security filters. The core of the intrusion involves abusing legitimate software to load malicious code, a technique designed to blend in with normal system activity. The ultimate goal is to install ValleyRAT, a backdoor that provides the attackers with full remote control over the compromised system for data exfiltration and further lateral movement.\n\n---\n\n## Technical Analysis\nSilverFox's attack chain is multi-staged and complex, focusing heavily on defense evasion and persistence.\n\n**Attack Chain:**\n1.  **Initial Access:** The campaign starts with [`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/) or a link, leading to [`T1204.002 - Malicious File`](https://attack.mitre.org/techniques/T1204/002/).\n2.  **Execution & Defense Evasion:** The attackers use [`T1574.002 - DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/). They abuse legitimate executables `ConvertToPDF.exe` and `PDFDirect.exe` to load a malicious DLL named `PDFCORE8.dll`.\n3.  **Staging and Privilege Escalation:** The `PDFCORE8.dll` is a modular payload that performs several actions:\n    *   It uses vulnerable kernel drivers (`BootRepair.sys`, `EnPortv.sys`) for privilege escalation, a form of [`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/).\n    *   It terminates security processes ([`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/)).\n    *   It unhooks NTDLL functions to bypass EDR monitoring ([`T1055.012 - Process Hollowing`](https://attack.mitre.org/techniques/T1055/012/)).\n4.  **Persistence:** The malware achieves persistence using a dual-layer architecture. The payload is stored in the system registry ([`T1112 - Modify Registry`](https://attack.mitre.org/techniques/T1112/)) and a loader ensures its execution, providing resilience if one component is removed.\n5.  **Command and Control:** The final payload, **ValleyRAT**, establishes a C2 channel for remote access and data exfiltration.\n\n---\n\n## Impact Assessment\nThe primary impact of this campaign is industrial espionage. By gaining persistent access to a manufacturer's network, SilverFox can steal valuable intellectual property, such as product designs, manufacturing processes, proprietary formulas, and business strategies. This theft can lead to significant financial loss and erosion of competitive advantage for the victim company. The compromise of a manufacturing firm could also potentially lead to operational disruption if the attackers choose to move from espionage to sabotage. The sophistication of the toolset indicates that SilverFox is a well-resourced actor capable of maintaining long-term, undetected access, making full remediation difficult and costly.\n\n---\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify this or similar activity:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| `file_name` | `PDFCORE8.dll` | The primary malicious DLL loader. Its presence alongside `ConvertToPDF.exe` is highly suspicious. | File system monitoring, EDR logs. |\n| `process_name` | `ConvertToPDF.exe` | Monitor this process for unusual child processes or network connections. | Process monitoring (Event ID 4688), EDR. |\n| `file_name` | `BootRepair.sys` / `EnPortv.sys` | Loading of these specific, known-vulnerable drivers is a strong indicator of compromise. | EDR logs, kernel-level monitoring. |\n| `registry_key` | (Monitor for large binary data) | Monitor for large, unusual binary data blobs being written to unexpected registry keys. | Registry monitoring tools, EDR. |\n| `network_traffic_pattern` | Connections to QQ/Tencent Cloud | Outbound connections to `*.qq.com` or `*.qcloud.com` from non-browser processes could indicate payload download. | Proxy logs, DNS logs. |\n\n---\n\n## Detection & Response\n**Detection:**\n*   **Endpoint Detection and Response (EDR):** Deploy an EDR solution capable of detecting DLL sideloading. Create rules to alert on legitimate processes like `ConvertToPDF.exe` loading unsigned or abnormally named DLLs. This is a form of **[Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)** (D3-PA).\n*   **Driver Monitoring:** Monitor for the loading of known vulnerable drivers. Maintain an allowlist of legitimate drivers and alert on any deviations.\n*   **Registry Auditing:** Use security tools to monitor for large or executable content being written to the Windows Registry, a common persistence technique.\n\n**Response:**\n1.  **Isolate:** Isolate compromised endpoints to prevent lateral movement.\n2.  **Triage:** Use EDR and forensic tools to identify all malicious components, including the loader DLL, registry payloads, and the final ValleyRAT backdoor.\n3.  **Eradicate:** Remove all identified malicious files and registry keys. Re-image the system if the extent of the compromise is uncertain.\n\n---\n\n## Mitigation\n**Immediate Actions:**\n1.  **Email Filtering:** Enhance email security gateways to block or quarantine emails with suspicious links or attachments, especially those with invoice-related themes.\n2.  **Application Control:** Use application control solutions like AppLocker to restrict the execution of unauthorized executables and DLLs. This aligns with D3FEND's **[Executable Allowlisting](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)** (D3-EAL).\n\n**Strategic Recommendations:**\n*   **Attack Surface Reduction:** Harden endpoints by enabling Attack Surface Reduction (ASR) rules in Microsoft Defender to block common malicious behaviors, such as office applications creating executable content or process injection.\n*   **User Training:** Train users to identify and report phishing emails. This is a critical first line of defense against campaigns like this.\n*   **EDR with Behavioral Blocking:** Invest in an EDR solution that focuses on behavioral detection rather than just static signatures. This is key to catching novel techniques like the unhooking and process hijacking used by SilverFox.",
+  "twitter_post": "Chinese APT group SilverFox targets Japanese manufacturer with a sophisticated version of ValleyRAT. The campaign uses phishing, DLL sideloading, and vulnerable kernel drivers for stealthy, persistent access and espionage. #APT #ThreatIntel #ValleyRAT",
+  "meta_description": "The Chinese APT group SilverFox is targeting Japanese manufacturing with an advanced campaign using the ValleyRAT backdoor, delivered via phishing and DLL sideloading.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Phishing"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "SilverFox",
+      "type": "threat_actor"
+    },
+    {
+      "name": "ValleyRAT",
+      "type": "malware"
+    },
+    {
+      "name": "PDFCORE8.dll",
+      "type": "malware"
+    },
+    {
+      "name": "QQ",
+      "type": "product"
+    },
+    {
+      "name": "Tencent Cloud",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securityaffairs.com/196347/apt/silverfox-targets-japanese-manufacturer-with-advanced-valleyrat-campaign.html",
+      "title": "SilverFox Targets Japanese Manufacturer With Advanced ValleyRAT Campaign",
+      "date": "2026-07-31",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1112",
+      "name": "Modify Registry",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application control to prevent the execution of unauthorized DLLs and executables.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Deploy EDR/AV solutions with behavioral detection to identify suspicious process chains like DLL sideloading.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train employees to recognize and report phishing attempts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1028",
+      "name": "Operating System Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PH",
+          "name": "Platform Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening"
+        }
+      ],
+      "description": "Harden systems to prevent the loading of vulnerable drivers.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Implement a strict application control policy using a tool like Windows Defender Application Control (WDAC) or AppLocker. This policy should be configured in an enforcement mode that prevents the loading of unauthorized or unsigned DLLs. Specifically for this threat, a rule should be created to prevent the legitimate 'ConvertToPDF.exe' and 'PDFDirect.exe' processes from loading any DLLs that are not part of their standard, signed installation. This directly breaks the attack chain at the DLL sideloading stage. Furthermore, a broader policy should prevent the loading of known vulnerable drivers like 'BootRepair.sys' and 'EnPortv.sys' across the enterprise. While building and maintaining an allowlist requires an initial investment in baselining, it is one of the most effective controls against malware that relies on executing unauthorized code, including sophisticated RATs like ValleyRAT.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Leverage an Endpoint Detection and Response (EDR) solution to perform advanced process analysis and behavioral monitoring. Configure detection rules to specifically hunt for the TTPs used by SilverFox. For example, create a high-severity alert for when a process like 'ConvertToPDF.exe' spawns a child process (e.g., 'cmd.exe', 'powershell.exe') or makes an outbound network connection, as this is anomalous behavior. Additionally, monitor for processes that attempt to load vulnerable drivers or terminate security tools. EDRs can also detect API unhooking techniques. By focusing on the sequence of behaviors—a legitimate process loading an unsigned DLL, which then attempts to escalate privileges and terminate defenses—security teams can create a high-fidelity detection that is resilient to changes in malware file names or hashes.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "PDFCORE8.dll",
+      "description": "Malicious DLL used for sideloading by legitimate executables like 'ConvertToPDF.exe'.",
+      "context": "File integrity monitoring, EDR alerts",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "ConvertToPDF.exe",
+      "description": "Legitimate process abused for DLL sideloading. Monitor for this process loading unsigned DLLs or making network connections.",
+      "context": "Process creation logs (Windows Event ID 4688), EDR",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "BootRepair.sys",
+      "description": "Known vulnerable kernel driver used for privilege escalation.",
+      "context": "Driver load monitoring, EDR",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "EnPortv.sys",
+      "description": "Known vulnerable kernel driver used for privilege escalation.",
+      "context": "Driver load monitoring, EDR",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "SilverFox",
+    "APT",
+    "ValleyRAT",
+    "DLL Sideloading",
+    "Phishing",
+    "Japan",
+    "Manufacturing"
+  ],
+  "extract_datetime": "2026-07-31T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Japan"
+    ],
+    "industries_affected": [
+      "Manufacturing"
+    ]
+  },
+  "pub_date": "2026-07-31",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-31T15:00:00.000Z",
+  "updatedAt": "2026-07-31T15:00:00.000Z"
+}

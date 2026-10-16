@@ -1,0 +1,228 @@
+{
+  "id": "c09d924a-5ee4-401c-b8d6-3e66baa5ce3a",
+  "slug": "phishing-campaign-deploys-purelogs-variant-to-steal-data",
+  "headline": "PureLogs Malware Variant Delivered via Multi-Stage Phishing Attack",
+  "title": "Phishing Campaign Uses JavaScript and Process Hollowing to Deploy PureLogs Data Stealer",
+  "summary": "Security researchers at FortiGuard Labs have uncovered a new phishing campaign distributing a variant of the PureLogs data-stealing malware. The attack begins with a deceptive email containing a malicious RAR archive. The attack chain involves obfuscated JavaScript, PowerShell, and the process hollowing of a legitimate Windows process (MsBuild.exe) to inject and execute the malware. This multi-stage approach is designed to evade detection and steal a wide range of sensitive information from compromised Microsoft Windows systems.",
+  "full_report": "## Executive Summary\nA sophisticated phishing campaign is actively distributing a variant of the **PureLogs** data-stealing malware. The attack, analyzed by **[FortiGuard Labs](https://www.fortinet.com/fortiguard/labs)**, employs a multi-stage infection process to bypass security controls and achieve execution on target systems. The campaign starts with a classic social engineering lure—a fake purchase order email—and escalates through a chain of obfuscated scripts and advanced evasion techniques, including process hollowing. The ultimate goal of the campaign is to collect and exfiltrate sensitive data from victims using the modular capabilities of the PureLogs malware.\n\n---\n\n## Threat Overview\nThe campaign targets **[Microsoft](https://www.microsoft.com/security)** Windows users through phishing emails. These emails are crafted to appear as legitimate business communications, such as a purchase order, to entice the user to open a malicious attachment. The attachment is a RAR archive containing a malicious JavaScript file. The use of multiple stages and legitimate system tools like **[PowerShell](https://attack.mitre.org/techniques/T1059/001/)** and `MsBuild.exe` is a deliberate tactic to make the attack look like normal system activity and to evade signature-based detection tools. The modular nature of the final payload allows the attackers to dynamically extend its functionality post-compromise.\n\n---\n\n## Technical Analysis\nThe attack chain is a well-orchestrated sequence of events designed for stealth and effectiveness:\n\n1.  **Initial Delivery:** The victim receives a phishing email with a RAR archive attachment (e.g., `PO 2026-P0803.rar`). This is a form of [`T1566.001 - Spearphishing Attachment`](https://attack.mitre.org/techniques/T1566/001/).\n2.  **JavaScript Execution:** Inside the archive is a malicious JavaScript file. When the user executes this file, it runs an obfuscated script ([`T1059.007 - JavaScript`](https://attack.mitre.org/techniques/T1059/007/)).\n3.  **PowerShell Invocation:** The JavaScript decrypts and executes a PowerShell script. This script acts as the second-stage loader ([`T1059.001 - PowerShell`](https://attack.mitre.org/techniques/T1059/001/)).\n4.  **Process Hollowing:** The PowerShell script uses a technique known as process hollowing ([`T1055.012 - Process Hollowing`](https://attack.mitre.org/techniques/T1055/012/)). It starts a legitimate, trusted Windows process, `MsBuild.exe`, in a suspended state. It then carves out the memory of this legitimate process and injects a malicious .NET downloader module into it.\n5.  **Payload Fetching:** The injected downloader, now running under the guise of `MsBuild.exe`, communicates with a remote command-and-control (C2) server.\n6.  **Modular Execution:** The C2 server delivers additional plugins and the main PureLogs data-stealing payload, which are then executed by the compromised `MsBuild.exe` process. This modularity allows for flexible post-exploitation activities, including keylogging, credential theft, and file exfiltration.\n\n---\n\n## Impact Assessment\nThe PureLogs malware is designed for data theft, posing a significant risk to both individuals and organizations. A successful infection could lead to:\n*   **Credential Compromise:** Theft of usernames, passwords, and session tokens for web browsers, email clients, and other applications.\n*   **Financial Data Theft:** Exfiltration of credit card numbers, banking information, and cryptocurrency wallet data.\n*   **Data Breach:** Loss of sensitive corporate or personal files.\n*   **Further Compromise:** The stolen credentials can be used to facilitate lateral movement, further network intrusion, or be sold on dark web marketplaces.\n\n---\n\n## IOCs — Directly from Articles\nThe source articles mentioned the filename pattern `PO 2026-P0803.rar` as an example, but did not provide specific, actionable IOCs.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for this activity by looking for the following patterns:\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| Process Anomaly | `wscript.exe` or `cscript.exe` spawning `powershell.exe` | The initial JavaScript execution often leads to PowerShell being launched. This parent-child relationship can be a strong indicator. |\n| Process Anomaly | `powershell.exe` spawning `MsBuild.exe` | The PowerShell script launching the target for process hollowing is another suspicious event. |\n| Network Traffic | `MsBuild.exe` making outbound network connections | `MsBuild.exe` is a build tool and should not typically make direct connections to the internet, especially to unknown IPs. This is a high-confidence indicator of compromise. |\n| File Creation | `.rar` files in email attachments | While common, this can be correlated with other heuristics as part of an initial filter for malicious emails. |\n\n---\n\n## Detection & Response\n*   **Email Security:** Use advanced email security gateways (like the mentioned FortiMail) to block emails with malicious attachments. Configure policies to scan inside archives like RAR and ZIP.\n*   **Script Execution Policies:** Restrict the execution of JavaScript and PowerShell scripts. Use PowerShell Constrained Language Mode and enable script block logging.\n*   **EDR and Behavioral Monitoring:** Deploy an EDR solution that can detect process hollowing by monitoring for suspicious API calls like `CreateProcess`, `WriteProcessMemory`, and `ResumeThread` being used in an unusual sequence. Alert on legitimate system utilities like `MsBuild.exe` making external network connections.\n*   **D3FEND:** Utilize [`D3-PA - Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) to detect the abnormal behavior of `MsBuild.exe` and the process hollowing technique.\n\n---\n\n## Mitigation\n*   **User Training:** Educate users to be suspicious of unsolicited emails, especially those with attachments that require them to extract files. Reinforce that purchase orders and other business documents are typically sent as PDFs, not scripts in RAR files.\n*   **Attachment Blocking:** Configure email servers to block or quarantine potentially dangerous file types, including `.js`, `.vbs`, and executables within archives.\n*   **Attack Surface Reduction (ASR):** Enable ASR rules on Windows endpoints, such as \"Block JavaScript or VBScript from launching downloaded executable content\" and \"Block process creations originating from PSExec and WMI commands.\"\n*   **D3FEND:** Implement [`D3-EAL - Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting) to prevent the initial JavaScript file from being executed by the script host.",
+  "twitter_post": "⚠️ A new phishing campaign is deploying the PureLogs data-stealer! The attack uses a malicious JS file in a RAR attachment, then PowerShell & process hollowing to inject malware into MsBuild.exe. #Phishing #Malware #PureLogs #InfoStealer",
+  "meta_description": "A new phishing campaign is distributing a variant of the PureLogs data-stealing malware using a multi-stage attack involving JavaScript, PowerShell, and process hollowing.",
+  "category": [
+    "Phishing",
+    "Malware",
+    "Data Breach"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "PureLogs",
+      "type": "malware"
+    },
+    {
+      "name": "FortiGuard Labs",
+      "type": "security_organization",
+      "url": "https://www.fortinet.com/fortiguard/labs"
+    },
+    {
+      "name": "PowerShell",
+      "type": "technology",
+      "url": "https://attack.mitre.org/software/S0194/"
+    },
+    {
+      "name": "MsBuild.exe",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft Windows",
+      "type": "product"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data",
+      "title": "Phishing Campaign Deploys JavaScript-Driven PureLogs Variant to Steal Sensitive Data | FortiGuard Labs",
+      "date": "2026-05-26",
+      "friendly_name": "FortiGuard Labs",
+      "website": "fortinet.com"
+    },
+    {
+      "url": "https://www.any.run/cybersecurity-blog/major-cyber-attacks-in-may-2026/",
+      "title": "Major Cyber Attacks in May 2026: Fake Invitations, Agent Tesla, BlobPhish, and More",
+      "date": "2026-05-26",
+      "friendly_name": "ANY.RUN",
+      "website": "any.run"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript"
+    },
+    {
+      "id": "T1059.001",
+      "name": "PowerShell"
+    },
+    {
+      "id": "T1055.012",
+      "name": "Process Hollowing"
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "d3fend_techniques": [],
+      "description": "Train users to recognize and report phishing emails and to be wary of unexpected attachments, especially archives containing scripts."
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        },
+        {
+          "id": "D3-PSEP",
+          "name": "Process Segment Execution Prevention",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessSegmentExecutionPrevention"
+        }
+      ],
+      "description": "Use application control and script execution policies to prevent the initial JavaScript and subsequent PowerShell scripts from running."
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ANET",
+          "name": "Authentication Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthenticationEventThresholding"
+        },
+        {
+          "id": "D3-AZET",
+          "name": "Authorization Event Thresholding",
+          "url": "https://d3fend.mitre.org/technique/d3f:AuthorizationEventThresholding"
+        },
+        {
+          "id": "D3-JFAPA",
+          "name": "Job Function Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:JobFunctionAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        },
+        {
+          "id": "D3-SDA",
+          "name": "Session Duration Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SessionDurationAnalysis"
+        },
+        {
+          "id": "D3-UDTA",
+          "name": "User Data Transfer Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserDataTransferAnalysis"
+        },
+        {
+          "id": "D3-UGLPA",
+          "name": "User Geolocation Logon Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis"
+        },
+        {
+          "id": "D3-WSAA",
+          "name": "Web Session Activity Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis"
+        }
+      ],
+      "description": "Use an EDR to detect and block malicious behaviors like process hollowing and unusual network connections from system utilities."
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "To detect the PureLogs campaign, security teams must leverage process analysis capabilities within their EDR solution. Specifically, create detection rules that focus on the anomalous behavior of `MsBuild.exe`. A high-fidelity alert should be generated whenever `MsBuild.exe` initiates an outbound network connection, as this is highly uncharacteristic of its normal function. Additionally, monitor process ancestry. An alert should trigger if `powershell.exe` is observed spawning `MsBuild.exe`, or if a script host like `wscript.exe` spawns `powershell.exe`. These chains of events are strong indicators of the attack sequence. By analyzing these process-level behaviors, defenders can identify the process hollowing technique and the subsequent C2 communication, even if the file-based components of the malware are heavily obfuscated.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-FA",
+      "technique_name": "File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileAnalysis",
+      "recommendation": "Implement robust file analysis at the email gateway to proactively block the initial PureLogs delivery vector. Configure email security solutions to perform deep analysis of attachments, including de-archiving `.rar` files. The system should be capable of identifying and blocking obfuscated JavaScript files. This involves more than just signature matching; it requires heuristic analysis to detect suspicious script characteristics, such as large encoded strings or calls to `eval()`. By analyzing and blocking the malicious JavaScript dropper before it reaches the user's inbox, the entire attack chain is prevented. This is a critical first line of defense against this type of multi-stage phishing attack.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "MsBuild.exe",
+      "description": "The legitimate Microsoft Build Engine process that is being hollowed out by the malware to inject its malicious code.",
+      "context": "EDR process monitoring, process creation logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "powershell.exe -ExecutionPolicy Bypass -File",
+      "description": "A common command line pattern used to execute a malicious PowerShell script, bypassing local execution policies.",
+      "context": "Process creation logs (Event ID 4688 with command line auditing).",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connection from MsBuild.exe",
+      "description": "The MsBuild.exe process should not be making outbound network connections. This behavior is a strong indicator of compromise, likely the injected code calling back to a C2 server.",
+      "context": "Firewall logs, NetFlow data, EDR network events.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "purelogs",
+    "phishing",
+    "malware",
+    "infostealer",
+    "process hollowing",
+    "powershell",
+    "fortiguard"
+  ],
+  "extract_datetime": "2026-05-27T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [],
+    "other_affected": [
+      "Microsoft Windows users"
+    ]
+  },
+  "pub_date": "2026-05-27",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-05-27T15:00:00.000Z",
+  "updatedAt": "2026-05-27T15:00:00.000Z"
+}

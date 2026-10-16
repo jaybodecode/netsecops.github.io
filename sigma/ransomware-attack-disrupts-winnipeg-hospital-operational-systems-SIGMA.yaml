@@ -1,0 +1,75 @@
+title: Suspicious IT to OT Network Traffic
+id: 2b1a9c8d-e3f4-4a5b-8c6d-1e2f3a4b5c6d
+status: experimental
+description: 'Monitors for unusual connections from a general IT network to a sensitive OT network using protocols like RDP, SMB, or WinRM, which could indicate lateral movement.'
+references:
+  - https://winnipeg.citynews.ca/2026/08/17/health-sciences-centre-winnipeg-ransomware-attack-update/
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1021
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip_zone: 'it_network' # This is a placeholder and needs to be adapted to the specific environment
+    dst_ip_zone: 'ot_network' # This is a placeholder and needs to be adapted to the specific environment
+    dst_port:
+      - 3389 # RDP
+      - 445 # SMB
+      - 5985 # WinRM HTTP
+      - 5986 # WinRM HTTPS
+  condition: selection
+---
+title: Potential Network Tunneling Tool Execution
+id: a4b444a4-65df-4f4d-9cf3-5e2811d98d14
+status: experimental
+description: 'Detects the execution of plink.exe or chisel.exe, which are tools often used by attackers to create tunnels between network segments.'
+references:
+  - https://winnipeg.citynews.ca/2026/08/17/health-sciences-centre-winnipeg-ransomware-attack-update/
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1572
+  - attack.command_and_control
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\plink.exe'
+      - '\chisel.exe'
+  condition: selection
+---
+title: Attempted Mapping of OT Administrative Share
+id: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: 'Detects attempts to map an administrative share (C$) on a remote server, which could indicate lateral movement towards an OT server.'
+references:
+  - https://winnipeg.citynews.ca/2026/08/17/health-sciences-centre-winnipeg-ransomware-attack-update/
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1021.002
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_net:
+    Image|endswith:
+      - '\net.exe'
+      - '\net1.exe'
+  selection_cmd:
+    CommandLine|contains:
+      - ' use '
+      - '\\'
+      - '\C$'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate administrative activity.

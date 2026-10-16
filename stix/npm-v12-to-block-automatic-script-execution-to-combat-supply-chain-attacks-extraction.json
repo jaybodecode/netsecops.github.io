@@ -1,0 +1,188 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-10T14:48:25.671Z",
+    "article_slug": "npm-v12-to-block-automatic-script-execution-to-combat-supply-chain-attacks",
+    "article_date": "2026-07-10",
+    "token_usage": {
+      "input_tokens": 145503,
+      "output_tokens": 2185,
+      "cached_tokens": 140082,
+      "total_tokens": 147688,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.046136
+    }
+  },
+  "report_name": "NPM v12 to Disable Automatic Script Execution, Boosting Supply Chain Security",
+  "threat_actors": [
+    {
+      "name": "TeamPCP",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A threat actor group that has abused the automatic execution of NPM install scripts to infect developers and conduct supply chain attacks.",
+      "sophistication": "intermediate"
+    },
+    {
+      "name": "Shai-Hulud operators",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The unidentified threat actors responsible for creating and distributing the Shai-Hulud worm, which leveraged NPM's automatic script execution for self-replication and spreading through the ecosystem.",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Supply Chain",
+      "mitre_id": "T1195.002",
+      "description": "Threat actors compromised popular NPM packages or published typosquatted packages with malicious 'install' scripts. When developers installed these packages, the malicious scripts would automatically execute, compromising their systems."
+    },
+    {
+      "name": "User Execution",
+      "mitre_id": "T1204.002",
+      "description": "The `npm install` command, when run by a developer, served as the trigger for executing malicious code embedded within the `install` scripts of a compromised dependency. This represents the 'Malicious File' execution vector in the context of NPM packages."
+    },
+    {
+      "name": "Command and Scripting Interpreter",
+      "mitre_id": "T1059",
+      "description": "NPM lifecycle scripts (`preinstall`, `install`, `postinstall`) were abused by threat actors to run arbitrary shell commands on a developer's machine during the package installation process."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Shai-Hulud",
+      "mitre_id": "",
+      "type": "worm",
+      "is_family": true,
+      "aliases": [],
+      "description": "A self-replicating worm that spread through the NPM ecosystem by abusing the automatic execution of `install` scripts in package dependencies.",
+      "external_references": [
+        {
+          "source_name": "malpedia",
+          "external_id": "js.shai_hulud"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "NPM",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A package manager for the JavaScript programming language whose default behavior of automatically executing install scripts was exploited in supply chain attacks. The upcoming version 12 will change this behavior for security reasons.",
+      "tool_version": "12"
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "GitHub",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The company that owns NPM and announced the security change in NPM v12 to disable automatic script execution by default."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "package.json"
+    },
+    {
+      "type": "file",
+      "name": ".npmrc"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "NPM Configuration File Access",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "[file:name = 'package.json' OR file:name = '.npmrc']",
+      "x_netsecio_sigma_rule": "title: NPM Configuration File Access\nid: 2b8c1f3a-9e4d-4f8a-b1c3-d2e4f6a8b0c1\nstatus: experimental\ndescription: Detects access to npm configuration files 'package.json' or '.npmrc'. This is for auditing purposes as these files are commonly accessed during development.\nauthor: cyber.netsecops.io\ndate: 2026-06-14\nreferences:\n  - https://www.securityweek.com/npm-12-will-change-script-execution-behavior-to-prevent-supply-chain-attacks/\nlevel: informational\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith:\n      - '\\package.json'\n      - '\\.npmrc'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects access to NPM configuration files `package.json` and `.npmrc`, which are central to dependency management and script execution settings."
+    },
+    {
+      "name": "Potentially Insecure NPM Install Execution",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Potentially Insecure NPM Install Execution\nid: 5d1e8a9b-3c7f-4b1a-9d6e-8f0a1b2c3d4e\nstatus: experimental\ndescription: Detects the execution of 'npm install' without the '--ignore-scripts' flag. In NPM versions prior to 12, this command automatically executes lifecycle scripts from dependencies, which is a known vector for supply chain attacks.\nauthor: cyber.netsecops.io\ndate: 2026-06-14\nreferences:\n  - https://www.securityweek.com/npm-12-will-change-script-execution-behavior-to-prevent-supply-chain-attacks/\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_npm:\n    Image|endswith: '\\npm.cmd'\n    CommandLine|contains: ' install'\n  filter_ignore:\n    CommandLine|contains: ' --ignore-scripts'\n  condition: selection_npm and not filter_ignore\nfalsepositives:\n  - Legitimate installations of packages that are known to be safe.\n  - Will trigger on all default npm installs prior to version 12.",
+      "description": "Detects the execution of `npm install` in a manner that would permit automatic script execution in vulnerable NPM versions, a behavior exploited in supply chain attacks."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Shai-Hulud operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Shai-Hulud",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Shai-Hulud operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Shai-Hulud",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "User Execution",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Shai-Hulud",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "GitHub",
+      "source_type": "identity",
+      "relationship_type": "develops",
+      "target_name": "NPM",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "NPM Configuration File Access",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "package.json",
+      "target_type": "file"
+    },
+    {
+      "source_name": "NPM Configuration File Access",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": ".npmrc",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Potentially Insecure NPM Install Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

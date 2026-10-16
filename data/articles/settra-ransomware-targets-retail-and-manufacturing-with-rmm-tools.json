@@ -1,0 +1,265 @@
+{
+  "id": "6be75ae7-6d7c-4bd8-af72-4469bc8ac677",
+  "slug": "settra-ransomware-targets-retail-and-manufacturing-with-rmm-tools",
+  "headline": "Settra Ransomware Hits Retail, Manufacturing With RMM Tools",
+  "title": "Settra Ransomware Targets Retail and Manufacturing",
+  "summary": "A new ransomware variant named Settra is actively targeting retail and manufacturing organizations. According to research from Huntress, the group, first seen in June 2026, uses consistent post-exploitation tactics. These include deploying the open-source RMM tool MeshAgent for persistence, clearing Windows Event Logs to cover their tracks, and disabling the Windows Recovery Environment. In a recent attack, the group also used a 'Bring Your Own Vulnerable Driver' (BYOVD) technique involving a legitimate Gigabyte driver to disable security software.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Huntress](https://www.huntress.com/)** have detailed the tactics of a new ransomware group known as **Settra**, which has been actively targeting the retail and manufacturing sectors since at least June 2026. The group employs a consistent and effective post-compromise playbook, leveraging the open-source Remote Monitoring and Management (RMM) tool **[MeshAgent](https://meshcentral.com/)** for persistent access. To hinder recovery and forensic analysis, Settra operators systematically clear Windows Event Logs and disable the Windows Recovery Environment. In a recent incident, the attackers also utilized a Bring Your Own Vulnerable Driver (BYOVD) technique, using a legitimate **[Gigabyte](https://www.gigabyte.com)** kernel driver (`gdrv.sys`) to bypass security controls. The group practices double extortion, threatening to leak stolen data on its leak site.\n\n---\n\n## Threat Overview\nThe **Settra** ransomware group has been operational since at least June 2026 and has claimed 93 victims according to intelligence from SOCRadar. While initial access vectors vary, they are thought to include compromised VPN credentials and exploitation of unpatched software. Once inside a network, the threat actors follow a clear pattern of activity focused on establishing persistence, disabling defenses, and preventing recovery before deploying the final ransomware payload.\n\n### Technical Analysis\nAnalysis of two recent incidents by Huntress reveals a structured attack chain:\n1.  **Persistence**: The attackers deploy the open-source RMM tool **MeshAgent** to maintain access. This tool was observed named `mvtcs.exe` in one case, a common tactic to masquerade as a legitimate process. This aligns with [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/).\n2.  **Defense Evasion**: Settra operators take multiple steps to evade detection and hinder response:\n    - **Clear Event Logs**: They use commands to clear critical Windows Event Logs, including `Application`, `Security`, `Setup`, and `System`. This is a direct implementation of [`T1070.001 - Clear Windows Event Logs`](https://attack.mitre.org/techniques/T1070.001/).\n    - **Disable Recovery**: The attackers disable the Windows Recovery Environment using the command `reagentc /disable` and have been seen attempting to delete the recovery partition with `diskpart`. This is a form of [`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/).\n    - **BYOVD**: In a September 2026 attack, the group used a Bring Your Own Vulnerable Driver technique by installing the legitimate but vulnerable Gigabyte driver `gdrv.sys`. This driver is often abused to terminate security processes from the kernel level, a tactic mapped to [`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562.001/).\n3.  **Impact**: The final ransomware payload is deployed, typically named after the victim's domain (e.g., `victimdomain_win64.exe`). The ransomware encrypts files ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)) and the group exfiltrates data for double extortion.\n\n## Impact Assessment\nAn attack by the Settra ransomware group can be devastating for targeted organizations, particularly in the manufacturing and retail sectors. The encryption of critical data can halt production lines, disrupt supply chains, and stop sales operations. The group's focus on disabling recovery options makes restoration from backups more difficult and time-consuming, increasing pressure on the victim to pay the ransom. The double extortion tactic adds the risk of reputational damage, regulatory fines, and loss of customer trust if sensitive data is leaked publicly.\n\n## IOCs — Directly from Articles\n| Type      | Value      | Description                                      |\n|-----------|------------|--------------------------------------------------|\n| File Name | `gdrv.sys` | Legitimate but vulnerable Gigabyte kernel driver.  |\n| File Name | `mvtcs.exe`| Renamed instance of the MeshAgent RMM tool.      |\n\n## Cyber Observables — Hunting Hints\nThe following patterns could indicate related activity:\n- **Process Creation**: Monitor for the execution of `reagentc.exe` with the `/disable` command line argument. This is a strong indicator of an attempt to inhibit system recovery.\n- **File System**: Look for the presence of `gdrv.sys` in unusual locations or the installation of new, unsigned drivers. Monitor for the creation of executables named after your own domain, such as `mydomain_win64.exe`.\n- **Network Traffic**: Monitor for outbound connections to unknown domains or IP addresses on ports commonly used by RMM tools like MeshAgent. Baseline legitimate RMM traffic and alert on deviations.\n- **Event Log Clearing**: While the logs may be cleared, the act of clearing them often generates a specific event (Event ID 1102 in the Security log) just before the log is wiped. If this event is forwarded to a SIEM in real-time, it can serve as a high-fidelity alert.\n\n## Detection & Response\n- **EDR/EPP**: Endpoint solutions should be configured to detect and block the execution of known malicious RMM tools and the loading of known vulnerable drivers like `gdrv.sys`. Use [D3-PA: Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) to detect suspicious command-line activity like `reagentc /disable`.\n- **Log Forwarding**: Ensure all critical endpoint and server logs, especially security event logs, are forwarded to a centralized, immutable SIEM. This preserves evidence even if the local logs are cleared by the attacker.\n- **Driver Blacklisting**: Implement application control policies to blacklist the loading of known vulnerable drivers, including `gdrv.sys`.\n- **RMM Monitoring**: Strictly control and monitor the use of all RMM software in the environment. Any unauthorized RMM installation should trigger an immediate high-priority alert.\n\n## Mitigation\n- **Restrict RMM Tools**: If not required for business operations, block the execution of common RMM tools like MeshAgent using application control policies ([D3-EDL: Executable Denylisting](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting)). If required, strictly limit their use to authorized personnel and monitor all activity.\n- **Backup and Recovery**: Maintain regular, offline, and immutable backups of critical data and systems. Routinely test the recovery process to ensure it is effective and not reliant on the Windows Recovery Environment.\n- **Patch Management**: Aggressively patch internet-facing systems and software to prevent initial access via exploitation.\n- **User Account Control**: Enforce the principle of least privilege. Standard user accounts should not have permissions to install software or drivers.",
+  "twitter_post": "New Settra ransomware targets retail & manufacturing. Huntress reports the group uses MeshAgent RMM for persistence, clears event logs, and uses a vulnerable Gigabyte driver (BYOVD) to disable security tools. #Ransomware #Settra #CyberSecurity",
+  "meta_description": "The new Settra ransomware variant is targeting retail and manufacturing firms using RMM tools for persistence and vulnerable drivers to disable security.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Settra",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Huntress",
+      "type": "security_organization",
+      "url": "https://www.huntress.com/"
+    },
+    {
+      "name": "MeshAgent",
+      "type": "malware"
+    },
+    {
+      "name": "Gigabyte",
+      "type": "vendor",
+      "url": "https://www.gigabyte.com/"
+    },
+    {
+      "name": "SOCRadar",
+      "type": "security_organization"
+    },
+    {
+      "name": "Windows",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.huntress.com/blog/new-settra-ransomware-variant",
+      "title": "Ready, Settra, Go: New Settra Ransomware Variant Deploys MeshAgent RMM",
+      "friendly_name": "Huntress",
+      "website": "huntress.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/09/threatsday-self-rewriting-agents-800.html",
+      "title": "A Roundup of This Week's Most Noteworthy Cybersecurity Threats",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://cypro.co.uk/insights/cyber-bulletins/settra-ransomware-uses-meshagent-against-windows/",
+      "title": "Settra ransomware uses RMM and BYOVD in Windows attacks, Huntress warns",
+      "friendly_name": "Cypro",
+      "website": "cypro.co.uk"
+    },
+    {
+      "url": "https://www.scworld.com/news/settra-ransomware-group-uses-meshagent-rmm-in-recent-attacks",
+      "title": "Settra ransomware uses RMM, possible BYOVD in recent attacks",
+      "friendly_name": "SC Media",
+      "website": "scworld.com"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/settra-ransomware-retail/",
+      "title": "New Settra Ransomware Variant Deployed in Attacks on Retail and Manufacturing",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06",
+      "summary": "Settra ransomware first observed in attacks."
+    },
+    {
+      "datetime": "2026-07",
+      "summary": "Settra attacks a company in the consumer services and retail sector."
+    },
+    {
+      "datetime": "2026-09",
+      "summary": "Settra attacks a manufacturing firm, utilizing a BYOVD technique."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1070.001",
+      "name": "Clear Windows Event Logs",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Use application control to block unauthorized RMM tools and the loading of known vulnerable drivers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Forwarding logs to a central, immutable location is critical for detecting log clearing activities and preserving forensic data.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1053",
+      "name": "Data Backup",
+      "description": "Maintaining and testing offline/immutable backups is the most effective way to recover from a ransomware attack without paying the ransom.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        }
+      ],
+      "description": "Use EDR to monitor for suspicious command-line activity, such as the disabling of recovery services.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "To counter Settra's use of unauthorized RMM tools and vulnerable drivers, organizations should implement strict application control policies. Specifically, create rules to deny the execution of MeshAgent and other common, unapproved RMM software. Furthermore, leverage endpoint security features to create a denylist for known vulnerable drivers based on their file hashes or signing certificates. The Gigabyte driver `gdrv.sys` should be an immediate candidate for this list. This proactive blocking of malicious tools and drivers disrupts the attacker's ability to establish persistence and disable security controls, forcing them to use more novel or complex methods that are easier to detect. This is a powerful hardening measure that raises the cost of attack for groups like Settra.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an Endpoint Detection and Response (EDR) solution capable of deep process and command-line analysis. Create specific detection rules to alert on the execution of `reagentc.exe` with the `/disable` argument, a key tactic of the Settra group. Similarly, rules should be built to detect the execution of `wevtutil.exe cl` or PowerShell's `Clear-EventLog` cmdlet, which are used to clear logs. Correlating these activities with the execution of an unsigned or newly introduced executable can provide a high-confidence alert of a ransomware pre-deployment phase. This behavioral detection approach is crucial for catching attackers even when they use legitimate system tools to carry out malicious actions.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-IIL",
+      "technique_name": "Input Integrity-based Logging",
+      "url": "https://d3fend.mitre.org/technique/d3f:InputIntegrity-basedLogging",
+      "recommendation": "To defeat Settra's log clearing tactics, organizations must ensure the integrity and availability of their logs. Implement real-time log forwarding from all critical endpoints and servers to a centralized Security Information and Event Management (SIEM) system. This SIEM should be configured with write-once-read-many (WORM) or immutable storage properties. Even if the attackers successfully clear the logs on the local machine using `wevtutil`, the events generated up to that point will have already been safely transmitted to the SIEM. A critical alert should be configured in the SIEM to trigger upon receiving Windows Event ID 1102, which indicates 'The audit log was cleared.' This provides an immediate, high-fidelity signal of tampering and active intrusion.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "gdrv.sys",
+      "description": "Vulnerable Gigabyte kernel driver used in BYOVD attack."
+    },
+    {
+      "type": "file_name",
+      "value": "mvtcs.exe",
+      "description": "Renamed MeshAgent RMM tool."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "reagentc /disable",
+      "description": "Command used to disable the Windows Recovery Environment.",
+      "context": "EDR logs, PowerShell logs (Event ID 4104), Process creation logs (Event ID 4688).",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "diskpart.exe",
+      "description": "Process used with a script to attempt removal of the recovery partition.",
+      "context": "Process creation logs (Event ID 4688). Monitor for execution with script arguments.",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "1102",
+      "description": "Event ID generated in the Windows Security Log when the audit log is cleared.",
+      "context": "Real-time SIEM monitoring. This event is a critical indicator of tampering.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "C:\\Windows\\System32\\drivers\\gdrv.sys",
+      "description": "Potential path for the vulnerable Gigabyte driver. Monitor for the creation of this file.",
+      "context": "File integrity monitoring (FIM) systems or EDR.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "BYOVD",
+    "RMM",
+    "MeshAgent",
+    "double-extortion",
+    "defense-evasion",
+    "inhibit-recovery"
+  ],
+  "extract_datetime": "2026-09-18T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "United States",
+      "Germany",
+      "United Kingdom",
+      "Canada",
+      "Australia"
+    ],
+    "industries_affected": [
+      "Retail",
+      "Manufacturing",
+      "Technology",
+      "Other"
+    ]
+  },
+  "pub_date": "2026-09-18",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-09-18T15:00:00.000Z",
+  "updatedAt": "2026-09-18T15:00:00.000Z"
+}

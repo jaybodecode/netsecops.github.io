@@ -1,0 +1,72 @@
+title: Suspicious Shell Execution on Web Server
+id: 9a7b6c5d-4e3f-4a2b-8c1d-0e9f8a7b6c5d
+status: experimental
+description: Detects the execution of a shell process ('sh') on a server, which could indicate remote code execution, as seen in the Gyazo breach.
+author: cyber.netsecops.io
+date: 2026-09-17
+references:
+  - https://thehackernews.com/2026/09/gyazo-breach-exposes-2362-million-user.html
+tags:
+  - attack.t1059.004
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/sh'
+    ParentImage|endswith:
+      - '/httpd'
+      - '/nginx'
+      - '/apache2'
+      - '/php-fpm'
+  condition: selection
+---
+title: Database Dump via mysqldump
+id: 8b6a5c4d-3d2e-4b1a-9b0c-1d8e7f6a5b4d
+status: experimental
+description: Detects the use of 'mysqldump', which can be used by attackers to exfiltrate database contents, as likely occurred in the Gyazo breach.
+author: cyber.netsecops.io
+date: 2026-09-17
+references:
+  - https://thehackernews.com/2026/09/gyazo-breach-exposes-2362-million-user.html
+tags:
+  - attack.t1213
+  - attack.t1020
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/mysqldump'
+  condition: selection
+---
+title: Anomalous Large Outbound Data Transfer from Application Server
+id: 7c5b4a3d-2c1d-4a09-8a9b-2c7d6e5f4a3d
+status: experimental
+description: Detects unusually large outbound data transfers from application or database servers to unknown destinations, which could indicate data exfiltration as seen in the Gyazo breach.
+author: cyber.netsecops.io
+date: 2026-09-17
+references:
+  - https://thehackernews.com/2026/09/gyazo-breach-exposes-2362-million-user.html
+tags:
+  - attack.t1020
+  - attack.exfiltration
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip: 
+      - '10.0.0.0/8' # Replace with actual internal server IPs/ranges
+    dst_ip: 
+      - '0.0.0.0/0'
+  filter:
+    dst_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      # Add known good external IPs
+  timeframe: 1h
+  condition: selection and not filter | count(bytes_out) by src_ip > 1000000000 # 1GB threshold, adjust as needed

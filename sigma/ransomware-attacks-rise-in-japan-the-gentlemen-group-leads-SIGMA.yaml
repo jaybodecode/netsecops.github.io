@@ -1,0 +1,69 @@
+title: ESXi VM Kill Command via esxcli
+id: 2b8a7c1d-e3f4-4b5a-8c6d-9e0f1a2b3c4d
+status: experimental
+description: Detects the use of 'esxcli vm process kill' to terminate virtual machine processes on a VMware ESXi host. This is a common tactic used by ransomware to prepare VMs for encryption.
+references:
+  - https://blog.talosintelligence.com/ransomware-incidents-in-japan-in-the-first-half-of-2026/
+author: cyber.netsecops.io
+date: 2026-09-17
+tags:
+  - attack.t1486
+  - attack.impact
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/esxcli'
+    CommandLine|contains|all:
+      - 'vm'
+      - 'process'
+      - 'kill'
+  condition: selection
+---
+title: Potential ESXi Ransomware Encryption Script
+id: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Detects the execution of a shell script named 'encrypt.sh' on a Linux-based system, which could be a VMware ESXi host. This filename is commonly associated with ransomware encryption scripts.
+references:
+  - https://blog.talosintelligence.com/ransomware-incidents-in-japan-in-the-first-half-of-2026/
+author: cyber.netsecops.io
+date: 2026-09-17
+tags:
+  - attack.t1486
+  - attack.impact
+level: medium
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/encrypt.sh'
+  condition: selection
+---
+title: Anomalous SSH Connection to ESXi Host
+id: 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d
+status: experimental
+description: Detects SSH connections to VMware ESXi hosts originating from non-administrator workstations, which may indicate lateral movement by an attacker.
+references:
+  - https://blog.talosintelligence.com/ransomware-incidents-in-japan-in-the-first-half-of-2026/
+author: cyber.netsecops.io
+date: 2026-09-17
+tags:
+  - attack.t1021.004
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: network_connection
+detection:
+  selection:
+    DestinationPort: 22
+    DestinationHostname|endswith: 
+      - '.esxi.local' # Example, adjust to your environment's naming convention
+      - '-esxi'
+  filter:
+    SourceHostname|startswith:
+      - 'admin-ws-'
+      - 'jumpbox-'
+  condition: selection and not filter

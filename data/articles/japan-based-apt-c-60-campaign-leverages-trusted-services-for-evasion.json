@@ -1,0 +1,178 @@
+{
+  "id": "53108886-1479-45f6-88aa-451b1a77c96a",
+  "slug": "japan-based-apt-c-60-campaign-leverages-trusted-services-for-evasion",
+  "headline": "APT-C-60 Targets Japan with 'SpyGlace' Malware, Abusing Trusted Cloud Services",
+  "title": "APT-C-60 Abuses GitHub, Proton Drive to Deliver SpyGlace",
+  "summary": "The threat group APT-C-60 is continuing its cyber-espionage campaigns against organizations in Japan, employing updated tactics to deliver the 'SpyGlace' malware. According to JPCERT/CC, the attackers are abusing a chain of legitimate online services—including Proton Drive, jsDelivr, GitHub, GitLab, and Codeberg—to host and retrieve malicious components. This 'living off the trusted service' approach helps the attackers evade network-based detection by blending their traffic with legitimate developer and cloud service activity. The campaign begins with spear-phishing and uses a multi-stage infection process to deploy the final SpyGlace payload.",
+  "full_report": "## Executive Summary\nThe Japanese Computer Emergency Response Team Coordination Center (**[JPCERT/CC](https://www.jpcert.or.jp/english/)**) has issued a report on an ongoing cyber-espionage campaign by the threat group **APT-C-60**. The campaign targets unspecified organizations in Japan with the **SpyGlace** malware. A key feature of the group's updated tactics is the extensive abuse of legitimate, trusted online services for command and control (C2) and payload delivery. The attackers leverage **[Proton Drive](https://proton.me/drive)**, **[jsDelivr](https://www.jsdelivr.com/)**, **[GitHub](https://github.com/)**, GitLab, and Codeberg to host malicious files and blend their C2 traffic, making detection significantly more challenging for network defenders.\n\n---\n\n## Threat Overview\nAPT-C-60 is a persistent threat actor focused on espionage against Japanese entities. This campaign demonstrates the group's evolution, adopting techniques to bypass network security controls by 'living off the trusted service.'\n\n- **Threat Actor:** APT-C-60.\n- **Target:** Organizations in Japan.\n- **Malware:** SpyGlace (versions v3.1.15, v3.1.17, v3.1.18 identified).\n- **Primary Tactic:** Abusing legitimate cloud and developer platforms for payload staging and C2, a technique often called Domain Fronting or using legitimate services as a content delivery network.\n\n## Technical Analysis\nThe attack follows a multi-stage infection chain designed for stealth:\n\n1.  **Initial Access:** The campaign begins with a spear-phishing email. The email either contains a link to a malicious file hosted on Proton Drive or has a malicious RAR archive attached.\n2.  **Execution:** Inside the archive is a `.LNK` shortcut file. When the user clicks the LNK file, it executes `mshta.exe` to run embedded JavaScript code.\n3.  **Staging:** The `mshta.exe` script fetches the next stage from jsDelivr, a popular content delivery network for open-source projects. This makes the download appear as legitimate web traffic.\n4.  **Payload Assembly:** The malware then uses a legitimate `git.exe` binary, likely bundled with the malware, to connect to repositories on GitHub, GitLab, or Codeberg. It pulls down various components and assembles the final downloader and payload on the victim's machine.\n5.  **Final Payload:** The ultimate goal is to execute the SpyGlace malware, a backdoor used for espionage and data theft.\n\nThis chain of using trusted services (`Proton Drive` -> `jsDelivr` -> `GitHub`) makes each step of the infection process difficult to block without impacting legitimate business operations.\n\n### MITRE ATT&CK Mapping\n- **[`T1566.002 - Phishing: Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/):** Using links to malicious files on Proton Drive.\n- **[`T1204.002 - User Execution: Malicious File`](https://attack.mitre.org/techniques/T1204/002/):** Relies on the user clicking the malicious LNK file.\n- **[`T1218.005 - Signed Binary Proxy Execution: Mshta`](https://attack.mitre.org/techniques/T1218/005/):** Abusing `mshta.exe` to run malicious scripts.\n- **[`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/):** Downloading payloads from Proton Drive, jsDelivr, and GitHub.\n- **[`T1071.001 - Application Layer Protocol: Web Protocols`](https://attack.mitre.org/techniques/T1071/001/):** Using standard HTTPS traffic to trusted domains to mask C2 and payload delivery.\n\n## Impact Assessment\nA successful compromise with SpyGlace malware can lead to long-term espionage. The attackers can gain persistent access to the victim's network, allowing them to:\n- Exfiltrate sensitive corporate data, intellectual property, and government documents.\n- Monitor internal communications.\n- Pivot to other systems within the network.\n- Deploy additional malicious tools.\n\nThe abuse of trusted services makes attribution and remediation more complex, as blocking the domains involved (e.g., `github.com`) is often not feasible for organizations that rely on them for development.\n\n## IOCs — Directly from Articles\nJPCERT/CC has published IOCs, but they were not detailed in the source articles. These would include C2 domains, file hashes, and attacker-controlled repository URLs.\n\n## Cyber Observables — Hunting Hints\nDetecting this activity requires looking for unusual uses of legitimate tools and services:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| process_name | `mshta.exe` | Monitor for `mshta.exe` making network connections, especially when launched by an Office application or from an LNK file. | EDR, Process creation logs |\n| process_name | `git.exe` | Look for `git.exe` running outside of expected developer directories or being executed by non-developer user accounts. | EDR, Process creation logs |\n| network_traffic_pattern | `jsdelivr.net`, `proton.me`, `codeberg.org` | While these are legitimate domains, traffic to them from unexpected processes or user accounts should be investigated. | Proxy logs, DNS logs, SIEM |\n| command_line_pattern | `git clone` | Monitor for `git clone` commands that point to suspicious or newly created repositories. | EDR, Command-line logging |\n\n## Detection & Response\n- **Endpoint Detection and Response (EDR):** EDR is critical for detecting this attack chain. It can identify the suspicious process execution flow (e.g., LNK -> `mshta.exe` -> `git.exe`) and alert on the abuse of legitimate binaries.\n- **TLS/SSL Inspection:** To detect malicious payloads being downloaded from trusted services, organizations need the ability to inspect encrypted traffic. This allows security tools to see the actual files being transferred from sites like GitHub and Proton Drive.\n- **DNS and Proxy Log Analysis:** Correlate DNS queries and web proxy logs. A user's machine making a request to `proton.me` followed by `jsdelivr.net` and then `github.com`, when initiated by `mshta.exe`, is a high-confidence indicator of this campaign.\n\n## Mitigation\n- **Block LNK Attachments:** Configure email gateways to block or quarantine `.LNK` files within archives, as they are a common vector for malware delivery.\n- **Attack Surface Reduction (ASR):** Use ASR rules to block `mshta.exe` from executing untrusted code and to prevent Office applications from creating child processes.\n- **Restrict `git.exe` Execution:** Use application control policies (like AppLocker) to restrict where `git.exe` can be executed from and by which users. It should generally not be run from a user's `Downloads` folder.\n- **Educate Users:** Train users to be suspicious of emails prompting them to download files from cloud storage services, even if the service itself is legitimate.",
+  "twitter_post": "The APT-C-60 threat group is targeting organizations in Japan with 'SpyGlace' malware. The campaign abuses trusted services like GitHub, Proton Drive, and jsDelivr for payload delivery and C2 to evade detection. #APT #CyberSecurity #Japan #SpyGlace",
+  "meta_description": "The APT-C-60 espionage group is targeting Japan with SpyGlace malware, using legitimate services like GitHub and Proton Drive to evade network detection.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "APT-C-60",
+      "type": "threat_actor"
+    },
+    {
+      "name": "SpyGlace",
+      "type": "malware"
+    },
+    {
+      "name": "JPCERT/CC",
+      "type": "security_organization",
+      "url": "https://www.jpcert.or.jp/english/"
+    },
+    {
+      "name": "Proton Drive",
+      "type": "product"
+    },
+    {
+      "name": "jsDelivr",
+      "type": "product"
+    },
+    {
+      "name": "GitHub",
+      "type": "vendor",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "GitLab",
+      "type": "vendor"
+    },
+    {
+      "name": "Codeberg",
+      "type": "product"
+    },
+    {
+      "name": "mshta.exe",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda",
+      "title": "APT-C-60 Phishing Campaign in Japan Abused GitHub, Proton Drive, and jsDelivr",
+      "date": "2026-07-13",
+      "friendly_name": "Mallory",
+      "website": "mallory.ai"
+    },
+    {
+      "url": "https://cybersecuritynews.com/armored-likho-apt-uses-ai-generated-loaders/",
+      "title": "SpyGlace Attacks Abuse Trusted Developer Services to Evade Network Detection",
+      "date": "2026-07-13",
+      "friendly_name": "Cybersecurity News",
+      "website": "cybersecuritynews.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1218.005",
+      "name": "Signed Binary Proxy Execution: Mshta",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement TLS/SSL inspection to allow for analysis of traffic to trusted services like GitHub and jsDelivr.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control policies to block or restrict the execution of mshta.exe and git.exe outside of approved contexts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to be wary of links in emails, even if they point to legitimate-looking cloud services.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Configure email gateways to block or sandbox malicious file types like LNK files, even when they are inside archives.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "process_name",
+      "value": "mshta.exe",
+      "description": "The malware uses mshta.exe to execute JavaScript. Monitor for this process making outbound network connections.",
+      "context": "EDR logs, process creation events (Event ID 4688).",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "git.exe",
+      "description": "The legitimate git client is used to download payloads. Its execution by unexpected parent processes (like mshta.exe) or users is suspicious.",
+      "context": "EDR logs, SIEM correlation rules.",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "jsdelivr.net",
+      "description": "This CDN is used to host second-stage payloads. While legitimate, connections from unusual processes should be investigated.",
+      "context": "DNS logs, proxy logs, firewall logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "domain",
+      "value": "proton.me",
+      "description": "Proton Drive is used for initial payload hosting. Connections to this domain from links in emails are a potential indicator.",
+      "context": "Email security gateway logs, proxy logs.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "APT",
+    "APT-C-60",
+    "SpyGlace",
+    "Japan",
+    "JPCERT/CC",
+    "Espionage",
+    "GitHub"
+  ],
+  "extract_datetime": "2026-07-13T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Japan"
+    ],
+    "industries_affected": [
+      "Other"
+    ]
+  },
+  "pub_date": "2026-07-13",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-13T15:00:00.000Z",
+  "updatedAt": "2026-07-13T15:00:00.000Z"
+}

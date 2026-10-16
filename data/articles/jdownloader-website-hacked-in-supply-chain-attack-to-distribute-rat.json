@@ -1,0 +1,234 @@
+{
+  "id": "944bdf4f-3c9a-4996-a2fb-7a5602245cf8",
+  "slug": "jdownloader-website-hacked-in-supply-chain-attack-to-distribute-rat",
+  "headline": "JDownloader Website Hacked to Distribute Python RAT in Supply Chain Attack",
+  "title": "Official JDownloader Site Compromised to Serve RAT Malware to Windows and Linux Users",
+  "summary": "The official website for JDownloader, a popular open-source download manager, was compromised in a supply chain attack between May 6 and May 7, 2026. Attackers exploited a vulnerability in the site's Content Management System (CMS) to alter download links, tricking users into installing malware. Windows users received a heavily obfuscated Python-based Remote Access Trojan (RAT), while Linux users were served malicious ELF binaries that established persistence. Users who downloaded the 'Alternative Installer' during this period are urged to reinstall their operating systems.",
+  "full_report": "## Executive Summary\nA significant **[supply chain attack](https://en.wikipedia.org/wiki/Supply_chain_attack)** has compromised the official website of **[JDownloader](https://jdownloader.org/)**, a widely-used open-source download management tool. Between May 6 and May 7, 2026, threat actors exploited a vulnerability in the website's Content Management System (CMS) to replace legitimate download links with malicious ones. This 'watering hole' style attack resulted in users unknowingly downloading and installing malware instead of the intended software. The payloads included a sophisticated Python-based Remote Access Trojan (RAT) for Windows and persistence-focused ELF binaries for Linux. This incident underscores the growing risk of supply chain attacks, where trusted distribution channels are hijacked to deploy malware on a large scale.\n\n## Threat Overview\nThe attack specifically targeted users downloading the \"Alternative Installer\" for Windows and the shell installer for Linux from the official JDownloader website. The attackers gained access by exploiting an unspecified, unpatched vulnerability in the site's CMS. This allowed them to modify the content and redirect download links to attacker-controlled infrastructure hosting the malware. The main installers were reportedly unaffected.\n\n- **For Windows Users:** The malicious installer deployed a heavily obfuscated Python-based RAT. The malware used an eight-minute execution delay, a common sandbox evasion technique, before activating its primary payload.\n- **For Linux Users:** The compromised shell script installed malicious ELF binaries. These binaries were designed for stealth and persistence, masquerading as a legitimate system process (`/usr/libexec/upowerd`) and creating a script in `/etc/profile.d/systemd.sh` to ensure execution on boot or login. The malware also installed a SUID-root binary to maintain elevated privileges.\n\nThe JDownloader team has since secured the website and restored the correct download links. They confirmed the breach was limited to the CMS and did not compromise their core server infrastructure.\n\n## Technical Analysis\nThe attack demonstrates a multi-platform approach to malware distribution through a compromised supply chain.\n\n**MITRE ATT&CK Techniques:**\n- [`T1195.001 - Compromise Software Supply Chain: Compromise Software Distribution`](https://attack.mitre.org/techniques/T1195/001/): The core of the attack involved compromising the JDownloader website to distribute malicious software.\n- [`T1059.006 - Command and Scripting Interpreter: Python`](https://attack.mitre.org/techniques/T1059/006/): The Windows payload was a Python-based RAT.\n- [`T1140 - Deobfuscate/Decode Files or Information`](https://attack.mitre.org/techniques/T1140/): The Python RAT was described as \"heavily obfuscated,\" likely using tools like **Pyarmor** to hinder analysis.\n- [`T1546.004 - Event Triggered Execution: Trap`](https://attack.mitre.org/techniques/T1546/004/): The Linux malware used `/etc/profile.d` scripts for persistence, which are executed upon user login.\n- [`T1548.001 - Abuse Elevation Control Mechanism: Setuid and Setgid`](https://attack.mitre.org/techniques/T1548/001/): The installation of a SUID-root binary on Linux allows the malware to execute with the highest privileges.\n- [`T1071.001 - Application Layer Protocol: Web Protocols`](https://attack.mitre.org/techniques/T1071/001/): The initial download of the malicious installers occurred over HTTP/HTTPS from the compromised site and third-party servers.\n\n## Impact Assessment\nUsers who downloaded and executed the compromised installers between May 6 and May 7 are directly impacted. The consequences include:\n- **System Compromise:** The RAT provides attackers with full remote control over infected Windows systems, enabling data theft, keystroke logging, and deployment of further malware like ransomware.\n- **Persistent Access:** The Linux malware establishes a persistent foothold with root privileges, making it difficult to remove and allowing attackers long-term access.\n- **Data Theft:** Both payloads are capable of stealing sensitive information, including credentials, financial data, and personal files.\n- **Loss of Trust:** The incident damages the reputation of JDownloader and erodes user trust in open-source software distribution channels.\n\n## IOCs — Directly from Articles\nThe following malicious URLs were identified as hosting the malware payloads:\n\n| Type | Value                                | Description                   |\n| :--- | :----------------------------------- | :---------------------------- |\n| URL  | `parkspringshotel[.]com/m/Lu6aeloo.php` | Malicious payload hosting URL |\n| URL  | `auraguest[.]lk/m/douV2quu.php`      | Malicious payload hosting URL |\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for related activity using these patterns:\n- **Network Connections:** Monitor for any outbound network traffic to the domains `parkspringshotel[.]com` and `auraguest[.]lk`.\n- **File System (Linux):** Check for the existence of the file `/etc/profile.d/systemd.sh`. Its presence is a strong indicator of compromise by this specific malware.\n- **Process Monitoring (Linux):** Look for a process named `upowerd` running from a non-standard location like `/usr/libexec/upowerd`.\n- **File System (Windows):** Search for recently created, suspicious Python scripts or executables in user temporary directories (`%TEMP%`, `%APPDATA%`).\n- **Log Analysis:** Review web proxy and DNS logs for requests to the IOC domains around the compromise dates.\n\n## Detection & Response\n- **IOC Scanning:** Use the IOCs provided to scan network logs, proxy logs, and endpoint file systems for any signs of contact with the malicious infrastructure.\n- **Endpoint Analysis (D3FEND: [`D3-FA - File Analysis`](https://d3fend.mitre.org/technique/d3f:FileAnalysis)):** On Linux systems, check for the existence and permissions of `/etc/profile.d/systemd.sh` and any SUID-root binaries in unusual locations. On Windows, analyze suspicious Python processes and their file system activity.\n- **Incident Response:** For confirmed infections, the recommendation is to isolate the affected machine, back up critical data, and perform a full operating system reinstall to ensure complete removal of the malware and any persistence mechanisms. All credentials used on the compromised machine should be considered stolen and must be reset.\n\n## Mitigation\n**For Users:**\n- **Verify Downloads:** Whenever possible, verify the checksums (MD5/SHA256) of downloaded files against official hashes provided by the developer.\n- **Use Antivirus:** Keep antivirus and endpoint protection software up to date to detect and block known malware.\n- **Be Cautious:** Be wary of alternative or non-standard installers, as they are more likely to be targeted.\n\n**For Software Developers/Distributors:**\n- **Secure Infrastructure (D3FEND: [`D3-ACH - Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)):** Regularly patch and harden all web-facing infrastructure, including CMS platforms.\n- **Implement Integrity Checks:** Use code signing for all distributed executables and installers. Provide checksums for all downloads so users can verify file integrity.\n- **Monitor for Changes:** Implement file integrity monitoring on web servers to get immediate alerts for unauthorized changes to website content or download links.",
+  "twitter_post": "🚨 SUPPLY CHAIN ATTACK: The official JDownloader website was hacked! Malicious installers distributed a Python RAT to Windows users and ELF malware to Linux users between May 6-7. Reinstall OS if affected. #JDownloader #SupplyChain #Malware",
+  "meta_description": "The official website for the JDownloader download manager was compromised in a supply chain attack, serving a Python RAT and other malware to users. Learn the details of the breach.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "JDownloader",
+      "type": "product",
+      "url": "https://jdownloader.org/"
+    },
+    {
+      "name": "AppWork GmbH",
+      "type": "company"
+    },
+    {
+      "name": "Python",
+      "type": "technology"
+    },
+    {
+      "name": "ANY.RUN",
+      "type": "company"
+    },
+    {
+      "name": "Pyarmor",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securityaffairs.co/wordpress/162985/malware/jdownloader-site-malware-supply-chain-attack.html",
+      "title": "Official JDownloader site served malware to Windows and Linux users between May 6 and May 7",
+      "date": "2026-05-10",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.co"
+    },
+    {
+      "url": "https://rescana.com/blogs/jdownloader-website-supply-chain-attack-installers-replaced-with-python-rat-malware-may-2026",
+      "title": "JDownloader Website Supply Chain Attack: Installers Replaced with Python RAT Malware (May 2026)",
+      "date": "2026-05-10",
+      "friendly_name": "Rescana",
+      "website": "rescana.com"
+    },
+    {
+      "url": "https://www.rodsblog.net/p/security-check-in-quick-hits-may-10-2026",
+      "title": "Security Check-in Quick Hits: May 10, 2026 – Supply Chain Compromises, Hosting Patches, and Cert Authority Hiccup",
+      "date": "2026-05-10",
+      "friendly_name": "Rod's Blog",
+      "website": "rodsblog.net"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-06T00:00:00Z",
+      "summary": "The supply chain attack on the JDownloader website began."
+    },
+    {
+      "datetime": "2026-05-07T23:59:59Z",
+      "summary": "The compromise window for the JDownloader website attack ended."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Distribution",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.006",
+      "name": "Python",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1546.004",
+      "name": "Trap",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1548.001",
+      "name": "Setuid and Setgid",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Ensuring the website's CMS and all its plugins are fully patched would have likely prevented the initial compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SBV",
+          "name": "Service Binary Verification",
+          "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification"
+        }
+      ],
+      "description": "Signing legitimate installers allows operating systems and users to verify their authenticity, flagging tampered files.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        }
+      ],
+      "description": "Modern endpoint protection can detect and block known RATs and malicious binaries based on signatures and behavior.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "The Windows RAT in the JDownloader attack used a time-delay to evade basic sandbox analysis. A more advanced Dynamic Analysis (sandboxing) environment is needed to counter this. Security teams and automated security pipelines should detonate suspicious files in a sandbox that can accelerate or manipulate the system clock, tricking time-based evasions into activating. The sandbox should also emulate persistent user activity and network connectivity. For this specific RAT, the sandbox would need to run for longer than eight minutes or fast-forward time to observe the payload's true behavior, such as C2 communication attempts or file system manipulation. This technique is crucial for automated threat intelligence platforms and for organizations analyzing potentially malicious files before allowing them on the corporate network.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-SBV",
+      "technique_name": "Service Binary Verification",
+      "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification",
+      "recommendation": "This supply chain attack succeeded because users trusted the source (the official website) but received an untrusted binary. Service Binary Verification, through code signing, provides a direct countermeasure. The JDownloader development team should digitally sign all their official installers with a trusted certificate. This allows the user's operating system (Windows SmartScreen, macOS Gatekeeper) to validate that the installer is authentic and has not been tampered with since it was signed. If attackers replace the installer with their own malicious version, it will either be unsigned or signed with an untrusted certificate, triggering a strong warning to the user. This shifts the trust from the distribution channel (the website, which was compromised) to the software itself (the signed binary), breaking the attack chain.",
+      "mitre_mitigation_id": "M1045"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "url",
+      "value": "parkspringshotel[.]com/m/Lu6aeloo.php",
+      "description": "Malicious payload hosting URL"
+    },
+    {
+      "type": "url",
+      "value": "auraguest[.]lk/m/douV2quu.php",
+      "description": "Malicious payload hosting URL"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "/etc/profile.d/systemd.sh",
+      "description": "The Linux malware creates this file to establish persistence on boot or logon.",
+      "context": "File integrity monitoring on Linux systems.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "/usr/libexec/upowerd",
+      "description": "The Linux malware masquerades as this legitimate-sounding system process to evade detection.",
+      "context": "Process monitoring and EDR on Linux hosts.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "python.exe -c \"import time; time.sleep(480); ...\"",
+      "description": "The Windows RAT included an 8-minute (480 second) sleep delay to evade sandboxes. A python process with a long sleep command could be suspicious.",
+      "context": "Process creation logs with command line auditing (Event ID 4688, Sysmon).",
+      "confidence": "medium"
+    },
+    {
+      "type": "domain",
+      "value": "parkspringshotel.com",
+      "description": "Domain used to host malicious payloads for the JDownloader supply chain attack.",
+      "context": "DNS logs, web proxy logs, firewall logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "auraguest.lk",
+      "description": "Domain used to host malicious payloads for the JDownloader supply chain attack.",
+      "context": "DNS logs, web proxy logs, firewall logs.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "JDownloader",
+    "Supply Chain Attack",
+    "Malware",
+    "RAT",
+    "Python",
+    "Linux"
+  ],
+  "extract_datetime": "2026-05-10T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Users of JDownloader open-source software"
+    ]
+  },
+  "pub_date": "2026-05-10",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-05-10T15:00:00.000Z",
+  "updatedAt": "2026-05-10T15:00:00.000Z"
+}

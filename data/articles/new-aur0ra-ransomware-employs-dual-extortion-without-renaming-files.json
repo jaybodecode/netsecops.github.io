@@ -1,0 +1,139 @@
+{
+  "id": "1de7ecbf-9bd5-43c8-b064-a2434b0c520f",
+  "slug": "new-aur0ra-ransomware-employs-dual-extortion-without-renaming-files",
+  "headline": "New 'Aur0ra' Ransomware Emerges with Stealthy Dual-Extortion Tactics",
+  "title": "Aur0ra Ransomware Discovered with Data Exfiltration Claims and No File Renaming",
+  "summary": "A new ransomware strain named Aur0ra has been identified, employing a dual-extortion model that is becoming standard for modern ransomware. The malware encrypts files, making them inaccessible, and claims to have exfiltrated sensitive data before encryption. A distinguishing feature of Aur0ra is its stealthy approach: it does not change the filenames or extensions of the files it encrypts, making it harder for users to immediately identify the scope of the damage. Victims are directed to a Tor-based site for negotiation via a ransom note.",
+  "full_report": "## Executive Summary\nCybersecurity researchers have identified a new ransomware family dubbed **Aur0ra**. This malware follows the increasingly common dual-extortion model, where it not only encrypts the victim's files but also claims to have exfiltrated sensitive data to pressure victims into paying the ransom. A notable characteristic of **Aur0ra** is its decision not to rename or change the extension of encrypted files. This makes a visual inspection of the file system deceptive, as files appear normal but are rendered unusable. After encryption, a ransom note named `!!!README!!!DO_NOT_DELETE.txt` is dropped, instructing the victim to contact the attackers via a **[Tor](https://www.torproject.org/)** website. The ransomware appears to be targeting a wide range of industries across North America, Europe, and Asia.\n\n## Threat Overview\n**Aur0ra** represents a continuation of the evolution in ransomware-as-a-service (RaaS) TTPs. The core components of its operation are:\n1.  **Encryption:** The malware encrypts files on the victim's system, denying access to critical data.\n2.  **Stealth:** By not renaming files, it avoids immediate detection by users who might otherwise notice widespread changes like a `.locked` or `.encrypted` extension. This could delay incident response and allow the malware to encrypt more of the network.\n3.  **Extortion:** The ransom note explicitly states that confidential files have been downloaded. This is a classic double-extortion tactic designed to threaten a data leak if the ransom is not paid.\n4.  **Anonymity:** Communication and payment are handled through a Tor-based portal, providing a layer of anonymity for the attackers.\n\nThe wide range of targeted industries suggests an opportunistic campaign rather than a highly targeted one, which is typical for many RaaS affiliates.\n\n## Technical Analysis\nThe primary technique is **[`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)**. The unique implementation detail is the lack of file renaming. This means that detection based on file extension changes will fail. Instead, detection must rely on other indicators.\n\nOther likely TTPs in the **Aur0ra** attack chain include:\n- **[`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/):** The use of a Tor-based website for communication falls under this technique for command and control.\n- **[`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/):** To support the dual-extortion claim, the attackers must have exfiltrated data, likely using common web services or cloud storage.\n- **[`T1083 - File and Directory Discovery`](https://attack.mitre.org/techniques/T1083/):** Before encryption, the malware must scan the file system to identify target files, likely prioritizing documents, images, and databases while avoiding system files.\n- **[`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/):** Like most modern ransomware, **Aur0ra** likely attempts to delete Volume Shadow Copies or other backups to prevent easy recovery.\n\n> The decision not to rename files is a tactical choice. While it makes initial visual identification harder, it also means that automated re-imaging solutions might miss encrypted data if not configured to verify file integrity. It forces a more thorough, and thus more costly, recovery process.\n\n## Impact Assessment\nThe impact of an **Aur0ra** attack is significant. Businesses face immediate operational disruption due to encrypted files. The lack of file renaming can complicate the recovery process, as it's harder to determine the scope of the encryption without file integrity checking tools. The threat of a data leak adds another layer of pressure, potentially leading to regulatory fines (e.g., under GDPR or CCPA), reputational damage, and loss of customer trust. The cost of incident response, recovery, and potential ransom payment can be crippling for small and medium-sized businesses.\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| `file_name` | `!!!README!!!DO_NOT_DELETE.txt` | The name of the ransom note file created by Aur0ra. |\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for **Aur0ra** and similar ransomware. The following patterns could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| `file_name` | `!!!README!!!DO_NOT_DELETE.txt` | The most direct indicator. Use file integrity monitoring to alert on the creation of this file. |\n| `process_name` | `vssadmin.exe` | Monitor for the command `vssadmin.exe delete shadows` which is used to prevent recovery. |\n| `command_line_pattern` | `*\\Tor\\tor.exe` | Monitor for the execution of the Tor client, which may be used for C2 communications, especially from servers. |\n| `log_source` | `File I/O Monitoring` | Look for processes that are rapidly reading and writing to a large number of files without changing their names. This high-volume I/O is characteristic of in-place encryption. |\n\n## Detection & Response\n1.  **Behavioral Analysis:** Since signature-based detection (like looking for new file extensions) will fail, detection must be behavioral. EDR tools should be configured to detect and block processes that exhibit ransomware-like behavior, such as mass file modification and attempts to delete backups. This is a core function of **[D3FEND Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)**.\n2.  **File Integrity Monitoring (FIM):** Deploy FIM on critical servers. While **Aur0ra** doesn't change filenames, FIM can detect changes to file hashes, indicating that the content has been altered (encrypted). Alerting on the creation of the ransom note `!!!README!!!DO_NOT_DELETE.txt` is also a high-fidelity detection method.\n3.  **Canary Files:** Place decoy files (canaries) with enticing names like `passwords.docx` or `financials.xlsx` on file shares. Monitor these files for any read or write access. Since legitimate users shouldn't be accessing them, any activity is highly suspicious and could be an early warning of a ransomware process scanning for files.\n\n## Mitigation\n1.  **Immutable Backups:** This is the most critical defense. Maintain offline, offsite, and immutable backups. If encrypted, the only reliable way to recover is to restore from a clean backup. Regularly test the restoration process.\n2.  **Network Segmentation:** Segment the network to prevent the spread of ransomware. If one segment is compromised, segmentation can prevent the malware from reaching critical servers or other parts of the network.\n3.  **Least Privilege:** Enforce the principle of least privilege for all user and service accounts. This limits what an attacker can access and encrypt if they compromise a single account.\n4.  **EDR and Antivirus:** Keep security software up to date. While **Aur0ra**'s stealth is a challenge, many EDR solutions can still detect its behavior based on heuristics and API call monitoring. This aligns with **[D3FEND File Content Rules](https://d3fend.mitre.org/technique/d3f:FileContentRules)**.",
+  "twitter_post": "🔎 New 'Aur0ra' ransomware discovered. It uses dual-extortion but doesn't rename encrypted files, making it stealthier. Drops a '!!!README!!!DO_NOT_DELETE.txt' note and directs victims to a Tor site. #Ransomware #Malware #CyberSecurity",
+  "meta_description": "Researchers have discovered a new ransomware strain called Aur0ra that uses a dual-extortion technique and notably does not change the filenames of the files it encrypts.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Aur0ra Ransomware",
+      "type": "malware"
+    },
+    {
+      "name": "Tor",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://cyfirma.com/weekly-intelligence-report-22-may-2026/",
+      "title": "Weekly Intelligence Report – 22 May 2026",
+      "date": "2026-05-22",
+      "website": "cyfirma.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/new-aur0ra-ransomware-doesnt-rename-encrypted-files/",
+      "title": "New Aur0ra ransomware doesn't rename encrypted files",
+      "date": "2026-05-22",
+      "website": "bleepingcomputer.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": null
+    },
+    {
+      "id": "T1083",
+      "name": "File and Directory Discovery",
+      "tactic": null
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": null
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": null
+    },
+    {
+      "id": "T1567",
+      "name": "Exfiltration Over Web Service",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "Aur0ra",
+    "Dual-Extortion",
+    "Malware",
+    "Ransomware",
+    "Threat Intelligence",
+    "Tor"
+  ],
+  "extract_datetime": "2026-05-22",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Manufacturing",
+      "Healthcare",
+      "Finance",
+      "Energy",
+      "Legal Services",
+      "Hospitality"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States",
+      "Canada",
+      "Australia",
+      "Belgium",
+      "Maldives",
+      "France",
+      "Qatar",
+      "United Arab Emirates",
+      "Pakistan"
+    ],
+    "other_affected": [],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Aur0ra",
+    "Dual-Extortion",
+    "Malware",
+    "Ransomware",
+    "Threat Intelligence",
+    "Tor"
+  ],
+  "pub_date": "2026-05-22",
+  "reading_time_minutes": null,
+  "createdAt": "2026-05-22T15:00:00.000Z",
+  "updatedAt": "2026-05-23T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-23T00:00:00Z",
+      "summary": "New report confirms Aur0ra ransomware explicitly deletes Volume Shadow Copies using `vssadmin.exe` and provides specific sources for technical details.",
+      "content": "A new report from CYFIRMA confirms that the Aur0ra ransomware explicitly deletes Volume Shadow Copies using the command `vssadmin.exe Delete Shadows /all /quiet` to hinder recovery efforts. This provides a more concrete indicator for detection and response. The report also reiterates the dual-extortion model, the stealthy encryption without filename changes, and its targeting of Windows systems across global industries. This update reinforces the technical understanding of Aur0ra's defense evasion tactics.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://www.cyfirma.com/weekly-intelligence-report-22-may-2026/",
+          "title": "Weekly Intelligence Report – 22 May 2026",
+          "website": "",
+          "date": "2026-05-23T00:00:00Z"
+        },
+        {
+          "url": "https://www.bleepingcomputer.com/news/security/new-aur0ra-ransomware-focuses-on-data-exfiltration-and-encryption/",
+          "title": "New Aur0ra Ransomware Focuses on Data Exfiltration and Encryption",
+          "website": "",
+          "date": "2026-05-23T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+title: Anomalous DNS-over-HTTPS (DoH) Traffic from Build Environment
+id: 8c7d6e5f-4a3b-4e5f-a9c8-d2b1a9c8d4e5
+status: experimental
+description: Detects potential data exfiltration via DNS-over-HTTPS (DoH) from common build servers or developer workstations, as seen in the CodeStream supply chain attack.
+references:
+  - https://www.theregister.com/2026/07/01/codestream_cicd_supply_chain_attack/
+author: cyber.netsecops.io
+date: 2026-07-01
+falsepositives:
+  - Legitimate use of DoH by applications or system services.
+level: medium
+tags:
+  - attack.t1041
+  - attack.t1071.004
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_doh:
+    DestinationPort: 443
+    Protocol: 'tcp'
+    DestinationIp:
+      - '1.1.1.1' # Cloudflare
+      - '1.0.0.1' # Cloudflare
+      - '8.8.8.8' # Google
+      - '8.8.4.4' # Google
+      - '9.9.9.9' # Quad9
+      - '149.112.112.112' # Quad9
+  selection_process:
+    Image|endswith:
+      - '\jenkins.exe'
+      - '\gitlab-runner.exe'
+      - '\CodeStream.exe'
+      - '\actions-runner.exe'
+      - '\node.exe'
+      - '\java.exe'
+  condition: all of selection_*
+---
+title: Malicious CodeStream Package 3.4.1
+id: 2b1a9c8d-4e5f-4a3b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the presence of the compromised CodeStream CI/CD utility package, version 3.4.1.
+references:
+  - https://www.theregister.com/2026/07/01/codestream_cicd_supply_chain_attack/
+author: cyber.netsecops.io
+date: 2026-07-01
+tags:
+  - attack.t1195.002
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\codestream-3.4.1.pkg'
+  condition: selection

@@ -1,0 +1,166 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-09T14:20:27.526Z",
+    "article_slug": "microsoft-september-2026-patch-tuesday-fixes-record-974-vulnerabilities",
+    "article_date": "2026-09-09",
+    "token_usage": {
+      "input_tokens": 148527,
+      "output_tokens": 2856,
+      "cached_tokens": 0,
+      "total_tokens": 151383,
+      "cache_hit": false,
+      "estimated_cost_usd": 0.214219
+    }
+  },
+  "report_name": "Microsoft's Record September Patch Tuesday Fixes 974 Flaws, Two Zero-Days",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "Used to exploit the actively exploited zero-day vulnerabilities CVE-2026-81963 and CVE-2026-85880 to gain SYSTEM-level access on a compromised machine."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-81963",
+      "cve": "CVE-2026-81963",
+      "description": "An actively exploited elevation of privilege vulnerability in the Windows Update Stack. The flaw, described as an improper link resolution, allows a local attacker to escalate privileges to SYSTEM. It has been added to CISA's KEV catalog.",
+      "affected_products": [
+        "Windows Update Stack"
+      ],
+      "cvss_score": 7.8,
+      "severity": "high"
+    },
+    {
+      "name": "CVE-2026-85880",
+      "cve": "CVE-2026-85880",
+      "description": "An actively exploited heap-based buffer overflow vulnerability in the Windows Advanced Local Procedure Call (ALPC). It allows an attacker with code execution to escape a sandbox and execute code with SYSTEM privileges. It has been added to CISA's KEV catalog.",
+      "affected_products": [
+        "Windows Advanced Local Procedure Call (ALPC)"
+      ],
+      "cvss_score": 7.8,
+      "severity": "high"
+    },
+    {
+      "name": "CVE-2026-69730",
+      "cve": "CVE-2026-69730",
+      "description": "A critical, potentially wormable remote code execution (RCE) vulnerability in the Windows DNS Server. An unauthenticated attacker can exploit this by sending a specially crafted packet to a vulnerable server.",
+      "affected_products": [
+        "Windows DNS Server"
+      ],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-69525",
+      "cve": "CVE-2026-69525",
+      "description": "A critical remote code execution (RCE) vulnerability in Remote Desktop Services, often used for lateral movement and ransomware deployment.",
+      "affected_products": [
+        "Remote Desktop Services"
+      ],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-69603",
+      "cve": "CVE-2026-69603",
+      "description": "A critical remote code execution (RCE) vulnerability in Windows Hyper-V that could allow an attacker in a guest virtual machine to execute code on the host operating system.",
+      "affected_products": [
+        "Windows Hyper-V"
+      ],
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-80083",
+      "cve": "CVE-2026-80083",
+      "description": "A critical remote code execution (RCE) vulnerability in Windows Hyper-V that could allow an attacker in a guest virtual machine to execute code on the host operating system.",
+      "affected_products": [
+        "Windows Hyper-V"
+      ],
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Suspicious Child Process of svchost.exe",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Child Process of svchost.exe for Update Stack\nid: 26f5a31b-8b1a-4e9c-9f8d-7a1b2c3d4e5f\nstatus: experimental\ndescription: 'Monitors for unusual child processes spawned by svchost.exe, which could indicate exploitation of the Windows Update Stack vulnerability (CVE-2026-81963).'\nauthor: cyber.netsecops.io\ndate: 2026-09-09\nreferences:\n  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/\ntags:\n  - attack.t1068\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_parent:\n    ParentImage|endswith: '\\svchost.exe'\n  selection_child:\n    Image|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n      - '\\conhost.exe'\n  condition: all of selection_*\nfalsepositives:\n  - Legitimate system activity may spawn these processes from svchost.exe. Requires tuning.",
+      "description": "Detects unusual child processes spawned by svchost.exe, which could indicate exploitation of CVE-2026-81963 in the Windows Update Stack."
+    },
+    {
+      "name": "Suspicious Parent of conhost.exe",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Parent Process of conhost.exe for ALPC Exploit\nid: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a\nstatus: experimental\ndescription: 'Looks for conhost.exe spawning from unexpected parent processes, especially those running in sandboxed environments, which might indicate an ALPC exploit (CVE-2026-85880) attempting a sandbox escape.'\nauthor: cyber.netsecops.io\ndate: 2026-09-09\nreferences:\n  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/\ntags:\n  - attack.t1068\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\conhost.exe'\n  filter:\n    ParentImage|endswith:\n      - '\\csrss.exe'\n      - '\\smss.exe'\n      - '\\wininit.exe'\n  condition: selection and not filter\nfalsepositives:\n  - Some third-party applications may legitimately spawn conhost.exe from unusual parents.",
+      "description": "Detects conhost.exe spawning from unexpected parent processes, which could indicate exploitation of the ALPC vulnerability CVE-2026-85880."
+    },
+    {
+      "name": "Anomalous DNS Server Traffic",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Windows DNS Server Crash\nid: 3c4d5e6f-7a8b-4c9d-a1b2-c3d4e5f6a7b8\nstatus: experimental\ndescription: 'Monitors for crashes or unexpected termination of the Windows DNS Server service (dns.exe), which could indicate exploit attempts against CVE-2026-69730.'\nauthor: cyber.netsecops.io\ndate: 2026-09-09\nreferences:\n  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/\ntags:\n  - attack.t1499\nlevel: high\nlogsource:\n  product: windows\n  service: system\ndetection:\n  selection:\n    Provider_Name: 'Service Control Manager'\n    EventID: 7034\n    param1: 'DNS Server'\n  condition: selection\nfalsepositives:\n  - Legitimate service stops or crashes due to misconfiguration.",
+      "description": "Detects crashes of the Windows DNS Server service, which could be indicative of exploitation attempts against CVE-2026-69730."
+    },
+    {
+      "name": "Post-Exploitation Discovery Commands",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Post-Exploitation Discovery Command Execution\nid: 9a8b7c6d-5e4f-4a3b-b2c1-d0e9f8a7b6c5\nstatus: experimental\ndescription: 'Detects the execution of common discovery commands that often follow successful privilege escalation.'\nauthor: cyber.netsecops.io\ndate: 2026-09-09\nreferences:\n  - https://www.crowdstrike.com/en-us/blog/patch-tuesday-analysis-september-2026/\ntags:\n  - attack.t1082\n  - attack.t1033\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith:\n      - '\\whoami.exe'\n      - '\\systeminfo.exe'\n    CommandLine|contains:\n      - '/all'\n  filter_legit_parents:\n    ParentImage|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n      - '\\explorer.exe'\n  condition: selection and not filter_legit_parents\nfalsepositives:\n  - Legitimate administrative scripts or user activity.",
+      "description": "Detects common discovery commands like `whoami /all` or `systeminfo` being run by system-level processes, which often follows successful privilege escalation."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Suspicious Child Process of svchost.exe",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-81963",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Suspicious Parent of conhost.exe",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-85880",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Anomalous DNS Server Traffic",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-69730",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Post-Exploitation Discovery Commands",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

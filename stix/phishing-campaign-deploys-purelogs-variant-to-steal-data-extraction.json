@@ -1,0 +1,192 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-27T15:32:10.336Z",
+    "article_slug": "phishing-campaign-deploys-purelogs-variant-to-steal-data",
+    "article_date": "2026-05-27",
+    "token_usage": {
+      "input_tokens": 143521,
+      "output_tokens": 2716,
+      "cached_tokens": 137731,
+      "total_tokens": 146237,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051614
+    }
+  },
+  "report_name": "Phishing Campaign Uses JavaScript and Process Hollowing to Deploy PureLogs Data Stealer",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Spearphishing Attachment",
+      "mitre_id": "T1566.001",
+      "description": "The attack initiates with a phishing email containing a malicious RAR archive, such as 'PO 2026-P0803.rar', to lure the victim into executing the first stage of the attack."
+    },
+    {
+      "name": "Command and Scripting Interpreter: JavaScript",
+      "mitre_id": "T1059.007",
+      "description": "An obfuscated malicious JavaScript file is executed by the user after being extracted from a RAR archive. This script is the first stage of the infection chain."
+    },
+    {
+      "name": "Command and Scripting Interpreter: PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "A PowerShell script is decrypted and executed by the initial JavaScript payload. This script acts as a second-stage loader, responsible for performing process hollowing."
+    },
+    {
+      "name": "Process Hollowing",
+      "mitre_id": "T1055.012",
+      "description": "The PowerShell script starts the legitimate Windows process MsBuild.exe in a suspended state, injects a malicious .NET downloader into its memory, and then resumes its execution."
+    },
+    {
+      "name": "Deobfuscate/Decode Files or Information",
+      "mitre_id": "T1140",
+      "description": "The initial JavaScript file contains an obfuscated script which it decrypts to execute the second-stage PowerShell loader."
+    }
+  ],
+  "malware": [
+    {
+      "name": "PureLogs",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": true,
+      "aliases": [],
+      "description": "A data-stealing malware variant delivered via a multi-stage phishing attack. It is injected into the MsBuild.exe process and has modular capabilities for keylogging, credential theft, and file exfiltration.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "exfiltrates-data",
+        "communicates-with-c2"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "MsBuild.exe",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A legitimate Microsoft Build Engine process that is abused via process hollowing. The malware's downloader module is injected into its memory space, allowing the malicious code to run under the guise of a trusted process.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Microsoft",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Vendor of the Microsoft Windows operating system targeted by the PureLogs malware campaign."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "PureLogs C2 Server",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "A remote command-and-control server that the downloader module, running within the hollowed MsBuild.exe process, communicates with to fetch additional plugins and the main PureLogs data-stealing payload."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Suspicious Script Host Spawning PowerShell",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Script Host Spawning PowerShell\nid: 2b8c1f9a-e1b0-4f8a-9c7d-3e5f6a1b2c3d\nstatus: experimental\ndescription: Detects the Windows Script Host (wscript.exe or cscript.exe) launching PowerShell, a behavior observed in the PureLogs infection chain.\nreferences:\n  - https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data\nauthor: cyber.netsecops.io\ndate: 2026-05-27\ntags:\n  - attack.t1059.007\n  - attack.t1059.001\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    ParentImage|endswith:\n      - '\\wscript.exe'\n      - '\\cscript.exe'\n    Image|endswith: '\\powershell.exe'\n  condition: selection\nfalsepositives:\n  - Legitimate administrative scripts.\nlevel: medium",
+      "description": "Detects the initial JavaScript execution leading to PowerShell being launched, as seen in the PureLogs attack chain."
+    },
+    {
+      "name": "PowerShell Spawning MSBuild for Potential Process Hollowing",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: PowerShell Spawning MSBuild for Potential Process Hollowing\nid: 8d7e6f5a-4b3c-4d2e-8f1a-9b8c7d6e5f4a\nstatus: experimental\ndescription: Detects PowerShell launching MsBuild.exe, a technique used by the PureLogs loader to select a target process for hollowing.\nreferences:\n  - https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data\nauthor: cyber.netsecops.io\ndate: 2026-05-27\ntags:\n  - attack.t1059.001\n  - attack.t1055.012\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    ParentImage|endswith: '\\powershell.exe'\n    Image|endswith: '\\MsBuild.exe'\n  condition: selection\nfalsepositives:\n  - Legitimate build processes or automation scripts that invoke MSBuild via PowerShell.\nlevel: high",
+      "description": "Detects the PowerShell loader launching MsBuild.exe, which is a precursor to the process hollowing technique used in this campaign."
+    },
+    {
+      "name": "MsBuild.exe Making Outbound Network Connections",
+      "indicator_types": [
+        "anomalous-activity",
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: MsBuild.exe Making Outbound Network Connections\nid: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the legitimate Windows utility MsBuild.exe making outbound network connections, which is highly anomalous and a strong indicator of compromise, as seen in the PureLogs campaign where it is used to download further payloads after being hollowed.\nreferences:\n  - https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data\nauthor: cyber.netsecops.io\ndate: 2026-05-27\ntags:\n  - attack.t1055.012\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\MsBuild.exe'\n    Initiated: true\n  filter_local:\n    DestinationIp|cidr:\n      - '127.0.0.0/8'\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n      - '::1/128'\n  condition: selection and not filter_local\nfalsepositives:\n  - Very rare legitimate use cases where a build process might need to fetch dependencies from the internet.\nlevel: high",
+      "description": "Detects MsBuild.exe making outbound network connections, a high-confidence indicator that it has been compromised to download the PureLogs payload."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "PureLogs",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter: JavaScript",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PureLogs",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter: PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PureLogs",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Process Hollowing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PureLogs",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Deobfuscate/Decode Files or Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PureLogs",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "MsBuild.exe",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "PureLogs",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "PureLogs C2 Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Suspicious Script Host Spawning PowerShell",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Command and Scripting Interpreter: JavaScript",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell Spawning MSBuild for Potential Process Hollowing",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Process Hollowing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "MsBuild.exe Making Outbound Network Connections",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PureLogs",
+      "target_type": "malware"
+    }
+  ]
+}

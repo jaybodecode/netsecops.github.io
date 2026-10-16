@@ -1,0 +1,44 @@
+title: Anomalous Large Egress Traffic from Cloud Storage
+id: 9c7b9e8f-1d2a-4b3c-8a9b-0c1d2e3f4a5b
+status: experimental
+description: |
+  Detects anomalous, large-scale data transfers from cloud storage buckets or hosted servers to unknown external IP addresses. This is a behavioral hint from the report on the World Leaks breach.
+references:
+  - https://www.aljazeera.com/news/2026/7/16/data-breach-reportedly-targets-indias-kudankulam-nuclear-power-plant
+author: cyber.netsecops.io
+date: 2026-07-17
+tags:
+  - attack.t1567
+  - attack.exfiltration
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allow'
+    # This is a conceptual rule. Thresholds for 'bytes_out' need to be established based on baseline traffic.
+    # Example: Look for outbound traffic from a data center IP range exceeding a high threshold (e.g., 10GB) in a short time.
+    bytes_out|gt: 10000000000 # 10 GB
+  condition: selection
+---
+title: Suspicious Mass S3 Object Retrieval
+id: 8d6a5b4e-2c3b-4a1d-9b8a-1d2e3f4a5b6c
+status: experimental
+description: |
+  Detects a high volume of GetObject API calls from a single user or source IP, which could indicate mass data download from an S3 bucket. This is based on hunting hints from the World Leaks breach report.
+references:
+  - https://www.aljazeera.com/news/2026/7/16/data-breach-reportedly-targets-indias-kudankulam-nuclear-power-plant
+author: cyber.netsecops.io
+date: 2026-07-17
+tags:
+  - attack.t1530
+  - attack.collection
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: 's3.amazonaws.com'
+    eventName: 'GetObject'
+  condition: selection | count(user) by sourceIPAddress > 1000

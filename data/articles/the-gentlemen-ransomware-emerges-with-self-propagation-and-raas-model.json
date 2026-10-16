@@ -1,0 +1,171 @@
+{
+  "id": "aff128d5-2c03-465e-a11c-48c4c1c03f1b",
+  "slug": "the-gentlemen-ransomware-emerges-with-self-propagation-and-raas-model",
+  "headline": "'The Gentlemen' Ransomware Deploys Self-Propagating Malware in Global RaaS Campaign",
+  "title": "Microsoft Details 'The Gentlemen' Ransomware, a Sophisticated RaaS with Automated Lateral Movement",
+  "summary": "Microsoft has uncovered a highly sophisticated Ransomware-as-a-Service (RaaS) operation named 'The Gentlemen,' tracked as Storm-2697. This financially motivated group has developed a Go-based ransomware that features robust encryption and, most notably, an aggressive self-propagation module designed to autonomously spread across enterprise networks. The group, which recently partnered with the BreachForums marketplace to recruit affiliates, employs a double-extortion model, targeting organizations in critical sectors like healthcare, finance, and transportation across multiple continents. The malware is heavily obfuscated and designed to disable security tools before encryption.",
+  "full_report": "## Executive Summary\n\n**[Microsoft](https://www.microsoft.com/security)** Threat Intelligence has published details on a formidable new Ransomware-as-a-Service (**[RaaS](https://en.wikipedia.org/wiki/Ransomware_as_a_service)**) operation called **The Gentlemen**. The operators, tracked as **Storm-2697**, have engineered a potent, Go-based ransomware payload that combines strong encryption with a dangerous self-propagation capability. This allows the malware to spread automatically and rapidly across a compromised network, significantly reducing the time from initial access to widespread impact. The group follows a double-extortion model, exfiltrating data before encryption, and is actively recruiting affiliates via criminal forums like **BreachForums**. The Gentlemen has already been observed in attacks against critical sectors worldwide, representing a significant and evolving threat.\n\n---\n\n## Threat Overview\n\n**The Gentlemen** is a financially motivated cybercrime operation that began as a private group in mid-2025 and transitioned to a RaaS platform in September 2025. The operators, **Storm-2697**, manage the ransomware's development and infrastructure while affiliates carry out the attacks.\n\nThe group's primary weapon is a ransomware written in the Go programming language, chosen for its cross-platform capabilities and the difficulty it presents for reverse engineering. The malware is further protected using the **Garble** obfuscator.\n\nKey characteristics of the threat include:\n- **Double Extortion:** Attackers first exfiltrate sensitive data ([`T1048 - Exfiltration Over Alternative Protocol`](https://attack.mitre.org/techniques/T1048/)) and then encrypt files on the victim's network ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)). The threat of a public data leak is used as additional leverage for payment.\n- **Aggressive Recruitment:** The group has partnered with the notorious **BreachForums** marketplace to recruit skilled affiliates, including initial access brokers and penetration testers.\n- **Global Targeting:** Attacks have been confirmed against organizations in North America, South America, Europe, Africa, and Asia, with a focus on high-value sectors like education, transportation, healthcare, and finance.\n\n---\n\n## Technical Analysis\n\nThe most distinctive feature of **The Gentlemen** ransomware is its automated lateral movement and self-propagation module. Once executed on a single machine, it attempts to spread to other systems on the network without manual attacker intervention.\n\n### Attack Chain:\n1.  **Initial Access:** Affiliates use various methods to gain a foothold, such as exploiting vulnerabilities, phishing, or purchasing access from brokers.\n2.  **Defense Evasion:** Before propagation, the malware executes a series of commands to cripple the target's defenses. This includes terminating processes associated with security software and backup solutions ([`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/)) and clearing system and security event logs to hide its tracks ([`T1070.001 - Clear Windows Event Logs`](https://attack.mitre.org/techniques/T1070/001/)).\n3.  **Self-Propagation:** The malware uses a multi-pronged approach for lateral movement, potentially including:\n    - Exploiting network service vulnerabilities (e.g., SMB).\n    - Using stolen or harvested credentials to access network shares ([`T1021.002 - SMB/Windows Admin Shares`](https://attack.mitre.org/techniques/T1021/002/)).\n    - Deploying itself via tools like PsExec or WMI ([`T1047 - Windows Management Instrumentation`](https://attack.mitre.org/techniques/T1047/)).\n4.  **Encryption:** The payload uses a strong and efficient cryptographic scheme. For each file, it generates an ephemeral Curve25519 key pair and uses the XChaCha20 stream cipher for encryption. This per-file keying makes decryption without the master private key computationally infeasible.\n\n> The self-propagation capability is a game-changer. It transforms a localized infection into a full-blown network crisis in minutes, overwhelming traditional incident response efforts that rely on manual containment.\n\n---\n\n## Impact Assessment\n\nThe combination of automated spreading and double extortion makes **The Gentlemen** a high-impact threat. The speed of propagation can lead to rapid and widespread business disruption, as critical systems across the network are encrypted simultaneously. The operational downtime can be catastrophic for industries like healthcare and transportation.\n\nThe data exfiltration component adds the risk of severe regulatory fines (e.g., under GDPR or HIPAA), reputational damage, and loss of intellectual property. The targeting of multiple critical sectors suggests a strategic approach to maximizing financial returns by hitting organizations that are more likely to pay to restore operations and prevent data leaks.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific technical Indicators of Compromise (IOCs) were provided in the summarized articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams should hunt for TTPs associated with rapid lateral movement and defense evasion:\n\n| Type | Value | Description |\n|---|---|---|\n| Command Line Pattern | `taskkill /F /IM <security_tool>.exe` | Look for command-line activity aimed at terminating antivirus, EDR, or backup agent processes. |\n| Command Line Pattern | `wevtutil.exe cl` | Monitor for the use of the `wevtutil` command to clear Windows Event Logs. |\n| Network Traffic Pattern | East-West SMB/RPC Traffic Spike | A sudden, significant increase in SMB (port 445) or RPC traffic between workstations could indicate a worm-like propagation attempt. |\n| Process Name | Unusual Go-based executables | Monitor for unsigned executables with characteristics of Go binaries (e.g., large file size, specific section names) running from temporary directories. |\n\n---\n\n## Detection & Response\n\n- **Behavioral Detection:** Deploy EDR solutions capable of detecting ransomware-like behavior, such as rapid file modification, volume shadow copy deletion, and attempts to kill security processes. This aligns with **D3FEND's Process Analysis** ([`D3-PA`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)).\n- **Lateral Movement Detection:** Utilize tools that monitor for anomalous east-west traffic. Create alerts for multiple failed logins from a single source to multiple destinations, or the use of administrative tools like `PsExec` from non-administrator workstations.\n- **Honeypots and Deception:** Place decoy systems and credentials on the network. Any interaction with these decoys is a high-fidelity indicator of an intruder and can provide early warning of lateral movement. This is a form of **D3FEND's Decoy Object** ([`D3-DO`](https://d3fend.mitre.org/technique/d3f:DecoyObject)).\n\n---\n\n## Mitigation\n\n- **Network Segmentation:** Implement a robust network segmentation strategy to contain the spread of self-propagating malware. Restrict communication between workstations and between server VLANs to only what is strictly necessary. This is a key application of **D3FEND's Network Isolation** ([`D3-NI`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)).\n- **Immutable Backups:** Maintain offline and immutable backups of critical data. Follow the 3-2-1 backup rule (3 copies, 2 different media, 1 offsite). Regularly test restoration procedures.\n- **Application Control:** Use application allow-listing to prevent the execution of unauthorized executables, including Go-based malware, from user-writable directories like `%APPDATA%`. This is an example of **D3FEND's Executable Allowlisting** ([`D3-EAL`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)).\n- **Privileged Access Management (PAM):** Strictly control and monitor the use of privileged accounts. Implement just-in-time (JIT) access for administrative tasks to reduce the window of opportunity for credential theft.",
+  "twitter_post": "🚨 Microsoft uncovers 'The Gentlemen' ransomware (Storm-2697). This Go-based RaaS features aggressive self-propagation to rapidly compromise entire networks. Double extortion tactics target healthcare, finance & more. 🌐 #Ransomware #TheGentlemen #CyberThreat",
+  "meta_description": "Microsoft details 'The Gentlemen' (Storm-2697), a new Ransomware-as-a-Service (RaaS) threat with a self-propagating Go-based encryptor targeting global industries.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "BreachForums",
+      "type": "other"
+    },
+    {
+      "name": "Garble",
+      "type": "technology"
+    },
+    {
+      "name": "Go",
+      "type": "technology"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor"
+    },
+    {
+      "name": "Storm-2697",
+      "type": "threat_actor"
+    },
+    {
+      "name": "The Gentlemen",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://industrialcyber.co/ransomware/the-gentlemen-ransomware-combines-advanced-encryption-with-self-propagation-targeting-critical-sectors/",
+      "title": "The Gentlemen ransomware combines advanced encryption with self-propagation, targeting critical sectors",
+      "date": "2026-06-01",
+      "website": null
+    },
+    {
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/05/28/the-gentlemen-ransomware-dissecting-a-self-propagating-go-encryptor/",
+      "title": "The Gentlemen ransomware: Dissecting a self-propagating Go encryptor",
+      "date": "2026-05-28",
+      "website": null
+    },
+    {
+      "url": "https://www.thecyberexpress.com/2026/05/29/the-gentlemen-ransomware-go-based/",
+      "title": "Ransomware Uses SYSTEM Scheduled Task to Encrypt Local Drives With Elevated Privileges",
+      "date": "2026-05-29",
+      "website": null
+    },
+    {
+      "url": "https://www.hive-pro.com/threat-advisory/the-gentlemen-ransomware-a-rapidly-scaling-raas-threat/",
+      "title": "The Gentlemen Ransomware: A Rapidly Scaling RaaS Threat",
+      "date": "2026-05-29",
+      "website": null
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-09-01T00:00:00Z",
+      "summary": "The Gentlemen transitions from a private group to a Ransomware-as-a-Service (RaaS) model."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1021.002",
+      "name": "SMB/Windows Admin Shares",
+      "tactic": "Lateral Movement"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1070.001",
+      "name": "Clear Windows Event Logs",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "tags": [
+    "Double Extortion",
+    "Go",
+    "Microsoft",
+    "RaaS",
+    "Ransomware",
+    "Self-Propagating",
+    "Storm-2697",
+    "The Gentlemen"
+  ],
+  "extract_datetime": "2026-06-01",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Education",
+      "Transportation",
+      "Healthcare",
+      "Finance"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States",
+      "Canada",
+      "Brazil",
+      "United Kingdom",
+      "Germany",
+      "South Africa",
+      "Japan"
+    ],
+    "other_affected": [],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Double Extortion",
+    "Go",
+    "Microsoft",
+    "RaaS",
+    "Ransomware",
+    "Self-Propagating",
+    "Storm-2697",
+    "The Gentlemen"
+  ],
+  "pub_date": "2026-06-01",
+  "reading_time_minutes": null,
+  "createdAt": "2026-06-01T15:00:00.000Z",
+  "updatedAt": "2026-06-12T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-06-12T00:00:00Z",
+      "summary": "New details reveal 'Gentlemen' ransomware, a Qilin splinter, exploits Fortinet FortiGate CVEs (CVE-2025-32433, CVE-2025-33073) to hit 478 victims globally.",
+      "content": "New intelligence indicates 'The Gentlemen' ransomware, tracked as Storm-2697, is a splinter group from the Qilin RaaS operation. The group has now compromised at least 478 victims across 66 countries, primarily by actively exploiting vulnerabilities in Fortinet FortiGate appliances and VPNs, specifically CVE-2025-32433 and CVE-2025-33073. This exploitation serves as the main initial access vector for their worm-like attacks. Targeted sectors include IT services, manufacturing, and finance, with a notable focus on Southeast Asia and Latin America. Organizations are urged to immediately patch all internet-facing Fortinet FortiGate devices to mitigate this threat. Security teams should also monitor web and firewall logs for suspicious requests to `/remote/fgt_lang`.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.rescana.com/post/gentlemen-ransomware-actively-exploiting-fortinet-fortigate-vulnerabilities-478-victims-hit-by-rapid-worm-like-attacks",
+          "title": "Gentlemen Ransomware Actively Exploiting Fortinet FortiGate Vulnerabilities: 478 Victims Hit by Rapid Worm-Like Attacks",
+          "website": "",
+          "date": "2026-06-12T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

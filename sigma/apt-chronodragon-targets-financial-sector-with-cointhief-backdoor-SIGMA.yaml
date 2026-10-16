@@ -1,0 +1,76 @@
+title: Suspicious PowerShell Execution Associated with ChronoDragon
+id: 9b1b3c4d-1a2b-4c5d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects the use of obfuscated or hidden PowerShell windows, a technique associated with ChronoDragon's CoinThief backdoor.
+references:
+  - https://www.mandiant.com/resources/blog/chronodragon-apt-targets-financials
+author: cyber.netsecops.io
+date: 2026-04-26
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains:
+      - ' -enc '
+      - ' -w hidden'
+      - ' -nop '
+  condition: selection
+---
+title: Microsoft Office Application Spawning Child Process
+id: 8a2b4c5d-2b3c-4d6e-9f0a-1b2c3d4e5f6a
+status: experimental
+description: Detects Microsoft Office applications spawning command-line interpreters, a common TTP for initial access via malicious documents as used by ChronoDragon.
+references:
+  - https://www.mandiant.com/resources/blog/chronodragon-apt-targets-financials
+author: cyber.netsecops.io
+date: 2026-04-26
+tags:
+  - attack.t1566.001
+  - attack.initial_access
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\winword.exe'
+      - '\excel.exe'
+      - '\powerpnt.exe'
+      - '\outlook.exe'
+  selection_child:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+  condition: all of selection_*
+---
+title: Executable File Creation in Public Directories
+id: 7b3c5d6e-3c4d-4e7f-a0b1-2c3d4e5f6a7b
+status: experimental
+description: Detects malware payloads being dropped in world-writable directories, a technique potentially used by the CoinThief backdoor.
+references:
+  - https://www.mandiant.com/resources/blog/chronodragon-apt-targets-financials
+author: cyber.netsecops.io
+date: 2026-04-26
+tags:
+  - attack.t1105
+  - attack.command_and_control
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|startswith:
+      - 'C:\Users\Public\'
+      - 'C:\ProgramData\'
+    TargetFilename|endswith: '.exe'
+  condition: selection

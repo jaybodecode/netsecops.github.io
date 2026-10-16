@@ -1,0 +1,76 @@
+title: Anomalous EHR Data Access
+id: 2b3a1c4d-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects anomalous access to Electronic Health Record (EHR) systems, which could indicate unauthorized data access or exfiltration as described in the Florida Physician Specialists breach.
+references:
+  - https://www.prnewswire.com/news-releases/florida-physician-specialists-data-breach-edelson-lechtzin-llp-launches-investigation-into-exposure-of-personal-information-302134563.html
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1213
+  - attack.collection
+logsource:
+  category: application
+  product: ehr
+detection:
+  keywords:
+    - 'unauthorized access'
+    - 'bulk export'
+    - 'large query result'
+  condition: keywords
+falsepositives:
+  - Legitimate large data exports by authorized personnel.
+level: medium
+---
+title: Anomalous Outbound Data Transfer (SMB/FTP)
+id: 8d7c6b5a-4f3e-4d2c-1b0a-987654321fed
+status: experimental
+description: Detects potentially unauthorized outbound data transfers using SMB or FTP, a possible method for data exfiltration.
+references:
+  - https://www.prnewswire.com/news-releases/florida-physician-specialists-data-breach-edelson-lechtzin-llp-launches-investigation-into-exposure-of-personal-information-302134563.html
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1048
+  - attack.exfiltration
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+    DestinationPort:
+      - 21
+      - 445
+  filter_internal:
+    DestinationIp|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      - 127.0.0.0/8
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate outbound SMB/FTP traffic to external partners.
+level: medium
+---
+title: Windows Failed Logon Attempt
+id: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects a failed logon attempt (Event ID 4625), which can be an indicator of brute force or credential guessing attempts when correlated.
+references:
+  - https://www.prnewswire.com/news-releases/florida-physician-specialists-data-breach-edelson-lechtzin-llp-launches-investigation-into-exposure-of-personal-information-302134563.html
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1110
+  - attack.credential_access
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4625
+  condition: selection
+falsepositives:
+  - Single instances are common due to user error. Correlation is required to detect malicious activity.
+level: low

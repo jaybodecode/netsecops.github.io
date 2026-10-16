@@ -1,0 +1,189 @@
+{
+  "id": "f35e428d-a335-4422-a02c-30e79188a3fa",
+  "slug": "ghostjacking-and-ghostsplice-attacks-reveal-new-ai-agent-threats",
+  "headline": "Ghostjacking & GhostSplice Attacks Target AI Agents",
+  "title": "New Attacks Ghostjack and GhostSplice Target AI Agents",
+  "summary": "Security researchers have unveiled 'Ghostjacking' and 'GhostSplice,' two novel attack techniques that manipulate AI coding assistants. Ghostjacking uses poisoned logs for indirect prompt injection, while GhostSplice splits malicious commands across trusted channels. These attacks highlight emerging risks in enterprise AI deployments, showing how agents can be tricked into exfiltrating data or executing malicious commands.",
+  "full_report": "## Executive Summary\nSecurity researchers have demonstrated two novel attack techniques, **Ghostjacking** and **GhostSplice**, that expose significant vulnerabilities in the way enterprise AI agents and coding assistants process information and interact with external tools. Ghostjacking tricks AI agents by embedding malicious commands within trusted data sources like security logs, leading to indirect prompt injection. GhostSplice involves a malicious server splitting a harmful command into benign-looking fragments that the AI later reassembles and executes. These attacks, presented at DEF CON 34, illustrate a new class of threats where the data supply chain of AI agents is compromised, turning helpful automated systems into internal threats capable of data exfiltration and unauthorized actions.\n\n---\n\n## Threat Overview\nAs organizations integrate AI agents into their workflows, granting them access to sensitive data and system tools, the security of the agents' operational context becomes paramount. These new attacks shift the focus from direct prompt injection to poisoning the environment and data sources the AI relies on.\n\n### Ghostjacking: Poisoning the Data Well\nDeveloped by researchers at **Tenet**, Ghostjacking is a form of indirect prompt injection. The core concept is to embed malicious instructions within a data source that an AI agent is expected to ingest and analyze as part of its normal function.\n\n- **Attack Vector**: The attacker poisons a log file, such as a **Cloudflare** WAF block event log, a **Datadog** application log, or a **Sentry** error report. This can be done by generating a request that gets logged or by exploiting a leaked API token to inject logs.\n- **Execution**: An operator asks the AI agent a legitimate question, such as \"Can you analyze the latest security alerts?\" The agent reads the poisoned log file. The malicious instructions within the log are parsed and executed by the agent, which cannot distinguish them from the legitimate data it is supposed to be analyzing.\n- **Impact**: In a demonstration, the agent was tricked into altering the company's DNS settings to an attacker-controlled domain. The attack reportedly had a 90% success rate against the Claude Code model.\n\n### GhostSplice: Reassembling a Malicious Command\nDemonstrated by the ASSET Research Group, GhostSplice targets the Model Context Protocol (MCP), an open standard for AI assistants to interact with external tools.\n\n- **Attack Vector**: A malicious MCP server interacts with the AI agent. Instead of sending a single, obviously malicious command that might be blocked by safety filters, it splits the command into multiple, seemingly innocuous fragments.\n- **Execution**: The fragments are delivered to the agent's context window through different, trusted channels. For example, one part of the command might be in a tool's description, while another is in the result returned by that tool. The AI agent, in its process of synthesizing information, stitches these fragments together into the complete, malicious command.\n- **Impact**: This technique was shown to successfully bypass the agent's safety controls to exfiltrate sensitive data like SSH keys and source code, even when a direct request to do so had been denied.\n\n---\n\n## Technical Analysis\nThese attacks represent a sophisticated form of **Prompt Injection ([T1589.004](https://attack.mitre.org/techniques/T1589/004/))**, but with a crucial difference: the injection point is not the user's prompt but the agent's external data sources and tools.\n\n- **Ghostjacking** exploits the **Trust Boundary Violation** between the AI agent's core logic and the external data it consumes. The agent implicitly trusts that data from a Cloudflare or Datadog log is just data, not a set of instructions.\n- **GhostSplice** exploits the agent's context assembly process. The agent's function is to combine disparate pieces of information to form a coherent understanding. GhostSplice abuses this very function, making the agent an unwitting accomplice in constructing the attack payload.\n\n---\n\n## Impact Assessment\nThe business impact of these attacks is severe. A successful Ghostjacking or GhostSplice attack can turn a trusted, highly-privileged AI assistant into an insider threat. Since these agents are often granted access to code repositories, cloud dashboards, and sensitive databases, an attacker can use them to:\n- Exfiltrate source code, API keys, and customer data.\n- Execute arbitrary code within the CI/CD pipeline.\n- Modify cloud infrastructure (e.g., change DNS records, create rogue user accounts).\n- Deploy malware or backdoors.\n\nThe stealthy nature of these attacks makes them difficult to detect. The malicious action appears to be initiated by the legitimate, authorized AI agent, making it challenging to distinguish from normal operations in audit logs.\n\n## Cyber Observables — Hunting Hints\nDetecting these attacks requires monitoring the *inputs and outputs* of AI agents, not just the prompts.\n\n| Type | Value | Description |\n|---|---|---|\n| Log Source | `AI Agent Activity Logs` | Monitor for agents performing sensitive actions (e.g., DNS changes, user creation) immediately after ingesting data from a specific source. |\n| String Pattern | `\"Ignore previous instructions and...\"` | Search logs and data sources for common prompt injection phrases that might be hidden or encoded. |\n| Network Traffic Pattern | `Unusual data exfiltration by AI agent` | Baseline the normal network behavior of AI agents and alert on anomalous outbound connections or data volumes. |\n| API Endpoint | `Cloudflare/Datadog/Sentry API` | Monitor for unusual log injection activity, especially if using exposed client tokens. |\n\n## Detection & Response\n- **Input Sanitization/Output-Scrubbing**: Implement strict sanitization on all data before it is fed to an AI agent. Treat all external data as untrusted. Similarly, scrutinize the commands the agent generates before execution, especially those involving sensitive actions.\n- **Least Privilege for AI Agents ([D3-UAP](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions))**: Grant AI agents the minimum possible permissions to perform their tasks. An agent that only needs to read logs should not have write access to DNS records.\n- **Human-in-the-Loop**: For high-risk actions, require human confirmation before the AI agent is allowed to execute a command. This provides a critical failsafe.\n- **Log Monitoring**: Monitor the AI agent's activity logs for unusual patterns. Correlate the agent's actions with the data it has recently processed to identify potential indirect prompt injection attacks.\n\n## Mitigation\n- **Data Source Integrity**: Secure the data sources that AI agents rely on. Rotate API keys for logging services like Datadog and Sentry, and ensure they are not publicly exposed in client-side code.\n- **Contextual Fencing**: Develop AI agents with strong contextual boundaries. An agent should be able to differentiate between data-to-be-processed and instructions-to-be-executed, even when they originate from the same source.\n- **Tool Connection Security**: For attacks like GhostSplice, ensure that all connections to external tools via protocols like MCP are authenticated and encrypted, and that the tool servers themselves are trusted and verified.\n- **Developer Training**: Educate developers who are building and integrating AI agents about the risks of indirect prompt injection and other contextual attacks.",
+  "twitter_post": "New AI attacks 'Ghostjacking' & 'GhostSplice' turn coding assistants into insider threats. By poisoning logs & splitting commands, researchers made AI agents exfiltrate SSH keys & alter DNS. A new threat for enterprise AI. #AIsafety #PromptInjection",
+  "meta_description": "Researchers demonstrate 'Ghostjacking' and 'GhostSplice,' new attacks that manipulate AI agents by poisoning logs and splitting commands to exfiltrate data.",
+  "category": [
+    "Cloud Security",
+    "Threat Intelligence",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Tenet",
+      "type": "security_organization"
+    },
+    {
+      "name": "ASSET Research Group",
+      "type": "security_organization"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor"
+    },
+    {
+      "name": "Datadog",
+      "type": "vendor"
+    },
+    {
+      "name": "Sentry",
+      "type": "vendor"
+    },
+    {
+      "name": "Claude Code",
+      "type": "product"
+    },
+    {
+      "name": "Model Context Protocol (MCP)",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/ghostjacking-attack-uses-poisoned-logs-to-turn-ai-agents-bad/",
+      "title": "'Ghostjacking' Attack Uses Poisoned Logs to Turn AI Agents Bad",
+      "date": "2026-08-10",
+      "friendly_name": "SecurityWeek"
+    },
+    {
+      "url": "https://thehackernews.com/2026/08/malicious-mcp-servers-can-split.html",
+      "title": "Malicious MCP Servers Can Split Instructions to Make AI Coding Agents Exfiltrate Secrets",
+      "date": "2026-08-11",
+      "friendly_name": "The Hacker News"
+    },
+    {
+      "url": "https://www.scworld.com/news/ghostjacking-attack-turns-error-logs-into-indirect-prompt-injections",
+      "title": "'GhostJacking' attack turns error logs into indirect prompt injections",
+      "date": "2026-08-11",
+      "friendly_name": "SC Magazine"
+    },
+    {
+      "url": "https://tenetsecurity.ai/blog/ghostjacking-attacks-agentic-kill-chain/",
+      "title": "GhostJacking: The Agentic Kill Chain",
+      "friendly_name": "Tenet"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1589.004",
+      "name": "Prompt Injection"
+    },
+    {
+      "id": "T1599",
+      "name": "Spearphishing Link"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SCP",
+          "name": "System Configuration Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions"
+        }
+      ],
+      "description": "Apply the principle of least privilege to AI agents, restricting their access and capabilities to only what is necessary.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [],
+      "description": "Sanitize and validate all external data before it is processed by an AI agent to filter out malicious instructions.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train developers and operators on the risks of indirect prompt injection and how to build more secure AI agent integrations.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "Implement a strict principle of least privilege for all AI agents. An agent's service account should only have the bare minimum permissions required for its designated task. For example, an agent designed to analyze Sentry logs should have read-only access to those logs and no permissions to modify DNS, access code repositories, or provision users. Use separate, single-purpose agents for different tasks rather than one monolithic, highly-privileged agent. This approach contains the potential damage from a compromised agent, as a successful Ghostjacking attack could only perform actions within the agent's limited permission scope. Regularly audit these permissions to ensure they haven't expanded beyond their intended purpose.",
+      "mitre_mitigation_id": "M1015"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Harden the configuration of the AI agent's execution environment. Implement a 'human-in-the-loop' confirmation step for any high-risk action the agent proposes. Before an agent can execute a command like 'git push' or 'terraform apply', the command and its parameters should be presented to a human operator for explicit approval. This acts as a critical circuit breaker. Furthermore, treat data ingested by the agent as untrusted input. Implement input sanitization and output encoding for all data passed to and commands generated by the LLM. This helps prevent the agent from misinterpreting data as executable instructions.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-LAM",
+      "technique_name": "Local Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
+      "recommendation": "Establish comprehensive monitoring and auditing of AI agent activities. Treat the agent's service account like any other privileged user account. Log all actions performed by the agent, the data sources it accessed prior to the action, and the resulting outcome. Create SIEM alerts for anomalous behavior, such as an agent that typically only reads logs suddenly attempting to make outbound network connections or modify system configurations. Correlating the agent's actions with the data it has ingested is key to detecting a potential Ghostjacking attack. For example, an alert could trigger if the agent modifies a firewall rule immediately after processing a log entry that contained suspicious keywords.",
+      "mitre_mitigation_id": "M1026"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "string_pattern",
+      "value": "Ignore previous instructions",
+      "description": "A common phrase used in prompt injection attacks, which could be hidden in logs or other data sources consumed by an AI agent.",
+      "context": "Log files, application error messages, any text-based data source for AI agents",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "AI Agent Action Logs",
+      "description": "Logs detailing the specific actions and commands executed by an AI agent.",
+      "context": "SIEM, application performance monitoring (APM) tools",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "/api/v1/logs",
+      "description": "Generic endpoint for log ingestion. Monitor for anomalous or high-volume submissions which could indicate log poisoning.",
+      "context": "WAF logs, API gateway logs",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "AI Security",
+    "LLM",
+    "Prompt Injection",
+    "Ghostjacking",
+    "GhostSplice",
+    "DEF CON"
+  ],
+  "extract_datetime": "2026-08-12T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Any organization deploying enterprise AI agents"
+    ]
+  },
+  "pub_date": "2026-08-12",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-08-12T15:00:00.000Z",
+  "updatedAt": "2026-08-12T15:00:00.000Z"
+}

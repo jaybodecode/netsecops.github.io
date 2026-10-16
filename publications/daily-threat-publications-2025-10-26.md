@@ -1,0 +1,14 @@
+# Microsoft Scrambles to Patch Actively Exploited WSUS Flaw; Dublin Airport Breach Hits 3.8M
+
+**Published:** 2025-10-26 | **Articles:** 2
+
+This cybersecurity brief for October 26, 2025, covers several critical global incidents. A severe, actively exploited remote code execution vulnerability (CVE-2025-59287) in Microsoft's WSUS has prompted an emergency out-of-band patch, with CISA mandating immediate action. In a massive supply chain attack, Dublin Airport disclosed a data breach affecting 3.8 million passengers after a third-party provider, Collins Aerospace, was compromised by ransomware. Meanwhile, a DDoS attack on Russia's food safety agency crippled national supply chains, the Safepay ransomware group targeted a German video surveillance firm, and dozens of nations signed a landmark, albeit controversial, UN cybercrime treaty in Hanoi.
+
+## Articles in this publication
+- [DDoS Attack on Russian Food Agency Cripples National Supply Chains](https://cyber.netsecops.io/articles/ddos-attack-russian-food-safety-agency-disrupts-supply-chain/) (high)
+  Russia's federal agency for veterinary and phytosanitary surveillance, Rosselkhoznadzor, has been targeted by a large-scale distributed denial-of-service (DDoS) attack starting October 22, 2025. The attack crippled the agency's critical electronic certification systems, including the 'Mercury' platform, which is essential for tracking animal products. The outage caused significant delays in food shipments from major producers of meat, milk, and baby food across the nation, highlighting the vulnerability of critical national infrastructure to cyberattacks. Russian telecom providers are working to mitigate the attack, for which no group has claimed responsibility.
+- [Safepay Ransomware Hits German Surveillance Firm Xortec, Sparking Supply Chain Fears](https://cyber.netsecops.io/articles/safepay-ransomware-targets-german-video-surveillance-firm-xortec/) (high)
+  The Safepay ransomware group has claimed responsibility for a cyberattack against Xortec GmbH, a German provider of professional video surveillance solutions. The group has listed Xortec on its data leak site with a payment deadline of October 27, 2025. This attack raises significant supply chain concerns, as a compromise of a value-added distributor like Xortec could potentially lead to backdoored hardware or software being deployed in sensitive client environments. Safepay is a relatively new but aggressive ransomware-as-a-service (RaaS) operation known for its rapid double-extortion attacks.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2025-10-26/
