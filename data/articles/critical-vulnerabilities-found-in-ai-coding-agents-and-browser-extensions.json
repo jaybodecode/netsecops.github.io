@@ -1,0 +1,167 @@
+{
+  "id": "8936036a-839d-4c37-a2d9-eb1d40db1751",
+  "slug": "critical-vulnerabilities-found-in-ai-coding-agents-and-browser-extensions",
+  "headline": "Critical Flaws in AI Coding Agents and Browser Extensions Expose Developer Workflows",
+  "title": "Researchers Uncover Critical Flaws in AI Tools, Including WebSocket Hijacking in Cline and Agent Hijacking in Claude Extension",
+  "summary": "Security researchers have uncovered critical vulnerabilities in popular open-source AI tools, highlighting new risks in developer workflows. A WebSocket hijacking flaw (CVSS 9.7) in the AI coding agent Cline's local Kanban server allowed any visited website to exfiltrate data and inject commands. A separate issue in Anthropic's Claude Chrome extension permitted other extensions to hijack the AI agent and send malicious prompts. These findings underscore the growing attack surface of the AI software supply chain as these tools become more integrated into development environments.",
+  "full_report": "## Executive Summary\nThe rapid integration of AI-powered tools into software development workflows has introduced a new and critical attack surface. Recent discoveries highlight this emerging risk, with researchers finding severe vulnerabilities in popular open-source AI coding agents and browser extensions. A critical WebSocket hijacking vulnerability (CVSS 9.7) was found in the local server of **Cline**, an AI coding agent, which could allow a malicious website to steal workspace data and execute arbitrary commands. In a separate finding, a flaw in **[Anthropic](https://www.anthropic.com/)**'s **[Claude](https://claude.ai/)** Chrome extension enabled other browser extensions to hijack the AI agent. These vulnerabilities demonstrate how AI components are becoming high-value targets for attackers seeking to compromise sensitive development environments and data.\n\n## Vulnerability Details\n\n### Cline AI Coding Agent\n- **Vulnerability:** WebSocket Hijacking\n- **CVSS Score:** 9.7 (Critical)\n- **Description:** The local Kanban server component of the Cline agent was vulnerable to WebSocket hijacking. This meant that any website opened in the developer's browser could establish a connection to the local Cline server. \n- **Impact:** A malicious website could exploit this to:\n    - **Exfiltrate Data:** Read sensitive data from the developer's workspace, including source code and credentials.\n    - **Inject Commands:** Send arbitrary commands to the AI agent, potentially forcing it to inject malicious code (e.g., a backdoor) into the project the developer was working on.\n- **Remediation:** The flaw was patched in version **0.1.66** of the agent.\n\n### Anthropic Claude Chrome Extension\n- **Vulnerability:** AI Agent Hijacking\n- **Description:** A flaw in the Claude browser extension allowed other, potentially malicious, browser extensions to interact with and control the Claude AI agent.\n- **Impact:** A malicious extension could send hidden prompts to Claude, causing it to perform unintended actions, exfiltrate the content of the user's conversations with the AI, or manipulate the AI's responses to trick the user.\n- **Remediation:** The issue was reported and presumably patched by Anthropic.\n\n## Threat Overview\nThese vulnerabilities are part of a growing trend targeting the AI software supply chain. As developers come to trust and rely on AI assistants, these tools become a powerful vector for attack.\n\n- **Breaking the Local Security Boundary:** The Cline vulnerability is particularly severe because it breaks the security boundary between the web and the local machine. A developer simply visiting a website could have their entire local development environment compromised.\n- **Abusing Implicit Trust:** Developers and users build a level of trust with their AI assistants. The Claude extension flaw shows how this trust can be abused, with attackers piggybacking on the legitimate extension's permissions and capabilities to carry out malicious actions silently in the background.\n\n## Technical Analysis\n\n**WebSocket Hijacking (Cline):** This type of vulnerability, often a form of Cross-Site WebSocket Hijacking (CSWSH), typically occurs when a WebSocket server does not properly validate the `Origin` header of incoming connection requests. A malicious website (`https://evil.com`) can contain JavaScript that attempts to open a WebSocket connection to the local server (e.g., `ws://localhost:1234`). If the server doesn't check that the request is coming from a trusted origin (e.g., a specific local file or domain), it will accept the connection, giving the malicious site's script full control over the WebSocket.\n\n**Extension Hijacking (Claude):** Browser extensions operate in a sandboxed but privileged environment. Communication between extensions can be a vector for attack. The flaw likely existed in how the Claude extension listened for and processed messages from other parts of the browser or other extensions, lacking proper validation of the message sender's identity.\n\n### MITRE ATT&CK Techniques\n- [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/): The Cline local server acts as a public-facing application on the localhost, which was exploited.\n- [`T1173 - Cross-Site Scripting`](https://attack.mitre.org/techniques/T1173/): The principle is similar to XSS, where a malicious site executes code in a different security context (the local server).\n- [`T1136.002 - Create Account: Create Cloud Account`](https://attack.mitre.org/techniques/T1136/002/): A malicious extension could hijack Claude to perform actions on behalf of the user.\n- [`T1565.001 - Data Manipulation: Stored Data Manipulation`](https://attack.mitre.org/techniques/T1565/001/): The ability to inject commands into the Cline agent to alter source code is a form of stored data manipulation.\n\n## Impact Assessment\nThe impact of compromising a developer's AI assistant is severe. It can lead to:\n- **Intellectual Property Theft:** Attackers can steal proprietary source code, algorithms, and development plans.\n- **Software Supply Chain Compromise:** Attackers can inject subtle backdoors or vulnerabilities into a company's codebase, which will then be signed and shipped to customers as part of a legitimate product update.\n- **Credential Theft:** AI agents often have access to various tokens and credentials for interacting with services like GitHub, AWS, etc. These can be stolen, leading to wider infrastructure compromise.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\n- **Network Connections:** Monitor for processes on developer machines making unexpected connections to `localhost` or for browser processes connecting to unusual local ports.\n- **Extension Auditing:** Regularly audit the browser extensions installed by developers. Remove any unnecessary extensions and scrutinize the permissions requested by the remaining ones.\n- **File Integrity Monitoring:** Use FIM on source code repositories to detect unexpected or unauthorized changes, which could be a sign of a compromised tool injecting code.\n\n## Detection & Response\n- **Detection:**\n  - **Endpoint Monitoring:** EDR tools can be configured to alert on browser processes (`chrome.exe`, `firefox.exe`) attempting to connect to local TCP ports, which could indicate a CSWSH attempt.\n  - **Code Review:** All code, including code suggested or written by AI assistants, must still go through a rigorous human code review process before being committed.\n\n- **Response:**\n  - If a vulnerable version of an AI tool is found, immediately update it and assume the developer's machine and workspace may be compromised. \n  - Trigger a full rotation of the developer's credentials (SSH keys, API tokens, passwords).\n  - Audit all recent code commits made by the developer for any signs of malicious injection.\n\n## Mitigation\n- **Patch Management:** Ensure all developer tools, including AI agents and browser extensions, are kept up-to-date with the latest security patches.\n- **Principle of Least Privilege:** Browser extensions should be granted the minimum permissions necessary for their function. Developers should be cautious about installing extensions that require broad permissions like \"read and change all your data on all websites.\"\n- **Network Segregation:** For tools that run local servers, like Cline, configure local firewalls on the developer machine to restrict access to the server's port, only allowing connections from specific, trusted applications rather than any process.\n- **Security Awareness:** Train developers on the new risks associated with AI-powered tools and the importance of vetting the security of their development environment.",
+  "twitter_post": "Critical flaws found in AI coding tools. ⚠️ A CVSS 9.7 WebSocket hijacking flaw in Cline's AI agent allowed data theft, while a bug in Anthropic's Claude Chrome extension enabled agent hijacking. #AI #CyberSecurity #Vulnerability",
+  "meta_description": "Researchers found critical vulnerabilities in AI coding tools, including a CVSS 9.7 WebSocket hijacking flaw in Cline and an agent hijacking issue in Anthropic's Claude Chrome extension.",
+  "category": [
+    "Vulnerability",
+    "Supply Chain Attack",
+    "Cloud Security"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Cline",
+      "type": "product"
+    },
+    {
+      "name": "Anthropic",
+      "type": "company",
+      "url": "https://www.anthropic.com/"
+    },
+    {
+      "name": "Claude",
+      "type": "product",
+      "url": "https://claude.ai/"
+    },
+    {
+      "name": "WebSocket",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://research.checkpoint.com/2026/05/11th-may-threat-intelligence-report/",
+      "title": "11th May – Threat Intelligence Report",
+      "date": "2026-05-11",
+      "friendly_name": "Check Point Research",
+      "website": "checkpoint.com"
+    },
+    {
+      "url": "https://www.resecurity.com/blog/threat-intelligence-may-11-2026",
+      "title": "Threat Intelligence: May 11, 2026",
+      "date": "2026-05-11",
+      "friendly_name": "ReSecurity",
+      "website": "resecurity.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    },
+    {
+      "id": "T1173",
+      "name": "Cross-Site Scripting"
+    },
+    {
+      "id": "T1565.001",
+      "name": "Data Manipulation: Stored Data Manipulation"
+    },
+    {
+      "id": "T1195.002",
+      "name": "Supply Chain Compromise: Compromise Software Supply Chain"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Ensure that all AI agents, browser extensions, and other developer tools are kept up-to-date with the latest security patches.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1022",
+      "name": "Restrict File and Directory Permissions",
+      "description": "Run local server processes with the lowest possible privileges to limit the impact of a compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Use local firewalls to restrict access to local servers, preventing untrusted applications like browsers from connecting to them.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ITF",
+      "technique_name": "Inbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
+      "recommendation": "The Cline WebSocket hijacking vulnerability can be mitigated at the host level using Inbound Traffic Filtering via a local firewall. A developer's workstation firewall (like Windows Defender Firewall or `ufw` on Linux) should be configured with rules that restrict access to the ports used by local development servers. For the Cline Kanban server, a rule should be created to only allow connections to its port from the specific, legitimate Cline application executable. All other inbound connections, especially from browser processes like `chrome.exe` or `firefox.exe`, should be blocked. This prevents a malicious website from being able to initiate the WebSocket connection, effectively neutralizing the Cross-Site WebSocket Hijacking attack vector.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The most straightforward and essential defense against these discovered flaws is to maintain a rigorous Software Update schedule for all developer tools. For the Cline vulnerability, developers must update to version 0.1.66 or later. For the Claude extension, they must ensure the extension is set to auto-update and verify they are on the latest version. Organizations should implement policies and tools to enforce this, such as using managed browser profiles that control extension versions or running regular scans of developer environments to flag outdated and vulnerable software. This ensures that known vulnerabilities are closed before they can be exploited.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "To combat the threat of malicious browser extensions like the one that could hijack the Claude agent, organizations can implement a form of Executable Allowlisting for browser extensions. Using browser management tools (e.g., Chrome Browser Cloud Management), administrators can create a policy that defines a specific list of approved extensions that users are allowed to install. All other extensions from the web store are blocked. This prevents developers from inadvertently installing a malicious extension or an extension that later becomes malicious. This reduces the attack surface and ensures that only vetted and necessary tools are running with privileged access in the browser.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "Browser process connecting to localhost port",
+      "description": "A browser process (e.g., chrome.exe) making a TCP connection to a non-standard port on localhost could indicate a Cross-Site WebSocket Hijacking (CSWSH) attempt against a local server like Cline's.",
+      "context": "EDR logs, local firewall logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "Browser Extension Audit Logs",
+      "description": "Monitor for one extension making calls to another, which could indicate a hijacking attempt like the one described for the Claude extension.",
+      "context": "Browser developer tools, advanced endpoint monitoring.",
+      "confidence": "low"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "cline --version",
+      "description": "Check the installed version of the Cline AI agent to determine if it is the vulnerable version (before 0.1.66).",
+      "context": "Asset management, developer workstation analysis.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "AI",
+    "Vulnerability",
+    "Supply Chain Attack",
+    "Developer Tools",
+    "Cline",
+    "Anthropic",
+    "Claude",
+    "WebSocket",
+    "Browser Extension"
+  ],
+  "extract_datetime": "2026-05-12T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Users of AI coding agents"
+    ]
+  },
+  "pub_date": "2026-05-12",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-12T15:00:00.000Z",
+  "updatedAt": "2026-05-12T15:00:00.000Z"
+}

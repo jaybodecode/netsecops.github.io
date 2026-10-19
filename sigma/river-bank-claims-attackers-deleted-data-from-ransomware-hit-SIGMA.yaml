@@ -1,0 +1,48 @@
+title: Anomalous Outbound Data Transfer
+id: 9c5b1a3d-4e8f-4b1a-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects outbound network connections to non-internal IP addresses. This is a generic behavioral rule intended to be used as a baseline for detecting potential data exfiltration, such as large data transfers mentioned in the River Bank incident. This rule will be very noisy and requires significant tuning and aggregation in a SIEM to be effective.
+references:
+  - https://securityaffairs.com/196537/cyber-crime/river-bank-obtained-assurances-from-the-attackers-that-the-stolen-data-in-the-june-attack-was-deleted.html
+author: cyber.netsecops.io
+date: 2026-08-03
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: informational
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+  filter_rfc1918:
+    DestinationIp|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not filter_rfc1918
+---
+title: Generic Ransomware File Extension Creation
+id: 8b4a2c1e-5d7f-4a9b-8c6d-5e4f3a2b1c0d
+status: experimental
+description: Detects the creation of files with a double extension, where the final extension is '.encrypted', a pattern commonly associated with ransomware. This was mentioned as a potential indicator in the River Bank ransomware incident.
+references:
+  - https://securityaffairs.com/196537/cyber-crime/river-bank-obtained-assurances-from-the-attackers-that-the-stolen-data-in-the-june-attack-was-deleted.html
+author: cyber.netsecops.io
+date: 2026-08-03
+tags:
+  - attack.t1486
+  - attack.impact
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.encrypted'
+  filter_legit:
+    Image|endswith:
+      - '\veracrypt.exe'
+      - '\bitlocker.exe'
+  condition: selection and not filter_legit

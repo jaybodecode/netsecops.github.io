@@ -1,0 +1,88 @@
+title: Anomalous Server Outbound Connection to OneDrive
+id: ffee1764-9fd9-46a8-bd81-ab3de51d8493
+status: experimental
+description: Detects outbound network connections from common server processes to Microsoft OneDrive, which may indicate C2 activity by malware like PhantomGraph.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-09
+tags:
+  - attack.t1102
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationHostname|contains: 'onedrive.live.com'
+    Initiated: 'true'
+  filter_client:
+    Image|contains:
+      - 'C:\Program Files\Microsoft Office\'
+      - 'C:\Users\'
+  condition: selection and not filter_client
+---
+title: LSASS Memory Dump via Procdump
+id: 8923af3e-44f9-45c4-9299-1f0e82073560
+status: experimental
+description: Detects the use of procdump.exe to dump the LSASS process memory, a technique used for credential harvesting.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-09
+tags:
+  - attack.t1003.001
+level: critical
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\procdump.exe'
+    CommandLine|contains|all:
+      - '-ma'
+      - 'lsass.exe'
+  condition: selection
+---
+title: Suspicious Child Process from TrueConf Web Server
+id: ea4c77b4-b131-4535-b01f-e54f17889232
+status: experimental
+description: Detects a web server process, such as one used by TrueConf, spawning a command shell, which can indicate web shell execution.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-09
+tags:
+  - attack.t1505.003
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: selection
+---
+title: TrueConf Web Shell File Modification
+id: 2b1a9c8d-f3e4-4a1b-8c7d-6e5f4d3c2b1a
+status: experimental
+description: Detects modification of the locale.php file on a TrueConf server, which is indicative of the Head Mare web shell deployment.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-09
+tags:
+  - attack.t1505.003
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains: '\public\js\locale.php'
+  condition: selection

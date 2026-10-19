@@ -1,0 +1,173 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-20T16:26:56.840Z",
+    "article_slug": "west-pharmaceutical-services-hit-by-ransomware-attack",
+    "article_date": "2026-05-20",
+    "token_usage": {
+      "input_tokens": 143164,
+      "output_tokens": 2250,
+      "cached_tokens": 137731,
+      "total_tokens": 145414,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.046508
+    }
+  },
+  "report_name": "Ransomware Attack on West Pharmaceutical Services Disrupts Global Operations",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "The company's systems were impacted by a ransomware attack, which by definition involves encrypting data for impact. The proactive shutdown was intended to prevent widespread data encryption."
+    },
+    {
+      "name": "Inhibit System Recovery",
+      "mitre_id": "T1490",
+      "description": "The attackers likely attempted to delete volume shadow copies to prevent system recovery, a common ransomware tactic. Hunting hints suggested looking for 'wmic.exe deleting shadow copies (vssadmin delete shadows /all /quiet)'."
+    },
+    {
+      "name": "SMB/Windows Admin Shares",
+      "mitre_id": "T1021.002",
+      "description": "The attackers may have used SMB shares for lateral movement, as indicated by hunting hints to monitor for a sudden increase in SMB traffic between workstations."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "wmic",
+      "mitre_id": "",
+      "aliases": [
+        "wmic.exe"
+      ],
+      "description": "The WMI command-line utility was likely used to delete volume shadow copies as part of the ransomware attack's effort to inhibit system recovery.",
+      "tool_types": []
+    },
+    {
+      "name": "PsExec",
+      "mitre_id": "S0029",
+      "aliases": [
+        "PsExec.exe"
+      ],
+      "description": "PsExec was mentioned as a potential tool for lateral movement within the victim's network.",
+      "tool_types": [
+        "remote-access"
+      ]
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "West Pharmaceutical Services",
+      "identity_class": "organization",
+      "sectors": [
+        "pharmaceuticals",
+        "manufacturing",
+        "healthcare"
+      ],
+      "description": "A global manufacturer of pharmaceutical packaging and drug delivery systems that suffered a ransomware attack, leading to the shutdown of its infrastructure and disruption of global operations."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "ransom.txt"
+    },
+    {
+      "type": "file",
+      "name": "PsExec.exe"
+    },
+    {
+      "type": "file",
+      "name": "wmic.exe"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Ransomware Volume Shadow Copy Deletion",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Ransomware Volume Shadow Copy Deletion\nid: 2b8092da-b191-4b35-8640-1135694c345b\nstatus: experimental\ndescription: Detects commands used to delete volume shadow copies, a common technique used by ransomware to inhibit system recovery.\nreferences:\n  - https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/\nauthor: cyber.netsecops.io\ndate: 2026-05-20\ntags:\n  - attack.t1490\n  - attack.impact\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_vssadmin:\n    Image|endswith: '\\vssadmin.exe'\n    CommandLine|contains:\n      - 'delete'\n      - 'shadows'\n  selection_wmic:\n    Image|endswith: '\\wmic.exe'\n    CommandLine|contains:\n      - 'shadowcopy'\n      - 'delete'\n  condition: 1 of them\nfalsepositives:\n  - Legitimate administrative activity, though rare.\nlevel: high",
+      "description": "Detects the use of vssadmin.exe or wmic.exe to delete volume shadow copies, a behavior strongly associated with ransomware attacks to prevent recovery."
+    },
+    {
+      "name": "Ransomware Note File Creation",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'ransom.txt']",
+      "x_netsecio_sigma_rule": "title: Ransomware Note File Creation\nid: 9c3e1f2a-6b8d-4c7e-9a1b-0d2f3a4b5c6d\nstatus: experimental\ndescription: Detects the creation of a file named 'ransom.txt', which is a common name for ransomware notes.\nreferences:\n  - https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/\nauthor: cyber.netsecops.io\ndate: 2026-05-20\ntags:\n  - attack.t1486\n  - attack.impact\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '\\ransom.txt'\n  condition: selection\nfalsepositives:\n  - Unlikely.\nlevel: high",
+      "pattern": "",
+      "description": "Detects the creation of a file named 'ransom.txt', a common indicator that ransomware has been executed on a system."
+    },
+    {
+      "name": "PsExec Execution For Lateral Movement",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[process:name = 'PsExec.exe']",
+      "x_netsecio_sigma_rule": "title: PsExec Execution\nid: 5d8a9b4c-1e2f-4a5b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects the execution of PsExec, a legitimate tool often abused by attackers for lateral movement.\nreferences:\n  - https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/\nauthor: cyber.netsecops.io\ndate: 2026-05-20\ntags:\n  - attack.t1021.002\n  - attack.lateral_movement\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    OriginalFileName: 'psexec.exe'\n  condition: selection\nfalsepositives:\n  - Legitimate use by system administrators.\nlevel: medium",
+      "pattern": "",
+      "description": "Detects the execution of PsExec, a tool that can be used for lateral movement as suggested in the report's hunting hints."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Ransomware Volume Shadow Copy Deletion",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Inhibit System Recovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Volume Shadow Copy Deletion",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "wmic",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Ransomware Note File Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PsExec Execution For Lateral Movement",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "SMB/Windows Admin Shares",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PsExec Execution For Lateral Movement",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PsExec",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Ransomware Note File Creation",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "ransom.txt",
+      "target_type": "file"
+    },
+    {
+      "source_name": "PsExec Execution For Lateral Movement",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "PsExec.exe",
+      "target_type": "file"
+    }
+  ]
+}

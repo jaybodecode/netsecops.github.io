@@ -1,0 +1,297 @@
+{
+  "id": "b9951891-fdbb-417a-af30-a9ed76dfe336",
+  "slug": "inc-ransomware-becomes-top-tier-threat-in-2026-with-over-830-victims",
+  "headline": "INC Ransomware Skyrockets to Top-Tier Threat, Claiming Over 830 Victims",
+  "title": "INC Ransomware Emerges as a Dominant RaaS Threat in 2026, Exploiting Proven TTPs to Compromise 830+ Organizations",
+  "summary": "The INC ransomware-as-a-service (RaaS) group has rapidly become one of 2026's most prolific threats, claiming over 830 victims since August 2023. Capitalizing on the downfall of rivals like LockBit and BlackCat, INC has scaled its operations by attracting skilled affiliates and focusing on reliable, high-volume attack methods rather than novel exploits. The group's Rust-based encryptor and targeting of sectors like healthcare and manufacturing have cemented its status as a major cybercrime operation.",
+  "full_report": "## Executive Summary\n\nThe **[INC Ransomware](https://malpedia.caad.fkie.fraunhofer.de/details/win.inc_ransom)** operation has aggressively expanded to become one of the most active and dangerous ransomware-as-a-service (RaaS) threats in 2026. Since emerging in August 2023, the group has compromised more than 830 organizations globally. Its rapid ascent is attributed to the migration of experienced affiliates from defunct or disrupted groups like **[LockBit](https://attack.mitre.org/groups/G0116/)** and **[BlackCat](https://attack.mitre.org/groups/G1017/)**, combined with a strategy that prioritizes proven, effective tactics over complex, innovative ones. The group utilizes a cross-platform encryptor rewritten in Rust and primarily targets organizations in the United States across critical sectors such as healthcare, manufacturing, and legal services, where operational disruption creates immense pressure to pay ransoms.\n\n---\n\n## Threat Overview\n\n**INC Ransomware** operates a sophisticated RaaS platform that provides its affiliates with malware and infrastructure to conduct attacks. The group's strategy focuses on volume and efficiency, using a playbook of reliable tactics to gain access and deploy their payload. Research from **[Acronis](https://www.acronis.com/)** and ZeroFox places **INC** as the fourth most active ransomware group in Q1 2026.\n\nThe group's success stems from its business model, which attracts talent from other cybercrime syndicates, and its technical evolution. The move to a Rust-based encryptor for both Windows and Linux/ESXi environments makes the malware harder to analyze and allows for broader targeting of enterprise infrastructure, including virtualized servers.\n\n## Technical Analysis\n\n**INC** affiliates employ a multi-stage attack chain that relies on a combination of common vulnerabilities and living-off-the-land techniques:\n\n1.  **Initial Access:** Affiliates gain entry primarily through two methods:\n    *   Spear-phishing campaigns delivering malicious links or attachments.\n    *   Exploiting known, unpatched vulnerabilities in public-facing applications. Commonly targeted flaws include those in **[Citrix](https://www.citrix.com/)** Netscaler ([`CVE-2023-3519`](https://nvd.nist.gov/vuln/detail/CVE-2023-3519)), Fortinet EMS ([`CVE-2023-48788`](https://nvd.nist.gov/vuln/detail/CVE-2023-48788)), and SimpleHelp ([`CVE-2024-57727`](https://nvd.nist.gov/vuln/detail/CVE-2024-57727)). This corresponds to [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/).\n2.  **Credential Access & Discovery:** Once inside, they use commercial remote management tools and custom credential dumpers to harvest credentials. An updated dumper has been observed targeting newer **[Veeam](https://www.veeam.com/)** backup deployments, indicating a focus on disabling recovery options ([`T1003 - OS Credential Dumping`](https://attack.mitre.org/techniques/T1003/)).\n3.  **Lateral Movement & Defense Evasion:** The group uses living-off-the-land binaries (LOLBins) and legitimate remote access software to move across the network and blend in with normal administrative activity ([`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/)).\n4.  **Impact:** The final stage involves deploying the Rust-based **INC Ransomware** payload to encrypt files on Windows systems and Linux-based ESXi servers, crippling both workstations and virtual infrastructure ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)). They also engage in double extortion, exfiltrating data before encryption and threatening to leak it on their dark web site ([`T1657 - Financial Theft`](https://attack.mitre.org/techniques/T1657/)).\n\n## Impact Assessment\n\nWith over 830 victims, **INC Ransomware** has caused significant financial and operational damage across multiple sectors. The group's focus on healthcare, legal, and manufacturing industries means their attacks directly disrupt essential services and time-sensitive business operations. The targeting of **[Veeam](https://www.veeam.com/)** backups is particularly damaging, as it aims to eliminate an organization's ability to recover without paying the ransom. The high volume of attacks and the migration of skilled operators to the **INC** platform suggest that the group's impact will continue to grow throughout 2026.\n\n### IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for TTPs associated with **INC Ransomware**:\n\n| Type | Value | Description |\n|---|---|---|\n| Log Source | `VPN/Firewall Logs` | Monitor for successful logins to Citrix Netscaler or Fortinet VPNs from suspicious or multiple geographic locations. |\n| Command Line Pattern | `powershell.exe -enc` | Look for encoded PowerShell commands, a common technique for obfuscating malicious scripts used for discovery and lateral movement. |\n| Process Name | `vssadmin.exe delete shadows` | Monitor for the execution of commands to delete Volume Shadow Copies, a classic ransomware precursor activity. |\n| File Extension | `.inc` | While post-breach, monitoring for files being renamed with the `.inc` extension via FIM or EDR can detect an active encryption event. |\n\n## Detection & Response\n\n1.  **Vulnerability Scanning:** Continuously scan external assets for the specific CVEs known to be exploited by **INC** affiliates (**CVE-2023-3519**, **CVE-2023-48788**, etc.) and prioritize patching.\n2.  **Backup Monitoring:** Implement alerts for any attempts to access, modify, or delete backup files or backup service configurations. Any process attempting to delete Volume Shadow Copies should trigger a high-priority alert. This aligns with **[D3FEND](https://d3fend.mitre.org/)**'s [`Decoy File`](https://d3fend.mitre.org/technique/d3f:DecoyFile) concept if applied to backup locations.\n3.  **Behavioral Analysis:** Use an EDR to detect the sequence of TTPs: exploitation of a public application, followed by credential dumping, and then lateral movement with tools like PsExec or remote monitoring software.\n4.  **Threat Intelligence Integration:** Ingest threat intelligence feeds that provide C2 domains and IPs associated with **INC Ransomware** and its affiliates to block outbound connections.\n\n## Mitigation\n\n1.  **Patch Management:** Aggressively patch public-facing applications, especially Citrix, Fortinet, and other remote access solutions. This is the most effective way to prevent initial access ([`M1051 - Update Software`](https://attack.mitre.org/mitigations/M1051/)).\n2.  **Multi-Factor Authentication (MFA):** Enforce MFA on all remote access services (VPNs, RDP) and critical internal applications to protect against stolen credentials being used for lateral movement ([`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/)).\n3.  **Secure Backups:** Follow the 3-2-1 backup rule. Ensure backups are stored offline or in an immutable cloud storage repository, isolated from the primary network. Regularly test backup restoration procedures.\n4.  **Network Segmentation:** Segment the network to prevent lateral movement. A flat network allows ransomware to spread unimpeded from a single compromised workstation to domain controllers and ESXi hosts ([`M1030 - Network Segmentation`](https://attack.mitre.org/mitigations/M1030/)).",
+  "twitter_post": "📈 INC Ransomware has exploded onto the scene, hitting 830+ victims since 2023. By absorbing affiliates from LockBit & BlackCat and using Rust-based malware, they've become a top-tier threat to healthcare and manufacturing. #Ransomware #CyberCrime",
+  "meta_description": "Learn about the rapid rise of INC Ransomware, a RaaS operation that has claimed over 830 victims by using proven TTPs, exploiting known CVEs, and attracting affiliates from defunct groups.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "INC Ransomware",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.inc_ransom"
+    },
+    {
+      "name": "LockBit",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0116/"
+    },
+    {
+      "name": "BlackCat",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1017/"
+    },
+    {
+      "name": "Qilin",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/qilin"
+    },
+    {
+      "name": "Akira",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/akira"
+    },
+    {
+      "name": "The Gentlemen",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Acronis",
+      "type": "vendor",
+      "url": "https://www.acronis.com/"
+    },
+    {
+      "name": "ZeroFox",
+      "type": "vendor"
+    },
+    {
+      "name": "Veeam",
+      "type": "vendor",
+      "url": "https://www.veeam.com/"
+    },
+    {
+      "name": "Citrix",
+      "type": "vendor",
+      "url": "https://www.citrix.com/"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    },
+    {
+      "name": "SimpleHelp",
+      "type": "product"
+    },
+    {
+      "name": "Lynx",
+      "type": "malware"
+    },
+    {
+      "name": "Sinobi",
+      "type": "malware"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2023-3519"
+    },
+    {
+      "id": "CVE-2025-5777"
+    },
+    {
+      "id": "CVE-2023-48788"
+    },
+    {
+      "id": "CVE-2024-57727"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/06/inc-ransomware-claims-830-victims-since.html",
+      "title": "INC Ransomware Emerges as Major RaaS Threat in 2026 with 830+ Victims Since 2023",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com",
+      "x_url": "https://x.com/thehackersnews"
+    },
+    {
+      "url": "https://www.darkreading.com/cyberattacks-data-breaches/inc-ransomware-thrives-by-mastering-the-basics",
+      "title": "INC Ransomware Thrives by Mastering the Basics",
+      "friendly_name": "Dark Reading",
+      "website": "darkreading.com",
+      "x_url": "https://x.com/DarkReading"
+    },
+    {
+      "url": "https://www.cxodigitalpulse.com/acronis-research-highlights-rapid-evolution-of-inc-ransomware-into-one-of-the-worlds-most-active-cyber-threats/",
+      "title": "Acronis Research Highlights Rapid Evolution of INC Ransomware into One of the World's Most Active Cyber Threats",
+      "friendly_name": "CXO Digital Pulse",
+      "website": "cxodigitalpulse.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2023-08-01T00:00:00Z",
+      "summary": "INC Ransomware begins operations."
+    },
+    {
+      "datetime": "2026-05-01T00:00:00Z",
+      "summary": "INC's malware variants are sold on cybercrime forums, leading to spinoffs."
+    },
+    {
+      "datetime": "2026-06-18T00:00:00Z",
+      "summary": "Reports indicate the group has claimed over 830 victims to date."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1657",
+      "name": "Financial Theft",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Prioritize patching of internet-facing systems like Citrix Netscaler and Fortinet EMS to close common initial access vectors.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce MFA on all remote access solutions and critical systems to prevent abuse of stolen credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Segment networks to contain breaches and prevent ransomware from spreading from workstations to critical servers like domain controllers and ESXi hosts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report phishing emails, which remain a primary initial access vector for INC affiliates.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "Given that INC Ransomware affiliates heavily rely on exploiting known vulnerabilities in public-facing applications, a rigorous and rapid patch management program is the most effective defense. Security teams must prioritize patching for systems like Citrix Netscaler (CVE-2023-3519) and Fortinet EMS (CVE-2023-48788). Utilize automated vulnerability scanning and patch deployment systems to reduce the window of exposure. For appliances where patching may be complex, constant monitoring for vendor advisories and applying them within 24-48 hours of release should be standard operating procedure. This proactive stance directly removes the initial foothold that INC affiliates depend on, effectively neutralizing a significant portion of their attack strategy.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "To counter INC's use of stolen credentials for lateral movement and persistence, organizations must enforce phishing-resistant Multi-Factor Authentication (MFA) across all remote access points (VPNs, RDP) and for privileged account access. This is not just a perimeter defense; MFA should be required for administrative access to critical internal systems, including Veeam backup consoles, vCenter, and domain controllers. This ensures that even if an attacker compromises a user's password, they cannot easily move laterally or access critical systems to escalate their attack. This measure directly mitigates the impact of credential dumping techniques used by the threat group.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-DO",
+      "technique_name": "Decoy Object",
+      "url": "https://d3fend.mitre.org/technique/d3f:DecoyObject",
+      "recommendation": "Since INC Ransomware specifically targets Veeam backups and attempts to delete Volume Shadow Copies, deploying decoy objects can provide early warning. Create fake backup files or canary tokens in locations where backups are stored. Configure high-priority alerts to trigger upon any access, modification, or deletion of these decoy files. Similarly, create a GPO to push a scheduled task that appears to be a backup script but is actually a canary; any attempt by ransomware to disable or delete this task would trigger an alert. This deception-based approach can detect the 'Inhibit System Recovery' (T1490) stage of the attack, providing a critical window for incident response to intervene before encryption begins.",
+      "mitre_mitigation_id": "M1056"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/vpn/../..",
+      "description": "Path traversal patterns associated with Citrix Netscaler vulnerability CVE-2023-3519.",
+      "context": "Web Application Firewall (WAF) logs and web server access logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "vssadmin.exe delete shadows /all /quiet",
+      "description": "A common command used by ransomware to delete Volume Shadow Copies to prevent easy system restoration.",
+      "context": "Windows Event ID 4688 (Process Creation) or EDR command line logging.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "AnyDesk.exe",
+      "description": "INC and other groups often use legitimate remote access tools like AnyDesk for persistence and lateral movement.",
+      "context": "Monitor for the presence or execution of remote access tools not on an approved software list. EDR process logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "ESXi vCenter Logs",
+      "description": "Logs showing unexpected logins, VM snapshot deletions, or execution of commands via the ESXi shell could indicate ransomware activity.",
+      "context": "Centralized logging from VMware vSphere environment.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "INC Ransomware",
+    "RaaS",
+    "LockBit",
+    "BlackCat",
+    "Cybercrime",
+    "Rust",
+    "Veeam",
+    "Citrix"
+  ],
+  "extract_datetime": "2026-06-18T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Healthcare",
+      "Legal Services",
+      "Manufacturing",
+      "Technology",
+      "Education",
+      "Retail"
+    ],
+    "people_affected_estimate": "830+ victim organizations"
+  },
+  "pub_date": "2026-06-18",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-06-18T15:00:00.000Z",
+  "updatedAt": "2026-06-18T15:00:00.000Z"
+}

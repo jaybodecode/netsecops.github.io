@@ -1,0 +1,198 @@
+{
+  "id": "4fe8d992-4e72-49fe-a290-8ec200caa031",
+  "slug": "malicious-npm-packages-target-n8n-automation-platform-in-supply-chain-attack",
+  "headline": "Supply Chain Attack: Malicious npm Packages Steal Credentials from n8n Automation Platform",
+  "title": "New Supply Chain Attack Uses Malicious npm Packages to Steal Credentials from n8n Workflow Automation Platform",
+  "summary": "A novel supply chain attack discovered by Endor Labs is targeting users of the n8n workflow automation platform. Attackers are publishing malicious packages to the npm registry, disguised as legitimate 'community nodes' for popular services. When an unsuspecting user installs one of these nodes and enters their credentials (e.g., OAuth tokens, API keys), the malicious code exfiltrates the entire credential store from the n8n instance to an attacker-controlled server. This gives the attackers access to all services connected to the victim's n8n workflows, such as Salesforce and Stripe, creating a significant risk of widespread data breaches and financial fraud.",
+  "full_report": "## Executive Summary\n\nSecurity researchers at **[Endor Labs](https://www.endorlabs.com/)** have uncovered a sophisticated **[supply chain attack](https://en.wikipedia.org/wiki/Supply_chain_attack)** targeting users of **[n8n](https://n8n.io/)**, a popular open-source workflow automation platform. The attack leverages the public **[npm](https://www.npmjs.com/)** registry to distribute malicious packages that masquerade as legitimate 'community nodes' for services like Google Ads. Once installed, these nodes trick users into entering sensitive credentials, which are then exfiltrated along with all other credentials stored within the n8n environment. This attack vector is particularly dangerous because n8n platforms often act as centralized vaults for API keys and tokens to numerous enterprise systems. The lack of sandboxing or a vetting process for community nodes in n8n's architecture allows the malicious code to execute with full trust, giving attackers a powerful gateway into a victim's critical business applications.\n\n## Threat Overview\n\nThe attack preys on the trust inherent in the n8n ecosystem. The n8n platform allows users to extend its functionality by installing 'community nodes' from the npm registry. These nodes provide integrations with third-party services.\n\nThe attackers' methodology is as follows:\n1.  **Creation of Malicious Node**: The attackers create an npm package that appears to be a useful community node for a popular service (e.g., Google Ads).\n2.  **Publication to npm**: The package is published to the public npm registry with a deceptive name (e.g., `n8n-nodes-hfgjf-irtuinvcm-lasdqewriit`), often using typosquatting or confusing names to appear legitimate.\n3.  **Installation by Victim**: An n8n administrator, seeking to integrate the service, installs the malicious package into their n8n instance.\n4.  **Credential Prompt**: The malicious node presents a standard-looking configuration interface, prompting the user to enter their API keys, OAuth tokens, or other credentials for the service.\n5.  **Credential Exfiltration**: When the user saves the credentials, the malicious code within the node activates. It not only captures the newly entered credentials but also accesses and decrypts the entire n8n credential store, which contains secrets for all other configured integrations (e.g., **[Salesforce](https://www.salesforce.com/)**, **[Stripe](https://stripe.com/)**). All stolen credentials are then sent to an attacker-controlled command-and-control (C2) server.\n\nThis attack vector bypasses traditional endpoint security by targeting the trusted, server-side automation platform itself.\n\n## Technical Analysis\n\nThis attack represents an evolution in supply chain threats, moving from targeting individual developer machines to compromising central automation hubs. The core of the vulnerability lies in n8n's architecture, which inherently trusts any installed node.\n\n-   **Initial Access**: The entry point is social engineering, tricking an n8n user into installing a malicious npm package. This aligns with [`T1189 - Drive-by Compromise`](https://attack.mitre.org/techniques/T1189/), where the 'drive-by' is the act of installing the package.\n-   **Execution**: The malicious JavaScript code within the node is executed by the n8n server's Node.js runtime. Since there is no sandboxing, the code runs with the full permissions of the n8n application.\n-   **Credential Access**: The code is specifically designed to access n8n's internal functions for handling credentials. It can read and decrypt all secrets stored in the n8n database, a clear example of [`T1552.001 - Credentials in Files`](https://attack.mitre.org/techniques/T1552/001/) or, more broadly, `T1552 - Unsecured Credentials`.\n-   **Exfiltration**: The stolen credentials are exfiltrated over the network to a C2 server controlled by the attacker, mapping to [`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/).\n\nThe report notes that this campaign is separate from the recently disclosed RCE vulnerability **[CVE-2026-21858](https://nvd.nist.gov/vuln/detail/CVE-2026-21858)**, but the existence of over 100,000 vulnerable n8n servers highlights the large potential attack surface.\n\n## Impact Assessment\n\nThe impact of a successful attack is severe. By stealing the entire credential store, attackers gain access to a wide range of an organization's most critical applications. This could lead to:\n-   **Major Data Breaches**: Attackers could access and exfiltrate sensitive customer data from CRM systems like Salesforce.\n-   **Financial Fraud**: Access to payment platforms like Stripe could allow attackers to process fraudulent transactions or steal financial data.\n-   **Further Compromise**: Stolen credentials for cloud providers (AWS, GCP, Azure) or other services could be used to pivot deeper into the victim's network and infrastructure.\n-   **Business Disruption**: Attackers could disrupt or manipulate automated business workflows, causing operational chaos.\n\nThe attack turns a tool designed for efficiency into a single point of catastrophic failure.\n\n## Detection & Response\n\n-   **Egress Traffic Monitoring**: The most effective detection method is to monitor outbound network traffic from the n8n server. Any connections to unknown or suspicious IP addresses or domains should be investigated immediately. This is an application of **[D3FEND's Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)**.\n-   **npm Package Auditing**: Before installing any community node, security teams should perform due diligence. Check the package's download statistics, age, publisher reputation, and look for signs of obfuscated code. Use tools like `npm audit` and other open-source scanners to analyze package dependencies.\n-   **Credential Usage Auditing**: Monitor the usage of credentials stored in n8n. Look for anomalous activity, such as API calls originating from unexpected IP addresses, which could indicate that the credentials have been stolen and are being used by an attacker. This aligns with **[D3FEND's Resource Access Pattern Analysis (D3-RAPA)](https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis)**.\n\n## Mitigation\n\n-   **Restrict Node Installation**: Implement strict policies on who can install new nodes in n8n and from where. Maintain an internal allowlist of vetted and approved community nodes. This is a form of [`M1033 - Limit Software Installation`](https://attack.mitre.org/mitigations/M1033/).\n-   **Network Segmentation**: Isolate the n8n server in a segmented network zone. Use firewall rules to strictly control its outbound network access, only allowing connections to the specific, known API endpoints of the services it needs to integrate with. Deny all other outbound traffic by default. This is a critical use of **[D3FEND's Network Isolation (D3-NI)](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)**.\n-   **Use Dedicated Credential Vaults**: Instead of storing all credentials directly in n8n, consider integrating it with a dedicated secrets management solution (e.g., HashiCorp Vault, AWS Secrets Manager). This centralizes credential management and provides better auditing and access control, though the risk of a compromised n8n instance accessing the vault still needs to be managed.",
+  "twitter_post": "🚨 SUPPLY CHAIN ATTACK: Malicious npm packages are targeting the n8n automation platform to steal credentials. Disguised as 'community nodes,' they exfiltrate API keys for services like Salesforce & Stripe. #SupplyChain #n8n #npm #CyberSecurity",
+  "meta_description": "A new supply chain attack targets the n8n workflow automation platform via malicious npm packages, leading to total credential theft. Learn how the attack works and how to protect your n8n instance.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "n8n",
+      "type": "product",
+      "url": "https://n8n.io/"
+    },
+    {
+      "name": "Endor Labs",
+      "type": "vendor",
+      "url": "https://www.endorlabs.com/"
+    },
+    {
+      "name": "npm",
+      "type": "company",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "Google Ads",
+      "type": "product"
+    },
+    {
+      "name": "Salesforce",
+      "type": "product",
+      "url": "https://www.salesforce.com/"
+    },
+    {
+      "name": "Stripe",
+      "type": "product",
+      "url": "https://stripe.com/"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-21858",
+      "kev": false
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.csoonline.com/article/1310153/malicious-npm-packages-target-the-n8n-automation-platform-in-a-supply-chain-attack.html",
+      "title": "Malicious npm packages target the n8n automation platform in a supply chain attack",
+      "date": "2026-01-12",
+      "friendly_name": "CSO Online",
+      "website": "csoonline.com"
+    },
+    {
+      "url": "https://www.endorlabs.com/blog/n8mare-on-auth-street-supply-chain-attack-targets-n8n-ecosystem",
+      "title": "n8mare on auth street: supply chain attack targets n8n ecosystem | Blog",
+      "date": "2026-01-12",
+      "friendly_name": "Endor Labs",
+      "website": "endorlabs.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1552.001",
+      "name": "Credentials in Files",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1189",
+      "name": "Drive-by Compromise",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Use egress filtering to strictly control outbound connections from the n8n server, blocking potential C2 communication.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1033",
+      "name": "Limit Software Installation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Maintain an allowlist of approved and vetted npm packages (community nodes) that can be installed on the n8n platform.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "While not natively supported by n8n, running nodes in a sandboxed environment would prevent them from accessing the main application's credential store.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "The most effective tactical defense against this specific n8n attack is to implement strict outbound traffic filtering for the server hosting the n8n instance. Since n8n workflows connect to a known, finite set of external APIs (e.g., api.salesforce.com, api.stripe.com), the server's firewall rules should be configured to allow outbound connections ONLY to the specific FQDNs and IP addresses of these legitimate services. All other outbound traffic should be denied by default. This 'allowlist' approach to egress control directly blocks the exfiltration phase of the attack (T1041). Even if a malicious node is installed and successfully steals the credentials, it will be unable to send them to the attacker's C2 server. This control turns a potentially catastrophic credential theft incident into a contained, detectable event.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "For post-compromise detection, organizations should perform resource access pattern analysis on the APIs connected to n8n. If an attacker successfully exfiltrates an API key for a service like Salesforce, their usage of that key will likely differ from the automated, predictable patterns of the n8n workflow. Security teams should baseline the normal behavior of API keys used by n8n, looking at factors like source IP (should always be the n8n server), time of day, types of queries, and data volume. An alert should be triggered if the same API key is suddenly used from a different IP address or to perform actions inconsistent with its normal workflow function (e.g., a mass data export). This provides a crucial secondary detection layer in case egress filtering fails or is not implemented.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "Unusual outbound HTTP/S requests from n8n server",
+      "description": "Malicious nodes will exfiltrate stolen credentials to an attacker-controlled C2 server. Any outbound connection from the n8n host to an endpoint not on an explicit allowlist is highly suspicious.",
+      "context": "Firewall logs, web proxy logs, NetFlow analysis.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install <typosquatted-package-name>",
+      "description": "The initial entry point is the installation of a malicious npm package. Monitoring for installations of new, low-reputation, or typosquatted packages is key.",
+      "context": "Shell history, command line logging (Event ID 4688), CI/CD pipeline logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "n8n server application logs",
+      "description": "Logs may show errors or unusual activity related to credential decryption or handling if the malicious node is poorly written. Also, logs will show when a new node is installed.",
+      "context": "Application log monitoring, SIEM.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "n8n",
+    "npm",
+    "Supply Chain Attack",
+    "Credential Theft",
+    "Endor Labs",
+    "Workflow Automation",
+    "CVE-2026-21858"
+  ],
+  "extract_datetime": "2026-01-12T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Users of the n8n automation platform"
+    ]
+  },
+  "pub_date": "2026-01-12",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-01-12T15:00:00.000Z",
+  "updatedAt": "2026-01-12T15:00:00.000Z"
+}

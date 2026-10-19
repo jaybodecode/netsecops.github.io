@@ -1,0 +1,159 @@
+{
+  "id": "f7ac3cee-d230-48c7-8040-75e2ae05d68b",
+  "slug": "china-linked-sprysocks-backdoor-evolves-with-new-windows-variants",
+  "headline": "China-Linked SprySOCKS Backdoor Adds Windows Variants with Kernel-Level Stealth",
+  "title": "FishMonger Group Evolves SprySOCKS Backdoor for Windows, Uses Kernel Drivers for Stealth",
+  "summary": "The China-linked espionage group 'FishMonger' (part of the Winnti umbrella) has upgraded its SprySOCKS backdoor, previously thought to be Linux-only, with two new Windows variants. The new versions, WIN_DRV and WIN_PLUS, feature significant stealth enhancements. The WIN_DRV variant uses a custom kernel driver, 'RawWNPF', to hide the malware's processes, network connections, and files from security tools, demonstrating a significant advancement in the group's capabilities for covert operations.",
+  "full_report": "## Executive Summary\nCybersecurity researchers have identified two new Windows variants of the **SprySOCKS** backdoor, a tool previously associated exclusively with Linux-based attacks. The malware is attributed to **FishMonger**, a cyber espionage group linked to China and the broader **[Winnti](https://attack.mitre.org/groups/G0044/)** collective. The new versions, named WIN_DRV and WIN_PLUS, represent a significant evolution, incorporating advanced stealth capabilities. Notably, the WIN_DRV variant leverages a kernel-mode driver to hide its activity from the operating system and security software, making detection extremely difficult.\n\n## Threat Overview\n**FishMonger** is a sophisticated threat actor known for targeting organizations globally, often exploiting N-day vulnerabilities in public-facing applications for initial access. The discovery of Windows-native versions of **SprySOCKS** shows the group is actively developing and porting its toolset for wider use.\n\n-   **Threat Actor**: FishMonger (part of Winnti)\n-   **Malware**: SprySOCKS (new variants: WIN_DRV, WIN_PLUS)\n-   **Key Feature**: The WIN_DRV variant uses a kernel driver (`RawWNPF`) for advanced stealth.\n\nWhile both Windows versions share the same core C2 protocol and command structure as the Linux version (supporting over 30 commands for espionage), their adaptation to the Windows environment with kernel-level rootkit capabilities marks a dangerous upgrade.\n\n## Technical Analysis\nThe attack chain for the new SprySOCKS variants involves multiple stages to achieve stealthy execution.\n\n1.  **Initial Access**: The initial vector is unconfirmed but FishMonger historically exploits known vulnerabilities in Fortinet, GitLab, Microsoft Exchange, and Zimbra products ([T1190 - Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/)).\n2.  **Staging**: A batch script is dropped, which creates a scheduled task for persistence ([T1053.005 - Scheduled Task](https://attack.mitre.org/techniques/T1053/005/)).\n3.  **Execution via DLL Side-Loading ([T1574.002 - DLL Side-Loading](https://attack.mitre.org/techniques/T1574/002/))**: The scheduled task triggers a legitimate application that is vulnerable to DLL side-loading. This loads the malicious SprySOCKS DLL into a trusted process.\n4.  **Kernel-Mode Stealth (WIN_DRV variant)**:\n    *   The backdoor uses a component called `DriverLoader` to load a second, encrypted kernel driver.\n    *   This second driver is **`RawWNPF`**, a rootkit component that hooks kernel functions.\n    *   **`RawWNPF`** hides the malware's presence by filtering responses from system queries. This makes the malware's processes, files, registry keys, and network connections invisible to user-mode applications, including task manager and many security tools ([T1014 - Rootkit](https://attack.mitre.org/techniques/T1014/)).\n\nSprySOCKS itself is reportedly an evolution of an older RAT known as **Trochilus** and shares characteristics with another backdoor, **RedLeaves**.\n\n## Impact Assessment\nThe use of a kernel-mode rootkit significantly increases the threat level of SprySOCKS. A successful infection can lead to:\n-   **Long-Term, Undetected Espionage**: The malware can remain on a system for extended periods, siphoning data without being detected by conventional security tools.\n-   **Complete System Control**: With backdoor access, the attackers can perform any action on the compromised system, including installing more malware, moving laterally, and exfiltrating sensitive information.\n-   **High-Cost Remediation**: Removing kernel-mode malware is complex and often requires re-imaging the affected system to ensure complete eradication.\n\nThe development of such sophisticated tools indicates that FishMonger is a well-resourced group targeting high-value organizations where long-term, stealthy access is a primary objective.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IPs, domains, hashes) were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nDetecting kernel-level malware requires advanced techniques. Security teams can hunt for signs of compromise:\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `RawWNPF.sys` | The name of the kernel driver used for stealth. The presence of this file is a strong indicator of compromise. |\n| File Name | `DriverLoader.sys` | The loader component used to install the primary stealth driver. |\n| Log Source | Windows System Event Log | Look for Event ID 7045 (A service was installed in the system) for services with suspicious names or binary paths, which could indicate the loading of the malicious driver. |\n| Memory Analysis | Live memory forensics | In-memory scanning can reveal hooked system tables (e.g., SSDT, IRP handlers) and hidden processes that are not visible to the live OS. |\n\n## Detection & Response\n-   **Kernel-Aware Security Tools**: Use security solutions that have kernel-level visibility and employ techniques like memory scanning and integrity checking to detect rootkits. Some EDRs have capabilities to detect hooking and other rootkit behaviors.\n-   **Driver Signature Enforcement**: Ensure Windows is configured to only load digitally signed drivers. While sophisticated attackers can sometimes bypass this with stolen certificates, it raises the bar for execution.\n-   **Log Analysis**: Monitor for the creation of new services and drivers. The loading of an unsigned or unusually named driver (`.sys` file) should be a high-priority alert.\n-   **D3FEND Techniques**: Employ **[System Call Analysis](https://d3fend.mitre.org/technique/d3f:SystemCallAnalysis)** at a low level to detect inconsistencies that might reveal hidden processes or connections. **[Bootloader Authentication](https://d3fend.mitre.org/technique/d3f:BootloaderAuthentication)** (like Secure Boot) can help prevent the loading of unauthorized kernel-mode drivers.\n\n## Mitigation\n1.  **Patch Management**: The most effective preventative measure is to patch public-facing applications aggressively to deny FishMonger its primary initial access vectors.\n2.  **Application Control**: Use application control to restrict the execution of unauthorized binaries and scripts, which can disrupt the initial stages of the attack chain.\n3.  **Attack Surface Reduction**: Disable or uninstall unnecessary services and applications to reduce the number of potential vulnerabilities.\n4.  **Monitor Scheduled Tasks**: Regularly audit scheduled tasks for new or suspicious entries, as this is a key persistence mechanism for this malware.",
+  "twitter_post": "🇨🇳 China-linked 'FishMonger' group upgrades SprySOCKS backdoor for Windows. New variant uses a kernel driver for advanced stealth, hiding files, processes, and network activity. 🕵️‍♂️ #SprySOCKS #FishMonger #Winnti #CyberEspionage #Malware",
+  "meta_description": "The China-linked cyber espionage group FishMonger has developed new Windows variants of its SprySOCKS backdoor, using kernel drivers for advanced stealth to hide its activities.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "FishMonger",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Winnti",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0044/"
+    },
+    {
+      "name": "SprySOCKS",
+      "type": "malware"
+    },
+    {
+      "name": "Trochilus",
+      "type": "malware"
+    },
+    {
+      "name": "RedLeaves",
+      "type": "malware"
+    },
+    {
+      "name": "RawWNPF",
+      "type": "malware"
+    },
+    {
+      "name": "DriverLoader",
+      "type": "malware"
+    },
+    {
+      "name": "ESET",
+      "type": "security_organization"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor"
+    },
+    {
+      "name": "GitLab",
+      "type": "vendor"
+    },
+    {
+      "name": "Microsoft Exchange Server",
+      "type": "product"
+    },
+    {
+      "name": "Zimbra",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/06/china-linked-sprysocks-backdoor-expands.html",
+      "title": "China-Linked SprySOCKS Backdoor Expands to Windows with Driver-Based Stealth",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1014",
+      "name": "Rootkit"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading"
+    },
+    {
+      "id": "T1053.005",
+      "name": "Scheduled Task"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Aggressively patching public-facing applications is key to preventing the initial access vectors commonly used by FishMonger.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1046",
+      "name": "Boot Integrity",
+      "description": "Enforce Secure Boot to prevent the loading of unauthorized or unsigned kernel-mode drivers like RawWNPF.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control to block the execution of unknown batch scripts or DLLs, disrupting the attack chain before the backdoor is loaded.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "RawWNPF.sys",
+      "description": "The kernel driver used by the WIN_DRV variant of SprySOCKS to hide its activity. Its presence is a high-confidence indicator of compromise.",
+      "context": "File system scanning, EDR file inventories",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "7045",
+      "description": "Windows System Event ID for 'A service was installed in the system'. Monitor for the installation of new drivers, especially if they are unsigned or have suspicious names.",
+      "context": "Windows Event Log monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "schtasks.exe /create",
+      "description": "The malware uses a batch script to create a scheduled task for persistence. Monitoring for suspicious task creation can be an early detection point.",
+      "context": "Command-line logging, Windows Security Event ID 4688",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "SprySOCKS",
+    "FishMonger",
+    "Winnti",
+    "Cyber Espionage",
+    "Malware",
+    "Rootkit",
+    "Kernel Driver",
+    "China"
+  ],
+  "extract_datetime": "2026-06-16T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global"
+  },
+  "pub_date": "2026-06-16",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-06-16T15:00:00.000Z",
+  "updatedAt": "2026-06-16T15:00:00.000Z"
+}

@@ -1,0 +1,193 @@
+{
+  "id": "8dd88e68-7fc0-4ddc-8b93-ef5ba9e1f3c9",
+  "slug": "wall-street-giants-targeted-in-ai-voice-phishing-campaign",
+  "headline": "Wall Street Giants Targeted in Coordinated AI Vishing Campaign",
+  "title": "AI Vishing Campaign Targets Wall Street Firms",
+  "summary": "A sophisticated voice-phishing (vishing) campaign is targeting major financial firms like Blackstone, KKR, Citadel, and Point72. The threat actor, tracked as UNC6671 (aka BlackFile or Redact), uses AI voice cloning to impersonate IT staff and trick employees into giving up credentials for Microsoft 365 and Okta. The attackers direct victims to adversary-in-the-middle (AitM) phishing sites that capture passwords and MFA tokens in real-time. Several firms have confirmed being targeted, highlighting the growing threat of AI-powered social engineering in the financial sector.",
+  "full_report": "## Executive Summary\n\nA large-scale and sophisticated voice-phishing (vishing) campaign is actively targeting employees at some of the world's largest financial institutions. The targets include private-equity giants **Blackstone** and **KKR**, hedge funds like **Citadel** and **Point72**, and the exchange operator **CME Group**. The financially motivated threat actor, tracked as **[UNC6671](https://www.mandiant.com/resources/blog/unc6671-blackfile-redact-vishing)** (also known as **BlackFile** and now rebranding as **Redact**), is using AI-powered voice cloning technology to impersonate corporate IT helpdesk personnel. The attackers socially engineer employees, directing them to adversary-in-the-middle (AitM) phishing sites designed to steal **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** and **[Okta](https://www.okta.com)** credentials, including real-time MFA tokens. The campaign's success in targeting high-value financial firms underscores the increasing effectiveness of AI-enhanced social engineering attacks.\n\n---\n\n## Threat Overview\n\nThis campaign represents a significant evolution in phishing, combining AI technology with proven AitM techniques to bypass modern authentication controls.\n\n- **Threat Actor:** **UNC6671 / BlackFile / Redact**, a financially motivated group.\n- **Targets:** High-value employees at major financial firms, including hedge funds, private equity firms, and exchange operators.\n- **Attack Vector:** Voice-phishing (vishing). Attackers call employees on their personal mobile phones.\n- **Tactic:** The attackers use AI voice cloning to mimic the voices of IT support staff, creating a sense of legitimacy and urgency (e.g., \"We need you to approve this security update.\").\n- **Phishing Infrastructure:** Victims are directed to highly convincing, lookalike login portals for **Microsoft 365** and **Okta**. These are AitM proxies that sit between the user and the real service.\n- **Goal:** To steal credentials (username, password) and intercept multi-factor authentication (MFA) tokens or session cookies in real-time, thereby gaining full access to the victim's account.\n- **Post-Compromise:** Once access is gained, the group uses automated tools to exfiltrate sensitive data from cloud and SaaS applications.\n\nFirms like **Two Sigma** and **Point72** have confirmed being targeted but stated they thwarted the attempts before significant data loss occurred.\n\n---\n\n## Technical Analysis\n\nThe attack's technical sophistication lies in its seamless integration of social engineering and real-time credential capture.\n\n- **AI Voice Cloning:** The use of AI to mimic voices overcomes a traditional vishing hurdle: the caller's voice not sounding familiar or professional. This makes the social engineering aspect far more convincing.\n- **Adversary-in-the-Middle (AitM):** This is the key technical component for bypassing MFA. The phishing site is not a static page; it's a reverse proxy. When the victim enters their credentials, the AitM kit forwards them to the real login service (e.g., **Microsoft**). When the real service prompts for an MFA code, the prompt is passed back to the victim. The victim enters their MFA code into the phishing site, which is then captured and used by the attacker to complete the login and steal the resulting session cookie.\n\n### MITRE ATT&CK Mapping\n\n- **[`T1566.004 - Spearphishing Voice`](https://attack.mitre.org/techniques/T1566/004/):** The core of the attack is vishing, using voice calls to manipulate victims.\n- **[`T1648 - AI-Generated Content`](https://attack.mitre.org/techniques/T1648/):** The use of AI voice cloning falls under this new ATT&CK technique for creating deceptive content.\n- **[`T1598.003 - Spearphishing Link`](https://attack.mitre.org/techniques/T1598/003/):** The vishing call directs the user to a malicious link.\n- **[`T1110.004 - Credential Stuffing`](https://attack.mitre.org/techniques/T1110/004/):** The attackers use an AitM setup to steal credentials in real-time, effectively bypassing MFA.\n- **[`T1539 - Steal Web Session Cookie`](https://attack.mitre.org/techniques/T1539/):** The ultimate goal of the AitM attack is to steal the authenticated session cookie, which allows the attacker to take over the session without needing the password or MFA again.\n- **[`T1114 - Email Collection`](https://attack.mitre.org/techniques/T1114/):** Post-compromise, the attackers exfiltrate sensitive data from the user's email account.\n\n---\n\n## Impact Assessment\n\nA successful attack against an employee at a major financial firm can have devastating consequences.\n- **Financial Data Theft:** Attackers can gain access to non-public market information, M&A details, trading strategies, and client financial data.\n- **Fraud:** Compromised accounts can be used to authorize fraudulent wire transfers or manipulate financial records.\n- **Market Manipulation:** Access to pre-release earnings reports or other sensitive information could be used for insider trading or market manipulation.\n- **Widespread Compromise:** A single compromised account, especially a privileged one, can be used as a beachhead to move laterally within the firm's network.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific domains, IPs, or other IOCs were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nDetecting AitM activity requires looking for subtle anomalies in the authentication process.\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | IdP Logs (Okta, Entra ID) | Look for successful logins from unfamiliar IP addresses, ASNs, or geolocations, especially if they occur shortly after a known vishing attempt. | SIEM, Identity Provider logs | high |\n| user_agent | Unusual User-Agent strings | AitM phishing kits may use non-standard or unusual User-Agent strings that differ from legitimate browser traffic. | Web proxy logs, IdP logs | low |\n| network_traffic_pattern | Mismatched IP geolocation | A user's login IP is in one country, but their VPN or corporate IP is in another. | IdP logs, VPN logs, Firewall logs | medium |\n| event_id | Suspicious MFA device registration | Attackers may attempt to register their own device for MFA after compromising an account. Monitor for new MFA device enrollments. | IdP logs | high |\n\n---\n\n## Detection & Response\n\n### Detection\n- **User Reporting:** The most effective detection is a well-trained workforce that can recognize and report suspicious calls to the security team.\n- **Identity Provider (IdP) Analytics:** Modern IdPs like **Okta** and **Microsoft Entra ID** have built-in risk engines that can detect impossible travel, anomalous device fingerprints, and other signs of session hijacking.\n- **Monitor for AitM Phishing Kits:** Security teams can proactively hunt for newly registered domains that impersonate their own brand and use tools that detect the signatures of known AitM phishing kits.\n\n### Response\n- **Immediate Session Revocation:** If a compromise is suspected, the first step is to revoke all active sessions for the user's account and force a password reset. This is a key D3FEND technique: **[`User-initiated Compromise Remediation`](https://d3fend.mitre.org/technique/d3f:User-initiatedCompromiseRemediation)**.\n- **Account Lockout:** Temporarily lock the account to prevent further unauthorized access while the investigation is underway.\n- **Forensic Analysis:** Analyze logs from the IdP, endpoints, and SaaS applications to determine the scope of the compromise and what data was accessed or exfiltrated.\n\n---\n\n## Mitigation\n\n1.  **User Training:** This is the most critical mitigation. Employees must be trained to be suspicious of any unsolicited call, especially those creating urgency and asking for credentials or for them to visit a website. They should be instructed to hang up and call the IT helpdesk back on a known, official number.\n2.  **Phishing-Resistant MFA:** The ultimate technical control against AitM attacks is to use phishing-resistant MFA, such as **[FIDO2](https://fidoalliance.org/)** security keys (e.g., YubiKey). These methods tie the authentication to the specific domain, and the browser will not allow the credential to be used on a phishing site, breaking the AitM chain. This is an application of D3FEND's **[`Hardware-based Process Isolation (D3-HBPI)`](https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation)** at the authentication level.\n3.  **Conditional Access Policies:** Implement strict conditional access policies that block logins from non-compliant devices, untrusted locations, or IP addresses associated with anonymous proxies.\n4.  **Limit Personal Device Use:** Enforce policies that restrict employees from logging into corporate resources from personal, unmanaged devices, which are harder to monitor and secure.",
+  "twitter_post": "Major Wall Street firms including Blackstone, KKR & Citadel targeted by an AI-powered voice-phishing (vishing) campaign. Attackers use AI voice cloning and AitM sites to bypass MFA and steal credentials. #Vishing #Phishing #CyberAttack #Finance",
+  "meta_description": "A sophisticated vishing campaign by the UNC6671 group uses AI voice cloning to target major Wall Street firms, bypassing MFA to steal credentials.",
+  "category": [
+    "Phishing",
+    "Threat Actor",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Apollo",
+      "type": "company"
+    },
+    {
+      "name": "BlackFile",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Blackstone",
+      "type": "company"
+    },
+    {
+      "name": "CME Group",
+      "type": "company"
+    },
+    {
+      "name": "Citadel",
+      "type": "company"
+    },
+    {
+      "name": "KKR",
+      "type": "company"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product"
+    },
+    {
+      "name": "Millennium",
+      "type": "company"
+    },
+    {
+      "name": "Okta",
+      "type": "vendor"
+    },
+    {
+      "name": "Point72",
+      "type": "company"
+    },
+    {
+      "name": "Redact",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Two Sigma",
+      "type": "company"
+    },
+    {
+      "name": "UNC6671",
+      "type": "threat_actor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thenextweb.com/news/vishing-campaign-blackstone-kkr-cme-finance-firms",
+      "title": "Hackers hit Wall Street's biggest names with a phone-call scam",
+      "date": null,
+      "website": "thenextweb.com"
+    },
+    {
+      "url": "https://www.techradar.com/pro/security/top-us-hedge-funds-targeted-by-major-vishing-campaign-blackstone-kkr-and-cme-among-those-under-fire",
+      "title": "Top US hedge funds targeted by major vishing campaign — Blackstone, KKR and CME among those under fire",
+      "date": null,
+      "website": "techradar.com"
+    },
+    {
+      "url": "https://beincrypto.com/phone-scams-wall-street-financial-firms/",
+      "title": "Phone-Scam Hackers Now Target Wall Street's Biggest Firms",
+      "date": null,
+      "website": "beincrypto.com"
+    },
+    {
+      "url": "https://www.briefs.co/news/major-hedge-funds-face-wave-of-voice-phishing-cyberattack-at/",
+      "title": "Major Hedge Funds Face Wave of Voice-Phishing Cyberattack Attempts",
+      "date": null,
+      "website": "briefs.co"
+    },
+    {
+      "url": "https://www.investmentnews.com/fintech/point72-citadel-among-hedge-funds-hit-by-ai-vishing-attacks/267708",
+      "title": "Point72, Citadel among hedge funds hit by AI vishing attacks",
+      "date": null,
+      "website": "investmentnews.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1114",
+      "name": "Email Collection",
+      "tactic": null
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": null
+    },
+    {
+      "id": "T1566.004",
+      "name": "Spearphishing Voice",
+      "tactic": null
+    },
+    {
+      "id": "T1648",
+      "name": "AI-Generated Content",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "AI",
+    "AitM",
+    "BlackFile",
+    "Finance",
+    "Phishing",
+    "UNC6671",
+    "Vishing",
+    "Voice Cloning",
+    "Wall Street"
+  ],
+  "extract_datetime": "2026-08-08",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "industries_affected": [
+      "Finance",
+      "Legal Services"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States"
+    ],
+    "other_affected": [
+      "Hedge fund investors",
+      "Private equity firms"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "AI",
+    "AitM",
+    "BlackFile",
+    "Finance",
+    "Phishing",
+    "UNC6671",
+    "Vishing",
+    "Voice Cloning",
+    "Wall Street"
+  ],
+  "pub_date": "2026-08-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-08-08T15:00:00.000Z",
+  "updatedAt": "2026-09-07T10:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-09-07T10:00:00Z",
+      "summary": "New tracking name 'PREY-0058' linked to UNC6671, now using residential proxies for M365 data exfiltration and extortion.",
+      "content": "The vishing campaign, now tracked as PREY-0058 (with overlaps to UNC6671), has evolved to include data exfiltration from Microsoft 365 services like SharePoint and OneDrive. Attackers are using residential proxies to evade detection when replaying stolen session tokens. The exfiltrated data is then used for extortion, significantly increasing the threat's impact beyond initial credential theft. This update highlights the group's focus on high-level executives and their cloud-native approach to bypassing MFA and stealing sensitive information for financial gain.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://thehackernews.com/2026/09/microsoft-365-attackers-use-help-desk.html",
+          "title": "Fake IT Calls Target Executives in Microsoft 365 Data Theft and Extortion Attacks",
+          "website": "",
+          "date": "2026-09-07T10:00:00Z"
+        },
+        {
+          "url": "https://arcticwolf.com/resources/blog/prey-0058-vishing-campaign-targets-microsoft-365/",
+          "title": "Widespread Vishing and Data Extortion Campaign (PREY-0058) Targeting Microsoft 365",
+          "website": "",
+          "date": "2026-09-07T10:00:00Z"
+        }
+      ]
+    }
+  ]
+}

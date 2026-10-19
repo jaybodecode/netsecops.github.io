@@ -1,0 +1,80 @@
+title: Anomalous Outbound Network Traffic from AI Sandbox Environment
+id: 2b9f1c8d-e3a0-4b1f-8c9d-1e2f3a4b5c6d
+status: experimental
+description: |
+  Detects unexpected outbound network connections originating from AI model execution environments or sandboxes. A compromised or escaped model may attempt to establish a C2 channel or exfiltrate data. This rule requires baselining of normal traffic from these environments.
+references:
+  - https://pluang.com/en/news-feed/khawatir-tentang-hugging-face-microsoft-dan-amazon-paling-terkena-di-antara
+author: cyber.netsecops.io
+date: 2026-09-21
+tags:
+  - attack.aml.t0105
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip: 
+      # Add IP ranges of your AI sandbox environments here
+      - '10.100.0.0/16'
+  filter:
+    dst_ip:
+      # Add IPs/ranges of legitimate, expected destinations here
+      - '8.8.8.8'
+  condition: selection and not filter
+---
+title: Anomalous API Calls from AI Service
+id: 8d1c2b9f-a0e3-4f1b-9d8c-f3a4b5c6d1e2
+status: experimental
+description: |
+  Detects unusual API calls made by an AI service to other internal or external services. A compromised model could be used to pivot and attack other systems. This rule requires knowledge of the AI service's expected API interaction patterns.
+references:
+  - https://pluang.com/en/news-feed/khawatir-tentang-hugging-face-microsoft-dan-amazon-paling-terkena-di-antara
+author: cyber.netsecops.io
+date: 2026-09-21
+tags:
+  - attack.aml.t0105
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host: 'internal-api.corp.local' # Example of a sensitive internal API
+    c-useragent|startswith: 'HuggingFace-Transformer-Agent' # Example User-Agent for an AI service
+  filter:
+    # Add legitimate source IPs or request paths to filter FPs
+    c-ip: '192.168.1.100'
+  condition: selection and not filter
+---
+title: Unexpected Process Execution from Containerized AI Process
+id: f9b8d1c2-e3a0-4b1f-8c9d-a4b5c6d1e2f3
+status: experimental
+description: |
+  Detects suspicious child processes (like shells or network utilities) being spawned from a parent process associated with a containerized AI model. This could indicate a sandbox escape or code execution vulnerability.
+references:
+  - https://pluang.com/en/news-feed/khawatir-tentang-hugging-face-microsoft-dan-amazon-paling-terkena-di-antara
+author: cyber.netsecops.io
+date: 2026-09-21
+tags:
+  - attack.aml.t0105
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_parent:
+    ParentImage|contains: 
+      - '/usr/bin/python'
+      - 'docker-entrypoint.sh'
+      # Add specific parent process names for your AI containers
+  selection_child:
+    Image|endswith:
+      - '/bash'
+      - '/sh'
+      - '/curl'
+      - '/wget'
+      - '/nc'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate diagnostic or setup scripts within the container.
+  - Benign use of shell for complex operations.

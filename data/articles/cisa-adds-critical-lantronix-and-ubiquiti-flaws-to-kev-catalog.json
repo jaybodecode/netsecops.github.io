@@ -1,0 +1,321 @@
+{
+  "id": "0ca2897c-798e-4e1d-9109-47fc758f4c5b",
+  "slug": "cisa-adds-critical-lantronix-and-ubiquiti-flaws-to-kev-catalog",
+  "headline": "CISA Mandates Urgent Patching for Actively Exploited Flaws in Lantronix and Ubiquiti Devices",
+  "title": "CISA Adds Critical Lantronix and Ubiquiti Vulnerabilities to KEV Catalog Amid Active Exploitation",
+  "summary": "The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added four critical vulnerabilities affecting Lantronix EDS5000 device servers and Ubiquiti UniFi OS to its Known Exploited Vulnerabilities (KEV) catalog. The flaws, including a 9.8 CVSS command injection in Lantronix and a 10.0 CVSS chain in Ubiquiti, allow for unauthenticated remote code execution and full system compromise. CISA has issued a directive for federal agencies to apply patches by June 26, 2026, highlighting the severe and immediate risk these flaws pose to both enterprise and Operational Technology (OT) networks.",
+  "full_report": "## Executive Summary\nOn June 24, 2026, the U.S. **[Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov)** added four critical vulnerabilities affecting **[Lantronix](https://www.lantronix.com/)** and **[Ubiquiti](https://www.ui.com/)** networking equipment to its Known Exploited Vulnerabilities (KEV) catalog. This action confirms that threat actors are actively exploiting these flaws in the wild. The vulnerabilities include **CVE-2025-67038**, a 9.8 CVSS score command injection flaw in Lantronix EDS5000 series devices, and a chain of three flaws (**CVE-2026-34908**, **CVE-2026-34909**, **CVE-2026-34910**) in Ubiquiti UniFi OS, which collectively achieve a 10.0 CVSS score for unauthenticated remote code execution. Given the active exploitation and the critical role these devices play in network infrastructure, CISA has mandated that Federal Civilian Executive Branch (FCEB) agencies patch these vulnerabilities by June 26, 2026. This advisory underscores the urgent need for all organizations using these products to take immediate remedial action to prevent system compromise.\n\n---\n\n## Vulnerability Details\n\n### Lantronix EDS5000 Series: CVE-2025-67038\nThis **critical vulnerability** (CVSS 9.8) is a command injection flaw within the HTTP RPC module of Lantronix EDS5000 series serial-to-IP device servers. Research from **[Forescout](https://www.forescout.com/)**'s Vedere Labs, part of their \"BRIDGE:BREAK\" study, revealed that the application insecurely concatenates a username into a shell command when logging failed authentication attempts. An unauthenticated, remote attacker can craft a malicious username containing shell commands. When an authentication attempt with this username fails, the server executes the injected commands with `root` privileges. This provides the attacker with complete control over the device.\n\n### Ubiquiti UniFi OS: CVE-2026-34908, CVE-2026-34909, CVE-2026-34910\nThis set of three vulnerabilities, when chained together, allows for unauthenticated remote code execution with a maximum CVSS score of 10.0. The attack chain works as follows:\n1.  **`CVE-2026-34908` (Improper Access Control):** Allows an attacker to bypass authentication checks.\n2.  **`CVE-2026-34909` (Path Traversal):** Enables the authenticated (or bypass-authenticated) attacker to read and write arbitrary files on the system.\n3.  **`CVE-2026-34910` (Improper Input Validation):** Allows the attacker to inject malicious commands, which can be executed via the file write capability from the path traversal flaw.\n\nTogether, these flaws enable a remote attacker to gain a reverse shell with `root` privileges, effectively taking full control of the UniFi OS device.\n\n---\n\n## Technical Analysis\nThreat actors are leveraging these vulnerabilities to establish initial access and persistence within target networks. The attack patterns align with common tactics for compromising edge devices.\n\n### Lantronix Attack Vector\nThe exploitation of `CVE-2025-67038` is a classic example of [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/). The attacker sends a crafted HTTP request to the device's web interface, targeting the login function. The username field is the injection point. For example, a username like `';/bin/sh -c \"<malicious_command>\";'` would be executed by the system's shell. This allows for direct [`T1059.004 - Command and Scripting Interpreter: Unix Shell`](https://attack.mitre.org/techniques/T1059/004/) execution.\n\n### Ubiquiti Attack Vector\nThe Ubiquiti exploit chain is more complex, demonstrating a multi-stage compromise. After bypassing authentication, attackers use the path traversal flaw to write a script or webshell to a predictable location on the device. They then use the input validation flaw to trigger the execution of this script. Reports of attackers creating rogue administrator accounts suggest a post-exploitation objective of [`T1078.001 - Valid Accounts: Default Accounts`](https://attack.mitre.org/techniques/T1078/001/) or creating new local accounts for persistence.\n\n---\n\n## Impact Assessment\nThe impact of compromising these devices is severe. Lantronix EDS5000 servers are often used as communication bridges in Industrial Control Systems (ICS) and Operational Technology (OT) environments. A breach could lead to disruption of physical processes, data exfiltration from sensitive industrial networks, or serve as a pivot point for wider attacks on corporate infrastructure. The potential for physical disruption elevates the risk beyond typical IT security incidents.\n\nUbiquiti UniFi devices are central management points for enterprise networks, controlling Wi-Fi, switching, and routing. A compromise of a UniFi controller grants an attacker a god-like view of the network, enabling widespread lateral movement, man-in-the-middle attacks, and deployment of ransomware across the entire organization. The reported creation of rogue admin accounts confirms that attackers are establishing long-term persistence, making remediation more difficult.\n\n---\n\n## Cyber Observables — Hunting Hints\nThe following patterns could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| `url_pattern` | `POST /` with unusual `username` field | For Lantronix, monitor HTTP POST requests to the login page for shell metacharacters (e.g., `;`, `|`, `&`, `$(`, `` ` ``) in the username parameter. |\n| `log_source` | `Lantronix device logs` | Review authentication failure logs on EDS5000 devices for usernames containing command syntax. |\n| `process_name` | `sh`, `bash`, `wget`, `curl` | On Lantronix devices, look for unexpected child processes spawned by the web server process. |\n| `log_source` | `UniFi OS logs` | Monitor for the creation of new administrator accounts, especially those created outside of normal business hours or by an unfamiliar source IP. |\n| `file_path` | `/tmp/`, `/var/tmp/` | On UniFi devices, monitor for unexpected file creation or modification in temporary directories by the web server user. |\n| `network_traffic_pattern` | `Outbound connections from UniFi device` | Look for unexpected outbound connections (e.g., reverse shells) from the UniFi device to external IP addresses. |\n\n---\n\n## Detection & Response\nSecurity teams should prioritize detection of both exploitation attempts and post-compromise activity.\n\n*   **Network Traffic Analysis (D3-NTA):** Implement network monitoring to detect anomalous traffic to and from Lantronix and Ubiquiti devices. For Lantronix, create rules to alert on HTTP requests containing shell metacharacters in POST bodies. For Ubiquiti, baseline normal administrative traffic and alert on connections from untrusted IP ranges or attempts to establish outbound connections.\n*   **Log Analysis:** Forward logs from these devices to a central SIEM. For Lantronix, search for failed login events with suspicious usernames. For Ubiquiti, create alerts for `User Account Creation` events, especially for administrative accounts.\n*   **File Integrity Monitoring:** If possible, deploy file integrity monitoring on Ubiquiti devices to detect the creation of unauthorized files or webshells in web-accessible directories.\n*   **Incident Response:** If a compromise is suspected, immediately isolate the affected device from the network to prevent lateral movement. Preserve logs, memory dumps, and disk images for forensic analysis. Assume any credentials stored on or passed through the device are compromised and initiate a full credential rotation.\n\n---\n\n## Mitigation\nImmediate patching is the most effective mitigation. However, if that is not possible, compensating controls are critical.\n\n1.  **Patch Immediately:** Apply the latest firmware updates from Lantronix and Ubiquiti that address these vulnerabilities. This is the primary and most effective mitigation. (D3FEND: [`D3-SU - Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate))\n2.  **Restrict Network Access:** Limit access to the management interfaces of these devices. They should not be exposed to the public internet. If remote access is required, it should be strictly controlled via a **[VPN](https://en.wikipedia.org/wiki/Virtual_private_network)** with **[MFA](https://www.cisa.gov/mfa)**. (D3FEND: [`D3-ITF - Inbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering))\n3.  **Network Segmentation:** Isolate these devices in a segmented network zone to limit the blast radius in case of a compromise. This is especially critical for Lantronix devices in OT environments. (D3FEND: [`D3-NI - Network Isolation`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation))\n4.  **Regular Audits:** Regularly audit device configurations and user accounts. Remove any unauthorized or suspicious administrator accounts on Ubiquiti devices.",
+  "twitter_post": "🚨 CISA KEV ALERT: Critical flaws in Lantronix EDS5000 (CVE-2025-67038) & Ubiquiti UniFi OS (CVE-2026-34908) are actively exploited. Unauthenticated RCE with root access possible. Patch immediately! #CyberSecurity #Vulnerability #PatchNow",
+  "meta_description": "CISA adds four critical, actively exploited vulnerabilities in Lantronix and Ubiquiti devices to its KEV catalog, mandating urgent patching to prevent remote code execution.",
+  "category": [
+    "Vulnerability",
+    "Threat Intelligence",
+    "Industrial Control Systems"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "CISA",
+      "type": "government_agency",
+      "url": "https://www.cisa.gov"
+    },
+    {
+      "name": "Lantronix",
+      "type": "vendor",
+      "url": "https://www.lantronix.com/"
+    },
+    {
+      "name": "Ubiquiti",
+      "type": "vendor",
+      "url": "https://www.ui.com/"
+    },
+    {
+      "name": "Forescout Vedere Labs",
+      "type": "security_organization"
+    },
+    {
+      "name": "Lantronix EDS5000 Series",
+      "type": "product"
+    },
+    {
+      "name": "Ubiquiti UniFi OS",
+      "type": "product"
+    },
+    {
+      "name": "Operational Technology",
+      "type": "technology"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2025-67038",
+      "cvss_score": 9.8,
+      "kev": true,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-34908",
+      "cvss_score": 10,
+      "kev": true,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-34909",
+      "kev": true,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-34910",
+      "cvss_score": 10,
+      "kev": true,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/06/cisa-warns-critical-lantronix-eds5000.html",
+      "title": "CISA Warns Critical Lantronix EDS5000 Flaw Is Being Actively Exploited",
+      "date": "2026-06-24",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.securityweek.com/critical-ubiquiti-vulnerabilities-in-attackers-crosshairs/",
+      "title": "Critical Ubiquiti Vulnerabilities in Attackers' Crosshairs",
+      "date": "2026-06-24",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/cisa-warns-of-max-severity-ubiquiti-flaws-exploited-in-attacks/",
+      "title": "CISA warns of max severity Ubiquiti flaws exploited in attacks",
+      "date": "2026-06-24",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://securityaffairs.com/194142/security/u-s-cisa-adds-ubiquiti-unifi-os-and-lantronix-eds5000-plugin-flaws-to-its-known-exploited-vulnerabilities-catalog.html",
+      "title": "U.S. CISA adds Ubiquiti UniFi OS and Lantronix EDS5000 plugin flaws to its Known Exploited Vulnerabilities catalog",
+      "date": "2026-06-24",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    },
+    {
+      "url": "https://www.dataminr.com/resources/intel-brief/cve-2025-67038/",
+      "title": "Cyber Intel Brief: CVE-2025-67038",
+      "date": "2026-06-24",
+      "friendly_name": "Dataminr"
+    },
+    {
+      "url": "https://www.securityweek.com/lantronix-serial-to-ip-converter-flaw-exploited-in-attacks-after-ot-threat-warning/",
+      "title": "Lantronix Serial-to-IP Converter Flaw Exploited in Attacks After OT Threat Warning",
+      "date": "2026-06-25",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04",
+      "summary": "Forescout's Vedere Labs discloses CVE-2025-67038 as part of the 'BRIDGE:BREAK' research."
+    },
+    {
+      "datetime": "2026-05",
+      "summary": "Ubiquiti releases patches for the three vulnerabilities affecting UniFi OS."
+    },
+    {
+      "datetime": "2026-06-24",
+      "summary": "CISA adds all four vulnerabilities (CVE-2025-67038, CVE-2026-34908, CVE-2026-34909, CVE-2026-34910) to its KEV catalog."
+    },
+    {
+      "datetime": "2026-06-26",
+      "summary": "Deadline for U.S. Federal Civilian Executive Branch agencies to apply patches."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1210",
+      "name": "Exploitation of Remote Services",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.004",
+      "name": "Command and Scripting Interpreter: Unix Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1078.001",
+      "name": "Valid Accounts: Default Accounts",
+      "tactic": "Persistence"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Applying the latest security patches from vendors is the most direct way to remediate the underlying vulnerabilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Restricting network access to the management interfaces of these devices prevents external attackers from reaching the vulnerable services.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Placing critical devices in isolated network segments contains the impact of a potential compromise, preventing lateral movement.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Implementing robust logging and auditing allows for the detection of exploitation attempts and post-compromise activities like rogue account creation.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "Organizations must prioritize the immediate deployment of patched firmware for affected Lantronix EDS5000 and Ubiquiti UniFi OS devices. This is the most critical and effective defense. Establish an emergency patching process that allows for out-of-band updates for critical, internet-facing systems like these. Use asset inventory systems to rapidly identify all vulnerable devices across the enterprise and OT environments. For Ubiquiti devices, the update can be initiated through the UniFi Network Application. For Lantronix, firmware must be downloaded from their support site and applied via the device's web interface. Before deployment, test the patch in a non-production environment to ensure operational stability, but accelerate this testing given the active exploitation. Post-patch, verify the new firmware version is correctly reported by the device to confirm successful remediation.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-ITF",
+      "technique_name": "Inbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
+      "recommendation": "As a crucial compensating control, strictly filter all traffic destined for the management interfaces of Lantronix and Ubiquiti devices. These interfaces should never be exposed directly to the public internet. Configure perimeter firewalls and access control lists (ACLs) to deny all inbound connections to these devices from external IP addresses. If remote administration is essential, it must be routed through a secure VPN gateway with multi-factor authentication. Create explicit allow rules for only trusted internal management subnets or jump hosts. For the Lantronix flaw, consider implementing WAF rules that inspect HTTP POST bodies for shell metacharacters (`';'`, `'|'`, `'&'`) in the `username` field to block exploitation attempts, even from internal sources.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-LAM",
+      "technique_name": "Local Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
+      "recommendation": "Specifically for the Ubiquiti compromise, where rogue administrator accounts are a key indicator, implement robust monitoring of account management activities. Forward UniFi OS system and audit logs to a SIEM. Create high-priority alerts for any new local account creation, especially those with administrative privileges. The alert logic should trigger on events indicating a new user has been added to the 'admin' or equivalent group. Correlate these events with source IP and time of day; an account created from an external IP or outside business hours is highly suspicious. Regularly run automated scripts to audit the user list on all UniFi controllers against a known-good baseline of authorized administrators. Any deviation should trigger an immediate investigation.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "POST /",
+      "description": "Monitor HTTP POST requests to Lantronix device login pages for shell metacharacters (e.g., ';', '|', '`') in the 'username' parameter, indicating a CVE-2025-67038 exploitation attempt.",
+      "context": "Web Application Firewall (WAF) logs, Web proxy logs",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Lantronix device system logs",
+      "description": "Review authentication failure logs on EDS5000 devices for usernames containing command syntax or appearing as scripts.",
+      "context": "SIEM, Log Management Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "sh",
+      "description": "On Lantronix devices, look for unexpected child processes like 'sh', 'bash', 'wget', or 'curl' being spawned by the web server process, which could indicate successful command injection.",
+      "context": "Endpoint Detection and Response (EDR), Host-based Intrusion Detection System (HIDS)",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "UniFi OS User Creation",
+      "description": "Monitor for the creation of new administrator-level accounts on Ubiquiti UniFi devices. This is a key post-exploitation step for CVE-2026-34908 chain.",
+      "context": "UniFi Controller Logs, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "/data/unifi/run/",
+      "description": "Monitor for unexpected file creation or modification in UniFi OS directories by the web server user, which could indicate webshell placement.",
+      "context": "File Integrity Monitoring (FIM), EDR",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound C2 from Edge Device",
+      "description": "Detect any unexpected outbound connections (e.g., reverse shells on high ports) originating from the management interface of Ubiquiti or Lantronix devices to external IPs.",
+      "context": "Firewall logs, Netflow analysis, IDS/IPS",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "KEV",
+    "CISA",
+    "Lantronix",
+    "Ubiquiti",
+    "Remote Code Execution",
+    "RCE",
+    "OT Security",
+    "Network Security",
+    "CVE-2025-67038",
+    "CVE-2026-34908"
+  ],
+  "extract_datetime": "2026-06-25T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Critical Infrastructure",
+      "Government",
+      "Manufacturing",
+      "Healthcare"
+    ],
+    "other_affected": [
+      "Users of Lantronix serial-to-IP converters",
+      "Organizations using Ubiquiti UniFi network appliances"
+    ]
+  },
+  "pub_date": "2026-06-25",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-06-25T15:00:00.000Z",
+  "updatedAt": "2026-06-25T15:00:00.000Z"
+}

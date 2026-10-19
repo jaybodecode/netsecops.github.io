@@ -1,0 +1,251 @@
+{
+  "id": "bdb8c564-1f9c-4193-bea8-adaf5be1e63d",
+  "slug": "shinyhunters-bypasses-firewalls-in-renewed-oracle-peoplesoft-attacks",
+  "headline": "ShinyHunters Bypasses WAFs in Renewed Oracle PeopleSoft Attacks",
+  "title": "ShinyHunters Exploits Oracle PeopleSoft with WAF Bypass",
+  "summary": "The threat actor group ShinyHunters (UNC6240) has resumed mass exploitation of a critical Oracle PeopleSoft vulnerability, CVE-2026-35273. The new campaign uses a URL-encoding trick to bypass Web Application Firewall (WAF) rules previously implemented as a mitigation. Google has notified over 100 organizations of their risk, with dozens already compromised. The attackers are deploying a new backdoor called SIDEEYE and using the legitimate remote management tool MeshCentral for persistence, expanding their targeting from universities to healthcare, technology, and government sectors.",
+  "full_report": "## Executive Summary\nOn September 26, 2026, Google's Mandiant and Threat Intelligence Group (GTIG) reported a renewed mass exploitation campaign by the threat actor **[UNC6240](https://attack.mitre.org/groups/G1025)**, also known as **[ShinyHunters](https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters)**. The group is targeting a **critical** remote code execution (RCE) vulnerability, **CVE-2026-35273** (CVSS 9.8), in **[Oracle](https://www.oracle.com/)** PeopleSoft. The new attack wave successfully bypasses Web Application Firewall (WAF) rules that many organizations implemented after the initial exploitation in May-June 2026. The attackers are using a simple URL-encoding trick to circumvent these defenses, deploying web shells and a new backdoor named **SIDEEYE** on unpatched, internet-facing servers. The campaign has expanded beyond higher education to include healthcare, technology, and government entities, with dozens of systems already compromised.\n\n---\n\n## Threat Overview\nThe vulnerability, **CVE-2026-35273**, is an unauthenticated RCE flaw in **Oracle**'s PeopleSoft platform. The initial exploitation campaign occurred between May 27 and June 9, 2026, primarily targeting universities. In response, **Oracle** released an out-of-band patch on June 10, 2026. Organizations that failed to patch often resorted to implementing WAF rules to block malicious requests targeting the vulnerable `/PSEMHUB/*` endpoint.\n\nHowever, **ShinyHunters** has adapted its tactics. The current campaign, which began in September 2026, leverages a WAF bypass technique. By encoding characters in the URL path (e.g., replacing 'P' with `%50`), the attackers can craft requests that are not blocked by pattern-matching WAF rules. The underlying **Oracle** WebLogic server decodes the URL, allowing the malicious request to reach the vulnerable component, leading to code execution. **[Google](httpswww.google.com)** has since alerted over 100 organizations to their exposure, confirming active compromises on dozens of systems.\n\n## Technical Analysis\nThe core of the attack is the exploitation of **CVE-2026-35273** combined with a WAF bypass. The threat actors are using URL encoding to evade simple string-based firewall rules.\n\n**Attack Chain:**\n1.  **Initial Access:** The attacker sends a specially crafted HTTP request to an internet-facing **Oracle** PeopleSoft server. The request targets the `/PSEMHUB/` endpoint but with URL-encoded characters, such as `/%50SEMHUB/`, to bypass WAF rules looking for the literal string `/PSEMHUB/`. This leverages the [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/) technique.\n2.  **Execution:** The WebLogic server processes the request, decodes the URL, and passes it to the vulnerable PeopleSoft component, triggering the RCE flaw. This allows the attacker to execute arbitrary commands on the server.\n3.  **Persistence & C2:** Post-exploitation, **ShinyHunters** deploys web shells for initial persistence. They have also been observed installing the legitimate remote management tool **MeshCentral** for secondary access and command and control ([`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/)).\n4.  **Payload Deployment:** In the latest intrusions, a new multi-stage backdoor called **SIDEEYE** is deployed on compromised Windows PeopleSoft servers. This backdoor provides extensive capabilities, including credential theft ([`T1003 - OS Credential Dumping`](https://attack.mitre.org/techniques/T1003/)), file and process management, and acting as a network proxy ([`T1090 - Proxy`](https://attack.mitre.org/techniques/T1090/)).\n\n**MITRE ATT&CK Techniques Observed:**\n- [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/)\n- [`T1499.004 - Web Application Firewall Bypass`](https://attack.mitre.org/techniques/T1499/004/)\n- [`T1505.003 - Web Shell`](https://attack.mitre.org/techniques/T1505/003/)\n- [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/)\n- [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)\n- [`T1003 - OS Credential Dumping`](https://attack.mitre.org/techniques/T1003/)\n- [`T1090 - Proxy`](https://attack.mitre.org/techniques/T1090/)\n\n## Impact Assessment\nThe business impact of this campaign is severe. Successful exploitation grants attackers full control over the PeopleSoft server, which often contains sensitive HR, financial, and student data. The expansion of targeting to healthcare, technology, and transportation sectors increases the risk of significant data breaches and operational disruption. The use of a WAF bypass demonstrates the unreliability of virtual patching as a long-term solution. Organizations that relied on WAF rules instead of applying the official **Oracle** patch are now fully exposed. The deployment of the **SIDEEYE** backdoor indicates a long-term interest in compromised networks for data exfiltration, lateral movement, and potentially ransomware deployment.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were listed in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns which could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| url_pattern | `/%50SEMHUB/` | A URL-encoded pattern used to bypass WAF rules. Monitor web server logs for variations of URL-encoded paths to `/PSEMHUB/`. |\n| url_pattern | `/*/PSEMHUB/*` | Suspicious requests to the PeopleSoft PSEMHUB endpoint. |\n| process_name | `MeshCentral.exe` | The presence of MeshCentral on a PeopleSoft server where it is not an authorized tool is highly suspicious. |\n| file_name | `sideeye.dll` | Hypothetical filename for the SIDEEYE backdoor. Search for newly created suspicious DLLs or executables in PeopleSoft directories. |\n| network_traffic_pattern | `Outbound traffic to meshcentral.com` | Monitor for unexpected outbound connections from PeopleSoft servers to MeshCentral C2 domains. |\n\n## Detection & Response\n- **Log Analysis:** Scrutinize web server and WAF logs for requests to the `/PSEMHUB/` endpoint, specifically looking for URL-encoded variations or requests that were passed through by the WAF. Enable logging for decoded URL requests if possible. D3FEND's [`D3-NTA - Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) is critical here.\n- **Endpoint Detection:** Monitor PeopleSoft servers for the creation of new files, especially web shells (e.g., `.jsp`, `.aspx`) in web-accessible directories. Look for suspicious child processes spawned by the PeopleSoft application server process (e.g., `cmd.exe`, `powershell.exe`).\n- **Threat Hunting:** Proactively hunt for the presence of **MeshCentral** agents or other unauthorized remote access tools on critical servers. Check for suspicious scheduled tasks or services configured for persistence.\n\n## Mitigation\n> Relying on WAF rules as a primary mitigation for a critical RCE vulnerability is insufficient. Patching should always be the priority.\n\n1.  **Patch Immediately:** The most critical action is to apply **Oracle**'s security update for **CVE-2026-35273**. This is the only way to fully remediate the vulnerability. This aligns with D3FEND's [`D3-SU - Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate).\n2.  **Strengthen WAF Rules:** If patching cannot be immediately applied, update WAF rules to detect URL-encoded bypass attempts. Rules should normalize or decode URL paths before applying pattern matching. This is a temporary compensating control, not a substitute for patching.\n3.  **Egress Filtering:** Implement strict egress filtering to block unauthorized outbound connections from PeopleSoft servers to the internet, which can prevent tools like **MeshCentral** from connecting to their C2 servers.\n4.  **Assume Breach:** For organizations with unpatched, internet-facing PeopleSoft servers, assume a compromise has occurred. Initiate incident response procedures, hunt for web shells, backdoors, and unauthorized accounts.\n5.  **Network Segmentation:** Isolate PeopleSoft servers from the rest of the network to limit the blast radius of a potential compromise. Restrict access to management ports and interfaces. This relates to D3FEND's [`D3-NI - Network Isolation`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation).",
+  "twitter_post": "ShinyHunters (UNC6240) is mass-exploiting a critical Oracle PeopleSoft RCE flaw (CVE-2026-35273) by bypassing WAF rules with URL encoding. Attackers are deploying a new backdoor, SIDEEYE. Patch immediately! #CyberSecurity #ThreatIntel #Oracle",
+  "meta_description": "Threat actor ShinyHunters is bypassing WAFs to exploit a critical Oracle PeopleSoft RCE (CVE-2022-21371), deploying a new backdoor called SIDEEYE. Patch now.",
+  "category": [
+    "Vulnerability",
+    "Threat Actor",
+    "Cyberattack"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "ShinyHunters",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/shinyhunters"
+    },
+    {
+      "name": "UNC6240",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1025/"
+    },
+    {
+      "name": "Oracle",
+      "type": "vendor",
+      "url": "https://www.oracle.com/"
+    },
+    {
+      "name": "PeopleSoft",
+      "type": "product"
+    },
+    {
+      "name": "Google",
+      "type": "company",
+      "url": "https://www.google.com"
+    },
+    {
+      "name": "Mandiant",
+      "type": "security_organization"
+    },
+    {
+      "name": "SIDEEYE",
+      "type": "malware"
+    },
+    {
+      "name": "MeshCentral",
+      "type": "product"
+    },
+    {
+      "name": "FBI",
+      "type": "government_agency",
+      "url": "https://www.fbi.gov"
+    },
+    {
+      "name": "Oracle WebLogic Server",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-35273",
+      "cvss_score": 9.8,
+      "cvss_version": "3.1",
+      "kev": true,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-renewed-mass-exploitation-campaign-targeting-oracle-peoplesoft",
+      "title": "UNC6240 (ShinyHunters) Mass-Exploits Oracle PeopleSoft (CVE-2026-35273) by Bypassing WAF Rules",
+      "date": "2026-09-26",
+      "friendly_name": "Google Threat Intelligence",
+      "website": "google.com"
+    },
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/shinyhunters-uses-waf-bypass-trick-in-oracle-peoplesoft-attacks/",
+      "title": "ShinyHunters bypass WAF to resume Oracle PeopleSoft CVE-2026-35273 attacks",
+      "date": "2026-09-26",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/09/attackers-bypass-wafs-to-exploit-oracle.html",
+      "title": "Attackers Bypass WAFs to Exploit Oracle PeopleSoft Flaw in Renewed Attacks",
+      "friendly_name": "The Hacker News"
+    },
+    {
+      "url": "https://cybernews.com/security/shinyhunters-oracle-zero-day-fbi-attack-google-warning/",
+      "title": "ShinyHunters Oracle zero-day: FBI attack just the start, Google warns",
+      "friendly_name": "Cybernews"
+    },
+    {
+      "url": "https://hackread.com/shinyhunters-bypass-waf-rules-oracle-peoplesoft-attacks/",
+      "title": "ShinyHunters Bypass WAF Rules in New Oracle PeopleSoft Attacks",
+      "friendly_name": "HackRead"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-27",
+      "summary": "Initial ShinyHunters exploitation campaign against CVE-2026-35273 begins."
+    },
+    {
+      "datetime": "2026-06-10",
+      "summary": "Oracle releases an out-of-band security patch for CVE-2026-35273."
+    },
+    {
+      "datetime": "2026-09-26",
+      "summary": "Google reports a renewed mass exploitation campaign using a WAF bypass technique."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    },
+    {
+      "id": "T1499.004",
+      "name": "Web Application Firewall Bypass"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer"
+    },
+    {
+      "id": "T1003",
+      "name": "OS Credential Dumping"
+    },
+    {
+      "id": "T1090",
+      "name": "Proxy"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Applying the official Oracle patch for CVE-2026-35273 is the most effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering to prevent C2 communication and tool downloads. Ingress filtering and WAF rules should be enhanced to detect encoded payloads.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly audit web server logs, process creation events, and network traffic for signs of compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restrict access to the PeopleSoft application to only trusted internal networks if it does not need to be internet-facing.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The primary and most critical defensive action is to apply the out-of-band security update for CVE-2026-35273 provided by Oracle. This is not just a recommendation; it is an urgent necessity. Given that threat actors are actively bypassing WAFs, any mitigation short of patching is insufficient and leaves the organization vulnerable. The patch directly remediates the root cause of the remote code execution vulnerability, making exploitation impossible. Prioritize patching on all internet-facing PeopleSoft instances immediately. After applying the patch, verify that the update was successful and that the system is no longer vulnerable using internal scanning tools. Establish a rapid patching cycle for critical vulnerabilities, especially for business-critical applications like PeopleSoft, to prevent future zero-day or N-day exploitation scenarios.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Implement comprehensive network traffic analysis focused on the traffic to and from your Oracle PeopleSoft servers. Specifically, configure detection rules to flag requests containing URL-encoded characters targeting sensitive paths like `/PSEMHUB/`. Your monitoring solution should be capable of decoding URL parameters to identify malicious payloads hidden by encoding. Furthermore, establish a baseline of normal outbound traffic from these servers. Alert on any deviations, such as connections to known remote access tool domains (e.g., meshcentral.com), connections to unusual IP addresses, or large data transfers that could indicate data exfiltration. This continuous monitoring can detect exploitation attempts that bypass static WAF rules and identify post-compromise C2 activity.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-ITF",
+      "technique_name": "Inbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
+      "recommendation": "While the attackers are bypassing some WAF rules, a well-configured WAF or Inbound Traffic Filtering solution remains a valuable layer of defense. If patching is delayed, immediately enhance your WAF ruleset. Instead of just blocking the literal string `/PSEMHUB/`, implement rules that first normalize the URI path by decoding URL-encoded characters and then apply the block pattern. This will catch evasions like `/%50SEMHUB/`. Additionally, if the PeopleSoft instance should only be accessible to a known set of IP ranges (e.g., corporate offices, VPN clients), implement strict IP allowlisting to block all other access. This drastically reduces the attack surface, making it much harder for a global actor like ShinyHunters to discover and exploit the system.",
+      "mitre_mitigation_id": "M1037"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/%50SEMHUB/",
+      "description": "URL-encoded pattern for '/PSEMHUB/' used to bypass WAF rules. Variations with other encoded characters are also possible.",
+      "context": "Web server access logs, WAF logs, network traffic analysis.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "MeshCentral.exe",
+      "description": "Legitimate remote management tool abused by attackers for persistence and C2.",
+      "context": "Endpoint Detection and Response (EDR) logs, process monitoring on PeopleSoft servers.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections to meshcentral.com or related subdomains",
+      "description": "Network traffic indicating a connection to the MeshCentral public server, which may be used for C2.",
+      "context": "Firewall logs, NetFlow data, DNS logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "powershell.exe -enc",
+      "description": "Suspicious PowerShell execution, often spawned by the web server process, used for payload download and execution.",
+      "context": "Process creation logs (e.g., Windows Event ID 4688), EDR telemetry.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "WAF Bypass",
+    "Remote Code Execution",
+    "URL Encoding",
+    "Virtual Patching",
+    "Mass Exploitation"
+  ],
+  "extract_datetime": "2026-09-26T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Education",
+      "Healthcare",
+      "Technology",
+      "Transportation",
+      "Government"
+    ],
+    "people_affected_estimate": "Over 100 organizations notified of risk, dozens confirmed compromised"
+  },
+  "pub_date": "2026-09-26",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-09-26T15:00:00.000Z",
+  "updatedAt": "2026-09-26T15:00:00.000Z"
+}

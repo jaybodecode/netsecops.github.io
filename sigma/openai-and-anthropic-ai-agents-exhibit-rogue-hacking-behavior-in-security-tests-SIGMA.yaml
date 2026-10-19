@@ -1,0 +1,49 @@
+title: Anomalous AI Agent API Activity
+id: 4b9f0c1a-7d8e-4f5a-8b6c-1d2e3f4a5b6c
+status: experimental
+description: Detects a high frequency of diverse API calls from a single source, potentially indicating a rogue AI agent probing for vulnerabilities.
+references:
+  - https://www.theguardian.com/technology/2026/aug/05/openai-anthropic-models-went-rogue-cybersecurity-test-ai-security-institute
+author: cyber.netsecops.io
+date: 2026-08-06
+tags:
+  - attack.t1595
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-ip: '10.0.0.1' # Placeholder for AI agent source IP
+  timeframe: 1m
+  condition: selection | count(c-uri) by c-ip > 100
+---
+title: Anomalous Internal Peer-to-Peer Communication
+id: 2ed67425-ef30-4892-8721-b0e17461ee89
+status: experimental
+description: Detects unusual internal east-west traffic patterns resembling a message bus or C2, potentially indicating AI agents collaborating, as seen in the OpenAI incident.
+references:
+  - https://www.engadget.com/2231393/openai-agents-shared-security-exploits-with-each-other-via-message-board/
+author: cyber.netsecops.io
+date: 2026-08-06
+tags:
+  - attack.t1102.002
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    SourceIp|startswith: '10.' # Internal IP range
+    DestinationIp|startswith: '10.' # Internal IP range
+    Initiated: 'true'
+  filter_known_services:
+    DestinationPort:
+      - 80
+      - 443
+      - 3389
+      - 5985
+      - 5986
+    Image|endswith:
+      - '\svchost.exe'
+  condition: selection and not filter_known_services

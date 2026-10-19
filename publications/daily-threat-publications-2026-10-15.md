@@ -1,0 +1,38 @@
+# AI Risks Escalate, Major Breaches Hit Energy, Retail, and Courts
+
+**Published:** 2026-10-15 | **Articles:** 7
+
+**AI and Systemic Risk:**
+
+*   **AI Exploited in 84% of Ransomware Attacks, Report Finds:** The Bank of England has declared AI-powered cyberattacks a 'systemic risk' to the global financial system, urging enhanced preparedness. A Semperis report indicates AI is exploited in 84% of ransomware attacks, while a SecurityHQ/Datadog study highlights an 'accountability gap' in AI governance, creating new attack vectors.
+
+**Critical Vulnerabilities and Active Exploitation:**
+
+*   **CISA Adds Four Actively Exploited Flaws to KEV Catalog:** CISA has added four actively exploited vulnerabilities to its KEV catalog, affecting Palo Alto Networks, Cisco, and Ahsay products. Federal agencies must patch these flaws, including code injection and path traversal vulnerabilities, by October 17, 2026.
+*   **PEERSTITCH: Stealthy Implant Hits FortiGate via Chained CVEs:** Researchers have identified a novel memory-resident malware, PEERSTITCH, targeting Fortinet appliances. Attackers exploited chained CVEs (CVE-2024-47575 and CVE-2025-61624) to gain root access and deploy the stealthy implant, which operates entirely in memory.
+
+**Major Data Breaches and Incidents:**
+
+*   **GhostAction Campaign Compromises 1,900 GitHub Accounts, Targets 30k Repos:** The 'GhostAction' campaign has compromised approximately 1,900 GitHub accounts, targeting over 30,000 repositories. Attackers inject malicious GitHub Actions workflows to steal CI/CD secrets and cloud credentials, with recent activity including scanning Git history for hardcoded secrets.
+*   **CenterPoint Energy Data Breach Impacts Over 1 Million Texas Residents:** Utility company CenterPoint Energy reported a data breach affecting over 1 million Texas residents, exposing sensitive personal information including Social Security numbers and driver's license numbers. The compromised data was advertised on a cybercrime forum in September 2026.
+*   **Burger King Japan App Breach Exposes 11.18 Million Member Records:** BK Japan disclosed a data breach impacting its mobile app, exposing the personal information of approximately 11.18 million members between October 2 and October 7, 2026. The compromised data included names, email addresses, phone numbers, and dates of birth; credit card information was not affected.
+*   **Cybersecurity Incident Disrupts U.S. Federal Bankruptcy Court Operations:** A cybersecurity incident at BAE Systems, a contractor for the U.S. Federal Judiciary, has disrupted the Bankruptcy Noticing Center (BNC) nationwide. This has halted the production and distribution of federal bankruptcy notices and taken related public websites offline.
+
+## Articles in this publication
+- [AI Exploited in 84% of Ransomware Attacks, Report Finds](https://cyber.netsecops.io/articles/ai-exploited-in-84-percent-of-ransomware-attacks-report-finds/) (high)
+  A new report from Semperis finds that Artificial Intelligence (AI) was a factor in 84% of ransomware attacks against surveyed organizations. Alarmingly, 44% of these incidents involved attackers weaponizing the victim's own AI systems. The report also highlights a rise in physical threats and psychological intimidation against employees to compel ransom payments, with identity systems like Active Directory remaining a primary target.
+- [GhostAction Campaign Compromises 1,900 GitHub Accounts, Targets 30k Repos](https://cyber.netsecops.io/articles/ghostaction-supply-chain-campaign-compromises-1900-github-accounts/) (high)
+  The 'GhostAction' credential theft campaign has escalated, compromising approximately 1,900 GitHub user accounts to target over 30,000 software repositories. The attackers inject malicious GitHub Actions workflows into projects to steal CI/CD secrets, cloud credentials, and API keys. The latest wave of attacks, observed in October 2026, includes new functionality to scan a repository's entire Git history for hardcoded secrets, expanding the scope of potential data theft.
+- [CISA Adds Four Actively Exploited Flaws to KEV Catalog](https://cyber.netsecops.io/articles/cisa-adds-four-exploited-vulnerabilities-to-kev-catalog-october-2026/) (critical)
+  The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added four actively exploited vulnerabilities to its KEV catalog, affecting products from Palo Alto Networks, Cisco, and Ahsay. The flaws include a high-severity code injection in PAN-OS (CVE-2026-0322), a critical path traversal in Cisco Secure Email Gateway (CVE-2026-76519), and two vulnerabilities in AhsayCBS backup software (CVE-2026-105133 and CVE-2026-105134). Federal agencies are required to patch these vulnerabilities by October 17, 2026.
+- [CenterPoint Energy Data Breach Impacts Over 1 Million Texas Residents](https://cyber.netsecops.io/articles/centerpoint-energy-data-breach-impacts-1-million-texans/) (high)
+  Houston-based utility CenterPoint Energy has reported a data breach to the Texas Attorney General, confirming that the personal information of 1,062,060 state residents has been compromised. The exposed data includes highly sensitive information such as full names, addresses, Social Security numbers, and driver's license numbers. The breach was first brought to light when a threat actor advertised the stolen data on a cybercrime forum in September 2026.
+- [Burger King Japan App Breach Exposes 11.18 Million Member Records](https://cyber.netsecops.io/articles/burger-king-japan-app-breach-exposes-11-million-records/) (medium)
+  BK Japan, the operator of Burger King in Japan, has disclosed a data breach affecting its official mobile app, exposing the records of approximately 11.18 million members. The breach, which occurred between October 2 and October 7, compromised personally identifiable information including names, email addresses, phone numbers, and dates of birth. The company has confirmed that credit card information was not stored and therefore not exposed.
+- [Cybersecurity Incident Disrupts U.S. Federal Bankruptcy Court Operations](https://cyber.netsecops.io/articles/cybersecurity-incident-disrupts-us-federal-bankruptcy-court-operations/) (high)
+  A cybersecurity incident at BAE Systems, a contractor for the U.S. Federal Judiciary, has caused a nationwide disruption of the Bankruptcy Noticing Center (BNC). The incident has halted the production and distribution of all federal bankruptcy notices and taken related public websites offline. BAE Systems is currently investigating the incident, the nature of which has not yet been disclosed. The disruption impacts the functioning of the federal bankruptcy court system across the United States.
+- [PEERSTITCH: Stealthy Implant Hits FortiGate via Chained CVEs](https://cyber.netsecops.io/articles/unit42-uncovers-peerstitch-stealthy-fortigate-implant/) (critical)
+  Unit 42 researchers have uncovered a sophisticated attack targeting Fortinet appliances with a novel memory-resident malware dubbed PEERSTITCH. The threat actors, tracked as CL-STA-0954, exploited CVE-2024-47575 on a FortiManager device for initial access, allowing them to exfiltrate configuration and credential data for over 500 managed FortiGate firewalls. Following a dwell period, the attackers leveraged a second vulnerability, CVE-2025-61624, to achieve root access and deploy the PEERSTITCH implant. This ARM64 malware is designed for stealth, operating entirely in memory to patch legitimate FortiOS daemons, leaving no artifacts on disk and making detection extremely difficult.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-10-15/

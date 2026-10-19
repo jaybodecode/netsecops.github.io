@@ -1,0 +1,158 @@
+{
+  "id": "9a73f83b-79d1-48ec-9048-b19b532a553a",
+  "slug": "vishing-campaign-fake-entra-passkey-enrollment-hacks-microsoft-365",
+  "headline": "Vishing Campaign Tricks Users into Enrolling Attacker Passkeys to Hack Microsoft 365 Accounts",
+  "title": "Threat Actor 'O-UNC-066' Targets Microsoft 365 Users with Vishing Campaign for Passkey Enrollment",
+  "summary": "A sophisticated voice phishing (vishing) campaign, attributed to a threat actor tracked by Okta as 'O-UNC-066,' is targeting Microsoft 365 users across numerous industries. Attackers call employees, impersonate IT staff, and socially engineer them into visiting a phishing site that mimics the Microsoft Entra ID portal. The goal is to trick the user into enrolling a new passkey, which is actually controlled by the attacker. This gives the threat actor persistent, passwordless access to the victim's account, which is then used for data extortion.",
+  "full_report": "## Executive Summary\nA novel voice phishing (vishing) campaign is actively targeting organizations using **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)**. The threat actor, codenamed **O-UNC-066** by **[Okta](https://www.okta.com/)**, combines traditional social engineering over the phone with a sophisticated phishing kit designed to abuse modern authentication methods. Attackers impersonate IT support and guide victims to a phishing site that mirrors the **[Microsoft Entra ID](https://security.microsoft.com/entra)** (formerly Azure AD) login experience. The ultimate goal is to deceive the user into enrolling a new FIDO2 passkey that is controlled by the attacker. This provides the threat actor with persistent, passwordless access to the victim's account for subsequent data theft and extortion.\n\n---\n\n## Threat Overview\nThe campaign targets a wide range of sectors, including technology, healthcare, automotive, and aviation. The attack demonstrates a clear understanding of corporate IT procedures and modern authentication protocols.\n\nThe attack unfolds in several stages:\n1.  **The Vishing Call**: The attacker calls an employee, posing as a member of the internal IT helpdesk. They use a plausible pretext, such as a required security update or account migration, to create a sense of urgency and legitimacy.\n2.  **Redirection to Phishing Site**: The employee is directed to a phishing website. The domain name is often carefully chosen to look legitimate (e.g., using typosquatting). The site itself is a pixel-perfect replica of the organization's Microsoft Entra ID login portal.\n3.  **Fraudulent Passkey Enrollment**: The core of the attack is to guide the user through the process of enrolling a new passkey (a FIDO2 hardware security key or platform authenticator). Because the process is initiated from the attacker's phishing site, the resulting passkey is linked to the attacker's device, not the user's.\n4.  **Persistent Access**: Once the passkey is enrolled, the attacker has a durable method for accessing the victim's account. This access persists even if the user's password is changed, as passkey authentication is passwordless.\n5.  **Data Extortion**: The attackers use this persistent access to exfiltrate sensitive data from the user's email, SharePoint, and OneDrive, which is then used in data extortion schemes.\n\n---\n\n## Technical Analysis\nThis attack is a sophisticated blend of social engineering and technical deception.\n\n- **Social Engineering**: The initial vishing call is a classic example of [`T1566.004 - Spearphishing Voice`](https://attack.mitre.org/techniques/T1566/004/). The attacker uses impersonation and a pretext to manipulate the target.\n- **Phishing Infrastructure**: The attacker uses a high-quality phishing site, likely powered by a phishing kit, to replicate the legitimate login portal. This falls under [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/). The specific goal is to abuse the FIDO2/WebAuthn enrollment process.\n- **Steal or Forge Authentication Tokens**: By tricking the user into enrolling the attacker's device, the threat actor effectively forges an authentication method. This is a novel form of [`T1550 - Use Alternate Authentication Material`](https://attack.mitre.org/techniques/T1550/), specifically `T1550.004 - Web Session Cookie`, though in this case, it's a more persistent passkey.\n- **Data Exfiltration**: After gaining access, the attacker performs [`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/) by downloading data from Microsoft 365 services.\n\n> This attack vector is particularly dangerous because it targets the very technology—passkeys—designed to prevent phishing. It highlights that no technology is a silver bullet and that user awareness remains a critical layer of defense, even with modern authentication.\n\n---\n\n## Impact Assessment\nA successful attack provides the threat actor with long-term, privileged access to a user's account and all the data within it. The impact includes the potential for major data breaches, financial loss from extortion, and reputational damage. Since the access is passwordless, traditional remediation steps like forcing a password reset are ineffective. The compromised account can also be used as a launchpad for further internal phishing attacks or business email compromise (BEC) fraud. Organizations must act quickly to identify and revoke the malicious passkey to evict the attacker.\n\n### IOCs — Directly from Articles\n\nNo specific phishing domains, IP addresses, or other IOCs were provided in the source articles.\n\n### Cyber Observables — Hunting Hints\n\nSecurity teams should monitor for the following suspicious activities:\n\n| Type | Value | Description |\n| --- | --- | --- |\n| Log Source | `Entra ID Sign-in Logs` | Look for a successful user login immediately followed by the enrollment of a new authentication method (passkey), especially if the login IP is unusual. |\n| Log Source | `Entra ID Audit Logs` | Filter for the activity 'Register security key' or 'Register FIDO2 security key'. Correlate this with helpdesk tickets or user reports. |\n| Network Traffic Pattern | `Access to new domains` | Monitor for employees accessing newly registered or uncategorized domains that mimic corporate login pages. |\n| Other | `Multiple MFA methods` | A user account with multiple passkeys or an unexpected new passkey added can be a sign of compromise. |\n\n---\n\n## Detection & Response\n\n1.  **Audit Authentication Methods**: Regularly audit the authentication methods registered for all user accounts in Microsoft Entra ID. Investigate any accounts with multiple passkeys or recently added passkeys that cannot be verified by the user. This can be achieved through **[D3FEND's Domain Account Monitoring (D3-DAM)](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring)**.\n2.  **Alert on New Method Enrollment**: Configure SIEM alerts to trigger whenever a new authentication method is enrolled, especially if it occurs outside of a normal IT-managed process or from an anomalous location.\n3.  **Phishing Site Detection**: Use web filtering and browser isolation technologies to block access to known and suspected phishing sites. This is a form of **[D3FEND's URL Analysis (D3-UA)](https://d3fend.mitre.org/technique/d3f:URLAnalysis)**.\n4.  **Incident Response**: If a compromise is suspected, the immediate response action is to access the user's account in Entra ID, revoke the malicious passkey from their authentication methods, and terminate all active sessions.\n\n---\n\n## Mitigation\n\n1.  **User Training**: This is the most critical mitigation. Train users to be suspicious of unsolicited calls from 'IT'. Establish a clear protocol for all IT-initiated actions, such as requiring the user to call the helpdesk back on a known-good number. This corresponds to [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n2.  **Resistant MFA**: While the attack targets MFA enrollment, organizations can restrict the types of MFA allowed. Using passkeys that are tied to specific corporate devices can help.\n3.  **Conditional Access Policies**: Implement Entra ID Conditional Access policies that restrict authentication method registration to trusted networks (e.g., corporate LAN) or compliant devices. This would prevent a user from enrolling a new key from an arbitrary phishing site. This is a form of [`M1030 - Network Segmentation`](https://attack.mitre.org/mitigations/M1030/) applied at the identity layer.\n4.  **FIDO2 Attestation**: For advanced security, organizations can configure Entra ID to only accept passkeys from specific manufacturers or models of security keys (via AAGUIDs). This would prevent an attacker from registering their own arbitrary key.",
+  "twitter_post": "Hackers are calling Microsoft 365 users, posing as IT, and tricking them into enrolling the attacker's passkey. This vishing campaign gives them persistent, passwordless account access for data extortion. 📞 #Phishing #Vishing #Microsoft365 #CyberSecurity",
+  "meta_description": "A vishing campaign by threat actor O-UNC-066 is targeting Microsoft 365 users, tricking them into enrolling an attacker-controlled passkey via a phishing site to gain account access.",
+  "category": [
+    "Phishing",
+    "Cyberattack",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "O-UNC-066",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/"
+    },
+    {
+      "name": "Microsoft Entra ID",
+      "type": "product"
+    },
+    {
+      "name": "Okta",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/",
+      "title": "Hackers Use Fake Microsoft Entra Passkey Enrollment to Gain Microsoft 365 Access",
+      "date": "2026-07-10",
+      "friendly_name": "The Hacker News"
+    },
+    {
+      "url": "https://www.securityweek.com/",
+      "title": "Okta Warns of Vishing Attacks Targeting Microsoft 365 Customers",
+      "date": "2026-07-10",
+      "friendly_name": "SecurityWeek"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.004",
+      "name": "Spearphishing Voice",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1550",
+      "name": "Use Alternate Authentication Material",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": "Credential Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to verify the identity of IT staff through a separate, trusted channel before taking any action on their account.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "description": "Use Conditional Access policies to restrict sensitive actions like MFA enrollment to trusted networks, preventing enrollment from a phishing site.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly audit and alert on the registration of new authentication methods within Entra ID.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "Implement continuous monitoring of Microsoft Entra ID audit logs with specific alerts for authentication method changes. Create a high-priority rule that triggers whenever the 'UserRegisteredSecurityInfo' event (specifically for FIDO2 keys) is logged. The alert logic should be enriched with contextual information: Did the registration occur from an unfamiliar IP address or ASN? Was it outside of normal business hours? Did it happen shortly after a login from a new location? This provides security operations with a high-fidelity signal of a potential account takeover via MFA enrollment abuse, allowing for rapid investigation and revocation of the malicious passkey.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Harden your Microsoft Entra ID tenant configuration to prevent this attack. Use Conditional Access policies to restrict the ability to register new authentication methods to only trusted locations (e.g., corporate IP ranges) and/or compliant devices (managed by Intune). This single configuration change would block the O-UNC-066 attack vector, as the user would be unable to complete the passkey enrollment from the attacker's phishing infrastructure. For even greater security, use FIDO2 attestation to create an allowlist of approved security key models (AAGUIDs) that can be registered, preventing attackers from registering their own devices.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "AzureAD_AuditLogs",
+      "description": "The Entra ID (Azure AD) Audit log contains events for authentication method registration. Filter for 'Register security key' or similar activities.",
+      "context": "Microsoft Sentinel, Splunk, or other SIEM solutions.",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "UserRegisteredSecurityInfo",
+      "description": "Specific activity type within Entra ID audit logs that indicates a user has registered a new MFA method like a FIDO2 key.",
+      "context": "SIEM alerting rules. Correlate with user location and recent sign-in activity.",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "login.microsoftonline.com",
+      "description": "Attackers use typosquatted or similar-looking domains. Monitor for DNS queries to domains that are visually similar to legitimate Microsoft login pages.",
+      "context": "DNS logs, web proxy logs.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Vishing",
+    "Phishing",
+    "Microsoft 365",
+    "Entra ID",
+    "Passkeys",
+    "FIDO2",
+    "Social Engineering",
+    "O-UNC-066"
+  ],
+  "extract_datetime": "2026-07-10T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Healthcare",
+      "Manufacturing",
+      "Transportation"
+    ]
+  },
+  "pub_date": "2026-07-10",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-07-10T15:00:00.000Z",
+  "updatedAt": "2026-07-10T15:00:00.000Z"
+}

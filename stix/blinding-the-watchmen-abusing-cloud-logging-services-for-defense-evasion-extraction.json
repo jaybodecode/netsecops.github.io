@@ -1,0 +1,153 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-10T16:08:10.070Z",
+    "article_slug": "blinding-the-watchmen-abusing-cloud-logging-services-for-defense-evasion",
+    "article_date": "2026-06-10",
+    "token_usage": {
+      "input_tokens": 143945,
+      "output_tokens": 2630,
+      "cached_tokens": 137782,
+      "total_tokens": 146575,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051226
+    }
+  },
+  "report_name": "Unit 42 Details Techniques for Abusing AWS and Google Cloud Logging Services for Defense Evasion",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Disable or Modify Cloud Logs",
+      "mitre_id": "T1562.008",
+      "description": "An attacker disables AWS CloudTrail logging via the `StopLogging` API call to cease the recording of API events and create a visibility gap."
+    },
+    {
+      "name": "File Deletion",
+      "mitre_id": "T1070.004",
+      "description": "An attacker with sufficient permissions deletes the Amazon S3 bucket used for log storage, causing log delivery to fail."
+    },
+    {
+      "name": "Disable or Modify Tools",
+      "mitre_id": "T1562.001",
+      "description": "An attacker deletes the log routing configuration, such as an AWS CloudTrail `Trail` object or a Google Cloud `Sink`, to break the connection between event generation and log storage."
+    },
+    {
+      "name": "Data Manipulation",
+      "mitre_id": "T1565",
+      "description": "An attacker renders logs unreadable by changing the log encryption key to one they control and then revoking the victim's access to that key."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "AWS CloudTrail Logging Disabled or Tampered",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: AWS CloudTrail Logging Disabled or Tampered\nid: 2b8a1c3d-f4e5-4b9a-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects attempts to disable or tamper with AWS CloudTrail logging by stopping a trail, deleting a trail, or modifying its configuration. This is a strong indicator of defense evasion.\nreferences:\n  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/\nauthor: cyber.netsecops.io\ndate: 2026-06-10\ntags:\n  - attack.t1562.008\n  - attack.t1562.001\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventName:\n      - StopLogging\n      - DeleteTrail\n      - UpdateTrail\n  condition: selection",
+      "description": "Detects API calls used to stop or delete AWS CloudTrail logging configurations, indicating a defense evasion attempt."
+    },
+    {
+      "name": "GCP Cloud Logging Sink Tampered",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: GCP Cloud Logging Sink Tampered\nid: 9e8f7d6c-5b4a-4c3d-2b1a-0f9e8d7c6b5a\nstatus: experimental\ndescription: Detects attempts to tamper with Google Cloud Logging by deleting or updating a log sink. This is a strong indicator of defense evasion.\nreferences:\n  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/\nauthor: cyber.netsecops.io\ndate: 2026-06-10\ntags:\n  - attack.t1562.001\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  product: gcp\n  service: audit\ndetection:\n  selection:\n    protoPayload.methodName:\n      - google.logging.v2.ConfigServiceV2.DeleteSink\n      - google.logging.v2.ConfigServiceV2.UpdateSink\n  condition: selection",
+      "description": "Detects API calls used to delete or modify Google Cloud log sinks, indicating a defense evasion attempt."
+    },
+    {
+      "name": "AWS S3 Log Storage Bucket Deleted",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: AWS S3 Log Storage Bucket Deleted\nid: 7c6b5a49-3d2b-4a19-8f0e-9d8c7b6a5948\nstatus: experimental\ndescription: Detects the deletion of an S3 bucket. If this bucket is known to store security logs (e.g., CloudTrail), this is a high-fidelity indicator of defense evasion.\nreferences:\n  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/\nauthor: cyber.netsecops.io\ndate: 2026-06-10\nfalsepositives:\n  - Deletion of non-log-related S3 buckets.\nnotes: This rule should be scoped to specific, known log buckets in a production environment to reduce noise.\ntags:\n  - attack.t1070.004\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventName: DeleteBucket\n  condition: selection",
+      "description": "Detects the deletion of an S3 bucket, which could be an attempt to remove stored logs."
+    },
+    {
+      "name": "AWS KMS Key for Log Encryption Scheduled for Deletion",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: AWS KMS Key for Log Encryption Scheduled for Deletion\nid: 5a493d2b-1a98-4f0e-7d6c-5b4a39281706\nstatus: experimental\ndescription: Detects attempts to schedule the deletion of a KMS key. If the key is used for encrypting logs, this can render them unreadable, achieving defense evasion.\nreferences:\n  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/\nauthor: cyber.netsecops.io\ndate: 2026-06-10\ntags:\n  - attack.t1565\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  product: aws\n  service: cloudtrail\ndetection:\n  selection:\n    eventSource: kms.amazonaws.com\n    eventName: ScheduleKeyDeletion\n  condition: selection",
+      "description": "Detects the scheduling of deletion for a KMS key, which could be used to make encrypted logs unreadable."
+    },
+    {
+      "name": "Cloud Logging Tampering via CLI",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Cloud Logging Tampering via CLI\nid: 1d0c9b8a-7e6d-4c5b-a493-8d7c6b5a4938\nstatus: experimental\ndescription: Detects command-line execution of tools used to tamper with cloud logging configurations in AWS and GCP.\nreferences:\n  - https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/\nauthor: cyber.netsecops.io\ndate: 2026-06-10\ntags:\n  - attack.t1562.008\n  - attack.t1562.001\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection_aws:\n    Image|endswith:\n      - '/aws'\n    CommandLine|contains:\n      - 'cloudtrail stop-logging'\n      - 'cloudtrail delete-trail'\n  selection_gcp:\n    Image|endswith:\n      - '/gcloud'\n    CommandLine|contains: 'logging sinks delete'\n  condition: 1 of them",
+      "description": "Detects command-line interface (CLI) commands used to disable or delete cloud logging resources in AWS or GCP."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "AWS CloudTrail Logging Disabled or Tampered",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disable or Modify Cloud Logs",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AWS CloudTrail Logging Disabled or Tampered",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "GCP Cloud Logging Sink Tampered",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AWS S3 Log Storage Bucket Deleted",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "File Deletion",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AWS KMS Key for Log Encryption Scheduled for Deletion",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data Manipulation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cloud Logging Tampering via CLI",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disable or Modify Cloud Logs",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Cloud Logging Tampering via CLI",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    }
+  ]
+}
