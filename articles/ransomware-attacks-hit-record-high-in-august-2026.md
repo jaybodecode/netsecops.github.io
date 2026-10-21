@@ -1,6 +1,6 @@
 # Ransomware Attacks Reached a Record High in August 2026
 
-**Severity:** high | **Category:** Ransomware,Threat Intelligence,Cyberattack | **Updated:** 2026-09-28 | **Reading time:** 5 min
+**Severity:** high | **Category:** Ransomware,Threat Intelligence,Cyberattack | **Updated:** 2026-10-21
 
 According to a new report from NCC Group, global ransomware attacks surged to a 2026 record in August, victimizing 1,073 organizations. This marks a 12% increase from July and a significant year-over-year rise. The industrial sector was the most frequent target, and the Qilin and The Gentlemen ransomware groups were the most prolific actors during the month.
 
@@ -70,11 +70,11 @@ NCC Group recommends organizations prepare a defense plan and conduct tabletop e
 3.  **Network Segmentation:** Limit the ability of attackers to move laterally by segmenting the network. Critical assets should be on isolated network segments with strict access controls.
 4.  **User Training:** Conduct regular security awareness training to help employees recognize and report phishing attempts.
 
-**Tags:** Ransomware, NCC Group, Qilin, Clop, Threat Report, Data Extortion, RaaS
+**Tags:** Clop, Data Extortion, NCC Group, Qilin, RaaS, Ransomware, Threat Report
 
 ## Sources
-- [Ransomware Attacks Reach Record High for 2026](https://www.infosecurity-magazine.com/news/ransomware-attacks-reach-record/) — Infosecurity Magazine (2026-09-23)
-- [NCC Group Monthly Threat Pulse – Review of August](https://www.fox-it.com/nl-en/newsroom/ncc-group-monthly-threat-pulse-review-of-august/) — Fox-IT (2026-09-23)
+- [Ransomware Attacks Reach Record High for 2026](https://www.infosecurity-magazine.com/news/ransomware-attacks-reach-record/) (2026-09-23)
+- [NCC Group Monthly Threat Pulse – Review of August](https://www.fox-it.com/nl-en/newsroom/ncc-group-monthly-threat-pulse-review-of-august/) (2026-09-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attacks-hit-record-high-in-august-2026/
