@@ -1,6 +1,6 @@
 # Critical PHP2Shell RCE Flaws Leaked Ahead of Coordinated Patch
 
-**Severity:** critical | **Category:** Vulnerability,Cyberattack,Patch Management | **Updated:** 2026-10-21 | **Reading time:** 5 min
+**Severity:** critical | **Category:** Vulnerability,Cyberattack,Patch Management | **Updated:** 2026-10-22 | **Reading time:** 5 min
 
 Two critical remote code execution (RCE) vulnerabilities in PHP, collectively named "PHP2Shell," were prematurely disclosed before a scheduled patch release. The flaws, tracked as CVE-2026-109618 and CVE-2026-109619, affect a vast range of PHP versions from 5.4 onwards, placing a majority of the web at risk. Security researchers have reproduced the exploit, and Cloudflare has already detected initial attack attempts in the wild. Organizations are urged to prepare for immediate patching as soon as the official fixes are released to mitigate the threat of widespread server compromise.
 
@@ -60,13 +60,13 @@ The following patterns may help identify vulnerable systems or exploitation atte
 - CVE-2026-109618 (CVSS 9.2)
 - CVE-2026-109619 (CVSS 9.2)
 
-**Tags:** PHP, RCE, Zero-Day, Web Security, Vulnerability Disclosure
+**Tags:** PHP, RCE, Vulnerability Disclosure, Web Security, Zero-Day
 
 ## Sources
-- [Two Unpatched, 'Maximum-Severity' PHP Vulnerabilities Disclosed Ahead of Patches](https://www.infosecurity-magazine.com/news/critical-php-vulnerabilities-leaked/) — Infosecurity Magazine (2026-10-21)
-- [Critical PHP RCE: CVE-2026-109618 and CVE-2026-109619](https://sansec.io/research/php2shell) — Sansec (2026-10-21)
-- [FAQ: Critical PHP Remote Code Execution Vulnerabilities (CVE-2026-109618 and CVE-2026-109619)](https://www.tenable.com/blog/php2shell-cve-2026-109618-cve-2026-109619-frequently-asked-questions-about-critical-php-remote) — Tenable (2026-10-21)
-- [Upcoming Security Release for PHP](https://cert.europa.eu/publications/security-advisories/2026-018) — CERT-EU (2026-10-20)
+- [Two Unpatched, 'Maximum-Severity' PHP Vulnerabilities Disclosed Ahead of Patches](https://www.infosecurity-magazine.com/news/critical-php-vulnerabilities-leaked/) (2026-10-21)
+- [Critical PHP RCE: CVE-2026-109618 and CVE-2026-109619](https://sansec.io/research/php2shell) (2026-10-21)
+- [FAQ: Critical PHP Remote Code Execution Vulnerabilities (CVE-2026-109618 and CVE-2026-109619)](https://www.tenable.com/blog/php2shell-cve-2026-109618-cve-2026-109619-frequently-asked-questions-about-critical-php-remote) (2026-10-21)
+- [Upcoming Security Release for PHP](https://cert.europa.eu/publications/security-advisories/2026-018) (2026-10-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-php2shell-vulnerabilities-leaked-ahead-of-patch/

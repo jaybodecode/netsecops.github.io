@@ -1,6 +1,6 @@
 # ConnectWise Shuts Down Cloud Services After Supply Chain Attack
 
-**Severity:** critical | **Category:** Supply Chain Attack,Cloud Security,Data Breach | **Updated:** 2026-10-21 | **Reading time:** 6 min
+**Severity:** critical | **Category:** Supply Chain Attack,Cloud Security,Data Breach | **Updated:** 2026-10-22
 
 IT software provider ConnectWise has suspended its Cloud Backup, SaaS Security, and Cloud Management services following a significant supply-chain attack. The incident involved a compromised application credential for its multitenant OAuth application, which threat actors used to gain unauthorized, high-privilege access to the Microsoft 365 environments of its Managed Service Provider (MSP) partners and their customers. The attack bypassed user-based MFA, leading ConnectWise to take services offline and reset credentials.
 
@@ -78,13 +78,13 @@ Security teams, especially MSPs and their customers, should hunt for the followi
 3.  **Credential Rotation**: For software vendors, implement automated and frequent rotation of all application credentials and secrets. Store them securely in a managed vault like Azure Key Vault.
 4.  **Conditional Access Policies**: While user-based MFA was bypassed, Conditional Access policies can still be used to restrict access by service principals based on IP address, location, or risk level.
 
-**Tags:** ConnectWise, Supply Chain Attack, MSP, Microsoft 365, OAuth, Cloud Security, Data Breach
+**Tags:** Cloud Security, ConnectWise, Data Breach, MSP, Microsoft 365, OAuth, Supply Chain Attack
 
 ## Sources
-- [ConnectWise breach: Cloud services disruption continues three days after initial intrusion detected](https://www.itpro.com/security/connectwise-breach-cloud-services-disruption-continues-three-days-after-initial-intrusion-detected) — ITPro (2026-10-20)
-- [ConnectWise Resets Credentials as Cloud Backup Remains Offline After Security Incident](https://thehackernews.com/2026/10/connectwise-resets-credentials-as-cloud.html) — The Hacker News (2026-10-20)
-- [ConnectWise Suspends Cloud Services After M365 Tenant Breach](https://www.infosecurity-magazine.com/news/connectwise-shuts-off-cloud/) — Infosecurity Magazine (2026-10-19)
-- [ConnectWise suspends cloud services after Microsoft 365 supply chain attack](https://www.cybersecuritydive.com/news/connecwise-suspends-cloud-backup-hacker-microsoft-365/833345/) — Cybersecurity Dive (2026-10-19)
+- [ConnectWise breach: Cloud services disruption continues three days after initial intrusion detected](https://www.itpro.com/security/connectwise-breach-cloud-services-disruption-continues-three-days-after-initial-intrusion-detected) (2026-10-20)
+- [ConnectWise Resets Credentials as Cloud Backup Remains Offline After Security Incident](https://thehackernews.com/2026/10/connectwise-resets-credentials-as-cloud.html) (2026-10-20)
+- [ConnectWise Suspends Cloud Services After M365 Tenant Breach](https://www.infosecurity-magazine.com/news/connectwise-shuts-off-cloud/) (2026-10-19)
+- [ConnectWise suspends cloud services after Microsoft 365 supply chain attack](https://www.cybersecuritydive.com/news/connecwise-suspends-cloud-backup-hacker-microsoft-365/833345/) (2026-10-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/connectwise-supply-chain-attack-forces-cloud-service-shutdown-impacts-m365/

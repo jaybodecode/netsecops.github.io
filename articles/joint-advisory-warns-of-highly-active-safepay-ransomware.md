@@ -1,6 +1,6 @@
 # Advisory Warns of Prolific SafePay Ransomware Targeting Critical Infrastructure
 
-**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-10-21 | **Reading time:** 5 min
+**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-10-22 | **Reading time:** 5 min
 
 CISA, the FBI, and international partners issued a joint advisory on the SafePay ransomware group, one of the most active operations of 2026. Since August 2024, the group has compromised approximately 600 organizations, including critical infrastructure sectors, across the Americas, Europe, and Australia. The advisory details the gang's common TTPs, which include credential theft, exploiting known vulnerabilities, and phishing. Agencies urge organizations to implement MFA, patch vulnerabilities, and maintain offline backups to defend against this widespread threat.
 
@@ -64,11 +64,11 @@ The advisory provides several key mitigation strategies to defend against SafePa
 4.  **Segment Networks:** Implement network segmentation to separate critical systems from the general corporate network. This can contain a ransomware infection and prevent it from spreading to high-value assets.
 5.  **User Training:** Conduct regular security awareness training to educate users on how to identify and report phishing attempts.
 
-**Tags:** Ransomware, SafePay, CISA, FBI, Critical Infrastructure, StopRansomware
+**Tags:** CISA, Critical Infrastructure, FBI, Ransomware, SafePay, StopRansomware
 
 ## Sources
-- [#StopRansomware: SafePay Ransomware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-293a) — CISA (2026-10-20)
-- [CISA, FBI and Partners Warn Organizations of SafePay Ransomware Actors Targeting Multiple Critical Infrastructure Sectors](https://www.cisa.gov/news-events/news/cisa-fbi-and-partners-warn-organizations-safepay-ransomware-actors-targeting-multiple-critical) — CISA (2026-10-21)
+- [#StopRansomware: SafePay Ransomware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-293a) (2026-10-20)
+- [CISA, FBI and Partners Warn Organizations of SafePay Ransomware Actors Targeting Multiple Critical Infrastructure Sectors](https://www.cisa.gov/news-events/news/cisa-fbi-and-partners-warn-organizations-safepay-ransomware-actors-targeting-multiple-critical) (2026-10-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/joint-advisory-warns-of-highly-active-safepay-ransomware/
