@@ -1,6 +1,6 @@
 # Kroll Report: 69% of Orgs Breached in Past Year, Most via Third Parties
 
-**Severity:** informational | **Category:** Data Breach,Threat Intelligence,Policy and Compliance | **Updated:** 2026-10-22 | **Reading time:** 3 min
+**Severity:** informational | **Category:** Data Breach,Threat Intelligence,Policy and Compliance | **Updated:** 2026-10-23 | **Reading time:** 3 min
 
 Kroll's 2026 Data Breach Outlook report reveals that 69% of organizations experienced at least one data breach in the past year, with 34% suffering multiple incidents. The report highlights the growing threat of supply chain risk, finding that breaches originating from third-party technology providers had the widest impact, affecting 69% of all individuals impacted in Kroll's incident response cases. A notable disparity exists in risk perception, with IT leaders more concerned about vendor breaches than C-suite executives.
 
@@ -36,10 +36,10 @@ The findings from the Kroll report strongly suggest that organizations need to m
 4.  **Continuous Monitoring**: Third-party risk is not a point-in-time assessment. Implement tools and processes for continuous monitoring of your vendors' security posture, looking for signs of compromise or degradation in their controls.
 5.  **Develop a Third-Party Incident Response Plan**: Have a specific plan ready for how your organization will respond when a critical vendor suffers a breach. This should include communication plans, data analysis procedures, and legal considerations.
 
-**Tags:** Survey, Statistics, Third-Party Risk, Supply Chain, Incident Response
+**Tags:** Incident Response, Statistics, Supply Chain, Survey, Third-Party Risk
 
 ## Sources
-- [Two-Thirds of Organizations Suffered a Data Breach in the Past Year, Kroll Report Finds](https://www.prnewswire.com/news-releases/7-out-of-10-individuals-hit-by-data-breaches-via-third-party-kroll-finds-302916280.html) — PR Newswire (2026-10-22)
+- [Two-Thirds of Organizations Suffered a Data Breach in the Past Year, Kroll Report Finds](https://www.prnewswire.com/news-releases/7-out-of-10-individuals-hit-by-data-breaches-via-third-party-kroll-finds-302916280.html) (2026-10-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/kroll-report-finds-69-percent-of-orgs-breached-in-past-year/

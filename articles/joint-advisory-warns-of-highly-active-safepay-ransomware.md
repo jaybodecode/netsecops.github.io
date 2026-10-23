@@ -1,6 +1,6 @@
 # Advisory Warns of Prolific SafePay Ransomware Targeting Critical Infrastructure
 
-**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-10-22 | **Reading time:** 5 min
+**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-10-23 | **Reading time:** 5 min
 
 CISA, the FBI, and international partners issued a joint advisory on the SafePay ransomware group, one of the most active operations of 2026. Since August 2024, the group has compromised approximately 600 organizations, including critical infrastructure sectors, across the Americas, Europe, and Australia. The advisory details the gang's common TTPs, which include credential theft, exploiting known vulnerabilities, and phishing. Agencies urge organizations to implement MFA, patch vulnerabilities, and maintain offline backups to defend against this widespread threat.
 
