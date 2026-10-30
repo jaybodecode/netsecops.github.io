@@ -1,0 +1,50 @@
+title: Suspicious Process Connecting to Discord API
+id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects network connections to discord.com from processes that are not typical web browsers or the Discord client itself. This is a hunting query for backdoors like EchoCreep.
+references:
+  - https://thehackernews.com/2026/05/webworm-deploys-echocreep-and.html
+author: cyber.netsecops.io
+date: 2026-05-20
+tags:
+  - attack.t1102.002
+  - attack.command_and_control
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationHostname|endswith: '.discord.com'
+    Initiated: true
+  filter:
+    Image|endswith:
+      - '\Discord.exe'
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+      - '\iexplore.exe'
+  condition: selection and not filter
+level: medium
+---
+title: High-Risk Microsoft Graph API Permissions Granted
+id: 9e8d7c6b-5a4f-3e2d-1c0b-9a8b7c6d5e4f
+status: experimental
+description: Monitors for applications being granted high-risk permissions to the Microsoft Graph API, such as Mail.ReadWrite or Files.ReadWrite.All. This could indicate C2 setup by malware like GraphWorm.
+references:
+  - https://thehackernews.com/2026/05/webworm-deploys-echocreep-and.html
+author: cyber.netsecops.io
+date: 2026-05-20
+tags:
+  - attack.t1098.003
+  - attack.persistence
+logsource:
+  product: m365
+  service: audit.azuread
+detection:
+  selection:
+    Operation: 'Add app role assignment to service principal'
+    TargetResources|contains:
+      - 'DisplayName: Mail.ReadWrite'
+      - 'DisplayName: Files.ReadWrite.All'
+  condition: selection
+level: high

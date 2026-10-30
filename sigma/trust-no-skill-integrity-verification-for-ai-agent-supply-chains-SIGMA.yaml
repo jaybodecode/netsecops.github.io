@@ -1,0 +1,80 @@
+title: AI Agent Accessing Sensitive Credential Files
+id: 2b1c8d7e-4f5a-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: Detects common AI agent processes (python, node) accessing sensitive credential files.
+references:
+  - https://unit42.paloaltonetworks.com/ai-agent-supply-chain-risks/
+author: cyber.netsecops.io
+date: 2026-06-11
+tags:
+  - attack.t1555
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection_process:
+    Image|endswith:
+      - '/python'
+      - '/node'
+  selection_file:
+    TargetFilename|contains:
+      - '/.aws/credentials'
+      - '/.ssh/'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate developer or administrative scripts accessing these files.
+---
+title: AI Agent Spawning Shell
+id: 2bf67aea-2725-4e97-9fc3-ded96bd0b3dd
+status: experimental
+description: Detects common AI agent processes (python, node) spawning a shell, which could indicate remote code execution by a malicious skill.
+references:
+  - https://unit42.paloaltonetworks.com/ai-agent-supply-chain-risks/
+author: cyber.netsecops.io
+date: 2026-06-11
+tags:
+  - attack.t1059
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\python.exe'
+      - '\node.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate automation scripts that use agents to execute shell commands.
+---
+title: Python Reverse Shell Command Line
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the execution of a one-line Python reverse shell, often used for remote code execution.
+references:
+  - https://unit42.paloaltonetworks.com/ai-agent-supply-chain-risks/
+author: cyber.netsecops.io
+date: 2026-06-11
+tags:
+  - attack.t1059.006
+  - attack.t1059
+level: critical
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/python'
+    CommandLine|contains|all:
+      - 'socket.socket'
+      - '.connect('
+      - 'os.dup2'
+      - 'pty.spawn'
+  condition: selection
+falsepositives:
+  - Unlikely, but could be triggered by security testing tools.

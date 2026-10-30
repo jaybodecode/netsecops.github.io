@@ -1,0 +1,53 @@
+title: Anomalous Build Environment Egress to Blockchain APIs
+id: 2b1c8d9e-4f5a-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: |
+  Detects processes associated with package managers (npm, go, composer) making outbound network connections to known public blockchain API endpoints. This could indicate a compromised dependency attempting to resolve a blockchain-based C2 channel, as used by Alluring Pisces.
+references:
+  - https://www.cybersecurity-insiders.com/cloud-supply-chain-attacks/
+author: cyber.netsecops.io
+date: 2026-10-08
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_proc:
+    Image|endswith:
+      - '\npm.exe'
+      - '\go.exe'
+      - '\composer.phar'
+  selection_dest:
+    DestinationHostname|endswith:
+      - '.infura.io'
+      - '.alchemy.com'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate developer tools or dependencies that interact with blockchain services.
+---
+title: Suspicious NPM Preinstall Hook Execution
+id: 8a7b6c5d-4e3f-4a2b-8c1d-0e9f8a7b6c5d
+status: experimental
+description: |
+  Detects the execution of a 'preinstall' script by the Node Package Manager (npm). While this can be legitimate, it is a known vector for supply chain attacks, such as the ChainDrop campaign by Alluring Pisces, to execute malicious code upon package installation.
+references:
+  - https://www.cybersecurity-insiders.com/cloud-supply-chain-attacks/
+author: cyber.netsecops.io
+date: 2026-10-08
+tags:
+  - attack.t1195.002
+  - attack.initial_access
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\npm.cmd'
+    CommandLine|contains: 'preinstall'
+  condition: selection
+falsepositives:
+  - Legitimate npm packages that use preinstall scripts for setup.

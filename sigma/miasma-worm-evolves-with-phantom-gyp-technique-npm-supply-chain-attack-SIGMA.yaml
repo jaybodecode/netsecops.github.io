@@ -1,0 +1,71 @@
+title: Suspicious Child Process of node-gyp
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects 'node-gyp' spawning shell or networking utilities, which is indicative of the 'Phantom Gyp' technique used by the Miasma worm.
+references:
+  - https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm
+author: cyber.netsecops.io
+date: 2026-07-02
+tags:
+  - attack.t1059.004
+  - attack.t1195.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\node-gyp.js'
+    Image|endswith:
+      - '\sh.exe'
+      - '\bash.exe'
+      - '\curl.exe'
+      - '\wget.exe'
+  condition: selection
+---
+title: Anomalous Bun Runtime Execution
+id: 6f7a8b9c-0d1e-4f2a-8b3c-4d5e6f7a8b9c
+status: experimental
+description: Detects the execution of the 'Bun' JavaScript runtime. The Miasma worm downloads and uses this runtime to evade detection. Its presence may be anomalous in environments that do not explicitly use it.
+references:
+  - https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm
+author: cyber.netsecops.io
+date: 2026-07-02
+tags:
+  - attack.t1105
+level: medium
+logsource:
+  category: process_creation
+detection:
+  selection:
+    Image|endswith:
+      - '\bun.exe'
+      - '/bun'
+  filter_legit_dev:
+    ParentImage|endswith:
+      - '\explorer.exe'
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\bash.exe'
+      - '\zsh'
+      - '\vscode.exe'
+  condition: selection and not filter_legit_dev
+---
+title: Miasma Worm Payload Download
+id: 7c8d9e0f-1a2b-4c5d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects network requests to a known Miasma worm payload URL seen in 'binding.gyp' files.
+references:
+  - https://www.stepsecurity.io/blog/binding-gyp-npm-supply-chain-attack-spreads-like-worm
+author: cyber.netsecops.io
+date: 2026-07-02
+tags:
+  - attack.t1105
+level: critical
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|contains:
+      - 'https://evil.com/payload.sh'
+  condition: selection

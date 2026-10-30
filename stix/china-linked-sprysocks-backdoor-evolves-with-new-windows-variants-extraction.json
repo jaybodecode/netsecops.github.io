@@ -1,0 +1,270 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-16T16:56:06.305Z",
+    "article_slug": "china-linked-sprysocks-backdoor-evolves-with-new-windows-variants",
+    "article_date": "2026-06-16",
+    "token_usage": {
+      "input_tokens": 143495,
+      "output_tokens": 2937,
+      "cached_tokens": 137831,
+      "total_tokens": 146432,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.053679
+    }
+  },
+  "report_name": "China-Linked SprySOCKS Backdoor Adds Windows Variants with Kernel-Level Stealth",
+  "threat_actors": [
+    {
+      "name": "FishMonger",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A China-linked cyber espionage group, part of the Winnti collective, responsible for developing and deploying the SprySOCKS backdoor. They have upgraded the backdoor with Windows variants (WIN_DRV, WIN_PLUS) featuring advanced stealth capabilities, including a kernel-mode rootkit.",
+      "goals": "Covert, long-term espionage targeting high-value organizations.",
+      "sophistication": "advanced"
+    },
+    {
+      "name": "Winnti Group",
+      "mitre_id": "G0044",
+      "aliases": [
+        "Winnti"
+      ],
+      "description": "A broader collective of Chinese state-sponsored threat actors, of which the FishMonger group is a part. Associated with the SprySOCKS backdoor campaign."
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "The threat actor FishMonger historically exploits known N-day vulnerabilities in public-facing applications like Fortinet, GitLab, Microsoft Exchange, and Zimbra for initial access."
+    },
+    {
+      "name": "Scheduled Task",
+      "mitre_id": "T1053.005",
+      "description": "A dropped batch script creates a scheduled task to establish persistence for the SprySOCKS backdoor."
+    },
+    {
+      "name": "Hijack Execution Flow",
+      "mitre_id": "T1574",
+      "description": "The scheduled task triggers a legitimate application vulnerable to DLL side-loading, which then loads the malicious SprySOCKS DLL into a trusted process."
+    },
+    {
+      "name": "Rootkit",
+      "mitre_id": "T1014",
+      "description": "The WIN_DRV variant of SprySOCKS uses the RawWNPF kernel driver, a rootkit component, to hook kernel functions and hide the malware's processes, files, registry keys, and network connections from security tools."
+    }
+  ],
+  "malware": [
+    {
+      "name": "SprySOCKS",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": true,
+      "aliases": [
+        "WIN_DRV",
+        "WIN_PLUS"
+      ],
+      "description": "A backdoor attributed to the FishMonger group, previously Linux-only, now with Windows variants (WIN_DRV, WIN_PLUS). The WIN_DRV variant uses a kernel driver for stealth. It is considered an evolution of the Trochilus RAT and shares characteristics with RedLeaves.",
+      "capabilities": [
+        "communicates-with-c2",
+        "hides-artifacts",
+        "hides-executing-code"
+      ]
+    },
+    {
+      "name": "RawWNPF",
+      "mitre_id": "",
+      "type": "rootkit",
+      "is_family": false,
+      "aliases": [
+        "RawWNPF.sys"
+      ],
+      "description": "A custom kernel-mode rootkit driver used by the WIN_DRV variant of the SprySOCKS backdoor. It hooks kernel functions to hide the malware's processes, files, registry keys, and network connections from user-mode applications and security tools.",
+      "capabilities": [
+        "hides-artifacts",
+        "hides-executing-code"
+      ]
+    },
+    {
+      "name": "DriverLoader",
+      "mitre_id": "",
+      "type": "loader",
+      "is_family": false,
+      "aliases": [
+        "DriverLoader.sys"
+      ],
+      "description": "A malware component used by the SprySOCKS backdoor to load the encrypted RawWNPF kernel driver.",
+      "capabilities": [
+        "installs-other-components"
+      ]
+    },
+    {
+      "name": "Trochilus",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": true,
+      "aliases": [],
+      "description": "An older Remote Access Trojan (RAT) from which the SprySOCKS backdoor is reported to have evolved."
+    },
+    {
+      "name": "RedLeaves",
+      "mitre_id": "S0153",
+      "type": "backdoor",
+      "is_family": true,
+      "aliases": [],
+      "description": "A backdoor that shares characteristics with the SprySOCKS malware."
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [
+    {
+      "name": "China",
+      "region": "eastern-asia"
+    }
+  ],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "RawWNPF.sys"
+    },
+    {
+      "type": "file",
+      "name": "DriverLoader.sys"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "SprySOCKS Kernel Driver Filenames",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name IN ('RawWNPF.sys', 'DriverLoader.sys')]",
+      "x_netsecio_sigma_rule": "title: SprySOCKS Kernel Driver File Creation\nid: 2b9c1d8e-4f5a-4b6c-8d9e-0f1a2b3c4d5e\nstatus: experimental\ndescription: Detects the creation of files associated with the SprySOCKS backdoor's kernel-level components.\nreferences:\n  - https://thehackernews.com/2026/06/china-linked-sprysocks-backdoor-expands.html\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1014\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith:\n      - '\\RawWNPF.sys'\n      - '\\DriverLoader.sys'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the presence of kernel driver files associated with the SprySOCKS backdoor."
+    },
+    {
+      "name": "SprySOCKS Scheduled Task Creation",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: SprySOCKS Scheduled Task Creation for Persistence\nid: 8e1d9c2b-5a4f-4c6b-9d8e-e0f1a2b3c4d5\nstatus: experimental\ndescription: Detects the creation of a scheduled task, a persistence method used by SprySOCKS malware.\nreferences:\n  - https://thehackernews.com/2026/06/china-linked-sprysocks-backdoor-expands.html\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1053.005\n  - attack.persistence\n  - attack.execution\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\schtasks.exe'\n    CommandLine|contains: '/create'\n  condition: selection",
+      "description": "Detects the use of schtasks.exe to create a scheduled task, a technique used by SprySOCKS for persistence."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "FishMonger",
+      "source_type": "threat-actor",
+      "relationship_type": "attributed-to",
+      "target_name": "Winnti Group",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "FishMonger",
+      "source_type": "threat-actor",
+      "relationship_type": "originates-from",
+      "target_name": "China",
+      "target_type": "location"
+    },
+    {
+      "source_name": "FishMonger",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "SprySOCKS",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "FishMonger",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "FishMonger",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Scheduled Task",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "FishMonger",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Hijack Execution Flow",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SprySOCKS",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "DriverLoader",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "SprySOCKS",
+      "source_type": "malware",
+      "relationship_type": "variant-of",
+      "target_name": "Trochilus",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "SprySOCKS",
+      "source_type": "malware",
+      "relationship_type": "related-to",
+      "target_name": "RedLeaves",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "DriverLoader",
+      "source_type": "malware",
+      "relationship_type": "delivers",
+      "target_name": "RawWNPF",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "RawWNPF",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Rootkit",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SprySOCKS Kernel Driver Filenames",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "SprySOCKS",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "SprySOCKS Kernel Driver Filenames",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "RawWNPF.sys",
+      "target_type": "file"
+    },
+    {
+      "source_name": "SprySOCKS Kernel Driver Filenames",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "DriverLoader.sys",
+      "target_type": "file"
+    },
+    {
+      "source_name": "SprySOCKS Scheduled Task Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Scheduled Task",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

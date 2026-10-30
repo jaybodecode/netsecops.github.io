@@ -1,0 +1,75 @@
+title: Anomalous Cloud Storage Access to Clinical Trial Data
+id: 2b1f8c3a-9e4d-4f8a-b1c3-d2e4f6a8b0c1
+status: experimental
+description: |
+  Monitors for anomalous access to cloud storage locations (e.g., S3 buckets, Azure Blob Storage) containing sensitive clinical trial data. This rule is a general template and should be adapted with specific bucket names and known-good IP ranges.
+references:
+  - https://www.globenewswire.com/news-release/2026/06/11/3310660/0/en/novo-nordisk-a-s-it-security-incident-at-novo-nordisk.html
+author: cyber.netsecops.io
+date: 2026-06-12
+tags:
+  - attack.t1530
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName: GetObject
+    requestParameters.bucketName|contains:
+      - 'clinical-trial'
+      - 'patient-data'
+  filter:
+    sourceIPAddress:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      # Add known corporate IP ranges here
+  condition: selection and not filter
+---
+title: Dormant Account Logon Activity
+id: 5d9e8f7a-1b3c-4d6e-8f9a-0b2c4d6e8f0a
+status: experimental
+description: |
+  Detects logon activity from accounts that have been inactive for an extended period (e.g., > 90 days). This requires a SIEM to correlate logon events with a baseline of historical user activity.
+references:
+  - https://www.globenewswire.com/news-release/2026/06/11/3310660/0/en/novo-nordisk-a-s-it-security-incident-at-novo-nordisk.html
+author: cyber.netsecops.io
+date: 2026-06-12
+tags:
+  - attack.t1078
+level: medium
+logsource:
+  product: windows
+  category: logon
+detection:
+  selection:
+    EventID: 4624
+    LogonType:
+      - 2
+      - 10 # Interactive, RemoteInteractive
+  filter:
+    AccountName|endswith: '$' # Exclude machine accounts
+  condition: selection and not filter
+---
+title: Anomalous High-Volume API Data Read
+id: 9e8f7a6b-5c4d-4e3f-8a9b-0c2d4e6f8a9b
+status: experimental
+description: |
+  Monitors for API calls that read large volumes of patient or trial data, especially if originating from an unexpected source system. This rule is a general template for detecting unusual data access patterns.
+references:
+  - https://www.globenewswire.com/news-release/2026/06/11/3310660/0/en/novo-nordisk-a-s-it-security-incident-at-novo-nordisk.html
+author: cyber.netsecops.io
+date: 2026-06-12
+tags:
+  - attack.t1119
+level: medium
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-stem|contains:
+      - '/api/v1/patient_data/'
+      - '/api/v1/trial_records/'
+    sc-bytes|gt: 1000000 # Threshold for large data volume (e.g., 1MB)
+  condition: selection

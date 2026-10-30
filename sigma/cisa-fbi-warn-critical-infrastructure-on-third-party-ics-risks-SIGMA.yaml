@@ -1,0 +1,124 @@
+title: Anomalous Third-Party Remote Access Activity
+id: 2b9f3c1a-8d7e-4f6a-9b1c-5d3e2f1a0b9c
+status: experimental
+description: |
+  Detects unusual remote access patterns from third-party integrator accounts, such as connections at odd hours, from unexpected geographic locations, or for unusually long durations. This could indicate account compromise and abuse of trusted relationships.
+references:
+  - https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1199
+  - attack.t1021.001
+  - attack.initial_access
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: authentication
+  product: vpn
+detection:
+  selection:
+    # This is a conceptual rule. Actual fields depend on the VPN/remote access log source.
+    # Example logic: alert on connections outside of business hours (e.g., 10 PM to 6 AM local time) or from non-whitelisted IPs.
+    user_group: 'third-party-integrators'
+    time_of_day: 'outside-business-hours'
+  condition: selection
+---
+title: Domain Account Enumeration by Third-Party
+id: 8c1d5e2f-3a0b-4c9d-8e7f-6a9b1c5d3e2f
+status: experimental
+description: |
+  Detects domain account enumeration using 'net user' command, especially when originating from a session associated with a third-party integrator. This is a common reconnaissance step after gaining initial access.
+references:
+  - https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1087
+  - attack.t1078
+  - attack.discovery
+level: medium
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    Image|endswith: '\net.exe'
+    CommandLine|contains:
+      - 'user'
+      - '/domain'
+  filter_legit_user:
+    # Add user accounts or source systems known to perform this activity legitimately
+    User: 'AUTHORIZED_ADMIN_ACCOUNT'
+  condition: selection and not filter_legit_user
+---
+title: Suspicious Execution from Temp Directory by Third-Party
+id: 4a9b1c5d-3e2f-4a0b-8c1d-5e2f3a0b9c8d
+status: experimental
+description: |
+  Detects execution of binaries or scripts from the C:\Windows\Temp directory by a user account associated with a third-party integrator. This could indicate an attacker is staging and executing malicious tools.
+references:
+  - https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1105
+  - attack.execution
+level: medium
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    CurrentDirectory|startswith: 'C:\Windows\Temp'
+    # Further refinement could be done by filtering on user groups for third-party integrators
+  condition: selection
+---
+title: Anomalous Data Exfiltration from OT Network
+id: 0aca53b4-f583-4217-b127-91923c2b036a
+status: experimental
+description: |
+  Detects unusually large data transfers originating from the OT network segment to external IP addresses, which could indicate data exfiltration. Baselining normal traffic is crucial for this detection.
+references:
+  - https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1048
+  - attack.exfiltration
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_zone: 'ot_network'
+    dst_zone: 'external'
+    bytes_out|gt: 100000000 # Example threshold: 100MB
+  condition: selection
+---
+title: ICS Keyword Search via Findstr
+id: 9b1c5d3e-2f1a-4a0b-8c1d-5e2f3a0b9c8d
+status: experimental
+description: |
+  Detects the use of 'findstr' to search for sensitive ICS-related keywords like 'SCADA' across files. This indicates targeted reconnaissance and collection activity.
+references:
+  - https://www.cisa.gov/resources-tools/resources/considerations-critical-infrastructure-operators-working-third-party-ics-integrators
+author: cyber.netsecops.io
+date: 2026-09-24
+tags:
+  - attack.t1119
+  - attack.collection
+level: high
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    Image|endswith: '\findstr.exe'
+    CommandLine|contains|all:
+      - '/s'
+      - '/i'
+    CommandLine|contains:
+      - 'SCADA'
+      - 'customers'
+  condition: selection

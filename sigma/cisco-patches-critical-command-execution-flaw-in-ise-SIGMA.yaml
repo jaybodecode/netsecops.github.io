@@ -1,0 +1,94 @@
+title: Cisco ISE RCE via ise-tacacs-runtime Child Process
+id: 2b8a1c3d-f4e5-4b9a-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the Cisco ISE TACACS runtime process spawning a shell, which is a strong indicator of remote command execution (CVE-2026-20181).
+references:
+  - https://www.securityweek.com/critical-command-execution-vulnerability-patched-in-cisco-ise/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1059.004
+  - attack.execution
+level: critical
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    ParentImage|endswith: '/ise-tacacs-runtime'
+    Image|endswith:
+      - '/bash'
+      - '/sh'
+      - '/zsh'
+      - '/ksh'
+  condition: selection
+---
+title: Anomalous Cisco ISE Administrative Login
+id: e00ab48a-2498-4418-a30a-26a9f6d826a8
+status: experimental
+description: Detects successful administrative logins to a Cisco ISE appliance from an untrusted or non-standard IP address, which could be a precursor to exploiting CVE-2026-20181.
+references:
+  - https://www.securityweek.com/critical-command-execution-vulnerability-patched-in-cisco-ise/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1078
+  - attack.initial_access
+level: medium
+logsource:
+  product: cisco
+  service: ise
+  category: authentication
+detection:
+  selection:
+    event_type: 'admin_login_success'
+    privileges: 'administrator'
+  filter:
+    source_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter
+---
+title: Unusual Outbound Connection from Cisco ISE
+id: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects a Cisco ISE appliance initiating an outbound network connection to an external IP address, which could indicate a post-compromise C2 channel.
+references:
+  - https://www.securityweek.com/critical-command-execution-vulnerability-patched-in-cisco-ise/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    SourceImage|endswith: '/ise-tacacs-runtime'
+    Initiated: true
+  filter:
+    DestinationIp|startswith:
+      - '10.'
+      - '172.16.'
+      - '172.17.'
+      - '172.18.'
+      - '172.19.'
+      - '172.20.'
+      - '172.21.'
+      - '172.22.'
+      - '172.23.'
+      - '172.24.'
+      - '172.25.'
+      - '172.26.'
+      - '172.27.'
+      - '172.28.'
+      - '172.29.'
+      - '172.30.'
+      - '172.31.'
+      - '192.168.'
+    DestinationHostname|endswith:
+      - '.cisco.com'
+  condition: selection and not filter

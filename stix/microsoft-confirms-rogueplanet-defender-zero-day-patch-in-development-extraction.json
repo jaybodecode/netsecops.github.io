@@ -1,0 +1,149 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-19T21:46:05.917Z",
+    "article_slug": "microsoft-confirms-rogueplanet-defender-zero-day-patch-in-development",
+    "article_date": "2026-06-19",
+    "token_usage": {
+      "input_tokens": 144331,
+      "output_tokens": 2133,
+      "cached_tokens": 137831,
+      "total_tokens": 146464,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.046684
+    }
+  },
+  "report_name": "Microsoft Scrambles to Patch 'RoguePlanet' Zero-Day in Defender After Public Exploit Release",
+  "threat_actors": [
+    {
+      "name": "Chaotic Eclipse",
+      "mitre_id": "",
+      "aliases": [
+        "Nightmare Eclipse"
+      ],
+      "description": "A security researcher who publicly released the 'RoguePlanet' (CVE-2026-50656) proof-of-concept exploit, allegedly in retaliation for a dispute with Microsoft's bug bounty program.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "An attacker with standard user access exploits the 'RoguePlanet' vulnerability (CVE-2026-50656) in Microsoft Defender to escalate privileges to the SYSTEM level."
+    },
+    {
+      "name": "Hijack Execution Flow",
+      "mitre_id": "T1574",
+      "description": "The 'RoguePlanet' exploit leverages a race condition and symbolic links to manipulate file paths during a Defender scan, causing the high-privilege MsMpEng.exe process to execute an attacker's malicious payload."
+    },
+    {
+      "name": "Windows Command Shell",
+      "mitre_id": "T1059.003",
+      "description": "Successful exploitation of CVE-2026-50656 results in an arbitrary command shell running with SYSTEM privileges, allowing the attacker to execute further commands."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "Microsoft Defender",
+      "mitre_id": "",
+      "aliases": [
+        "Microsoft Malware Protection Engine"
+      ],
+      "description": "The vulnerable security product whose core engine (mpengine.dll) and process (MsMpEng.exe) are exploited via a race condition in CVE-2026-50656 to achieve privilege escalation.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-50656",
+      "cve": "CVE-2026-50656",
+      "description": "A high-severity local privilege escalation (LPE) zero-day vulnerability in the Microsoft Malware Protection Engine (mpengine.dll) caused by a race condition. An authenticated local attacker can exploit it by manipulating file paths with symbolic links during a scan to cause the SYSTEM-level MsMpEng.exe process to execute a malicious payload.",
+      "aliases": [
+        "RoguePlanet"
+      ],
+      "cvss_score": 7.8,
+      "severity": "high"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "RoguePlanet LPE: MsMpEng.exe Spawning Shell",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: RoguePlanet LPE - MsMpEng.exe Spawning Shell\nid: 2b9a8f7e-1c3d-4b8a-9f0e-1a2b3c4d5e6f\nstatus: experimental\ndescription: Detects the Microsoft Defender process (MsMpEng.exe) spawning a command shell, which is a strong indicator of CVE-2026-50656 (RoguePlanet) exploitation.\nreferences:\n  - https://thehackernews.com/2026/06/microsoft-confirms-rogueplanet-defender_02022423645.html\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1068\n  - attack.privilege_escalation\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    ParentImage|endswith: '\\MsMpEng.exe'\n    Image|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n      - '\\cscript.exe'\n      - '\\wscript.exe'\n  condition: selection",
+      "description": "Detects the Microsoft Defender process (MsMpEng.exe) spawning a command shell, which is a strong indicator of CVE-2026-50656 (RoguePlanet) exploitation."
+    },
+    {
+      "name": "RoguePlanet LPE: Suspicious Defender Scan Command",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: RoguePlanet LPE - Suspicious Defender Scan Command\nid: 8c7d6e5f-2b4a-4d9f-8a1b-3c4d5e6f7a8b\nstatus: experimental\ndescription: Detects command-line invocations of the Microsoft Defender scanner (MpCmdRun.exe) targeting potentially suspicious file paths, which could indicate an attempt to stage the CVE-2026-50656 (RoguePlanet) exploit.\nreferences:\n  - https://thehackernews.com/2026/06/microsoft-confirms-rogueplanet-defender_02022423645.html\nauthor: cyber.netsecops.io\ndate: 2026-06-18\ntags:\n  - attack.t1068\n  - attack.privilege_escalation\nlevel: medium\nfalsepositives:\n  - Legitimate administrative scripts that trigger scans on temporary or user-writable directories.\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\MpCmdRun.exe'\n    CommandLine|contains|all:\n      - '-Scan'\n      - '-ScanType 3'\n      - '-FilePath'\n    CommandLine|contains:\n      - 'C:\\Users\\'\n      - 'C:\\ProgramData\\'\n      - 'C:\\Windows\\Temp\\'\n      - '\\AppData\\Local\\Temp'\n  condition: selection",
+      "description": "Detects command-line invocations of the Microsoft Defender scanner (MpCmdRun.exe) targeting unusual file paths, which could indicate an attempt to stage the CVE-2026-50656 (RoguePlanet) exploit."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Chaotic Eclipse",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-50656",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Chaotic Eclipse",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Chaotic Eclipse",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Hijack Execution Flow",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Chaotic Eclipse",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Windows Command Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Microsoft Defender",
+      "source_type": "tool",
+      "relationship_type": "has",
+      "target_name": "CVE-2026-50656",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "RoguePlanet LPE: MsMpEng.exe Spawning Shell",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "RoguePlanet LPE: Suspicious Defender Scan Command",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

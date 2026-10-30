@@ -1,0 +1,437 @@
+{
+  "id": "8742f85d-8736-4ece-8797-76a1e50e70a6",
+  "slug": "npm-threat-landscape-shai-hulud-successors-weaponize-cicd-pipelines-june-2026",
+  "headline": "npm Ecosystem Under Siege as Shai-Hulud Successors Weaponize CI/CD Pipelines",
+  "title": "Unit 42 Report: Shai-Hulud Worm's Evolution Leads to Advanced npm Supply Chain Attacks Targeting Red Hat and TanStack",
+  "summary": "A new wave of sophisticated supply chain attacks is targeting the npm ecosystem, evolving from the 'Shai-Hulud' worm that emerged in late 2025. Threat actors, including the group known as TeamPCP, are now deploying self-propagating malware like 'Mini Shai-Hulud' and 'Miasma'. These campaigns have compromised major software projects from Red Hat and TanStack by weaponizing CI/CD pipelines and abusing developer credentials. The attacks leverage advanced techniques, including the exploitation of GitHub Actions and OIDC tokens, to bypass code reviews and inject malicious payloads into legitimate packages. This new generation of attacks represents a critical threat, capable of stealing credentials and backdooring developer environments on a massive scale, with one incident affecting packages with over 520 million cumulative downloads.",
+  "full_report": "## Executive Summary\n\nThis report analyzes a severe escalation in the **[npm](https://www.npmjs.com/)** supply chain threat landscape, detailed in research by **[Unit 42](https://unit42.paloaltonetworks.com/)**. Since the emergence of the **[Shai-Hulud](https://malpedia.caad.fkie.fraunhofer.de/details/js.shai_hulud)** worm in September 2025, threat actors have shifted from nuisance-level attacks to systematic, high-impact campaigns. Adversaries, including the prolific **[TeamPCP](https://malpedia.caad.fkie.fraunhofer.de/actor/teampcp)** group, are now deploying next-generation wormable malware such as **[Mini Shai-Hulud](https://malpedia.caad.fkie.fraunhofer.de/details/js.shai_hulud)** and **[Miasma](https://malpedia.caad.fkie.fraunhofer.de/details/js.miasma)**. These attacks compromise developer accounts and abuse CI/CD pipelines—notably on **[GitHub](https://github.com/)**—to distribute trojanized packages. Recent targets include widely-used libraries from **[Red Hat](https://www.redhat.com/)** and **[TanStack](https://tanstack.com/)**, demonstrating the ability to bypass conventional security controls like code review and even subvert SLSA provenance checks. The primary goals are credential harvesting from developer environments and further propagation, creating a self-sustaining cycle of compromise that threatens the entire software development ecosystem.\n\n---\n\n## Threat Overview\n\nThe npm ecosystem has transitioned into a high-consequence battleground for supply chain attacks. The original Shai-Hulud worm set the precedent, but recent campaigns show a marked increase in sophistication and automation.\n\n**Key Incidents:**\n1.  **Red Hat Cloud Services Compromise (June 1, 2026):** An attacker used a compromised **[Red Hat](https://www.redhat.com/)** employee's GitHub account to inject the **Miasma** payload into 32 packages under the `@redhat-cloud-services` namespace. The attacker bypassed code review by pushing orphan commits and abused GitHub Actions to generate validly signed, yet malicious, packages using **[OpenID Connect](https://en.wikipedia.org/wiki/OpenID_Connect)** (OIDC) tokens. These packages averaged 80,000 weekly downloads.\n\n2.  **TanStack CI/CD Pipeline Attack (May 11, 2026):** **TeamPCP** executed a credential-free attack by chaining three GitHub Actions weaknesses. They compromised the CI pipeline for TanStack, a popular developer tooling provider, publishing 84 malicious artifacts across 42 `@tanstack/*` packages within minutes. The worm's self-propagation mechanism quickly spread to 169 distinct npm packages, impacting an estimated 520 million cumulative downloads.\n\n3.  **Ongoing Mini Shai-Hulud Waves:** Throughout April and May 2026, multiple campaigns attributed to **TeamPCP** deployed variants of the **Mini Shai-Hulud** worm. These attacks included impersonating legitimate packages like `@bitwarden/cli` to steal credentials and backdoor developer projects for further propagation.\n\nThe core attack vector has shifted from simple typosquatting to the direct compromise of developer accounts and the CI/CD infrastructure they trust. By injecting malware during the automated build and publish process, attackers gain implicit trust and achieve massive distribution.\n\n---\n\n## Technical Analysis\n\nAdversaries are employing a multi-stage approach that combines social engineering, credential abuse, and CI/CD exploitation. The **Miasma** payload, derived from the open-sourced **Mini Shai-Hulud**, serves as a prime example.\n\n**Attack Chain Breakdown:**\n1.  **Initial Access:** Achieved through compromised developer credentials ([`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/)) or by exploiting misconfigurations in CI/CD environments, as seen in the credential-free TanStack attack.\n2.  **CI/CD Abuse:** Attackers trigger CI workflows (e.g., GitHub Actions) to gain temporary, but powerful, permissions. In the Red Hat attack, this involved requesting **[OIDC](https://en.wikipedia.org/wiki/OpenID_Connect)** tokens ([`T1134 - Access Token Manipulation`](https://attack.mitre.org/techniques/T1134/)) to publish packages to the npm registry.\n3.  **Code Injection:** Malicious code is injected into the project's source files before the build step. The **Miasma** payload was a heavily obfuscated [`index.js`](https://attack.mitre.org/techniques/T1027/) file, increasing its size by 25x—a potential detection indicator.\n4.  **Malicious Package Publication:** The compromised CI/CD pipeline builds and publishes the trojanized package ([`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195.002/)). The package appears legitimate, often with valid digital signatures or SLSA provenance, as the trusted pipeline itself was used for publication.\n5.  **Execution and Payload Delivery:** When a developer installs the malicious package via `npm install`, the malicious scripts execute ([`T1059.007 - JavaScript/JScript`](https://attack.mitre.org/techniques/T1059.007/)). The payload then activates, initiating credential theft and propagation.\n6.  **Credential Theft:** The malware scours the victim's machine and environment variables for sensitive credentials, including API keys for AWS, Google Cloud, Azure, and tokens for npm and GitHub ([`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/)).\n7.  **Propagation:** The worm uses stolen npm tokens to backdoor every package the compromised developer has publish rights to, repeating the cycle.\n\n> The public release of the Mini Shai-Hulud source code by **TeamPCP** on May 12, 2026, has significantly lowered the barrier to entry for other actors, making attribution difficult and foreshadowing a rise in copycat attacks.\n\n---\n\n## Impact Assessment\n\nThe business impact of these attacks is severe and multi-faceted, extending far beyond the initial victims.\n\n*   **Erosion of Trust:** These attacks undermine the trust-based model of open-source software. When even packages from reputable publishers like Red Hat, signed with valid provenance, can be trojanized, it creates uncertainty for all developers.\n*   **Massive Downstream Risk:** The compromise of a single popular package can lead to a cascading failure across thousands of organizations. The TanStack incident, affecting an estimated 520 million downloads, highlights the potential for widespread secondary breaches.\n*   **Credential Compromise:** The primary goal of stealing credentials from developer machines and CI/CD environments provides attackers with keys to the kingdom, enabling lateral movement, data exfiltration, and further, more damaging attacks against the victim organization.\n*   **Remediation Costs:** Organizations must expend significant resources to identify all instances of the malicious packages, revoke compromised credentials, audit their codebases, and restore trust in their build pipelines.\n*   **Brand and Reputational Damage:** For publishers like Red Hat and TanStack, these incidents cause significant reputational harm, even if they were themselves victims of a sophisticated attack.\n\n---\n\n## IOCs — Directly from Articles\n\nThe source article focuses on TTPs rather than traditional IOCs. However, the following contextual indicators were mentioned:\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| File Name | `@bitwarden/cli` | Malicious package impersonating the legitimate Bitwarden CLI. |\n| Other | `2026.4.0` | Malicious version of the `@bitwarden/cli` package. |\n| Other | `@redhat-cloud-services` | The npm namespace under which 32 malicious packages were published. |\n| String Pattern | `Shai-Hulud: The Third Coming` | A string found within public GitHub repositories as part of a campaign. |\n| String Pattern | `Miasma: The Spreading Blight` | Description used by the attacker in newly created GitHub repositories. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns, which could indicate related activity:\n\n| Type | Value | Description | Context | Confidence |\n| :--- | :--- | :--- | :--- | :--- |\n| File Name | `index.js` | Unusually large or heavily obfuscated `index.js` files in `node_modules` directories. | File Integrity Monitoring, Static Analysis | high |\n| Command Line Pattern | `npm install` | Monitor for `npm install` processes that spawn unexpected child processes (e.g., `curl`, `bash`, `powershell`). | EDR, Process Auditing (Event ID 4688) | high |\n| Log Source | `GitHub Actions logs` | Audit logs for OIDC token requests from forked repositories or unexpected workflows. | GitHub Enterprise Audit Logs | high |\n| Network Traffic Pattern | `build-server -> external-storage` | Anomalous network connections from CI/CD runners or build servers to unknown external IPs or cloud storage providers. | Netflow, Firewall Logs | medium |\n| File Path | `~/.npmrc` | Monitor for unauthorized read/access attempts to the npm configuration file, which stores authentication tokens. | EDR, File Auditing | high |\n| Registry Key | `HKCU\\Software\\npm` | On Windows, monitor for suspicious modifications to npm-related registry keys. | EDR, Registry Monitoring | medium |\n\n---\n\n## Detection & Response\n\nDetecting these attacks requires a defense-in-depth approach focused on the software development lifecycle.\n\n*   **Dependency Scanning:** Implement automated dependency analysis tools (e.g., Snyk, Dependabot, GitHub Advanced Security) to scan for known malicious packages. However, this is insufficient for zero-day attacks.\n*   **Behavioral Analysis:** Use sandboxed environments to run `npm install` and observe the behavior of pre/post-install scripts. A D3FEND technique like [`Dynamic Analysis (D3-DA)`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis) can identify scripts that attempt to access the network or read sensitive files.\n*   **CI/CD Log Monitoring:** Actively monitor CI/CD logs for anomalies. Create SIEM alerts for:\n    *   Builds initiated by suspicious users or from forked repositories.\n    *   Sudden spikes in package publications.\n    *   GitHub Actions workflows requesting OIDC tokens outside of expected patterns.\n*   **Endpoint Detection (EDR):** On developer workstations, EDR solutions can detect `npm` or `node` processes making suspicious system calls, accessing files like `~/.ssh/` or `~/.aws/credentials`, or spawning shells. This aligns with D3FEND's [`Process Analysis (D3-PA)`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n*   **File Integrity Monitoring:** Use [`File Analysis (D3-FA)`](https://d3fend.mitre.org/technique/d3f:FileAnalysis) to monitor for significant, unexpected changes in package file sizes within your `node_modules` directory, such as a 25x increase in an `index.js` file.\n\n---\n\n## Mitigation\n\nOrganizations must harden their software development and dependency management practices.\n\n*   **Enforce MFA on Registries:** Mandate multi-factor authentication for all developer accounts on package registries like npm and code hosting platforms like GitHub.\n*   **Harden CI/CD Pipelines:**\n    1.  Implement strict branch protection rules and require multiple reviewers for all code changes, especially to CI/CD configuration files. This is a form of [`Application Configuration Hardening (D3-ACH)`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).\n    2.  Use GitHub Actions features like `environment protection rules` to control which workflows can access secrets or publish artifacts.\n    3.  Tightly scope the permissions of CI/CD tokens to the minimum required for their task.\n*   **Dependency Management:**\n    1.  Pin dependencies to specific, vetted versions using a lockfile (`package-lock.json`).\n    2.  Use a private or scoped npm registry to host vetted internal and third-party packages, reducing exposure to the public registry.\n    3.  Implement a quarantine process where new package versions are analyzed in a sandbox before being approved for use.\n*   **Developer Training:** Educate developers on the risks of supply chain attacks, credential phishing, and the importance of securing their accounts and workstations. This maps to MITRE's [`User Training (M1017)`](https://attack.mitre.org/mitigations/M1017/).",
+  "twitter_post": "⚠️ npm ecosystem under siege! New wormable malware 'Miasma' & 'Mini Shai-Hulud' are exploiting CI/CD pipelines to launch supply chain attacks, compromising Red Hat & TanStack packages. Developers, check your dependencies now! #npm #SupplyChainAttack #CyberSecurity",
+  "meta_description": "In-depth analysis of the evolving npm threat landscape post-Shai-Hulud. Learn about new wormable malware, CI/CD pipeline compromises, and attacks on Red Hat and TanStack, with mitigation strategies.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "npm",
+      "type": "product",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "Red Hat",
+      "type": "company",
+      "url": "https://www.redhat.com/"
+    },
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/teampcp"
+    },
+    {
+      "name": "Shai-Hulud",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/js.shai_hulud"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/js.shai_hulud"
+    },
+    {
+      "name": "Miasma",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/js.miasma"
+    },
+    {
+      "name": "Bitwarden",
+      "type": "product"
+    },
+    {
+      "name": "Checkmarx",
+      "type": "company"
+    },
+    {
+      "name": "TanStack",
+      "type": "company",
+      "url": "https://tanstack.com/"
+    },
+    {
+      "name": "PyPI",
+      "type": "product"
+    },
+    {
+      "name": "OpenID Connect",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/OpenID_Connect"
+    },
+    {
+      "name": "SLSA",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/",
+      "title": "The npm Threat Landscape: Attack Surface and Mitigations (Updated June 2)",
+      "date": "2026-06-02",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-09",
+      "summary": "The Shai-Hulud worm emerges, marking a shift to high-consequence npm attacks."
+    },
+    {
+      "datetime": "2026-04-22",
+      "summary": "A new campaign begins, including the string 'Shai-Hulud: The Third Coming'."
+    },
+    {
+      "datetime": "2026-04-29",
+      "summary": "The 'Mini Shai-Hulud' campaign is initiated."
+    },
+    {
+      "datetime": "2026-05-10",
+      "summary": "An attacker creates a malicious fork of the TanStack/router repository."
+    },
+    {
+      "datetime": "2026-05-11",
+      "summary": "TeamPCP launches a coordinated supply chain attack on npm and PyPI via TanStack's CI pipeline."
+    },
+    {
+      "datetime": "2026-05-12",
+      "summary": "TeamPCP open-sources the Mini Shai-Hulud malware, enabling copycat attacks."
+    },
+    {
+      "datetime": "2026-06-01",
+      "summary": "A supply chain attack compromises at least 32 packages in the @redhat-cloud-services npm namespace using the Miasma payload."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1134",
+      "name": "Access Token Manipulation",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript/JScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1554",
+      "name": "Compromise Client Software Binary",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Strictly manage and monitor permissions for developer accounts and CI/CD service principals to limit the blast radius of a compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Harden the configuration of CI/CD platforms like GitHub Actions by enforcing branch protection, requiring reviewers, and limiting workflow triggers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Implement comprehensive logging and auditing for dependency management systems and CI/CD pipelines to detect anomalous behavior.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        },
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Run build processes, especially dependency installation, in isolated, ephemeral environments to prevent access to sensitive network resources or files.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce MFA on all developer accounts for code repositories and package registries to prevent simple credential compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "While the attack involves malicious updates, maintaining a rigorous process for vetting and applying legitimate updates (patches) to tooling and dependencies is crucial.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "In the context of the npm supply chain attacks, Application Configuration Hardening should be applied directly to the CI/CD platform, such as GitHub Actions. First, enforce strict branch protection rules on all production branches, requiring pull requests with at least one or two mandatory reviewers before merging. This directly counters the technique used in the Red Hat attack where an attacker pushed malicious commits directly. Second, leverage environment protection rules in GitHub Actions. Create a 'production' or 'publish' environment and configure it to require manual approval before a workflow can access secrets (like an NPM_TOKEN) or deploy. This adds a human verification step, preventing an automated worm from publishing malicious packages. Finally, harden the workflow trigger definitions. Disable `pull_request_target` triggers on public repositories unless absolutely necessary and fully understood, as they can be insecure. Instead, use triggers like `workflow_dispatch` for manual runs or `pull_request` on forks, which run with read-only tokens by default. These configurations create critical gates that disrupt the automated attack chain used by malware like Miasma.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "To counter threats like Mini Shai-Hulud that execute during package installation, organizations should implement dynamic analysis by running `npm install` within a sandboxed environment before allowing new or updated dependencies into their main development workflow. This can be automated as part of a 'dependency quarantine' process. The sandbox should be an ephemeral, network-restricted container with extensive monitoring. During the analysis, security teams should monitor for specific malicious behaviors: 1) Network callouts to unknown domains, which could indicate C2 communication or credential exfiltration. 2) Filesystem access outside the project directory, especially attempts to read `~/.ssh/`, `~/.aws/credentials`, or `~/.npmrc`. 3) Spawning of unexpected child processes, such as shells (`sh`, `bash`), `curl`, or `powershell`. Any dependency that exhibits these behaviors during the sandboxed installation should be immediately flagged, blocked, and investigated. This proactive analysis acts as a crucial defense layer, catching malicious pre/post-install scripts before they can execute on a developer's machine or in a production build pipeline.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "Given that these attacks leverage compromised developer accounts, Domain Account Monitoring should be extended to federated identities on platforms like GitHub and npm. Security teams must ingest audit logs from these platforms into their SIEM. Create high-fidelity alerts for suspicious account activity, such as: 1) Logins from new or geographically anomalous locations. 2) A sudden, high-volume of commits or package publications from a single account, as seen with the TanStack compromise where 84 artifacts were published in minutes. 3) The creation of forked repositories with deliberately misleading names (e.g., `zblgg/configuration` from the report). 4) Commits authored by a spoofed user identity that does not match the committer's account. Establishing a baseline of normal developer activity is key. By monitoring for deviations, security teams can quickly detect a compromised developer account and disable it, containing the threat before it can be used to inject malicious code into a trusted supply chain.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "@bitwarden/cli",
+      "description": "Malicious package impersonating the legitimate Bitwarden CLI."
+    },
+    {
+      "type": "other",
+      "value": "2026.4.0",
+      "description": "Malicious version of the @bitwarden/cli package."
+    },
+    {
+      "type": "other",
+      "value": "@redhat-cloud-services",
+      "description": "The npm namespace under which 32 malicious packages were published."
+    },
+    {
+      "type": "string_pattern",
+      "value": "Shai-Hulud: The Third Coming",
+      "description": "A string found within public GitHub repositories as part of a campaign."
+    },
+    {
+      "type": "string_pattern",
+      "value": "Miasma: The Spreading Blight",
+      "description": "Description used by the attacker in newly created GitHub repositories."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "index.js",
+      "description": "Unusually large or heavily obfuscated index.js files in node_modules directories, indicating potential payload injection. The Miasma payload was noted to increase file size by 25x.",
+      "context": "File Integrity Monitoring, Static Analysis Tools (e.g., YARA)",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install",
+      "description": "Monitor for `npm install` processes that spawn unexpected child processes (e.g., curl, bash, powershell), which could indicate a malicious post-install script is running.",
+      "context": "EDR, Process Auditing (Windows Event ID 4688, Linux auditd)",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "GitHub Actions logs",
+      "description": "Audit logs for OpenID Connect (OIDC) token requests from forked repositories or unexpected workflows, a technique used in the Red Hat compromise.",
+      "context": "GitHub Enterprise Audit Logs, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "build-server -> external-storage",
+      "description": "Anomalous network connections from CI/CD runners or build servers to unknown external IPs or cloud storage providers, which could be a sign of credential or data exfiltration.",
+      "context": "Netflow Analysis, Firewall Logs, Network Intrusion Detection System (NIDS)",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "~/.npmrc",
+      "description": "Monitor for unauthorized read/access attempts to the npm configuration file, as it stores authentication tokens that can be used for propagation.",
+      "context": "EDR, File Auditing, Host-based Intrusion Detection System (HIDS)",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "npm",
+    "supply chain attack",
+    "CI/CD",
+    "worm",
+    "malware",
+    "credential theft",
+    "open source security",
+    "GitHub Actions",
+    "TeamPCP",
+    "Miasma",
+    "Shai-Hulud"
+  ],
+  "extract_datetime": "2026-06-03T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Critical Infrastructure",
+      "Finance",
+      "Healthcare",
+      "Government"
+    ],
+    "other_affected": [
+      "open-source software users",
+      "developers"
+    ],
+    "people_affected_estimate": "520 million+ cumulative downloads (for TanStack incident)"
+  },
+  "pub_date": "2026-06-03",
+  "reading_time_minutes": 23,
+  "createdAt": "2026-06-03T15:00:00.000Z",
+  "updatedAt": "2026-07-03T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-06-14T00:00:00Z",
+      "datetime": "2026-06-14T00:00:00Z",
+      "title": "Update 1",
+      "summary": "GitHub announces NPM v12 will disable automatic script execution by default, directly countering supply chain attacks like Shai-Hulud and TeamPCP.",
+      "sources": [
+        {
+          "title": "NPM 12 Will Change Script Execution Behavior to Prevent Supply Chain Attacks",
+          "url": "https://www.securityweek.com/npm-12-will-change-script-execution-behavior-to-prevent-supply-chain-attacks/"
+        },
+        {
+          "title": "The Most Dangerous Code in Your Stack Is Code You Never Wrote",
+          "url": "https://awards.thehackernews.com/blog/the-danger-in-your-dependencies/"
+        }
+      ]
+    },
+    {
+      "update_id": "update-2",
+      "update_date": "2026-06-26T00:00:00Z",
+      "datetime": "2026-06-26T00:00:00Z",
+      "title": "Update 2",
+      "summary": "Attack expands to Go ecosystem, compromises popular GitHub Action, and introduces Hades malware, increasing scope and impact.",
+      "sources": [
+        {
+          "title": "Miasma Malware Targets npm Packages and GitHub Actions in Supply Chain Attack",
+          "url": "https://thehackernews.com/2026/06/miasma-malware-targets-npm-packages-and.html"
+        },
+        {
+          "title": "Weekly Intelligence Report - 26 Jun 2026",
+          "url": "https://www.cyfirma.com/news/weekly-intelligence-report-26-jun-2026/"
+        }
+      ]
+    },
+    {
+      "update_id": "update-3",
+      "update_date": "2026-07-03T12:00:00Z",
+      "datetime": "2026-07-03T12:00:00Z",
+      "title": "Update 3",
+      "summary": "TeamPCP has partnered with the VECT ransomware group, creating an 'industrialized ransomware' model. TeamPCP now funnels stolen developer credentials from supply chain attacks on tools like Trivy to VECT affiliates for ransomware deployment, significantly escalating the threat.",
+      "sources": [
+        {
+          "title": "Warning Over “Industrialized” Cyber-Attacks by Ransomware Gang",
+          "url": "https://www.infosecurity-magazine.com/news/industrialized-cyberattacks/"
+        },
+        {
+          "title": "FBI Warns of TeamPCP Supply Chain Attacks Impacting Widely Used Software Tools",
+          "url": "https://hstoday.us/subject-matter-areas/cybersecurity/fbi-warns-of-teampcp-supply-chain-attacks-impacting-widely-used-software-tools/"
+        },
+        {
+          "title": "Ransomware Groups Turn to Citrix Bleed 2, BYOVD, and Supply Chain Credentials",
+          "url": "https://thehackernews.com/2026/07/ransomware-groups-turn-to-citrix-bleed.html"
+        }
+      ]
+    }
+  ]
+}

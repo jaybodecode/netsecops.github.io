@@ -1,0 +1,202 @@
+{
+  "id": "8a2591cf-b8e0-4b7c-9fdf-666444a34a14",
+  "slug": "attackers-weaponize-decade-old-encase-driver-to-terminate-edr-products",
+  "headline": "EDR-Killer Malware Weaponizes Decade-Old EnCase Driver in BYOVD Attacks",
+  "title": "Attackers Abuse Revoked EnCase Driver ('EnPortv.sys') in BYOVD Attack to Disable EDR and Deploy Ransomware",
+  "summary": "Threat actors are using a new EDR-killing malware that leverages a 'Bring Your Own Vulnerable Driver' (BYOVD) technique to disable endpoint security products. Researchers at Huntress discovered the malware during an intrusion that began with compromised SonicWall SSL VPN credentials. The attackers abuse `EnPortv.sys`, a legitimate but long-revoked kernel driver from Guidance Software's EnCase forensic toolkit. Despite its certificate being revoked in 2010, a gap in Windows' driver signature enforcement allows it to be loaded, granting the attackers kernel-level privileges. The malware uses these privileges to terminate 59 different processes associated with major EDR vendors like CrowdStrike, SentinelOne, and Microsoft, clearing the way for ransomware deployment.",
+  "full_report": "## Executive Summary\nThreat actors are deploying a sophisticated **EDR-killer** tool that abuses a decade-old, revoked kernel driver to systematically terminate endpoint security products before deploying ransomware. A report from security firm **[Huntress](https://www.huntress.com/)** details an attack leveraging the **Bring Your Own Vulnerable Driver (BYOVD)** technique. The attackers introduce `EnPortv.sys`, a legitimate driver from Guidance Software's **EnCase** forensic toolkit, whose certificate was revoked in 2010. A loophole in Windows' driver signature validation still allows this driver to be loaded, granting the malware powerful kernel-level privileges. The tool then uses this access to forcefully terminate processes belonging to 59 different security products, effectively blinding the organization's defenses and paving the way for the final ransomware payload.\n\n## Threat Overview\nThe attack represents a mature stage in the ransomware playbook, where disabling security controls is a standard preliminary step. The initial access vector in the observed incident was compromised credentials for a **[SonicWall](https://www.sonicwall.com/)** SSL VPN, a common entry point. After gaining access, the attackers' primary goal was to neutralize the endpoint detection and response (EDR) solution to operate undetected.\n\n### The BYOVD Technique\n- **Bring Your Own Vulnerable Driver ([T1547.006 - Kernel Modules and Extensions](https://attack.mitre.org/techniques/T1547/006/))**: This technique involves an attacker placing a legitimately signed (even if revoked or expired) but vulnerable driver on the target system. \n- **Loading the Driver**: The attacker's malware loads this driver into the kernel.\n- **Exploiting the Vulnerability**: The malware then communicates with the driver, using its inherent vulnerabilities or powerful functions to execute operations with kernel-level privileges (Ring 0).\n- **Malicious Action**: These privileges are used to perform actions that user-mode applications cannot, such as terminating protected security processes.\n\n## Technical Analysis\n- **The Vulnerable Driver:** The driver at the center of this attack is `EnPortv.sys`. It is a component of the EnCase digital forensics software, originally developed by Guidance Software (now OpenText). While the driver's digital certificate expired in 2010 and was revoked, Windows Driver Signature Enforcement fails to block it, creating a dangerous loophole.\n- **The EDR Killer Tool:** The attacker's tool is a 64-bit executable that masquerades as a firmware update utility. It contains the vulnerable `EnPortv.sys` driver and a list of 59 process names associated with major cybersecurity vendors, including:\n    - **[Microsoft](https://www.microsoft.com/security)**\n    - **[CrowdStrike](https://www.crowdstrike.com/)**\n    - **[SentinelOne](https://www.sentinelone.com/)**\n    - **Kaspersky**\n    - **Sophos**\n- **Execution Flow:**\n    1. The EDR killer executable is run on the compromised host.\n    2. It drops and loads the `EnPortv.sys` driver.\n    3. It leverages the driver's kernel access to iterate through running processes.\n    4. It forcefully terminates any process that matches its hardcoded list of security products.\n- **Defense Evasion:** The tool uses a custom wordlist-based substitution cipher to encode the driver payload, making it appear as English text during static analysis and helping it to evade signature-based detection.\n\n## Impact Assessment\nThe successful execution of this EDR killer has a critical impact on an organization's security posture.\n- **Loss of Visibility:** With the EDR and antivirus solutions disabled, security teams are blinded. They can no longer receive alerts, monitor endpoint activity, or remotely respond to the incident.\n- **Unfettered Attacker Activity:** Once security tools are disabled, attackers can proceed with their objectives—credential theft, data exfiltration, and ransomware deployment—without fear of detection or prevention.\n- **Ransomware Deployment:** The ultimate goal of this tool is to ensure the successful execution of a ransomware payload, leading to widespread operational disruption and financial loss.\n\n## Detection & Response\n**D3FEND Techniques:** [Driver Load Integrity Checking (D3-DLIC)](https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking), [Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)\n\n1.  **Monitor Driver Loads:** Monitor Windows systems for the loading of suspicious or known-vulnerable drivers. The loading of `EnPortv.sys` is a major red flag. Windows Event ID 7045 can indicate a new service (driver) being installed.\n2.  **EDR Tampering Alerts:** Modern EDR solutions have anti-tampering features. Alerts indicating that EDR services are being stopped or modified should be treated as a high-priority incident.\n3.  **Behavioral Analysis:** Hunt for the initial access vector. In this case, reviewing SonicWall SSL VPN logs for suspicious logins (e.g., from unusual locations, multiple failed attempts followed by success) is crucial.\n\n## Mitigation\n**D3FEND Techniques:** [Executable Denylisting (D3-EDL)](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting), [Multi-factor Authentication (D3-MFA)](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication), [Software Update (D3-SU)](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)\n\n1.  **Driver Block Rules:** Use security tools like Windows Defender Application Control (WDAC) to create policies that block the loading of known-vulnerable drivers. Microsoft maintains a ",
+  "twitter_post": "🛡️ EDR-Killer malware weaponizes a decade-old, revoked EnCase driver (`EnPortv.sys`) to terminate security products. The BYOVD attack disables tools from CrowdStrike, SentinelOne & more before deploying ransomware. #BYOVD #EDR #Malware #CyberSecurity",
+  "meta_description": "A new EDR-killing malware uses a 'Bring Your Own Vulnerable Driver' (BYOVD) technique, abusing a revoked driver from EnCase ('EnPortv.sys') to disable security products.",
+  "category": [
+    "Malware",
+    "Ransomware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Huntress",
+      "type": "security_organization",
+      "url": "https://www.huntress.com/"
+    },
+    {
+      "name": "EnCase",
+      "type": "product"
+    },
+    {
+      "name": "Guidance Software",
+      "type": "vendor"
+    },
+    {
+      "name": "SonicWall",
+      "type": "vendor",
+      "url": "https://www.sonicwall.com"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "CrowdStrike",
+      "type": "vendor",
+      "url": "https://www.crowdstrike.com/"
+    },
+    {
+      "name": "SentinelOne",
+      "type": "vendor",
+      "url": "https://www.sentinelone.com/"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "vendor"
+    },
+    {
+      "name": "Sophos",
+      "type": "vendor"
+    },
+    {
+      "name": "ESET",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE66KFtbHRg45PerZwOKiXp-ZidQQydZ1dRmivC5oJ_rxFDuPD04EEQ4fzLe7kQ-vtzh6vyqoTFHN0uJAIG7XS-Pv-p65e7xhS_G-ymku6vVaJ_qFYmx0qPDs0ir3j642L9r0m4afvQ_-BmtrNan-hg",
+      "title": "They Got In Through SonicWall. Then They Tried to Kill Every Security Tool",
+      "website": "huntress.com"
+    },
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEfDzcYRUXJBxTfb5craWUkXNksqO7FVmm-0nJfwSI6QqIntTKTLG2gGvI2gLYVSX7eawxTUsW39-wL2OvcPndyde-XGhv4IPfa1Fe1Zsgx2HR7GFEXwyjwkXeHJ9R9IT7mLvR6nAbI2MGCqWVda9OYA5vSWlf4uNE1tZTctMVfM4wLEilJKRXtA4b2XlDFemzH-JX4tH1V",
+      "title": "EnCase Driver Weaponized as EDR Killers Persist",
+      "website": "darkreading.com"
+    },
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF4ZNUG9MZDSer0eGRps2A1xWYsNx8Cr04w_XHjNO4_P9Krqy0m1u45I75CRTPXvFhN3I0CjTBE26dWFpSX-DJMqIRDY5kfibgtKY4b4QxWIbifFv_JjczXphmS",
+      "title": "The Federal Employees Heath Blog (FEH Blog)",
+      "website": "fehblog.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1562.001",
+      "name": "Impair Defenses: Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1547.006",
+      "name": "Boot or Logon Autostart Execution: Kernel Modules and Extensions",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1134.002",
+      "name": "Access Token Manipulation: Create Process with Token",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control policies, like Windows Defender Application Control (WDAC), to block known vulnerable drivers from being loaded.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "description": "Enable EDR anti-tampering features, which are designed to protect security processes from being terminated.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforce MFA on VPNs and other remote access points to prevent initial access via compromised credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Keep VPN appliances and other edge devices fully patched to prevent them from being used as an entry point.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "The most direct countermeasure to this specific BYOVD attack is to prevent the vulnerable driver, `EnPortv.sys`, from ever being loaded. This can be achieved through executable denylisting, specifically using a driver blocklist. Microsoft's Windows Defender Application Control (WDAC) and the 'vulnerable driver blocklist' feature can be configured to prevent specific drivers, identified by their hash or signing certificate details, from loading into the kernel. By adding `EnPortv.sys` and other known-abused drivers to this blocklist, organizations can neutralize the attacker's tool. This defense breaks the attack chain at a critical step, preventing the attacker from gaining the kernel-level privileges needed to disable security tools, even if they have already achieved initial access to the machine.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DLIC",
+      "technique_name": "Driver Load Integrity Checking",
+      "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking",
+      "recommendation": "Strengthening the integrity checks for driver loading is a fundamental defense against BYOVD. This involves enabling and enforcing security features like Secure Boot and ensuring that Windows Driver Signature Enforcement is operating correctly. While the `EnPortv.sys` driver highlights a gap in this enforcement for revoked certificates, organizations should still ensure these foundational security settings are active. Furthermore, advanced endpoint security solutions can provide enhanced driver load monitoring. Security teams should configure their EDR and SIEM systems to generate high-priority alerts whenever a new, unsigned, or suspicious driver is loaded. The loading of a forensic driver like `EnPortv.sys` on a standard corporate endpoint or server is a highly anomalous event that should trigger an immediate investigation.",
+      "mitre_mitigation_id": "M1045"
+    },
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "While not a direct defense against the BYOVD technique itself, robust MFA is crucial for preventing the initial access that allows such tools to be deployed. The attack described by Huntress began with compromised SonicWall SSL VPN credentials. Had phishing-resistant MFA been enforced on the VPN, this initial breach could have been prevented. Organizations must move beyond simple username/password authentication for all remote access points. Implementing MFA makes it significantly harder for attackers to leverage stolen or weak credentials, forcing them to use more complex and detectable methods. This defense-in-depth approach ensures that even if a new EDR-killer emerges, attackers will have a much harder time getting into a position to use it.",
+      "mitre_mitigation_id": "M1032"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "EnPortv.sys",
+      "description": "The vulnerable driver file being abused in this BYOVD attack. Its presence on any system not used for digital forensics is a high-confidence indicator of malicious activity.",
+      "context": "File integrity monitoring, EDR file event logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "7045",
+      "description": "Windows System Event ID 7045 ('A service was installed in the system') can indicate the installation of a new driver, including malicious ones.",
+      "context": "Windows Event Log monitoring via SIEM.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "sc create <service> type= kernel ...",
+      "description": "Command line used to create a new kernel driver service. Monitoring for this pattern can detect attempts to load malicious drivers.",
+      "context": "Windows Event ID 4688 (Process Creation) with command line logging enabled.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "BYOVD",
+    "EDR",
+    "Malware",
+    "Ransomware",
+    "EnCase",
+    "EnPortv.sys",
+    "Huntress",
+    "Defense Evasion"
+  ],
+  "extract_datetime": "2026-02-08T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Any organization using the targeted EDR products"
+    ]
+  },
+  "pub_date": "2026-02-08",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-02-08T15:00:00.000Z",
+  "updatedAt": "2026-02-08T15:00:00.000Z"
+}

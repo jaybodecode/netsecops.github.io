@@ -1,0 +1,316 @@
+{
+  "id": "796fbf4c-d14c-49ed-b0fd-015aebaba328",
+  "slug": "gremlin-stealer-evolves-with-resource-file-obfuscation-tactics",
+  "headline": "Gremlin Stealer Hides in Plain Sight, Using .NET Resources to Steal Crypto and Sessions",
+  "title": "Gremlin Stealer's Evolved Tactics: Hiding in Plain Sight With Resource Files",
+  "summary": "Unit 42 has analyzed a new, highly evolved variant of the Gremlin information stealer. This version marks a significant upgrade in stealth and capability, now embedding its malicious payload within the .NET resource section and using XOR encoding to bypass detection. The malware has expanded its targets beyond simple credential harvesting to include active session hijacking from Chromium-based browsers, a dedicated Discord token stealer, and a new clipboard hijacker that replaces cryptocurrency wallet addresses to commit financial fraud. The stealer exfiltrates stolen data in a ZIP archive to a command-and-control server, with recent samples showing zero initial detection on VirusTotal, highlighting its evasiveness.",
+  "full_report": "## Executive Summary\n\nThis report details the analysis of a new, sophisticated variant of the **[Gremlin](https://malpedia.caad.fkie.fraunhofer.de/details/win.gremlin)** information stealer, identified by **[Unit 42](https://www.paloaltonetworks.com/unit42)**. The malware has evolved significantly, incorporating advanced anti-analysis and obfuscation techniques to evade detection. Key developments include hiding malicious payloads within the `.NET Resource` section, employing commercial-grade packers with instruction virtualization, and expanding its capabilities to include a cryptocurrency clipboard hijacker, session token theft from Chromium browsers, and a Discord token stealer. These enhancements transform Gremlin from a basic credential harvester into a modular, multi-faceted threat capable of direct financial fraud and comprehensive data compromise. The low detection rates of new samples underscore the increased risk posed to organizations and individuals.\n\n---\n\n## Threat Overview\n\nGremlin is an information stealer designed to siphon sensitive data from compromised systems. This latest iteration demonstrates a marked increase in sophistication, focusing on stealth and modularity. The primary attack vector involves tricking users into executing the malicious binary, which then harvests a wide range of data from web browsers, local storage, and active user sessions.\n\nThe malware bundles stolen data—including credentials, cookies, and system information—into a ZIP archive named after the victim's public IP address. This data is then exfiltrated to an attacker-controlled command-and-control (C2) server. A newly identified C2 endpoint is `194.87.92.109`, which had zero detections on **[VirusTotal](https://www.virustotal.com/)** at the time of discovery, highlighting the threat's evasiveness.\n\nThe evolution is clear: older versions were largely unobfuscated, while the new variant uses multi-stage loading and encryption to conceal its true purpose until runtime, making static analysis extremely difficult.\n\n---\n\n## Technical Analysis\n\nThe new Gremlin variant employs several advanced techniques to evade detection and analysis.\n\n### Payload Obfuscation in .NET Resources\nThe most significant change is the relocation of the malicious payload into the `.NET Resource` section. The payload is encoded using a single-byte XOR operation, making it appear as an opaque, benign block of data to static analysis tools and signature-based antivirus engines. This technique, also used by malware like Agent Tesla and Formbook, effectively hides critical strings, API calls, and the C2 configuration until the malware decrypts them at runtime.\n\n### Advanced Packing and Anti-Analysis\nOne analyzed sample (`2172dae9a5a695e00e0e4609e7db0207d8566d225f7e815fada246ae995c0f9b`) was protected by a commercial packing utility. This packer uses instruction virtualization, converting the original machine code into a custom bytecode that runs on a private virtual machine embedded within the malware. This is a powerful anti-debugging and anti-emulation technique.\n\nOther anti-analysis methods include:\n- **String Encryption:** Sensitive strings like C2 URLs (`hxxps://api[.]telegram[.]org`) and API function names are encrypted and only decrypted in memory when needed.\n- **Control Flow Obfuscation:** The code's logic is intentionally convoluted with junk code and confusing jumps to hinder reverse engineering.\n- **Staged Loading:** Critical functions are decrypted and mapped into memory from the resource section on-demand, forcing analysts to rely on dynamic analysis to observe program behavior.\n\n### Modular Capabilities\nGremlin has transitioned to a modular architecture, with specialized components for different tasks:\n1.  **Chromium Session Hijacking:** The malware now targets active session tokens directly from the memory of running **[Chromium](https://www.chromium.org/)**-based browser processes, bypassing the need to parse static database files.\n2.  **Discord Token Stealer:** A dedicated module scans multiple file paths for **[Discord](https://discord.com/)** tokens and uses regex validation to ensure their authenticity before exfiltration.\n3.  **Clipboard Hijacker:** This new module continuously monitors the system clipboard. When it detects a string matching the pattern of a cryptocurrency wallet address, it replaces it with an attacker-controlled address, enabling direct financial theft.\n\n### MITRE ATT&CK Mapping\n- [`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/): The core technique of hiding the payload via XOR encoding in resources.\n- [`T1027.002 - Software Packing`](https://attack.mitre.org/techniques/T1027/002/): Use of a commercial packer with instruction virtualization.\n- [`T1555.003 - Credentials from Web Browsers`](https://attack.mitre.org/techniques/T1555/003/): Harvesting credentials, cookies, and other data from browser databases.\n- [`T1552.004 - Web Session Cookie Theft`](https://attack.mitre.org/techniques/T1552/004/): Hijacking active session tokens directly from browser processes.\n- [`T1115 - Clipboard Data`](https://attack.mitre.org/techniques/T1115/): Monitoring and modifying clipboard content to steal cryptocurrency.\n- [`T1059.007 - JavaScript/JScript`](https://attack.mitre.org/techniques/T1059/007/): Although not explicitly stated, stealer modules often use scripts to interact with browser data.\n- [`T1041 - Exfiltration Over C2 Channel`](https://attack.mitre.org/techniques/T1041/): Uploading the stolen data in a ZIP archive to the C2 server.\n- [`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/): Using HTTP for C2 communication and data exfiltration.\n\n---\n\n## Impact Assessment\n\nThe evolution of Gremlin stealer presents a multi-faceted risk to organizations and individuals. The primary impact is financial, stemming directly from the new clipboard hijacking module that targets cryptocurrency transactions. This feature represents a direct and immediate path to monetization for the attackers.\n\nBeyond direct financial loss, the compromise of credentials, session tokens, and communication platform data (e.g., Discord) can lead to significant follow-on attacks. Stolen credentials can be used to access corporate networks, cloud services, and financial accounts. Hijacked session tokens allow attackers to bypass **[multi-factor authentication (MFA)](https://www.cisa.gov/mfa)** and impersonate users, gaining access to sensitive enterprise applications and data. The theft of Discord tokens could lead to account takeovers, social engineering campaigns, or the compromise of developer communities.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| ip_address_v4 | `194.87.92.109` | Newly deployed Gremlin C2 server. |\n| file_hash_sha256 | `2172dae9a5a695e00e0e4609e7db0207d8566d225f7e815fada246ae995c0f9b` | Packed Gremlin stealer sample. |\n| file_hash_sha256 | `d09282b71850616147a3036979603099919018b1088a8f4c281a8b598d975871` | Gremlin stealer sample. |\n| file_hash_sha256 | `54a96e95963f9bee19864a7a85818968953151b72e128104860b865672f10b0e` | Gremlin stealer sample. |\n| url | `http://api.ipify.org/?format=json` | Used by malware to get victim's public IP. |\n| url | `https://api.telegram.org` | Used for C2 communication in some variants. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns, which could indicate Gremlin stealer activity:\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| network_traffic_pattern | `194.87.92.109` | Outbound HTTP POST requests to the known C2 IP. | Firewall, proxy, or NetFlow logs. | high |\n| process_name | `*.exe` | Unsigned executables running from temporary user directories (`%APPDATA%`, `%TEMP%`). | EDR logs, Windows Event ID 4688. | medium |\n| command_line_pattern | `powershell.exe -c \"(New-Object System.Net.WebClient).DownloadFile(...)\"` | PowerShell commands used to download secondary payloads. | EDR, PowerShell script block logging (Event ID 4104). | medium |\n| api_endpoint | `/` | HTTP POST requests containing a ZIP file to an IP-based URL. | Web proxy logs, Network Security Monitoring (NSM) tools. | high |\n| event_id | `12` | Sysmon Event ID 12 (RegistryEvent) showing modifications to clipboard-related keys. | Sysmon logs. | low |\n| file_name | `*.zip` | Creation of ZIP archives with an IP address as the filename. | File integrity monitoring, EDR logs. | medium |\n\n---\n\n## Detection & Response\n\nDetecting this evolved Gremlin variant requires a layered defense focusing on behavior rather than static signatures.\n\n1.  **Endpoint Detection and Response (EDR):** Deploy EDR solutions to monitor for suspicious process behaviors. Create rules to detect processes that: \n    *   Access credential stores of major browsers (e.g., Chrome's `Login Data` file).\n    *   Read memory from browser processes (`chrome.exe`, `msedge.exe`).\n    *   Make network connections to raw IP addresses, especially those with no associated domain.\n    *   Exhibit signs of runtime unpacking, such as writing and executing code in a new memory region.\n\n2.  **Network Monitoring:** Actively monitor and filter egress network traffic. Block all outbound connections to the known IOC `194.87.92.109`. Use a web proxy to inspect traffic and alert on POST requests containing `.zip` files to suspicious or uncategorized domains/IPs. D3FEND's [`Network Traffic Analysis (D3-NTA)`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) is critical here.\n\n3.  **File and Memory Analysis:** Utilize endpoint security tools capable of performing memory scanning to detect malware components that are decrypted at runtime. For static analysis, D3FEND's [`File Analysis (D3-FA)`](https://d3fend.mitre.org/technique/d3f:FileAnalysis) can be used with tools that can inspect `.NET` resource sections and apply automated XOR bruteforcing to uncover hidden payloads.\n\n4.  **Incident Response:** If an infection is suspected, immediately isolate the affected endpoints from the network to prevent further data exfiltration and lateral movement. Initiate a forensic investigation to determine the scope of the compromise, including what data was stolen. All credentials for accounts used on the compromised machine should be rotated.\n\n---\n\n## Mitigation\n\nOrganizations can take several proactive steps to defend against Gremlin stealer and similar threats.\n\n1.  **Enforce Multi-Factor Authentication (MFA):** The most effective defense against credential theft is strong MFA. This ensures that even if credentials are stolen, attackers cannot easily access accounts. This aligns with MITRE Mitigation [`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/).\n\n2.  **User Education:** Train users to recognize and avoid phishing emails, malicious attachments, and suspicious downloads, which are the primary initial access vectors for stealers. This maps to [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n\n3.  **Software Patching:** Keep all software, especially web browsers and operating systems, up to date to protect against exploits that could be used for initial access. This aligns with [`M1051 - Update Software`](https://attack.mitre.org/mitigations/M1051/).\n\n4.  **Application Whitelisting:** Implement application control policies to restrict the execution of unauthorized or unsigned applications, particularly from user-writable locations like `%APPDATA%`. This is a form of [`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/).\n\n5.  **Network Egress Filtering:** Restrict outbound network connections to only what is necessary for business operations. Deny all outbound traffic by default and only allow connections to approved services and domains. This corresponds to [`M1037 - Filter Network Traffic`](https://attack.mitre.org/mitigations/M1037/).",
+  "twitter_post": "⚠️ Gremlin Stealer evolves! New variant uses .NET resource files for stealth, hijacks crypto wallets & steals browser sessions. Advanced obfuscation evades static analysis. #GremlinStealer #Malware #InfoStealer #CyberSecurity",
+  "meta_description": "Unit 42 analysis of the new Gremlin Stealer malware variant. Learn about its advanced obfuscation techniques, including hiding payloads in .NET resources, crypto-clipping, and session hijacking.",
+  "category": [
+    "Malware",
+    "Threat Intelligence",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Gremlin",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.gremlin"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://www.paloaltonetworks.com/unit42"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Cortex",
+      "type": "product"
+    },
+    {
+      "name": "VirusTotal",
+      "type": "security_organization",
+      "url": "https://www.virustotal.com/"
+    },
+    {
+      "name": "Telegram",
+      "type": "product"
+    },
+    {
+      "name": "Discord",
+      "type": "product",
+      "url": "https://discord.com/"
+    },
+    {
+      "name": "Chromium",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/Chromium_(web_browser)"
+    },
+    {
+      "name": "Agent Tesla",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.agent_tesla"
+    },
+    {
+      "name": "Formbook",
+      "type": "malware",
+      "url": "https://attack.mitre.org/software/S0267/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/gremlin-stealer-evolution/",
+      "title": "Gremlin Stealer's Evolved Tactics: Hiding in Plain Sight With Resource Files",
+      "date": "2026-05-15",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1027.002",
+      "name": "Software Packing",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1555.003",
+      "name": "Credentials from Web Browsers",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1552.004",
+      "name": "Web Session Cookie Theft",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1115",
+      "name": "Clipboard Data",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Reduces the impact of stolen credentials by requiring a second factor for authentication, which Gremlin cannot steal as easily.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        },
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Endpoint security solutions can detect and block known Gremlin samples based on hashes and behavioral patterns.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Block outbound connections to known malicious IPs like 194.87.92.109 and restrict egress traffic to prevent data exfiltration.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Keeping web browsers and other client-side software updated can prevent exploitation that may lead to initial access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "d3fend_techniques": [],
+      "description": "Educate users to identify and report phishing attempts and suspicious downloads, which are common delivery vectors for info-stealers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        }
+      ],
+      "description": "Use EDR tools to monitor for and block suspicious behaviors like a process accessing browser credential files or reading memory from another process.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To counter Gremlin's data exfiltration, organizations should implement robust Network Traffic Analysis. Specifically, configure network monitoring tools and SIEMs to alert on any outbound HTTP/S connections to the known C2 IP address `194.87.92.109`. Beyond this specific IOC, create rules to detect and flag outbound connections to raw IP addresses that do not have a corresponding DNS lookup, as this is a common tactic for malware C2. Monitor for POST requests containing `.zip` file uploads to uncategorized or newly-registered domains. Given Gremlin's use of Telegram, all outbound traffic to `api.telegram.org` should be scrutinized; while legitimate use may exist, connections from server workloads or non-standard user applications are highly suspicious and should be blocked or trigger an immediate alert. Baselining normal egress traffic patterns is crucial to detect anomalies like the sudden transfer of a compressed archive.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Given Gremlin's focus on stealing data from running processes, Process Analysis via an EDR solution is a critical defense. Configure EDR policies to specifically monitor and alert on processes that attempt to access sensitive browser files, such as `Login Data`, `Cookies`, and `Local State` files within user profiles for Chrome, Edge, and other Chromium browsers. Furthermore, since the new variant hijacks session tokens from memory, rules should be created to detect processes attempting to read the memory space of `chrome.exe`, `msedge.exe`, etc. This cross-process memory reading is highly indicative of malicious activity. Also monitor for processes that load the `.NET` runtime and subsequently exhibit suspicious behaviors like network connections to unknown IPs or file system enumeration. This behavioral approach is essential for detecting Gremlin, as its on-disk signatures are heavily obfuscated.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "While Gremlin's session hijacking capability can bypass MFA in some scenarios, implementing phishing-resistant MFA is still a vital countermeasure. The primary value of MFA in this context is to mitigate the impact of the credential theft component. Even if Gremlin successfully exfiltrates usernames and passwords, strong MFA (such as FIDO2/WebAuthn or hardware tokens) prevents the attacker from using those credentials in a separate session. This significantly contains the damage and prevents attackers from easily accessing corporate VPNs, cloud applications, and other critical services with the stolen credentials. For services where session hijacking is a concern, organizations should reduce session timeout lengths and explore solutions that continuously validate user sessions, making a hijacked token less useful over time. MFA acts as a crucial backstop, neutralizing the most common use case for stolen passwords.",
+      "mitre_mitigation_id": "M1032"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "194.87.92.109",
+      "description": "Newly deployed Gremlin C2 server."
+    },
+    {
+      "type": "file_hash_sha256",
+      "value": "2172dae9a5a695e00e0e4609e7db0207d8566d225f7e815fada246ae995c0f9b",
+      "description": "Packed Gremlin stealer sample."
+    },
+    {
+      "type": "file_hash_sha256",
+      "value": "d09282b71850616147a3036979603099919018b1088a8f4c281a8b598d975871",
+      "description": "Gremlin stealer sample."
+    },
+    {
+      "type": "file_hash_sha256",
+      "value": "54a96e95963f9bee19864a7a85818968953151b72e128104860b865672f10b0e",
+      "description": "Gremlin stealer sample."
+    },
+    {
+      "type": "url",
+      "value": "http://api.ipify.org/?format=json",
+      "description": "Used by malware to get victim's public IP."
+    },
+    {
+      "type": "url",
+      "value": "https://api.telegram.org",
+      "description": "Used for C2 communication in some variants."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "194.87.92.109",
+      "description": "Outbound HTTP POST requests to the known Gremlin C2 IP address.",
+      "context": "Firewall, proxy, or NetFlow logs",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "chrome.exe",
+      "description": "Unusual child processes spawned by or attempts to read memory from browser processes.",
+      "context": "EDR logs, Windows Event ID 4688",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "*.zip",
+      "description": "Creation of ZIP archives where the filename is a public IP address, typically in a temporary directory.",
+      "context": "File integrity monitoring, EDR file creation events",
+      "confidence": "medium"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "api.telegram.org",
+      "description": "Outbound connections to the Telegram API from unexpected processes (not the official client).",
+      "context": "Web proxy logs, DNS query logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "Add-Clipboard",
+      "description": "Unusual PowerShell or script processes interacting with the clipboard API.",
+      "context": "PowerShell script block logging (Event ID 4104), EDR command line analysis",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "Gremlin Stealer",
+    "InfoStealer",
+    "Malware Analysis",
+    "Obfuscation",
+    "Cryptocurrency",
+    "Clipboard Hijacker",
+    "Session Hijacking",
+    ".NET Malware",
+    "Threat Research"
+  ],
+  "extract_datetime": "2026-05-15T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [],
+    "other_affected": [
+      "Users of cryptocurrency wallets",
+      "Users of Chromium-based browsers",
+      "Discord users"
+    ]
+  },
+  "pub_date": "2026-05-15",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-05-15T15:00:00.000Z",
+  "updatedAt": "2026-05-15T15:00:00.000Z"
+}

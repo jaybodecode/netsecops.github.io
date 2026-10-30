@@ -1,0 +1,57 @@
+title: Suspicious Large File Transfer via Common Utilities
+id: 2b8a1c3d-f4e5-4b6c-8d9e-a0b1c2d3e4f5
+status: experimental
+description: Detects the use of common command-line utilities to copy a large number of files, which could indicate data staging or exfiltration by an insider threat. This is a generic detection for behavior similar to the NSW Treasury incident.
+references:
+  - https://www.nsw.gov.au/media-releases/significant-cyber-incident-downgraded
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1020
+  - attack.exfiltration
+falsepositives:
+  - Legitimate administrative scripts.
+  - Backup jobs.
+level: low
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_robocopy:
+    Image|endswith: '\robocopy.exe'
+    CommandLine|contains:
+      - ' /E '
+      - ' /S '
+      - ' /MIR '
+  selection_xcopy:
+    Image|endswith: '\xcopy.exe'
+    CommandLine|contains:
+      - ' /E '
+      - ' /S '
+  condition: 1 of selection_*
+---
+title: Data Exfiltration to Consumer Cloud Storage
+id: 9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
+status: experimental
+description: Detects network connections to common consumer cloud storage services, which could indicate data exfiltration to an unauthorized external location, as was suspected in the NSW Treasury insider incident.
+references:
+  - https://www.nsw.gov.au/media-releases/significant-cyber-incident-downgraded
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1567
+  - attack.exfiltration
+falsepositives:
+  - Legitimate use of cloud storage if not explicitly forbidden by corporate policy.
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host|endswith:
+      - '.dropbox.com'
+      - '.drive.google.com'
+      - '.onedrive.live.com'
+      - '.mega.nz'
+      - '.box.com'
+  condition: selection

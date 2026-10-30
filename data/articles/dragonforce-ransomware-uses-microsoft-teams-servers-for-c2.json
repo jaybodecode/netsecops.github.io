@@ -1,0 +1,411 @@
+{
+  "id": "737e1aea-4318-4f26-9824-a70ec2c5e86b",
+  "slug": "dragonforce-ransomware-uses-microsoft-teams-servers-for-c2",
+  "headline": "Microsoft Teams Relay Servers Abused in DragonForce Ransomware Attack",
+  "title": "DragonForce Ransomware Deploys 'Backdoor.Turn', a Go-Based Backdoor that Hides C&C Traffic Using Microsoft Teams TURN Relay Servers",
+  "summary": "The DragonForce ransomware group, a mature cartel-like actor also known as Hackledorb, is deploying a sophisticated new Go-based backdoor named 'Backdoor.Turn' that abuses Microsoft Teams infrastructure for command-and-control (C&C). In a novel technique, the malware obtains an anonymous Teams visitor token, authenticates to a legitimate Microsoft TURN relay server, and tunnels its C&C traffic over a QUIC session. This makes the malicious communication appear as legitimate Teams activity, evading network defenses. The backdoor was discovered by Symantec and Carbon Black researchers during an investigation of an attack that began with a compromised SQL server and involved DLL sideloading, a BYOVD attack using multiple vulnerable drivers (e.g., HWAuidoOs2Ec.sys) to disable security tools, and eventual data encryption and exfiltration.",
+  "full_report": "## Executive Summary\n\nThe **[DragonForce](https://malpedia.caad.fkie.fraunhofer.de/actor/dragonforce)** ransomware group (also tracked as **Hackledorb**) has deployed a highly sophisticated, custom-built backdoor dubbed `Backdoor.Turn` that leverages **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** infrastructure for command-and-control (C&C) communications. According to researchers from Broadcom’s Symantec and Carbon Black, this is the first known malware to abuse Microsoft's Traversal Using Relays around NAT (TURN) servers in this manner. The Go-based malware tunnels its C&C traffic through legitimate Microsoft servers, effectively camouflaging it as standard Teams activity. This advanced technique, observed in an attack against a U.S. services firm where attackers dwelled for one to two months, highlights the group's significant resource allocation and growing technical maturity, moving beyond off-the-shelf tools to develop highly evasive custom malware.\n\n## Threat Actor Profile\n\nActive since at least 2023, DragonForce (aka Hackledorb) operates with a cartel-like structure. The group has demonstrated a significant increase in sophistication, employing advanced cyber tradecraft and custom tooling that indicates organizational maturity and a high level of skill. Reporting indicates Hackledorb has pivoted from a conventional ransomware-as-a-service (RaaS) model to a more formalized and organized cartel structure, focusing on high-impact targeted attacks. The operational timeline reveals a pattern of continuous capability development, with the adoption of highly advanced techniques becoming a hallmark of their post-2025 activity. The deployment of `Backdoor.Turn`, combined with their multi-vector BYOVD evasion, marks them as one of the most capable and persistent ransomware groups operating today.\n\n## Technical Analysis\n\n### Attack Chain\nThe attack, which began in December 2025, followed a multi-stage intrusion pattern:\n\n1.  **Initial Access**: The attackers gained initial access to the victim, a U.S. services firm, likely by exploiting an unknown vulnerability in a public-facing SQL or MSSQL server. It is also possible they purchased initial access from a third-party broker.\n2.  **Execution and Persistence**: Once inside, the operators used a PowerShell command to drop a ZIP archive disguised as a tech support hotfix. This initiated a DLL sideloading attack to execute code, download additional malware, and establish persistence.\n3.  **Defense Evasion and Privilege Escalation**: The group employed a Bring-Your-Own-Vulnerable-Driver (BYOVD) strategy, exploiting known flaws in multiple signed drivers to gain kernel-level access. This allowed them to terminate security processes on the compromised systems. Known drivers used include `HWAuidoOs2Ec.sys` (a Huawei driver also seen in separate malvertising campaigns), `wsftprm.sys` (CVE-2023-52271), `GameDriverX64.sys` (CVE-2025-61155), `K7RKScan.sys` (CVE-2025-1055), and a custom malicious driver named `ABYSSWORKER`.\n4.  **Discovery and Lateral Movement**: The attackers conducted network reconnaissance, including LDAP/AD mapping, and used stolen credentials to move laterally across the network.\n5.  **Impact**: After mapping the network and exfiltrating sensitive data, the attackers deployed the DragonForce ransomware to encrypt files across the environment.\n6.  **Post-Exploitation Persistence**: The `Backdoor.Turn` malware was deployed after the ransomware event, injected into the legitimate `DbgView64.exe` process. This suggests a strategy to maintain stealthy, long-term access for future attacks or to sell access to other threat actors.\n\n### C&C Mechanism: Abusing Microsoft Teams\nThe most innovative feature of `Backdoor.Turn` is its C&C mechanism, which is based on a technique dubbed \"Ghost Calls\" by security firm Praetorian. This makes malicious traffic exceptionally difficult to detect:\n\n1.  **Token Acquisition**: The backdoor first communicates with Microsoft's Skype-backed identity services to obtain an anonymous Teams visitor token.\n2.  **TURN Relay Authentication**: It then uses this token to authenticate to a legitimate Microsoft TURN relay server, which is normally used to facilitate real-time voice and video calls.\n3.  **QUIC Tunnel**: Finally, it establishes a **[QUIC](https://en.wikipedia.org/wiki/QUIC)** session through the TURN server to the actual attacker-controlled C&C server.\n\nBecause all outbound traffic from the infected host is directed to trusted Microsoft IP addresses using standard protocols (TURN/QUIC), it bypasses traditional firewalls and network security tools that rely on IP reputation.\n\n### Malware Capabilities\n`Backdoor.Turn` is a full-featured remote access trojan (RAT) with capabilities including:\n-   Executing arbitrary commands and creating new processes.\n-   Performing network scanning and mapping Active Directory via LDAP.\n-   Moving laterally within the network using stolen credentials.\n-   Exfiltrating credentials from installed web browsers.\n\n## Impact Assessment\n\nThis novel technique has serious implications for network defenders:\n-   **Extreme Detection Evasion**: By masquerading as legitimate Teams traffic, the C&C communication can evade detection by NIDS, proxies, and other tools that trust traffic to major cloud providers.\n-   **Increased Attacker Sophistication**: It demonstrates that ransomware groups like DragonForce are investing heavily in R&D to create custom tools that are far more effective than generic malware.\n-   **Attribution Challenges**: Abusing legitimate services makes it harder to identify attacker infrastructure, as the initial network indicators point to Microsoft's legitimate servers.\n\n## IOCs — Directly from Articles\n\n- **Backdoor.Turn**: The name of the custom Go-based backdoor used for C&C and post-exploitation persistence.\n- **HWAuidoOs2Ec.sys**: A vulnerable Huawei driver used in a BYOVD attack to disable security software. It has also been observed in separate malvertising campaigns.\n- **wsftprm.sys**: A vulnerable driver associated with CVE-2023-52271, used in BYOVD attacks.\n- **GameDriverX64.sys**: A vulnerable driver associated with CVE-2025-61155, used in BYOVD attacks.\n- **K7RKScan.sys**: A vulnerable driver associated with CVE-2025-1055, used in BYOVD attacks.\n- **ABYSSWORKER**: A custom-built malicious driver used for defense evasion, previously seen in Medusa ransomware attacks.\n- **DbgView64.exe**: A legitimate Sysinternals tool into which Backdoor.Turn is injected to evade detection.\n\n## Cyber Observables — Hunting Hints\n\nDefenders can hunt for this activity using the following behavioral and network-based indicators:\n\n| Type             | Value                         | Description                                                                                                                                                           | \n|------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| Network Behavior | Anomalous TURN/QUIC Traffic   | Monitor for traffic using TURN (UDP 3478-3481) or QUIC (UDP 443) originating from servers or non-user workstations, particularly to Microsoft IP ranges.                 |\n| Process          | Unsigned Go Binaries          | Hunt for execution of unknown, unsigned Go executables making outbound network connections, especially from a server environment.                                         |\n| Driver Load      | `HWAuidoOs2Ec.sys`            | Monitor for the loading of this known-vulnerable driver, often followed by security process termination.                                                              |\n| Driver Load      | `wsftprm.sys`                 | Monitor for the loading of this known-vulnerable driver (CVE-2023-52271), often followed by security process termination.                                                |\n| Driver Load      | `GameDriverX64.sys`           | Monitor for the loading of this known-vulnerable driver (CVE-2025-61155), often followed by security process termination.                                                |\n| Driver Load      | `K7RKScan.sys`                | Monitor for the loading of this known-vulnerable driver (CVE-2025-1055), often followed by security process termination.                                                |\n| Driver Load      | `ABYSSWORKER`                 | Monitor for the loading of this custom malicious driver.                                                                                                              |\n| TTP              | DLL Sideloading               | Monitor for legitimate, signed applications loading a malicious DLL from a non-standard directory.                                                                    |\n| TTP              | Process Injection             | Hunt for code injection into legitimate diagnostic tools like `DbgView64.exe`, especially if the process then initiates outbound network connections.                   |\n\n## Detection & Response\n\n- **Egress Traffic Analysis**: Monitor for anomalous traffic patterns. A server in a data center should not be initiating TURN/STUN (UDP ports 3478-3481) or QUIC (UDP 443) traffic. Contextual analysis of the source of this traffic is critical.\n- **Endpoint Detection and Response (EDR)**: Deploy EDR to detect suspicious process chains, such as DLL sideloading, process injection into tools like `DbgView64.exe`, and the loading of known vulnerable drivers.\n- **Behavioral Hunting**: Actively hunt for the TTPs outlined in the Cyber Observables section, such as the loading of specific vulnerable drivers followed by the termination of security processes.\n\n## Remediation Steps\n\n- **Vulnerability Management**: Maintain a robust patch management program to address vulnerabilities in public-facing applications like SQL servers, which are common initial access vectors.\n- **Application Control**: Use application allowlisting (e.g., AppLocker) to prevent the execution of unauthorized or unsigned binaries, which would block the custom Go-based backdoor.\n- **Kernel Protection**: Implement security features like Hypervisor-Protected Code Integrity (HVCI) and driver blocklists to mitigate BYOVD attacks. Block known vulnerable drivers like `HWAuidoOs2Ec.sys`, `wsftprm.sys`, and others.",
+  "twitter_post": "🐲 DragonForce ransomware (aka Hackledorb) expands its BYOVD arsenal, using drivers like HWAuidoOs2Ec.sys to disable security tools before deploying its 'Backdoor.Turn' malware, which abuses Microsoft Teams for C2. #Ransomware #DragonForce #BYOVD #Cyberattack",
+  "meta_description": "The DragonForce ransomware group (Hackledorb) is using a new Go-based backdoor, Backdoor.Turn, which abuses Microsoft Teams TURN relay servers to hide its C&C traffic and uses multiple vulnerable drivers for defense evasion.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "DragonForce",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Hackledorb",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Backdoor.Turn",
+      "type": "malware"
+    },
+    {
+      "name": "ABYSSWORKER",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Microsoft Teams",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+    },
+    {
+      "name": "Go",
+      "type": "technology"
+    },
+    {
+      "name": "QUIC",
+      "type": "technology"
+    },
+    {
+      "name": "Broadcom",
+      "type": "security_organization"
+    },
+    {
+      "name": "Symantec",
+      "type": "security_organization"
+    },
+    {
+      "name": "Carbon Black",
+      "type": "security_organization"
+    },
+    {
+      "name": "Praetorian",
+      "type": "security_organization"
+    },
+    {
+      "name": "SQL Server",
+      "type": "technology"
+    }
+  ],
+  "cves": [
+    "CVE-2023-52271",
+    "CVE-2025-61155",
+    "CVE-2025-1055",
+    "CVE-2026-11645"
+  ],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/",
+      "title": "Microsoft Teams Relay Servers Abused in DragonForce Ransomware Attack",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/06/dragonforce-hackers-abuse-microsoft.html",
+      "title": "DragonForce Hackers Abuse Microsoft Teams Relays to Hide Backdoor.Turn C2 Traffic",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2024-08",
+      "summary": "Praetorian documents the \"Ghost Calls\" C2 technique, which forms the basis for Backdoor.Turn's communication method."
+    },
+    {
+      "datetime": "2025-12",
+      "summary": "DragonForce operators gain initial access to the victim's network, likely via a compromised SQL server."
+    },
+    {
+      "datetime": "2026-06-18",
+      "summary": "Symantec, Carbon Black, and The Hacker News publish findings on the 'Backdoor.Turn' malware, its abuse of Microsoft Teams, and the specific drivers used in its BYOVD attacks."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1211",
+      "name": "Exploitation for Defense Evasion",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1055",
+      "name": "Process Injection",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1555.003",
+      "name": "Credentials from Web Browsers",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1482",
+      "name": "Domain Trust Discovery",
+      "tactic": "Discovery"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1572",
+      "name": "Protocol Tunneling",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1090",
+      "name": "Proxy",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltrate Data Over C2 Channel",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Patching vulnerabilities in public-facing applications like SQL/MSSQL servers is critical to preventing the initial access vector used in this attack.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering policies for servers. If a server has no business reason to make Teams calls, block outbound TURN/QUIC traffic to prevent this C2 channel.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "description": "Use EDR or similar tools to create behavioral rules that detect and block techniques like BYOVD, termination of security processes, and DLL sideloading.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control solutions (e.g., AppLocker) to prevent the execution of unauthorized or unsigned binaries, which would stop custom malware like Backdoor.Turn from running.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To counter 'Backdoor.Turn', which abuses Microsoft Teams' TURN servers, defenders must employ sophisticated Network Traffic Analysis that goes beyond simple IP/domain blocklists. Since the destination IPs are legitimate Microsoft servers, analysis must focus on the source and context of the traffic. Security teams should establish a baseline of normal network behavior and create alerts for anomalies. Specifically, any server within a data center initiating traffic on TURN ports (UDP 3478-3481) or QUIC (UDP 443) to Microsoft's network should be treated as a high-priority alert, as servers typically do not make VoIP calls. This requires network sensors or EDR agents capable of identifying the protocol and source process of network connections. Correlating this anomalous network traffic with the execution of an unsigned Go binary on the source server would provide a high-confidence indicator of a 'Backdoor.Turn' infection.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "The DragonForce attack involved multiple custom components, including the Go-based 'Backdoor.Turn' and a BYOVD component. Executable Allowlisting is a powerful mitigation against such threats. On critical servers, administrators should implement a strict application control policy that denies the execution of any binary by default. Only a pre-approved list of executables and drivers required for business operations should be allowed to run. This would prevent the custom backdoor from executing, as its hash would not be on the allowlist. It would also block the BYOVD attack by preventing the vulnerable driver from being loaded. While implementing a full allowlist can be challenging, it is highly effective for single-purpose servers, like the SQL server likely compromised in this attack, and provides a strong defense against novel malware.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "Backdoor.Turn",
+      "description": "Go-based backdoor used for C&C via Microsoft Teams TURN servers.",
+      "context": "Malware",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "HWAuidoOs2Ec.sys",
+      "description": "Vulnerable Huawei driver used in a BYOVD attack to disable security software. It has also been observed in separate malvertising campaigns.",
+      "context": "Defense Evasion",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "wsftprm.sys",
+      "description": "Vulnerable driver used in a BYOVD attack. Associated with CVE-2023-52271.",
+      "context": "Defense Evasion",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "GameDriverX64.sys",
+      "description": "Vulnerable driver used in a BYOVD attack. Associated with CVE-2025-61155.",
+      "context": "Defense Evasion",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "K7RKScan.sys",
+      "description": "Vulnerable driver used in a BYOVD attack. Associated with CVE-2025-1055.",
+      "context": "Defense Evasion",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "ABYSSWORKER",
+      "description": "Custom-built malicious driver used for defense evasion. Also observed in Medusa ransomware attacks.",
+      "context": "Defense Evasion",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "DbgView64.exe",
+      "description": "Legitimate Sysinternals process that is targeted for process injection by Backdoor.Turn.",
+      "context": "Defense Evasion",
+      "confidence": "high"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous TURN/QUIC traffic from servers",
+      "description": "Traffic using TURN (UDP ports 3478-3481) or QUIC (UDP 443) originating from servers or non-user workstations to Microsoft IP ranges is highly anomalous and a key indicator of this C2 technique.",
+      "context": "Network Intrusion Detection System (NIDS), NetFlow Analysis, Firewall Logs",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "Unsigned Go binary",
+      "description": "An unknown, unsigned executable file identified as a Go application making outbound network connections, especially from a server, is suspicious.",
+      "context": "Endpoint Detection and Response (EDR)",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "BYOVD driver loading",
+      "description": "Look for events where a legitimate but known-vulnerable driver (e.g., HWAuidoOs2Ec.sys, wsftprm.sys) is loaded into the kernel, often followed by the termination of security processes.",
+      "context": "EDR, Windows Event Logs (System, Security)",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "DLL Sideloading",
+      "description": "A legitimate, signed application loading a malicious DLL from a non-standard directory. This is often an early-stage execution technique.",
+      "context": "EDR, Process Monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Injection into DbgView64.exe",
+      "description": "The injection of malicious code into the legitimate DbgView64.exe process, which then initiates suspicious network activity.",
+      "context": "EDR, Process Monitoring",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "HWAuidoOs2Ec.sys",
+      "description": "Monitor loading or execution of this file artifact on endpoints.",
+      "context": "EDR process and driver-load telemetry",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "wsftprm.sys",
+      "description": "Monitor loading or execution of this file artifact on endpoints.",
+      "context": "EDR process and driver-load telemetry",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "GameDriverX64.sys",
+      "description": "Monitor loading or execution of this file artifact on endpoints.",
+      "context": "EDR process and driver-load telemetry",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "K7RKScan.sys",
+      "description": "Monitor loading or execution of this file artifact on endpoints.",
+      "context": "EDR process and driver-load telemetry",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "C2",
+    "Defense Evasion",
+    "Living off the Land",
+    "Go",
+    "QUIC",
+    "BYOVD",
+    "DLL Sideloading",
+    "Process Injection"
+  ],
+  "extract_datetime": "2026-06-17T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Services"
+    ],
+    "other_affected": [
+      "U.S. services firm"
+    ]
+  },
+  "keywords": [
+    "DragonForce",
+    "Backdoor.Turn",
+    "Microsoft Teams",
+    "Ransomware",
+    "TURN",
+    "QUIC",
+    "BYOVD",
+    "C2",
+    "Go",
+    "Hackledorb"
+  ],
+  "pub_date": "2026-06-17",
+  "reading_time_minutes": 7,
+  "createdAt": "2026-06-17T15:00:00.000Z",
+  "updatedAt": "2026-06-18T18:43:15.362Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-06-18T12:00:00Z",
+      "datetime": "2026-06-18T12:00:00Z",
+      "title": "Update 1",
+      "summary": "New details on privilege escalation via Huawei driver vulnerability and extended 1-2 month dwell time for DragonForce's Backdoor.Turn.",
+      "sources": [
+        {
+          "title": "Microsoft Teams Relay Servers Abused in DragonForce Ransomware Attack",
+          "url": "https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/"
+        },
+        {
+          "title": "DragonForce Hid Inside Microsoft Teams and Nobody Noticed for Two Months",
+          "url": "https://securityaffairs.com/193801/security/dragonforce-hid-inside-microsoft-teams-and-nobody-noticed-for-two-months.html"
+        },
+        {
+          "title": "DragonForce Hackers Abuse Microsoft Teams Relays to Hide Backdoor.Turn C2 Traffic",
+          "url": "https://thehackernews.com/2026/06/dragonforce-hackers-abuse-microsoft.html"
+        },
+        {
+          "title": "DragonForce Ransomware Exploited Microsoft Teams to Hide Attack",
+          "url": "https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/"
+        }
+      ]
+    },
+    {
+      "update_id": "update-6",
+      "update_date": "2026-06-18T18:43:15.362Z",
+      "datetime": "2026-06-18T18:43:15.362Z",
+      "title": "Update 6",
+      "summary": "Updated the report with new context on the HWAuidoOs2Ec.sys driver's use in other campaigns, corrected an erroneously associated CVE, and reformatted key sections for clarity.",
+      "sources": [
+        {
+          "title": "DragonForce Hackers Abuse Microsoft Teams Relays to Hide Backdoor.Turn C2 Traffic",
+          "url": "https://thehackernews.com/2026/06/dragonforce-hackers-abuse-microsoft.html"
+        }
+      ]
+    }
+  ]
+}

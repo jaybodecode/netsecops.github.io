@@ -1,0 +1,187 @@
+{
+  "id": "e7aeabba-60f6-4ce6-950e-f2e9e4aad066",
+  "slug": "critical-duneslide-zero-click-rce-flaws-in-cursor-ai-code-editor",
+  "headline": "Zero-Click RCE in Cursor AI IDE Lets Attackers Take Over Developer Machines",
+  "title": "Critical \"DuneSlide\" Vulnerabilities in Cursor AI Code Editor Allow Zero-Click Remote Code Execution",
+  "summary": "Two critical, zero-click remote code execution (RCE) vulnerabilities, dubbed \"DuneSlide,\" have been discovered in the popular Cursor AI code editor. Tracked as CVE-2026-50548 and CVE-2026-50549, both flaws are rated 9.8 on the CVSS scale. They allow an attacker to escape the application's sandbox and gain full control of a developer's computer through a malicious prompt injection. The attack requires no user interaction, as it can be triggered when the AI agent processes a malicious payload from an untrusted source like a web search. The vulnerabilities were reported by Cato AI Labs and have been patched in Cursor version 3.0. Users of older versions are urged to update immediately.",
+  "full_report": "## Executive Summary\nResearchers at **[Cato Networks](https://www.catonetworks.com/)** have disclosed two **critical** zero-click remote code execution (RCE) vulnerabilities in the Cursor AI code editor, a tool used by developers at over half of Fortune 500 companies. The flaws, collectively named \"DuneSlide\" and tracked as **CVE-2026-50548** and **CVE-2026-50549**, both have a CVSS score of 9.8. They enable an attacker to achieve full system compromise via a prompt injection that requires no user interaction. A malicious prompt can cause the AI agent to ingest a malicious payload from an external source and execute commands that break out of the IDE's sandbox. The vulnerabilities were patched in Cursor version 3.0, released in April 2026, but all prior versions remain at high risk.\n\n## Vulnerability Details\nThe core of the issue lies in how Cursor's AI agent handles commands and file paths within its sandboxed environment. An attacker can trigger the exploit simply by getting a developer to issue a seemingly benign prompt that causes the AI to fetch malicious content from an untrusted source (e.g., a web search result).\n\n### CVE-2026-50548: `working_directory` Manipulation\nThis vulnerability exploits the handling of the `working_directory` parameter for terminal commands. A malicious prompt injection can instruct the AI agent to set the working directory to a sensitive location outside the intended project scope, such as the directory containing the sandbox helper binary itself. A subsequent command can then overwrite this binary, effectively disabling the sandbox and allowing the attacker to execute arbitrary commands with the user's privileges on the host system.\n\n### CVE-2026-50549: Symbolic Link Path Traversal\nThis is an independent flaw in the IDE's file path resolution logic. An attacker can use a prompt injection to create a symbolic link within the project directory that points to a sensitive file outside of it. When the AI agent attempts to write to a file via this symlink, it bypasses the path traversal protections and overwrites the target file, again leading to sandbox escape and RCE.\n\n## Affected Systems\n- **Product:** Cursor AI Code Editor\n- **Vulnerable Versions:** All versions prior to 3.0\n- **Patched Version:** 3.0 and later\n\nThe tool's widespread adoption in enterprise environments, including many Fortune 500 companies, makes the potential impact severe, as compromised developer machines can be a gateway to sensitive source code, credentials, and production systems.\n\n## Exploitation Status\nThese vulnerabilities were responsibly disclosed to the Cursor team in February 2026 and patched on April 2, 2026. While there are no public reports of in-the-wild exploitation, the publication of technical details and the zero-click nature of the attack make it highly likely that threat actors will attempt to target unpatched instances.\n\n## Impact Assessment\nA successful exploit would grant an attacker full control over a developer's workstation. This presents a catastrophic risk to an organization. The attacker could:\n- Steal proprietary source code and intellectual property.\n- Inject malicious code into software builds, initiating a **[supply chain attack](https://en.wikipedia.org/wiki/Software_supply_chain_attack)**.\n- Harvest credentials, API keys, and access tokens stored on the machine to pivot into cloud environments and other critical systems.\n- Deploy ransomware or other malware.\nGiven that the attack vector is a prompt injection, it highlights a new and dangerous class of vulnerabilities in AI-assisted development tools where the line between data and executable code is blurred.\n\n## Cyber Observables — Hunting Hints\nThe following patterns may help identify vulnerable or compromised systems:\n\n| Type | Value | Description |\n|---|---|---|\n| Process Name | `cursor-sandbox-helper` | Monitor for unexpected modifications or executions of this binary, which is central to the sandbox mechanism. |\n| Command Line Pattern | `ln -s /path/to/sensitive/file` | Look for symbolic link creation commands originating from the Cursor process that point outside the project directory. |\n| File Path | `~/.cursor-server/` | Monitor for unusual file writes or permission changes within Cursor's server and configuration directories. |\n| Log Source | `IDE logs`, `Terminal history` | Review logs for commands that change directory (`cd`) to unexpected system paths before execution. |\n\n## Detection Methods\n- **Asset Inventory:** Identify all instances of the Cursor IDE in your environment and verify they are running version 3.0 or later. This can be done via software inventory tools or EDR queries.\n- **File Integrity Monitoring (FIM):** Implement FIM on the `cursor-sandbox-helper` binary and other critical Cursor application files to detect unauthorized modifications. This is a form of D3FEND's [**System File Analysis (D3-SFA)**](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis).\n- **Behavioral Monitoring:** Use an EDR solution to monitor the Cursor process for suspicious child processes or file system activity outside of the user's workspace directories. This aligns with [**Process Analysis (D3-PA)**](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n\n## Remediation Steps\n1.  **Immediate Update:** The primary remediation is to update all instances of Cursor to version 3.0 or later immediately. This is the only way to fully patch the vulnerabilities.\n2.  **Restrict Network Access:** As a temporary compensating control, restrict the Cursor IDE's ability to access untrusted external websites if possible, though this may degrade its functionality.\n3.  **Developer Awareness:** Educate developers on the risks of prompt injection in AI tools and the danger of processing data from untrusted sources, even indirectly via AI agents.\n4.  **Verification:** After updating, verify the patch by checking the application version. Consider a credential rotation for developers who were using vulnerable versions, as a precautionary measure.",
+  "twitter_post": "⚠️ CRITICAL FLAW: 'DuneSlide' zero-click RCE vulnerabilities (CVE-2026-50548, CVE-2026-50549) found in Cursor AI IDE. Flaws allow full system takeover via prompt injection. All versions before 3.0 are vulnerable. Patch now! 💻 #RCE #Vulnerability #AI #DevSecOps",
+  "meta_description": "Researchers disclose two critical 9.8 CVSS zero-click RCE flaws (CVE-2026-50548, CVE-2026-50549) in the Cursor AI code editor, allowing sandbox escape and system compromise via prompt injection.",
+  "category": [
+    "Vulnerability",
+    "Cyberattack",
+    "Cloud Security"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Cursor",
+      "type": "product"
+    },
+    {
+      "name": "Cato Networks",
+      "type": "security_organization",
+      "url": "https://www.catonetworks.com/"
+    },
+    {
+      "name": "Cato AI Labs",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-50548",
+      "cvss_score": 9.8,
+      "cvss_version": "3.1",
+      "kev": false,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-50549",
+      "cvss_score": 9.8,
+      "cvss_version": "3.1",
+      "kev": false,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/critical-cursor-ai-ide-flaws-could-lead-to-os-level-remote-code-execution/",
+      "title": "Critical Cursor AI IDE Flaws Could Lead to OS-Level Remote Code Execution",
+      "date": "2026-07-03",
+      "friendly_name": "SecurityWeek"
+    },
+    {
+      "url": "https://www.catonetworks.com/blog/duneslide-two-critical-rce-vulnerabilities/",
+      "title": "DuneSlide: Two Critical RCE vulnerabilities via Zero-Click Prompt Injection in Cursor IDE",
+      "date": "2026-07-01",
+      "friendly_name": "Cato Networks"
+    },
+    {
+      "url": "https://cybersecuritynews.com/cursor-ide-rce-vulnerabilities/",
+      "title": "Critical Cursor IDE RCE Vulnerabilities Enable Prompt Injection in Zero-Click",
+      "date": "2026-07-01",
+      "friendly_name": "Cybersecurity News"
+    },
+    {
+      "url": "https://letsdatascience.com/news/researchers-disclose-zero-click-rce-flaws-in-cursor-ide-3f168dba",
+      "title": "Researchers Disclose Zero-Click RCE Flaws In Cursor IDE",
+      "date": "2026-07-01",
+      "friendly_name": "Let's Data Science"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02-01T00:00:00Z",
+      "summary": "Cato Networks reports the DuneSlide vulnerabilities to the Cursor team."
+    },
+    {
+      "datetime": "2026-04-02T00:00:00Z",
+      "summary": "Cursor releases version 3.0, patching the vulnerabilities."
+    },
+    {
+      "datetime": "2026-06-01T00:00:00Z",
+      "summary": "CVE-2026-50548 and CVE-2026-50549 are officially assigned."
+    },
+    {
+      "datetime": "2026-07-01T00:00:00Z",
+      "summary": "Cato Networks publicly discloses the technical details of the DuneSlide vulnerabilities."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1203",
+      "name": "Exploitation for Client Execution",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1559",
+      "name": "Inter-Process Communication",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Updating Cursor to version 3.0 or later is the most critical mitigation step to fix the root vulnerabilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "While the built-in sandbox was flawed, this incident highlights the importance of robust sandboxing. Future defenses could involve nested virtualization or stricter kernel-level controls.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educating developers on the dangers of prompt injection and interacting with untrusted content via AI tools can help prevent initial exploitation.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "cursor-sandbox-helper",
+      "description": "The core binary for the IDE's sandbox. Overwriting this file is a key goal of the exploit.",
+      "context": "File Integrity Monitoring (FIM) systems.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "working_directory: /",
+      "description": "A parameter in a command sent to the AI agent that attempts to set the execution directory outside the intended project scope.",
+      "context": "Application logs, process execution logs with command-line auditing.",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "Cursor.exe",
+      "description": "The main Cursor process. Monitor it for spawning unexpected child processes like `cmd.exe` or `bash` with suspicious arguments.",
+      "context": "EDR telemetry, Windows Event ID 4688.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Vulnerability",
+    "RCE",
+    "Zero-Click",
+    "Cursor",
+    "AI",
+    "IDE",
+    "Prompt Injection",
+    "Sandbox Escape",
+    "CVE-2026-50548",
+    "CVE-2026-50549"
+  ],
+  "extract_datetime": "2026-07-04T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Other"
+    ],
+    "other_affected": [
+      "Software developers using the Cursor AI IDE"
+    ]
+  },
+  "pub_date": "2026-07-04",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-07-04T15:00:00.000Z",
+  "updatedAt": "2026-07-04T15:00:00.000Z"
+}

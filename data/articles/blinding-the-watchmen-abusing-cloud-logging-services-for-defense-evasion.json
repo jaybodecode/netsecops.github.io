@@ -1,0 +1,248 @@
+{
+  "id": "7fa323fb-c3fc-4b58-9cd0-0e9453a37ada",
+  "slug": "blinding-the-watchmen-abusing-cloud-logging-services-for-defense-evasion",
+  "headline": "Hackers Can Blind Your SOC: New Research Reveals How Attackers Abuse Cloud Logging for Stealth",
+  "title": "Unit 42 Details Techniques for Abusing AWS and Google Cloud Logging Services for Defense Evasion",
+  "summary": "New research from Unit 42 demonstrates how threat actors can target and abuse fundamental cloud logging services in AWS and Google Cloud to cover their tracks and evade detection. The report details several defense evasion techniques, including disabling logging mechanisms like AWS CloudTrail, deleting log storage buckets, altering log routing configurations, and manipulating encryption keys to render logs unreadable. By blinding these critical visibility tools, attackers can operate undetected within a compromised environment. The research provides defensive strategies and configurations to help organizations protect their cloud logging infrastructure from such attacks.",
+  "full_report": "## Executive Summary\n**[Unit 42](https://unit42.paloaltonetworks.com/)** has published new research detailing how threat actors can systematically dismantle an organization's security visibility by targeting the cloud logging services themselves. The report focuses on attack scenarios against **[Amazon Web Services (AWS)](https://aws.amazon.com/)** CloudTrail and **[Google Cloud](https://cloud.google.com/)** Logging, which serve as the system of record for all actions within a cloud environment. By disabling, altering, or deleting logs, attackers can effectively achieve defense evasion, blinding Security Information and Event Management (SIEM) systems, Cloud Security Posture Management (CSPM) tools, and security analysts. This research highlights the critical need for organizations to not only consume logs but also to secure the logging pipeline itself against tampering and disruption. The findings provide defenders with the knowledge to anticipate these attacks and implement robust protective measures.\n\n---\n\n## Threat Overview\nCloud logging services like **[AWS CloudTrail](https://aws.amazon.com/cloudtrail/)** and **[Google Cloud Logging](https://cloud.google.com/logging)** are the cornerstones of modern cloud security operations. They provide the necessary data for threat detection, incident response, and compliance auditing. This dependency makes them a high-value target for sophisticated attackers. An attacker who gains sufficient permissions within a cloud account can manipulate these services to hide their malicious activities, prolong their dwell time, and exfiltrate data without triggering alerts.\n\nThe attack techniques fall into two primary categories:\n1.  **Disruption of Log Flow:** Preventing new logs from being generated or delivered.\n2.  **Manipulation of Existing Logs:** Deleting or encrypting stored logs to prevent analysis.\n\nUnderstanding these techniques is essential for building a resilient cloud security monitoring strategy.\n\n## Technical Analysis\nUnit 42 demonstrated several specific techniques that attackers can use to compromise cloud logging integrity. These methods often require an attacker to have already obtained a certain level of privileged access within the cloud environment.\n\n### 1. Disabling the Logging Mechanism\nThe most direct approach is to stop the logging service itself. In AWS, this can be done using the `StopLogging` API call against a CloudTrail trail. This action immediately ceases the recording of API events, creating a complete visibility gap for the duration it is disabled. This maps directly to **[`T1562.008 - Impair Defenses: Disable Cloud Logs`](https://attack.mitre.org/techniques/T1562/008/)**.\n\n### 2. Deleting the Log Storage\nCloud logs are typically stored in object storage, such as an **[Amazon S3](https://aws.amazon.com/s3/)** bucket. If an attacker gains permissions to this bucket (e.g., `s3:DeleteBucket`), they can delete it entirely. While the logging service may still be running, it will have no destination to write to, causing log delivery to fail. This aligns with **[`T1070.004 - Indicator Removal: File Deletion`](https://attack.mitre.org/techniques/T1070/004/)**.\n\n### 3. Deleting the Log Router\nAttackers can also target the configuration that routes logs to their destination. In AWS, this is the `Trail` object; in Google Cloud, it is the `Sink`. By deleting the trail (via `DeleteTrail` API) or the sink (via `DeleteSink` method), the attacker breaks the connection between event generation and log storage. This is a form of **[`T1562.001 - Impair Defenses: Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/)**.\n\n### 4. Modifying Encryption Keys\nA more subtle technique involves rendering logs unreadable. Cloud logs are often encrypted at rest using services like AWS Key Management Service (KMS) or Google Cloud KMS. An attacker could:\n1.  Change the log encryption key to one they control.\n2.  Encrypt new logs with the malicious key.\n3.  Revoke the victim's access to that key.\n\nThe result is that the victim has log files they cannot decrypt or read, effectively blinding them to the activities recorded during that period. This can be considered a form of data manipulation for defense evasion.\n\n## Impact Assessment\nThe impact of successfully blinding cloud logging services is severe and multifaceted:\n- **Delayed or Failed Threat Detection:** Security tools (SIEM, CSPM, XDR) are starved of data, preventing them from generating alerts on malicious activity.\n- **Impeded Incident Response:** Without logs, responders cannot determine the scope of a breach, the attacker's actions, or the root cause, making eviction and recovery extremely difficult.\n- **Compliance Violations:** Many regulatory frameworks (PCI-DSS, HIPAA, GDPR) have strict requirements for audit logging. The loss of logs can lead to significant fines and legal penalties.\n- **Increased Attacker Dwell Time:** Attackers can operate for extended periods without fear of discovery, allowing them to achieve their objectives, whether it be data theft, espionage, or destruction.\n\n## IOCs — Directly from Articles\nNo specific indicators of compromise (IOCs) were provided in this research article, as it focuses on attack techniques rather than a specific campaign.\n\n## Cyber Observables — Hunting Hints\nThe following patterns can help security teams hunt for attempts to tamper with cloud logging infrastructure:\n\n| Type | Value | Description |\n|---|---|---|\n| api_endpoint | `cloudtrail.amazonaws.com` | Monitor for sensitive API calls such as `StopLogging`, `DeleteTrail`, `UpdateTrail`. |\n| api_endpoint | `logging.googleapis.com` | Monitor for sensitive API calls such as `DeleteSink` or `UpdateSink`. |\n| event_id | `DeleteBucket` | An alert on the deletion of a bucket known to store security logs is a high-fidelity indicator of tampering. |\n| registry_key | `kms:ScheduleKeyDeletion` | Monitor for attempts to delete KMS keys, especially those used for encrypting logs. |\n| log_source | `AWS CloudTrail` / `GCP Audit Logs` | These logs (metaphorically, the logs about logging) are the primary source for detecting tampering. Ensure they are protected. |\n\n## Detection & Response\nDefenders should focus on protecting the logging pipeline itself:\n1.  **Monitor Critical API Calls:** Configure high-priority alerts for any API calls that can modify or disable logging, such as `StopLogging`, `DeleteTrail`, `UpdateTrail`, `DeleteSink`, and `DeleteBucket` on log archives. Use **[User Behavior Analysis](https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis)** to detect when these actions are taken by users or roles that normally do not perform them.\n2.  **Log Integrity Monitoring:** Use features like AWS CloudTrail Log File Integrity Validation to ensure that log files have not been tampered with after delivery.\n3.  **Immutable Storage:** Store critical logs in immutable storage, such as an S3 bucket with Object Lock in Compliance mode, to prevent deletion or modification.\n4.  **Cross-Account Log Shipping:** Send logs to a dedicated, highly secured logging account. Access to this account should be severely restricted, separate from production environments, making it much harder for an attacker to compromise both.\n\n## Mitigation\nImplement a defense-in-depth strategy to secure cloud logging services:\n- **Least Privilege IAM:** Enforce strict, least-privilege IAM policies. No user or service role should have permission to alter logging configurations as part of their normal duties. These permissions should be reserved for break-glass administrator roles protected by **[Multi-factor Authentication](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication)** (D3-MFA).\n- **Service Control Policies (SCPs):** In AWS Organizations, use SCPs to create guardrails that deny actions like `cloudtrail:StopLogging` or `s3:DeleteBucket` on the logging bucket for all principals except a specific administrative role.\n- **Resource Protection:** Enable termination protection on CloudTrail trails and S3 buckets. In Google Cloud, use resource liens to prevent the deletion of projects containing log sinks.\n- **Regular Audits:** Regularly audit IAM permissions and logging configurations to ensure they have not been weakened over time. This aligns with the principles of **[Application Configuration Hardening](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)** (D3-ACH).",
+  "twitter_post": "⚠️ Unit 42 reveals how attackers can blind security teams by manipulating AWS & Google Cloud logs. Techniques include deleting trails/sinks & altering encryption keys to evade detection. #CloudSecurity #ThreatIntel #DefenseEvasion",
+  "meta_description": "Unit 42 research details attack techniques for disabling, deleting, and manipulating cloud logging services like AWS CloudTrail and Google Cloud Logging to achieve defense evasion.",
+  "category": [
+    "Cloud Security",
+    "Threat Intelligence",
+    "Security Operations"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Amazon Web Services",
+      "type": "vendor",
+      "url": "https://aws.amazon.com/"
+    },
+    {
+      "name": "Google Cloud",
+      "type": "vendor",
+      "url": "https://cloud.google.com/"
+    },
+    {
+      "name": "AWS CloudTrail",
+      "type": "product",
+      "url": "https://aws.amazon.com/cloudtrail/"
+    },
+    {
+      "name": "Amazon S3",
+      "type": "product",
+      "url": "https://aws.amazon.com/s3/"
+    },
+    {
+      "name": "CloudTrail Lake",
+      "type": "product"
+    },
+    {
+      "name": "EventBridge",
+      "type": "product"
+    },
+    {
+      "name": "CloudWatch Logs",
+      "type": "product"
+    },
+    {
+      "name": "Google Cloud Logging",
+      "type": "product",
+      "url": "https://cloud.google.com/logging"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/cloud-logging-defense-evasion/",
+      "title": "Blinding the Watchmen: Abusing Cloud Logging Services for Defense Evasion and Visibility",
+      "date": "2026-06-09",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1562.008",
+      "name": "Impair Defenses: Disable Cloud Logs",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1070.004",
+      "name": "Indicator Removal: File Deletion",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Impair Defenses: Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UAP",
+          "name": "User Account Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions"
+        }
+      ],
+      "description": "Applies conceptually to Cloud IAM. Enforce least-privilege permissions to prevent users/roles from modifying logging configurations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Audit all changes to logging infrastructure and enable log file integrity validation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Require MFA for all privileged roles, especially those that can manage logging configurations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Harden the configuration of logging resources, such as enabling termination protection and object locks.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "To counter the abuse of cloud logging services, the principle of least privilege must be rigorously enforced on all cloud IAM roles and users. Specifically, permissions to alter logging infrastructure—such as `cloudtrail:StopLogging`, `cloudtrail:DeleteTrail`, `s3:DeleteBucket` on log archives, or `logging.sinks.delete` in GCP—should be explicitly denied by default. These sensitive permissions should only be granted to a very small set of break-glass administrative roles that are not used for daily operations. Access to these roles should require multi-factor authentication and a formal check-in/check-out process. Furthermore, use AWS Service Control Policies (SCPs) or GCP Organization Policies to create preventative guardrails that block these actions for all principals except the designated administrative roles, making it impossible for even a compromised role to disable logging.",
+      "mitre_mitigation_id": "M1015"
+    },
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "A key strategy to protect log data is to isolate it from the environments it monitors. This is achieved by configuring log shipping to a dedicated, separate security account (in AWS) or project (in GCP). This logging archive should have its own strict permission model, completely independent of the source accounts. Network access to this account's resources, such as the S3 bucket or BigQuery dataset, should be restricted to only the cloud service's logging principal. This creates a one-way data flow; the production accounts can write logs to the archive, but principals within those production accounts cannot access, modify, or delete the archive. This isolation ensures that even if an attacker achieves full administrative control over a source account, they cannot erase the audit trail of their actions, as it resides in a separate, protected location.",
+      "mitre_mitigation_id": "M1035"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Harden the configuration of the logging components themselves to prevent tampering. In AWS, enable CloudTrail Log File Integrity Validation, which provides a cryptographic hash of log files, allowing you to detect if a log file has been altered or deleted after delivery. For the S3 bucket storing logs, enable MFA Delete and Object Lock in Compliance mode. MFA Delete requires an additional factor of authentication to change the bucket's versioning state or permanently delete an object version. Object Lock prevents objects from being deleted or overwritten for a fixed amount of time, creating immutable storage. In Google Cloud, use bucket locks on Cloud Storage buckets and consider placing a resource lien on the logging project to prevent accidental or malicious deletion. These configurations provide strong technical controls against the deletion and modification techniques described in the research.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "aws cloudtrail stop-logging",
+      "description": "AWS CLI command to stop a CloudTrail trail from logging events. Detection of this command is a strong indicator of defense evasion.",
+      "context": "CloudTrail Logs (for the API call), Command line audit logs (e.g., Event ID 4688)",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "aws cloudtrail delete-trail",
+      "description": "AWS CLI command to delete a CloudTrail trail, preventing future log collection.",
+      "context": "CloudTrail Logs, Command line audit logs",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "gcloud logging sinks delete",
+      "description": "Google Cloud CLI command to delete a log sink, preventing log routing.",
+      "context": "GCP Audit Logs, Command line audit logs",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "s3:DeleteBucket",
+      "description": "API action to delete an S3 bucket. If the bucket is used for log storage, this is a critical security event.",
+      "context": "CloudTrail Logs",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "kms:ScheduleKeyDeletion",
+      "description": "API action to schedule the deletion of a KMS key. If the key is used to encrypt logs, this renders them unreadable.",
+      "context": "CloudTrail Logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Cloud Security",
+    "AWS",
+    "GCP",
+    "Defense Evasion",
+    "Log Manipulation",
+    "CloudTrail",
+    "Threat Research",
+    "SIEM"
+  ],
+  "extract_datetime": "2026-06-10T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government",
+      "Retail",
+      "Manufacturing"
+    ],
+    "other_affected": [
+      "All organizations using AWS or Google Cloud"
+    ]
+  },
+  "pub_date": "2026-06-10",
+  "reading_time_minutes": 12,
+  "createdAt": "2026-06-10T15:00:00.000Z",
+  "updatedAt": "2026-06-10T15:00:00.000Z"
+}

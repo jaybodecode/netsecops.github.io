@@ -1,0 +1,75 @@
+title: Potential SQL Injection Attempt in URL
+id: 9b8f3d1e-6c5a-4b7e-8f9a-1b2c3d4e5f6a
+status: experimental
+description: Detects common SQL keywords in URL query parameters, which could indicate an SQL injection attempt against a web application.
+references:
+  - https://research.checkpoint.com/2026/24th-august-threat-intelligence-report/
+author: cyber.netsecops.io
+date: 2026-08-25
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: webserver
+detection:
+  selection:
+    c-uri-query|contains:
+      - 'select '
+      - 'union '
+      - ' from '
+      - ' where '
+      - ' or 1=1'
+  condition: selection
+---
+title: Web Server Spawning Shell Process
+id: a1b2c3d4-e5f6-4a90-8bcd-ef1234567890
+status: experimental
+description: Detects a web server process (like w3wp.exe or httpd) spawning a command shell, which can indicate Remote Code Execution (RCE) via a web shell or other exploit.
+references:
+  - https://research.checkpoint.com/2026/24th-august-threat-intelligence-report/
+author: cyber.netsecops.io
+date: 2026-08-25
+tags:
+  - attack.t1190
+  - attack.t1505.003
+level: high
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: selection
+---
+title: Anomalous Data Egress from Database Server
+id: c4d5e6f7-a8b9-4c1d-8e2f-3a4b5c6d7e8f
+status: experimental
+description: 'Identifies unusually large data transfers originating from internal database servers to external destinations, which may indicate data exfiltration. This is a behavioral rule and requires tuning and baselining.'
+references:
+  - https://research.checkpoint.com/2026/24th-august-threat-intelligence-report/
+author: cyber.netsecops.io
+date: 2026-08-25
+tags:
+  - attack.t1041
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip: 
+      # Add internal database server IP ranges here
+      - '10.10.1.0/24'
+      - '192.168.50.10'
+    action: 'allow'
+  filter_internal:
+    dst_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  # This condition is conceptual for an atomic rule. Real implementation would require aggregation.
+  condition: selection and not filter_internal

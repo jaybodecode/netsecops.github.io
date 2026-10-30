@@ -1,0 +1,184 @@
+{
+  "id": "d033e7b6-b1f0-4490-a668-60a6a926f53a",
+  "slug": "iranian-apt-screening-serpens-escalates-espionage-with-new-rats",
+  "headline": "Iranian APT 'Screening Serpens' Intensifies Espionage with New RATs Targeting US, Israel, and UAE",
+  "title": "Screening Serpens: Iranian APT Group Deploys New Malware in Geopolitically Timed Espionage Campaigns",
+  "summary": "The Iran-nexus advanced persistent threat (APT) group known as Screening Serpens (also UNC1549, Smoke Sandstorm) has escalated its cyber-espionage activities, according to researchers at Unit 42. The campaigns, which ran from mid-February to April 2026, coincided with regional conflicts and targeted professionals in the technology sectors of the U.S., Israel, and the UAE. The group has deployed two new malware families, MiniUpdate and MiniJunk V2, and is using advanced techniques like AppDomainManager hijacking to improve its operational resilience and evade detection.",
+  "full_report": "## Executive Summary\nResearchers at **[Unit 42](https://unit42.paloaltonetworks.com/)** have identified a significant escalation in cyber-espionage activity from **Screening Serpens**, an advanced persistent threat (APT) group with ties to Iran. Also tracked as **UNC1549**, **Smoke Sandstorm**, and **Iranian Dream Job**, the group has been observed conducting campaigns between February and April 2026 that align with recent geopolitical conflicts in the Middle East. The attacks primarily target technology professionals in the United States, Israel, and the United Arab Emirates. To enhance their operations, **Screening Serpens** has deployed six new Remote Access Trojan (RAT) variants, categorized into two new malware families named **MiniUpdate** and **MiniJunk V2**. The group is also leveraging more sophisticated techniques, such as AppDomainManager hijacking, to maintain persistence and evade detection.\n\n## Threat Overview\n**Screening Serpens** is a sophisticated espionage-focused threat actor that has been active since at least 2022. Their primary objective is intelligence gathering, targeting individuals and organizations in sectors of strategic interest to Iran. The latest campaigns demonstrate a marked evolution in their capabilities:\n\n*   **Targeting:** Highly focused on professionals in the technology sector, likely to gain access to intellectual property, sensitive project information, or to establish a foothold in strategic partner networks.\n*   **Social Engineering:** The group uses highly personalized lures, often impersonating trusted brands or recruitment platforms, to trick targets into executing malicious payloads. A spear-phishing campaign on February 17, 2026, used a spoofed URL from a well-known employment website.\n*   **Malware Evolution:** The introduction of **MiniUpdate** and **MiniJunk V2** shows an active development cycle aimed at bypassing existing security controls.\n*   **Geopolitical Alignment:** The timing of the campaigns, coinciding with a regional conflict that began on February 28, 2026, suggests that the group's tasking is closely aligned with the geopolitical objectives of the Iranian state.\n\n## Technical Analysis\n**Screening Serpens** employs a multi-stage attack chain that relies on social engineering and advanced persistence mechanisms.\n\n- **[`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/):** The initial access vector involves sending highly targeted emails with malicious links, such as the spoofed recruitment URL observed in the February 17 campaign.\n- **[`T1588.002 - Tool`](https://attack.mitre.org/techniques/T1588/002/):** The group develops and deploys custom RATs (**MiniUpdate**, **MiniJunk V2**) to ensure their tools are not easily detected by signature-based antivirus.\n- **[`T1546.011 - AppDomainManager Hijacking`](https://attack.mitre.org/techniques/T1546/011/):** This is a sophisticated persistence technique. By creating a malicious .NET assembly and setting specific environment variables (`COMPLUS_Version`, `COMPLUS_LoaderOptimization`), the attacker can force any .NET application on the system to load their malicious code upon startup. This provides a powerful and stealthy way to maintain access.\n- **[`T1059.005 - Visual Basic`](https://attack.mitre.org/techniques/T1059/005/):** The malware loaders often use VBScript or other scripting languages to execute the next stage of the infection chain.\n- **[`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/):** The group's malware likely employs obfuscation to hinder analysis and evade static detection.\n\n> The use of AppDomainManager hijacking is a significant technical advancement for this group. It allows them to live in the memory of legitimate, trusted .NET processes, making detection via traditional file-based scanning nearly impossible. This forces defenders to rely on behavioral analysis and memory forensics.\n\n## Impact Assessment\nThe primary impact of **Screening Serpens**' activities is espionage. The theft of sensitive data from technology companies can result in:\n*   **Loss of Intellectual Property:** Stolen R&D, source code, and proprietary designs can undermine a company's competitive advantage.\n*   **Supply Chain Risk:** Compromising a technology company can provide the APT group with a launchpad to conduct supply chain attacks against that company's customers.\n*   **Intelligence Gathering:** The stolen information provides the Iranian government with strategic insights into the technological capabilities and plans of its adversaries.\n*   **Further Targeting:** Information gathered from one victim can be used to craft more convincing lures to target their partners, colleagues, and customers.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for **Screening Serpens** activity. The following patterns could indicate an intrusion:\n\n| Type | Value | Description |\n|---|---|---|\n| `registry_key` | `HKCU\\Environment\\COMPLUS_Version` | The presence of this environment variable, especially when set to a suspicious value, is a strong indicator of AppDomainManager hijacking. |\n| `command_line_pattern` | `wmic.exe process call create` | Monitor for `wmic` being used to launch new processes, a common technique for execution and lateral movement. |\n| `log_source` | `Email Gateway Logs` | Analyze logs for emails with links from newly registered or typo-squatted domains that impersonate legitimate recruitment sites. |\n| `process_name` | `MSBuild.exe` | Attackers often abuse the Microsoft Build Engine (`MSBuild.exe`) to execute malicious code embedded in project files, bypassing application whitelisting. |\n\n## Detection & Response\n1.  **Behavioral Monitoring:** Due to the use of custom malware and advanced persistence techniques, detection must focus on behavior. Monitor for the creation of suspicious environment variables (`COMPLUS_*`), unexpected network connections from legitimate processes, and the use of living-off-the-land binaries (LOLBins) like `wmic.exe`.\n2.  **Email Security:** Use advanced email security solutions that can analyze links at time-of-click (URL rewriting) to protect against spear-phishing links. This is a form of **[D3FEND URL Analysis](https://d3fend.mitre.org/technique/d3f:URLAnalysis)**.\n3.  **Endpoint Detection and Response (EDR):** An EDR solution is critical for detecting the process chain associated with the attack. It can trace the execution from the initial lure (e.g., a document) to the launch of PowerShell or VBScript, and finally to the establishment of the RAT's C2 channel.\n4.  **Threat Hunting:** Proactively hunt for the TTPs used by **Screening Serpens**. For example, run queries across the enterprise to look for systems with the `COMPLUS_Version` environment variable set, which is a strong indicator of the AppDomainManager hijacking technique.\n\n## Mitigation\n1.  **User Training:** Since the initial vector is social engineering, training users to identify and report suspicious emails is a critical first line of defense. This aligns with **[D3FEND User Training](https://d3fend.mitre.org/technique/d3f:UserTraining)**.\n2.  **Application Control:** Implement application control policies to prevent the execution of unauthorized scripts and executables. This can block the initial payload from running.\n3.  **Attack Surface Reduction:** Disable or restrict scripting languages like PowerShell and VBScript where they are not required for business operations.\n4.  **Credential Protection:** Implement measures to protect credentials, such as Windows Defender Credential Guard, and enforce strong password policies and MFA to make lateral movement more difficult.",
+  "twitter_post": "🇮🇷 Iranian APT 'Screening Serpens' escalates cyber-espionage against US, Israel & UAE. New RATs 'MiniUpdate' & 'MiniJunk V2' deployed. Group using advanced AppDomainManager hijacking for persistence. #APT #CyberEspionage #Iran #ThreatIntel",
+  "meta_description": "The Iranian APT group Screening Serpens (UNC1549) has intensified espionage campaigns, targeting the US, Israel, and UAE with new malware families MiniUpdate and MiniJunk V2.",
+  "category": [
+    "Threat Actor",
+    "Cyberattack",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Iran",
+      "type": "other"
+    },
+    {
+      "name": "Iranian Dream Job",
+      "type": "threat_actor"
+    },
+    {
+      "name": "MiniJunk V2",
+      "type": "malware"
+    },
+    {
+      "name": "MiniUpdate",
+      "type": "malware"
+    },
+    {
+      "name": "Screening Serpens",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Smoke Sandstorm",
+      "type": "threat_actor"
+    },
+    {
+      "name": "UNC1549",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/screening-serpens-apt-espionage/",
+      "title": "Tracking Iranian APT Screening Serpens’ 2026 Espionage Campaigns",
+      "date": "2026-05-22",
+      "website": "unit42.paloaltonetworks.com"
+    },
+    {
+      "url": "https://www.cyber-security-news.com/2026/05/22/iranian-apt-group-screening-serpens-unleashes-new-rats-in-targeted-attacks/",
+      "title": "Iranian APT Group ‘Screening Serpens’ Unleashes New RATs in Targeted Attacks",
+      "date": "2026-05-22",
+      "website": "cyber-security-news.com"
+    },
+    {
+      "url": "https://unit42.paloaltonetworks.com/screening-serpens-apt-espionage-campaigns/",
+      "title": "Tracking Iranian APT Screening Serpens’ 2026 Espionage Campaigns",
+      "date": null,
+      "website": "unit42.paloaltonetworks.com"
+    },
+    {
+      "url": "https://www.securityweek.com/iran-linked-apt-screening-serpens-deploys-new-rats-espionage-attacks",
+      "title": "Iran-Linked APT 'Screening Serpens' Deploys New RATs in Espionage Attacks",
+      "date": null,
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02-17T00:00:00Z",
+      "summary": "A spear-phishing campaign by Screening Serpens targets a technology professional in the Middle East."
+    },
+    {
+      "datetime": "2026-02-28T00:00:00Z",
+      "summary": "A regional conflict begins in the Middle East, coinciding with the timing of the APT campaigns."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": null
+    },
+    {
+      "id": "T1059.005",
+      "name": "Visual Basic",
+      "tactic": null
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": null
+    },
+    {
+      "id": "T1546.011",
+      "name": "AppDomainManager Hijacking",
+      "tactic": null
+    },
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "APT",
+    "Cyber Espionage",
+    "Iran",
+    "MiniJunk V2",
+    "MiniUpdate",
+    "Screening Serpens",
+    "UNC1549",
+    "Unit 42"
+  ],
+  "extract_datetime": "2026-05-22",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "industries_affected": [
+      "Technology",
+      "Defense"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States",
+      "Israel",
+      "United Arab Emirates"
+    ],
+    "other_affected": [],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "APT",
+    "Cyber Espionage",
+    "Iran",
+    "MiniJunk V2",
+    "MiniUpdate",
+    "Screening Serpens",
+    "UNC1549",
+    "Unit 42"
+  ],
+  "pub_date": "2026-05-22",
+  "reading_time_minutes": null,
+  "createdAt": "2026-05-22T15:00:00.000Z",
+  "updatedAt": "2026-05-26T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-05-26T12:00:00Z",
+      "summary": "Iranian APT 'Screening Serpens' (aka Nimbus Manticore) now uses SEO poisoning and a new 'MiniFast' backdoor, expanding targets to aviation in Europe.",
+      "content": "The Iranian APT, also known as Nimbus Manticore, has evolved its tactics by employing SEO poisoning to distribute a new backdoor named 'MiniFast'. This marks their first observed use of SEO poisoning, creating fake software download pages (e.g., for Oracle SQL Developer) to trick users. The campaign, active from February to April 2026, now targets aviation and software companies across the U.S., Europe, and the Middle East. The group continues to leverage AppDomain hijacking, now described as DLL side-loading, to achieve persistence and evade detection, indicating a strategic shift from traditional phishing to more sophisticated inbound threat vectors.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.infosecurity-magazine.com/news/iran-hackers-aviation-phishing-seo/",
+          "title": "Iran-Linked Hackers Target US Aviation with Phishing and SEO Poisoning Campaign",
+          "website": "",
+          "date": "2026-05-26T12:00:00Z"
+        },
+        {
+          "url": "https://www.reddit.com/r/blueteamsec/comments/1d10x2p/iranian_hackers_deploy_minifast_and_minijunk_v2/",
+          "title": "Iranian Hackers Deploy MiniFast and MiniJunk V2 via Phishing and SEO Poisoning",
+          "website": "",
+          "date": "2026-05-26T12:00:00Z"
+        },
+        {
+          "url": "https://threatradar.com/nimbus-manticore-operations-iranian-conflict-2026-05-25/",
+          "title": "Fast and Furious - Nimbus Manticore Operations During the Iranian Conflict",
+          "website": "",
+          "date": "2026-05-26T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

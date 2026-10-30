@@ -1,0 +1,329 @@
+{
+  "id": "fec23f57-b60f-4585-8f1b-fe0ff5957d73",
+  "slug": "mini-shai-hulud-supply-chain-attack-compromises-over-170-npm-and-pypi-packages",
+  "headline": "‘Mini Shai-Hulud’ Supply Chain Attack Hits 170+ Open-Source Packages via GitHub Actions",
+  "title": "Sophisticated 'Mini Shai-Hulud' Campaign Abuses GitHub Actions and SLSA Signing to Spread Malware",
+  "summary": "A large-scale and sophisticated software supply chain attack, dubbed 'Mini Shai-Hulud,' has compromised over 170 packages in the NPM and PyPI registries. The campaign, attributed to the threat actor TeamPCP, targeted major open-source projects like TanStack and Mistral AI. The attackers ingeniously abused misconfigured GitHub Actions workflows and cache poisoning to inject malicious code into CI/CD pipelines. In a significant escalation, they managed to have the malicious packages signed with valid SLSA provenance signatures, effectively hijacking the trust of the build system itself. The malware was designed for widespread credential harvesting and used the decentralized Session network for resilient C2 communication.",
+  "full_report": "## Executive Summary\nA highly sophisticated software supply chain attack, named **Mini Shai-Hulud**, has been uncovered, impacting over 170 packages across the **[NPM](https://www.npmjs.com/)** and **[PyPI](https://pypi.org/)** open-source ecosystems. The campaign, attributed to the **TeamPCP** threat group, successfully injected credential-stealing malware into the build processes of popular projects, including **TanStack**, **Mistral AI**, and **UiPath**. The attackers chained multiple advanced techniques, including the abuse of **[GitHub](https://github.com/)** Actions CI/CD pipelines and cache poisoning. Most alarmingly, they were able to get their malicious packages signed with valid **[SLSA](https://slsa.dev/)** (Supply-chain Levels for Software Artifacts) provenance signatures by hijacking the legitimate build process. This attack represents a significant evolution in supply chain threats, undermining cryptographic trust mechanisms designed to prevent such attacks.\n\n## Threat Overview\n- **Threat Actor:** TeamPCP, a group specializing in supply chain attacks.\n- **Campaign:** Mini Shai-Hulud.\n- **Attack Vector:** The core of the attack was the abuse of misconfigured GitHub Actions workflows, particularly those using the `pull_request_target` trigger, combined with cache poisoning across repository forks.\n- **Impacted Ecosystems:** NPM (JavaScript) and PyPI (Python).\n- **Malware Functionality:** The primary goal was credential harvesting. The malware was designed to steal developer credentials, API keys (Stripe), cloud secrets (AWS), cryptocurrency wallets, and AI tool credentials. It also had self-propagation capabilities, using stolen tokens to spread to other packages.\n\n## Technical Analysis\nThe attack chain was complex and demonstrates a deep understanding of modern CI/CD security weaknesses:\n1.  **Initial Foothold:** The attackers identified open-source projects with vulnerable GitHub Actions workflows. Specifically, they targeted workflows that use the `pull_request_target` event, which runs with access to the base repository's secrets, even for pull requests from forks.\n2.  **Code Injection via Cache Poisoning:** They combined the `pull_request_target` abuse with cache poisoning ([`T1574.013 - Ptrace System Calls`](https://attack.mitre.org/techniques/T1574/013/) - conceptually similar cache abuse). By manipulating the build cache in their forked repository's pull request, they could inject malicious commands and code that would be executed by the trusted CI/CD pipeline of the target project.\n3.  **Hijacking SLSA Provenance:** This is the most novel aspect. Because the malicious code was running within the legitimate, trusted build environment, the build process itself generated valid SLSA provenance signatures for the compromised packages. This made the malicious artifacts appear authentic and trustworthy, bypassing a key supply chain security control ([`T1611 - Valid Accounts: Cloud Accounts`](https://attack.mitre.org/techniques/T1611/)).\n4.  **Credential Theft:** The injected malware executed during the build process or upon package installation (`postinstall` scripts) and began harvesting sensitive information from the developer's environment.\n5.  **Exfiltration:** Data was exfiltrated using the decentralized **Session** network. This makes the command-and-control (C2) infrastructure highly resilient and difficult to track or take down ([`T1048 - Exfiltration Over Alternative Protocol`](https://attack.mitre.org/techniques/T1048/)).\n6.  **Propagation:** The malware used stolen GitHub and npm/PyPI API tokens to commit malicious code to other repositories or publish new malicious versions of packages, enabling it to spread automatically ([`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/)).\n\n## Impact Assessment\nThe Mini Shai-Hulud campaign has severe implications for the open-source community:\n- **Erosion of Trust:** By successfully generating valid SLSA signatures for malicious packages, the attackers have undermined a critical security framework designed to build trust in the software supply chain.\n- **Widespread Credential Compromise:** The theft of developer credentials, API keys, and cloud secrets can lead to further, more damaging attacks against individuals and their employers.\n- **Contamination of the Ecosystem:** With over 170 packages compromised and self-propagation capabilities, the malware could spread rapidly, creating a cascade of compromised software that is difficult to eradicate.\n- **Threat to AI Development:** The targeting of AI projects like Mistral AI indicates that attackers are focusing on the rapidly growing AI development ecosystem, aiming to steal valuable models, data, or compute resources.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IPs, domains, hashes) were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams and developers should hunt for the following patterns:\n\n| Type | Value | Description |\n|---|---|---|\n| Code Pattern | Use of `pull_request_target` in GitHub Actions workflows | Review all workflows using this trigger for potential command injection or script execution from the PR body/title. |\n| Dependency Analysis | Unexpected or new dependencies appearing in `package-lock.json` or `requirements.txt` | Scan for dependencies that were not intentionally added, especially after merging a pull request. |\n| Network Traffic Pattern | Outbound connections to the Session network or other decentralized networks from build servers or developer machines. | This is a strong indicator of a sophisticated exfiltration channel. |\n| File Path | Presence of unusual scripts in `node_modules/.bin` or Python's `site-packages` | Look for scripts that are not part of the legitimate package, especially those with obfuscated code. |\n\n## Detection & Response\n- **CI/CD Security Audits:** Regularly audit GitHub Actions workflows. Avoid `pull_request_target` where possible, or use it with extreme caution, ensuring no user-controllable input is executed. Use tools like `StepSecurity` to harden CI/CD pipelines.\n- **Dependency Scanning:** Implement dependency scanning tools that check for known malicious packages and suspicious behaviors (e.g., use of `postinstall` scripts that access the network).\n- **Provenance Verification:** While this attack bypassed it, organizations should still verify SLSA provenance where possible but treat it as one signal among many. Correlate provenance data with other indicators, such as the reputation of the publisher and the age of the package.\n- **Egress Filtering:** Block outbound traffic from build servers to non-essential destinations, particularly known anonymizing or decentralized networks.\n\n## Mitigation\n- **Harden CI/CD Pipelines:** Pin GitHub Actions to specific commit SHAs to prevent injection. Disable script execution from pull request bodies. Grant the minimum necessary permissions to CI/CD jobs.\n- **Use Immutable Dependencies:** Use lockfiles (`package-lock.json`, `poetry.lock`) and verify their integrity during builds to ensure that the exact, vetted versions of dependencies are used.\n- **Developer Education:** Train developers on the risks of supply chain attacks, including the dangers of misconfigured CI/CD pipelines and how to vet third-party dependencies.\n- **Principle of Least Privilege:** Ensure that secrets and tokens available in the CI/CD environment are scoped to the minimum required permissions and have short lifetimes.",
+  "twitter_post": "🚨 'Mini Shai-Hulud' supply chain attack hits 170+ NPM & PyPI packages! Attackers abused GitHub Actions & forged SLSA signatures to spread credential-stealing malware. TanStack & Mistral AI among those affected. #SupplyChain #CyberAttack #NPM #PyPI",
+  "meta_description": "A sophisticated supply chain attack named 'Mini Shai-Hulud' has compromised over 170 NPM and PyPI packages by abusing GitHub Actions and forging valid SLSA signatures.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "TeamPCP",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "Mini Shai-Hulud",
+      "type": "malware"
+    },
+    {
+      "name": "NPM",
+      "type": "product",
+      "url": "https://www.npmjs.com/"
+    },
+    {
+      "name": "PyPI",
+      "type": "product",
+      "url": "https://pypi.org/"
+    },
+    {
+      "name": "TanStack",
+      "type": "company"
+    },
+    {
+      "name": "Mistral AI",
+      "type": "company"
+    },
+    {
+      "name": "UiPath",
+      "type": "company"
+    },
+    {
+      "name": "OpenSearch",
+      "type": "product"
+    },
+    {
+      "name": "Guardrails AI",
+      "type": "company"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com/"
+    },
+    {
+      "name": "GitHub Actions",
+      "type": "technology"
+    },
+    {
+      "name": "SLSA",
+      "type": "technology",
+      "url": "https://slsa.dev/"
+    },
+    {
+      "name": "Session",
+      "type": "technology"
+    },
+    {
+      "name": "Stripe",
+      "type": "company"
+    },
+    {
+      "name": "AWS",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.analyst1.com/hackers-abuse-github-actions-and-slsa-signing-to-spread-malware-across-open-source-ecosystems/",
+      "title": "Hackers Abuse GitHub Actions And SLSA Signing To Spread Malware Across Open Source Ecosystems",
+      "date": "2026-05-14",
+      "friendly_name": "Analyst1",
+      "website": "analyst1.com"
+    },
+    {
+      "url": "https://izoolgic.com/shai-hulud-malware-exposes-future-supply-chain-risks/",
+      "title": "Shai-Hulud Malware Exposes Future Supply Chain Risks",
+      "date": "2026-05-14",
+      "friendly_name": "Izoologic",
+      "website": "izoolgic.com"
+    },
+    {
+      "url": "https://cloudsek.com/blog/inside-a-tor-backed-supply-chain-worm/",
+      "title": "Inside a Tor Backed Supply Chain Worm",
+      "date": "2026-05-14",
+      "friendly_name": "CloudSEK",
+      "website": "cloudsek.com"
+    },
+    {
+      "url": "https://socradar.io/breachforums-teampcp-promote-supply-chain-competition-as-cybercrime-gets-gamified/",
+      "title": "BreachForums & TeamPCP Promote Supply Chain Competition as Cybercrime Gets Gamified",
+      "date": "2026-05-14",
+      "friendly_name": "SOCRadar",
+      "website": "socradar.io"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078.001",
+      "name": "Valid Accounts: Default Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1552.006",
+      "name": "Cloud Secrets",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1048",
+      "name": "Exfiltration Over Alternative Protocol",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1199",
+      "name": "Trust-in-Time",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        },
+        {
+          "id": "D3-CP",
+          "name": "Certificate Pinning",
+          "url": "https://d3fend.mitre.org/technique/d3f:CertificatePinning"
+        }
+      ],
+      "description": "Harden CI/CD pipeline configurations. Avoid dangerous settings like 'pull_request_target' in GitHub Actions, or apply strict controls to prevent script injection from PRs.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-SBV",
+          "name": "Service Binary Verification",
+          "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification"
+        }
+      ],
+      "description": "While bypassed in this attack, code signing and provenance verification (SLSA) are still crucial. This incident highlights the need to secure the signing process itself.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        },
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Run build processes in ephemeral, isolated, and sandboxed environments with no access to the broader network or sensitive secrets, limiting the blast radius of a compromised build.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement strict egress filtering for build environments to block connections to unknown or decentralized networks like Session, preventing data exfiltration.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "The primary vector for the 'Mini Shai-Hulud' attack was the abuse of misconfigured GitHub Actions. Organizations must immediately audit all CI/CD workflows for insecure configurations. Specifically, any workflow using the `pull_request_target` trigger should be treated as highly sensitive. Best practice is to avoid this trigger if possible. If it must be used, ensure that no part of the pull request (e.g., title, body, branch name) is used to construct scripts or commands. Instead, use dedicated GitHub Actions that are designed to safely handle input from forks, such as those provided by StepSecurity. Harden workflows by pinning actions to full commit SHAs instead of tags (e.g., `actions/checkout@a12a3959b4314016424a4da9ea17db71f2b9d54c` instead of `actions/checkout@v2`). This prevents the build from being compromised if the tag is maliciously moved.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "To detect malicious behavior in dependencies, integrate dynamic analysis (sandboxing) into the CI/CD pipeline. Before a new or updated dependency is promoted to a production build, it should be installed and run in an isolated, instrumented environment. Monitor the dependency for suspicious activities such as network connections to unexpected endpoints (especially anonymizing networks like Session), file system access outside of its intended scope, or attempts to read sensitive environment variables. Tools like Socket or Phylum provide this type of analysis for open-source packages. This acts as a critical backstop, catching malicious code that static analysis might miss, and can prevent a compromised package from ever reaching a developer's machine or a production build.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Build environments should be treated as untrusted and have strict network controls. Implement outbound traffic filtering (egress filtering) for all CI/CD runners. By default, deny all outbound network connections. Create an explicit allowlist for only the necessary domains required for the build process (e.g., `npmjs.com`, `pypi.org`, internal artifactories). This would have effectively neutered the 'Mini Shai-Hulud' malware by blocking its ability to exfiltrate stolen credentials to the decentralized Session network. This 'zero trust' approach to the build environment's networking capabilities is a powerful mitigation against both data exfiltration and the downloading of second-stage malware.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/.github/workflows/",
+      "description": "Review GitHub Actions workflow files for the use of the 'pull_request_target' trigger, which was a key part of the attack chain.",
+      "context": "Source code repository scanning, GitHub code scanning",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "package-lock.json",
+      "description": "Monitor for unexpected changes or additions to dependency lockfiles, as this could indicate the injection of a malicious package.",
+      "context": "Git commit history, file integrity monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound traffic from build agents to the Session network",
+      "description": "The malware used the decentralized Session network for C2 and exfiltration. Any traffic to this network from build environments is highly suspicious.",
+      "context": "Network egress filtering logs, NDR systems",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "npm install --ignore-scripts",
+      "description": "As a temporary mitigation, running package installations with scripts disabled can prevent malicious 'postinstall' hooks from executing.",
+      "context": "Developer environment, CI/CD build scripts",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Supply Chain Attack",
+    "Mini Shai-Hulud",
+    "TeamPCP",
+    "NPM",
+    "PyPI",
+    "GitHub Actions",
+    "SLSA",
+    "Malware",
+    "Credential Theft"
+  ],
+  "extract_datetime": "2026-05-14T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Open-source software users",
+      "Software developers"
+    ]
+  },
+  "pub_date": "2026-05-14",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-14T15:00:00.000Z",
+  "updatedAt": "2026-05-19T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-05-19T00:00:00Z",
+      "datetime": "2026-05-19T00:00:00Z",
+      "title": "Update 1",
+      "summary": "TanStack details reveal sophisticated supply chain attack on 42 npm packages via GitHub Actions cache poisoning and OIDC token theft.",
+      "sources": [
+        {
+          "title": "The TanStack Breach and the Fragility of Trusted Code",
+          "url": "https://www.securityboulevard.com/2026/05/the-tanstack-breach-and-the-fragility-of-trusted-code/"
+        },
+        {
+          "title": "TanStack Details Sophisticated npm Supply Chain Attack That Compromised 42 Packages",
+          "url": "https://tech.wrapt.dev/posts/tanstack-details-sophisticated-npm-supply-chain-attack"
+        },
+        {
+          "title": "What now? explaining the TanStack Supply Chain Attack",
+          "url": "https://dev.to/flippedcoding/what-now-explaining-the-tanstack-supply-chain-attack-1j3a"
+        }
+      ]
+    }
+  ]
+}

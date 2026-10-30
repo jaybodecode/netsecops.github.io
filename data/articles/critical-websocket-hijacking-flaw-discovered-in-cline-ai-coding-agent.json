@@ -1,0 +1,125 @@
+{
+  "id": "2e0111d9-32a8-4713-adc3-2af4e87bd138",
+  "slug": "critical-websocket-hijacking-flaw-discovered-in-cline-ai-coding-agent",
+  "headline": "Critical Flaw in Cline AI Agent Lets Any Website Hijack Developer Workspaces",
+  "title": "Critical WebSocket Hijacking Vulnerability (CVSS 9.7) in Cline AI Coding Agent Allows RCE and Data Theft",
+  "summary": "A critical vulnerability (CVSS 9.7) has been discovered in Cline, a popular open-source AI coding agent. The flaw resided in the agent's local Kanban server, whose WebSocket connections lacked proper origin validation. This allowed any website visited by a developer to silently connect to the agent, hijack the session, exfiltrate the entire workspace snapshot, and execute arbitrary commands on the developer's machine without any user interaction. The vulnerability highlights a new class of attack surface introduced by locally-running AI agents with broad system permissions.",
+  "full_report": "## Executive Summary\n\nResearchers at Oasis Security have uncovered a critical (CVSS 9.7) vulnerability in **Cline**, a popular open-source AI coding agent. The flaw allowed for a complete takeover of the agent through a **[WebSocket](https://en.wikipedia.org/wiki/WebSocket)** hijacking attack. Because the agent's local server did not properly validate the origin of incoming WebSocket connections, any website opened in a developer's browser could silently connect to the agent. This allowed a malicious website to exfiltrate the developer's entire workspace, including code and AI chat history, and execute arbitrary commands on the local machine with the agent's permissions. The vulnerability, now patched in version 0.1.66, exposes a significant new attack surface created by the rise of powerful, locally-running AI assistants.\n\n## Vulnerability Details\n\n-   **Vulnerability:** WebSocket Hijacking due to missing origin validation.\n-   **CVSS Score:** 9.7 (Critical)\n-   **Affected Component:** The local Kanban server in the Cline AI coding agent.\n-   **Impact:** Information Disclosure, Remote Code Execution (RCE), Denial of Service.\n\nWebSockets, unlike standard HTTP requests, are not always subject to the same-origin policy (SOP), especially for connections to `localhost`. The Cline agent ran a server on the developer's machine that listened for WebSocket connections. The server failed to check the `Origin` header of incoming connection requests. This meant that a script running on `evil.com` in the user's browser could successfully establish a WebSocket connection to `ws://localhost:<port>`, a server it should not be able to talk to.\n\n## Affected Systems\n\n-   **Cline AI coding agent** versions prior to **0.1.66**.\n-   Any developer using the vulnerable versions of the agent.\n\n## Exploitation Status\n\nThe vulnerability was discovered by security researchers and a patch has been released. There is no indication of in-the-wild exploitation. However, the public disclosure of the flaw could lead to attackers targeting unpatched users.\n\n## Impact Assessment\n\nOnce the malicious website hijacked the WebSocket connection, it had full control over the agent's capabilities, leading to severe impacts:\n\n1.  **Information Disclosure:** The attacker could connect to the agent's runtime state stream and receive a full snapshot of the developer's workspace, including all open files, source code, and the history of AI chat interactions. This could lead to the theft of intellectual property and sensitive credentials stored in code.\n2.  **Remote Code Execution:** The attacker could use the terminal I/O endpoint to send commands to the agent's built-in terminal. The agent would then execute these commands on the developer's machine with the user's privileges. This could be used to install malware, steal files, or pivot deeper into the corporate network.\n3.  **Denial of Service:** The attacker could use the terminal control endpoint to kill active processes, disrupting the developer's work.\n\nThis new attack vector is particularly dangerous because it is completely transparent to the user. No pop-ups or permission prompts are required; simply visiting a malicious website is enough to trigger the attack.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify vulnerable or compromised systems:\n\n| Type | Value | Description |\n|---|---|---|\n| Network Traffic Pattern | Inbound connections to `localhost` from a web browser process | Legitimate for some local development, but a spike in such connections or connections to unusual ports could indicate an attack. |\n| Process Name | `cline` or related agent process | Monitor for this process spawning unexpected child processes like `curl`, `wget`, or a reverse shell. |\n| Log Source | Browser developer tools (Network tab) | A user could inspect the network tab to see if a website is making unexpected WebSocket connections to `localhost`. |\n\n## Detection Methods\n\n-   **Endpoint Detection and Response (EDR):** An EDR solution can be configured to detect and alert when a browser process (`chrome.exe`, `firefox.exe`) initiates a network connection to a local port associated with a development tool like Cline. It can also detect when the Cline process spawns suspicious child processes.\n-   **Software Inventory:** Use software inventory tools to identify all developer machines running vulnerable versions of the Cline AI agent.\n-   **Browser Extensions:** Security-focused browser extensions can be configured to block or alert on cross-origin WebSocket connection attempts to `localhost`.\n\n## Remediation Steps\n\n1.  **Patch Immediately:** The primary remediation is to update the Cline AI coding agent to version **0.1.66** or later. This version correctly implements origin validation for all WebSocket connections.\n2.  **Developer Awareness:** Educate developers about the risks of locally-running servers and AI agents. They should be cautious about the tools they install and keep them updated.\n3.  **Principle of Least Privilege:** AI agents should be run with the minimum necessary permissions. They should not have unrestricted access to the entire file system or the ability to execute arbitrary commands unless explicitly required and approved by the user for a specific task. This aligns with **[D3FEND Application Hardening (D3-AH)](https://d3fend.mitre.org/technique/d3f:ApplicationHardening)**.",
+  "twitter_post": "🚨 CRITICAL FLAW (CVSS 9.7) in Cline AI coding agent lets any website hijack developer sessions via WebSocket. Attackers can steal code & RCE on the machine just by you visiting a site. Patch to v0.1.66 NOW! 😱 #CyberSecurity #RCE #Vulnerability",
+  "meta_description": "A critical WebSocket hijacking vulnerability (CVSS 9.7) in the Cline AI coding agent allowed any website to take over the agent, leading to data theft and remote code execution. A patch is available.",
+  "category": [
+    "Vulnerability",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Cline",
+      "type": "product"
+    },
+    {
+      "name": "Oasis Security",
+      "type": "security_organization"
+    },
+    {
+      "name": "WebSocket",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/WebSocket"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://research.checkpoint.com/2026/11th-may-threat-intelligence-report/",
+      "title": "11th May – Threat Intelligence Report",
+      "date": "2026-05-11",
+      "friendly_name": "Check Point Research",
+      "website": "research.checkpoint.com"
+    },
+    {
+      "url": "https://www.networkustad.com/2026/05/10/cline-kanban-flaw-lets-websites-hijack-ai-coding-agents/",
+      "title": "Cline Kanban Flaw Lets Websites Hijack AI Coding Agents",
+      "date": "2026-05-10",
+      "friendly_name": "NetworkUstad",
+      "website": "networkustad.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1189",
+      "name": "Drive-by Compromise"
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Updating the Cline agent to the patched version (0.1.66) is the primary and most effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Running developer tools and AI agents in sandboxed environments or with restricted permissions can limit the impact of a compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Using web filters or browser security policies to control which websites can execute scripts or make network connections.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "network_traffic_pattern",
+      "value": "WebSocket connection from browser to ws://localhost:[port]",
+      "description": "A browser process making a WebSocket connection to a local port. The key indicator is if the originating website is external/untrusted.",
+      "context": "EDR logs, local firewall logs, browser developer tools.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "cline.exe spawning cmd.exe or powershell.exe",
+      "description": "The AI agent process spawning a shell, which could be used by an attacker to execute commands.",
+      "context": "EDR process creation logs (Event ID 4688).",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Vulnerability",
+    "Cline",
+    "AI Agent",
+    "WebSocket Hijacking",
+    "RCE",
+    "CVSS 9.7",
+    "Developer Security"
+  ],
+  "extract_datetime": "2026-05-11T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers",
+      "Open-source software users"
+    ]
+  },
+  "pub_date": "2026-05-11",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-05-11T15:00:00.000Z",
+  "updatedAt": "2026-05-11T15:00:00.000Z"
+}

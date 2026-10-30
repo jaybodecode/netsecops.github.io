@@ -1,0 +1,251 @@
+{
+  "id": "0138f25e-33ca-453d-9646-4a62ac80ecf5",
+  "slug": "how-we-added-webauthn-to-a-browser-based-rdp-client",
+  "headline": "Unit 42 Enables Phish-Resistant MFA for RDP by Reverse-Engineering WebAuthn Protocol",
+  "title": "Unit 42 Details Reverse-Engineering Effort to Add WebAuthn Support to Browser-Based RDP Client",
+  "summary": "Palo Alto Networks' Unit 42 has published a detailed account of how they became the first to implement WebAuthn redirection in a non-Windows Remote Desktop Protocol (RDP) client, specifically their browser-based Prisma Browser. The research overcomes a fundamental limitation in web browsers where security models prevent the use of pre-computed authentication challenges from a remote session. By reverse-engineering Microsoft's undocumented MS-RDPEWA protocol and building a custom browser API, they successfully enabled the use of modern, phish-resistant authenticators like YubiKeys, Touch ID, and Windows Hello for applications running inside an RDP session. This breakthrough closes a significant security gap, allowing organizations to enforce strong FIDO2-based MFA for legacy on-premises applications without sacrificing performance or functionality through protocol translation.",
+  "full_report": "## Executive Summary\n\nPalo Alto Networks' **[Unit 42](https://unit42.paloaltonetworks.com/)** has detailed a significant security engineering achievement: the successful integration of **[WebAuthn](https://en.wikipedia.org/wiki/WebAuthn)** into a browser-based Remote Desktop Protocol (RDP) client. This research addresses a critical gap in securing legacy remote access, enabling the use of modern, phish-resistant Multi-Factor Authentication (MFA) for applications within an RDP session. By reverse-engineering **[Microsoft's](https://www.microsoft.com/security)** undocumented `MS-RDPEWA` virtual channel protocol and developing a custom browser API, the team bypassed inherent limitations in standard web browser APIs. The result is the first RDP client outside of the native Windows ecosystem to support full WebAuthn redirection, allowing users to authenticate with local security keys (e.g., **[YubiKey](https://www.yubico.com/)**) and platform authenticators (e.g., Touch ID, Windows Hello) to services inside the remote session. This development represents a major step forward in applying Zero Trust principles to legacy infrastructure, significantly hardening RDP against credential-based attacks.\n\n---\n\n## The Technical Challenge: The WebAuthn-RDP Gap\n\nThe primary obstacle to integrating WebAuthn with RDP in a browser context lies in the security architecture of modern browsers. When a user in a remote RDP session attempts to authenticate to a service like **[Okta](https://www.okta.com/)**, the service's server initiates the WebAuthn ceremony. It generates a `clientDataJSON` object containing the origin (e.g., `https://okta.com`), a unique challenge, and other parameters. It then sends the SHA-256 hash of this object, known as `clientDataHash`, over the RDP virtual channel to the client.\n\nThe client's job is to pass this `clientDataHash` to a local authenticator (like a YubiKey) for signing. However, standard browser APIs, such as `navigator.credentials.create()`, are designed for security and isolation. They refuse to accept a pre-computed hash. Instead, the browser insists on creating its *own* `clientDataJSON` based on its *own* origin (e.g., `chrome-extension://...`). It then hashes this new object and sends it to the authenticator.\n\nWhen the resulting signature is sent back to the remote service, the authentication fails because the hash signed by the authenticator does not match the original hash calculated by the server. This `clientDataHash` mismatch is a fundamental security feature to prevent cross-origin attacks, but it also makes direct redirection of WebAuthn ceremonies over RDP impossible with standard browser tools.\n\n## Technical Analysis: Reverse-Engineering MS-RDPEWA\n\nTo overcome this, Unit 42 researchers turned to reverse-engineering Microsoft's WebAuthn Virtual Channel Extension, specified as `[MS-RDPEWA]`. The protocol uses a Dynamic Virtual Channel (DVC) named `Microsoft::Windows::RDP.Webauthn` to transport CBOR-encoded WebAuthn requests between the server and client.\n\nInitial analysis of the public specification revealed it was incomplete at the time of the research, documenting only four basic commands. The team used **[IDA Pro](https://hex-rays.com/ida-pro/)**, augmented with AI-driven tooling to accelerate the process, to analyze the Windows implementation. This investigation uncovered undocumented internal code paths and two additional commands essential for full functionality:\n\n- `GetCredentials` (Command ID 9)\n- `GetAuthenticatorList` (Command ID 12)\n\nThese commands, later added to the specification in March 2026 for Windows 11 24H2+, were critical for discovering and managing credentials stored on authenticators. By tracing the execution flow in the Windows RDP client (`mstsc.exe`), the researchers were able to map the protocol's behavior and understand how it interfaces with the underlying FIDO2 components, paving the way for a custom implementation.\n\n## The Solution: A Custom Browser API\n\nSince no existing browser API (`navigator.credentials`, `chrome.webAuthenticationProxy`, `WebHID`) could fulfill the requirement of passing a pre-computed `clientDataHash` to the authenticator, the team built a custom solution. As developers of a **[Chromium](https://www.chromium.org/)**-based browser (**[Prisma Browser](https://www.paloaltonetworks.com/sase/prisma-access/prisma-browser)**), they were able to create a proprietary extension API.\n\nThis custom API mirrors the standard `makeCredential()` and `getAssertion()` methods but with one key difference: it allows the caller to supply the `clientDataHash` directly. This hash is then passed straight to Chromium's robust FIDO2 stack. This approach provides several advantages:\n\n1.  **Full Authenticator Support:** It leverages Chromium's entire FIDO2 implementation, providing out-of-the-box support for USB, NFC, BLE, and platform authenticators (Touch ID, Windows Hello).\n2.  **Hybrid Transport:** It includes support for Cloud-assisted Bluetooth Low Energy (caBLE), enabling phone-as-authenticator scenarios.\n3.  **No Native Helper:** Unlike approaches using `libfido2` (as seen in **[FreeRDP](https://www.freerdp.com/)**), this method does not require a separate native application to access hardware, keeping the entire solution contained within the browser sandbox.\n\nThis thin wrapper around Chromium's existing machinery provides a secure and powerful way to bridge the gap between the remote session and the user's local authenticators.\n\n---\n\n## Impact Assessment\n\nThe business and security impact of this development is substantial. **[Remote Desktop Protocol](https://attack.mitre.org/techniques/T1021/001/)** remains a primary vector for lateral movement and initial access in enterprise networks, often targeted for its reliance on weaker, password-based authentication.\n\nBy enabling FIDO2/WebAuthn, organizations can now enforce phish-resistant MFA on RDP sessions accessing legacy applications. This directly mitigates the risk of credential theft, password spraying, and other attacks targeting **[Valid Accounts](https://attack.mitre.org/techniques/T1078/)**. For industries like finance, healthcare, and government that rely on on-premises applications, this provides a pathway to modernizing security without costly and complex application refactoring or relying on performance-degrading HTML5 gateways.\n\nThis capability strengthens Zero Trust architectures by ensuring that every connection, even to legacy systems, is protected by strong, verifiable identity, regardless of the user's location or device.\n\n## IOCs — Directly from Articles\n\nNo Indicators of Compromise (IOCs) are associated with this security research report.\n\n## Cyber Observables — Hunting Hints\n\nThe following patterns could help identify and monitor the usage of WebAuthn over RDP in an environment.\n\n| Type | Value | Description |\n|---|---|---|\n| Other | `Microsoft::Windows::RDP.Webauthn` | The Dynamic Virtual Channel (DVC) name for the WebAuthn redirection protocol. Its presence indicates WebAuthn-over-RDP capability. |\n| Network Traffic Pattern | CBOR-encoded traffic over RDP DVC | Traffic within the `Microsoft::Windows::RDP.Webauthn` channel is CBOR-encoded. Monitoring for this traffic pattern can help identify authentication events. |\n| Process Name | `mstsc.exe` | The native Windows RDP client. Correlating its network activity with authentication logs provides context for RDP sessions. |\n\n## Detection & Response\n\nWhile this research describes a defensive improvement, security teams can adapt their monitoring strategies to account for this new capability and detect potential misuse of RDP authentication.\n\n1.  **Monitor RDP Virtual Channels:** Implement monitoring for the creation and use of the `Microsoft::Windows::RDP.Webauthn` DVC. While its presence is benign in a properly configured environment, an unexpected appearance or anomalous traffic patterns could warrant investigation.\n2.  **Correlate with Endpoint Logs:** Correlate network-level RDP authentication events with endpoint process logs (e.g., Windows Event ID 4688). This can help attribute authentication activity to specific processes and users.\n3.  **Baseline Authentication Behavior:** Establish a baseline for normal RDP authentication methods and user behavior. An environment transitioning to WebAuthn should see a corresponding decrease in NTLM or Kerberos authentication events for RDP. Deviations from this baseline could indicate misconfigurations or fallback to weaker protocols.\n\nDefensive techniques from the D3FEND framework, such as **[Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** and **[Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)**, are foundational for building a robust RDP monitoring capability.\n\n## Mitigation\n\nThe primary mitigation is the adoption of the technology itself. To secure RDP access and defend against credential-based attacks, organizations should prioritize the following:\n\n1.  **Deploy Phish-Resistant MFA:** Implement FIDO2/WebAuthn for all remote access, including RDP. Utilize solutions like the browser-based client described in the research to extend this protection to legacy applications.\n2.  **Enforce Strong Authentication Policies:** Mandate the use of MFA for all accounts, especially privileged ones and those with remote access capabilities. This is a core principle of **[Multi-factor Authentication (M1032)](https://attack.mitre.org/mitigations/M1032/)**.\n3.  **Network Segmentation:** Restrict RDP access to and from specific jump hosts or management zones. Do not expose RDP directly to the internet. This aligns with **[Network Segmentation (M1030)](https://attack.mitre.org/mitigations/M1030/)** to contain lateral movement.\n4.  **Regularly Audit RDP Access:** Continuously audit and review accounts and systems with RDP access. Remove unnecessary access and apply the principle of least privilege, as recommended by **[User Account Management (M1018)](https://attack.mitre.org/mitigations/M1018/)**.",
+  "twitter_post": "🔒 Unit 42 cracks the code for phish-resistant MFA in browser-based RDP! A deep-dive into reverse-engineering Microsoft's WebAuthn protocol to support security keys like YubiKey & Touch ID in remote sessions. #RDP #WebAuthn #CyberSecurity #ZeroTrust",
+  "meta_description": "Unit 42 researchers detail the reverse-engineering process of Microsoft's RDP WebAuthn protocol (MS-RDPEWA) to enable phish-resistant MFA in a browser-based client.",
+  "category": [
+    "Security Operations",
+    "Threat Intelligence",
+    "Other"
+  ],
+  "severity": "informational",
+  "entities": [
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Prisma Browser",
+      "type": "product"
+    },
+    {
+      "name": "Okta",
+      "type": "company",
+      "url": "https://www.okta.com/"
+    },
+    {
+      "name": "YubiKey",
+      "type": "product"
+    },
+    {
+      "name": "FreeRDP",
+      "type": "product"
+    },
+    {
+      "name": "IDA Pro",
+      "type": "product"
+    },
+    {
+      "name": "Chromium",
+      "type": "product"
+    },
+    {
+      "name": "Windows",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/windows"
+    },
+    {
+      "name": "macOS",
+      "type": "product"
+    },
+    {
+      "name": "iOS",
+      "type": "product"
+    },
+    {
+      "name": "Linux",
+      "type": "product"
+    },
+    {
+      "name": "W3C",
+      "type": "security_organization",
+      "url": "https://www.w3.org/"
+    },
+    {
+      "name": "Daniel Prizmant",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/webauthn-added-to-browser-based-rdp/",
+      "title": "How We Added WebAuthn to a Browser-Based RDP Client",
+      "date": "2026-07-02",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1021.001",
+      "name": "Remote Desktop Protocol",
+      "tactic": "Lateral Movement"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Implementing phish-resistant MFA, such as the FIDO2/WebAuthn method detailed in the research, is the most effective defense against credential compromise for RDP access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SCP",
+          "name": "System Configuration Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions"
+        }
+      ],
+      "description": "Enforcing strong authentication policies and the principle of least privilege for all user accounts, especially those with remote access privileges, reduces the attack surface.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Isolating RDP access points behind jump hosts or gateways and strictly controlling network paths provides an additional layer of defense by containing potential breaches.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DA",
+          "name": "Dynamic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis"
+        }
+      ],
+      "description": "Running RDP clients within a sandboxed browser environment, as demonstrated in the research, limits the potential impact of a compromised client or session on the host machine.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "Organizations should prioritize the deployment of phish-resistant MFA for all remote access, especially for protocols like RDP that are frequent targets for credential-based attacks. This research demonstrates the feasibility of using browser-based clients to extend modern WebAuthn/FIDO2 capabilities to legacy on-premises applications accessed via RDP. The implementation should focus on using hardware security keys (YubiKey, etc.) or platform authenticators (Windows Hello, Touch ID) to protect against phishing and credential theft. Security teams should configure conditional access policies to mandate the use of these strong authenticators for all RDP sessions, particularly for privileged users and access to sensitive systems. This approach directly hardens the authentication process for RDP, moving beyond passwords and one-time codes to a more secure, unphishable standard, thereby significantly reducing the risk of unauthorized access via compromised credentials.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To complement strong authentication, security teams should implement Network Traffic Analysis (NTA) focused on RDP connections. Monitor for the creation and use of the `Microsoft::Windows::RDP.Webauthn` Dynamic Virtual Channel (DVC). While its presence is expected in environments using this feature, establishing a baseline of normal activity is crucial. Configure detection rules to alert on anomalies, such as WebAuthn DVC traffic originating from unauthorized subnets or at unusual times. Furthermore, analyze the metadata of RDP sessions (e.g., source/destination IPs, session duration, data transferred) and correlate it with authentication logs. An alert could be triggered if an RDP session, authenticated with strong MFA, begins exhibiting behavior consistent with lateral movement, such as connecting to multiple new hosts. This provides a critical detection layer to spot potential misuse of a legitimately authenticated session.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "In the context of this research, Application Configuration Hardening involves securing the entire RDP ecosystem. This starts with hardening the RDP servers themselves by disabling unused virtual channels and enabling Network Level Authentication (NLA). For the client side, using a managed, Chromium-based browser like Prisma Browser allows for centralized policy enforcement. Administrators can create policies that mandate the use of the WebAuthn redirection feature and disable fallback to weaker authentication methods. This ensures that users cannot bypass the intended security controls. Hardening should also include restricting which users and devices are permitted to initiate RDP sessions and ensuring that the browser and its extensions are always up-to-date to protect against unrelated client-side vulnerabilities. This creates a hardened, policy-driven environment for remote access that minimizes the attack surface.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "other",
+      "value": "Microsoft::Windows::RDP.Webauthn",
+      "description": "The Dynamic Virtual Channel (DVC) name used for WebAuthn redirection over RDP. Monitoring its creation and traffic can indicate WebAuthn usage.",
+      "context": "RDP session monitoring, network traffic analysis, SIEM logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "CBOR-encoded data over RDP DVC",
+      "description": "The MS-RDPEWA protocol uses CBOR (Concise Binary Object Representation) to encode WebAuthn commands. Detecting CBOR payloads within the specific DVC is a strong indicator of this activity.",
+      "context": "Deep Packet Inspection (DPI), Network Detection and Response (NDR) systems.",
+      "confidence": "medium"
+    },
+    {
+      "type": "process_name",
+      "value": "mstsc.exe",
+      "description": "The standard Windows RDP client. Correlating its activity with network logs can help identify RDP sessions and attribute authentication events.",
+      "context": "Endpoint Detection and Response (EDR) logs, Windows Event ID 4688.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "RDP",
+    "WebAuthn",
+    "FIDO2",
+    "MFA",
+    "Reverse Engineering",
+    "Zero Trust",
+    "Remote Access",
+    "Palo Alto Networks",
+    "Microsoft"
+  ],
+  "extract_datetime": "2026-07-03T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government",
+      "Critical Infrastructure",
+      "Manufacturing",
+      "Education"
+    ],
+    "other_affected": [
+      "Enterprises using legacy on-premises applications",
+      "Remote workforces"
+    ]
+  },
+  "pub_date": "2026-07-03",
+  "reading_time_minutes": 8,
+  "createdAt": "2026-07-03T15:00:00.000Z",
+  "updatedAt": "2026-07-03T15:00:00.000Z"
+}

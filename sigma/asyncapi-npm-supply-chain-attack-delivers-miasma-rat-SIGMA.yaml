@@ -1,0 +1,58 @@
+title: Suspicious Outbound Network Connection from Node.js
+id: 8a1b4c3d-2e5f-4a9b-8c7d-6f5e4d3c2b1a
+status: experimental
+description: Detects outbound network connections initiated by a Node.js process, which could indicate a compromised npm package (like Miasma RAT) calling back to a C2 server.
+references:
+  - https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1071
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\node.exe'
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '::1/128'
+  condition: selection and not filter_local
+falsepositives:
+  - Legitimate Node.js applications making API calls.
+  - Developer tools and local development servers.
+---
+title: Malicious AsyncAPI NPM Package Versions in Lockfiles
+id: 2f7b1c9a-3e4d-4b8a-9f6c-1d2e3f4a5b6c
+status: experimental
+description: Detects the presence of specific malicious versions of AsyncAPI packages within npm or yarn lock files.
+references:
+  - https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act
+author: cyber.netsecops.io
+date: 2026-07-15
+tags:
+  - attack.t1195.002
+level: critical
+logsource:
+  category: file_event
+  product: generic
+detection:
+  selection_filenames:
+    TargetFilename|endswith:
+      - 'package-lock.json'
+      - 'yarn.lock'
+  selection_keywords:
+    Keywords:
+      - '@asyncapi/generator@3.3.1'
+      - '@asyncapi/generator-helpers@1.1.1'
+      - '@asyncapi/generator-components@0.7.1'
+      - '@asyncapi/specs@6.11.1'
+  condition: all of selection_*
+falsepositives:
+  - Unlikely, these are specific versions tied to the attack.

@@ -1,0 +1,303 @@
+{
+  "id": "d23e88a4-1d18-437c-a5f1-8877b44d361e",
+  "slug": "microsoft-march-2026-patch-tuesday-fixes-84-flaws-including-two-publicly-disclosed-zero-days",
+  "headline": "Microsoft's March Patch Tuesday Fixes 84 Flaws, Including Two Publicly Known Zero-Days",
+  "title": "Microsoft Addresses 84 Vulnerabilities in March 2026 Patch Tuesday, Including Critical RCEs and Publicly Disclosed Flaws",
+  "summary": "Microsoft has released its March 2026 security updates, addressing a total of 84 vulnerabilities across its product portfolio, including Windows, Office, Azure, and SQL Server. The update includes patches for eight critical flaws, primarily involving remote code execution and elevation of privilege. While none of the vulnerabilities were actively exploited at the time of release, two were publicly disclosed, increasing the urgency for remediation. These include a critical elevation of privilege bug in SQL Server (CVE-2026-21262) and a denial-of-service flaw in .NET (CVE-2026-26127). The patches cover a wide range of products, with elevation of privilege flaws representing the largest category of fixes.",
+  "full_report": "## Executive Summary\nMicrosoft's March 2026 Patch Tuesday addresses 84 CVEs, including eight rated as critical. The release is notable for fixing two publicly disclosed vulnerabilities: **[CVE-2026-21262](https://nvd.nist.gov/vuln/detail/CVE-2026-21262)**, a critical elevation of privilege flaw in **[SQL Server](https://www.microsoft.com/en-us/sql-server)**, and **[CVE-2026-26127](https://nvd.nist.gov/vuln/detail/CVE-2026-26127)**, a denial-of-service vulnerability in **[.NET](https://dotnet.microsoft.com/)**. Although no active exploitation was reported at the time of release, the public nature of these two flaws requires immediate attention. The patches cover a broad spectrum of products, with 56% of the fixes addressing elevation of privilege vulnerabilities. Key critical flaws include a 9.8 CVSS RCE in Microsoft Devices Pricing Program and multiple RCEs in Microsoft Office that can be triggered via the Preview Pane.\n\n## Vulnerability Details\nThis month's security update addresses 84 vulnerabilities, broken down as follows:\n- 8 Critical\n- 76 Important\n\nThe vulnerability types are dominated by Elevation of Privilege (46), followed by Remote Code Execution (16), and Information Disclosure (10).\n\n### Publicly Disclosed Vulnerabilities:\n- **`CVE-2026-21262`**: An 8.8 CVSS critical elevation of privilege vulnerability in SQL Server. An authenticated attacker with low privileges could exploit this flaw over the network to gain `sysadmin` rights, achieving complete control over the database. This is due to an improper access control weakness.\n- **`CVE-2026-26127`**: A 7.5 CVSS denial-of-service (DoS) vulnerability in .NET 9 and 10. A remote, unauthenticated attacker could crash an application by sending a malformed request that triggers an out-of-bounds read in the Base64Url decoding logic. Microsoft assesses exploitation as unlikely.\n\n### Critical Remote Code Execution Vulnerabilities:\n- **`CVE-2026-21536`**: A 9.8 CVSS RCE in the Microsoft Devices Pricing Program. This flaw allows an unauthenticated attacker to execute arbitrary code via an unrestricted file upload. Microsoft has proactively remediated this in its cloud infrastructure.\n- **`CVE-2026-26110` & `CVE-2026-26113`**: Two 8.4 CVSS RCEs in Microsoft Office. These are particularly dangerous as they can be exploited through the Preview Pane, meaning a user does not need to open the malicious file to be compromised. `CVE-2026-26110` is a type confusion issue, while `CVE-2026-26113` is an untrusted pointer dereference.\n\n## Affected Systems\n- **Operating Systems**: Microsoft Windows\n- **Applications**: Microsoft Office, Microsoft Excel\n- **Developer Platforms**: .NET, Hyper-V\n- **Cloud Services**: Azure, Microsoft Devices Pricing Program, Payment Orchestrator Service\n- **Databases**: SQL Server\n\n## Impact Assessment\nThe most significant risk stems from the publicly disclosed SQL Server vulnerability (**`CVE-2026-21262`**), which could allow a low-privileged user to completely compromise a database server. This poses a severe threat to data integrity, confidentiality, and availability. The Office RCEs (**`CVE-2026-26110`**, **`CVE-2026-26113`**) also present a high risk, as they lower the bar for exploitation through simple user interaction like previewing a file. While Microsoft has patched the critical RCE in its cloud service, on-premise and unmanaged systems remain a concern. The information disclosure flaw in Excel (**`CVE-2026-26144`**) involving Copilot highlights the emerging attack surface of AI-assisted tools, potentially enabling zero-click data exfiltration.\n\n## Cyber Observables for Detection\n- **Monitor SQL Server Logs**: Look for unusual authentication patterns or privilege escalation attempts from low-privileged accounts, particularly any activity related to `sysadmin` role changes that do not align with standard administrative actions. Check for connections from unexpected network segments.\n- **Monitor .NET Application Logs**: For applications using .NET 9/10, monitor for application crashes or exceptions related to Base64Url decoding. Unexplained process terminations could indicate attempted exploitation of `CVE-2026-26127`.\n- **File Integrity Monitoring**: On web servers hosting applications like the Microsoft Devices Pricing Program, monitor for unexpected file uploads to web-accessible directories. Rules should be in place to detect and alert on the creation of executable file types (`.aspx`, `.php`, `.jsp`).\n- **Endpoint Detection (EDR)**: For Office RCEs, monitor for child processes spawned by Office applications (`WINWORD.EXE`, `EXCEL.EXE`, `OUTLOOK.EXE`) that are unusual, such as `cmd.exe` or `powershell.exe`, especially when initiated from the Preview Pane feature.\n\n## Detection & Response\n1. **Vulnerability Scanning**: Immediately scan all environments for the presence of the vulnerabilities addressed in this update, prioritizing the critical and publicly disclosed CVEs.\n2. **SIEM/EDR Rule Implementation**: \n   - Create detection rules for the SQL Server privilege escalation. Monitor Windows Event ID `4672` (Special privileges assigned to new logon) for unexpected assignments to SQL Server service accounts.\n   - Implement rules to detect Office applications spawning suspicious child processes. This can be mapped to [`T1204.002 - Malicious File`](https://attack.mitre.org/techniques/T1204/002/).\n3. **Threat Hunting**: Proactively hunt for signs of exploitation. For SQL Server, query audit logs for failed login attempts followed by a successful login from the same source IP with a different, low-privileged account. For Office, hunt for recently created or modified files with suspicious extensions in user directories that were accessed via Outlook's Preview Pane.\n\n## Mitigation\n1. **Patch Immediately**: The primary mitigation is to apply the March 2026 security updates as soon as possible. Prioritize patching for internet-facing systems, SQL Servers, and workstations with Microsoft Office.\n2. **Principle of Least Privilege**: For **`CVE-2026-21262`**, enforce the principle of least privilege for all database accounts. Restrict network access to SQL servers to only authorized application servers and administrative hosts. This is a core component of [`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/).\n3. **Disable Preview Pane**: As a temporary measure until patching is complete, consider disabling the Preview Pane in Microsoft Outlook and Windows Explorer to mitigate the risk from **`CVE-2026-26110`** and **`CVE-2026-26113`**. This can be done via Group Policy.\n4. **Web Application Firewall (WAF)**: For web-facing applications, use a WAF to inspect and block malicious file uploads, which could help mitigate vulnerabilities like **`CVE-2026-21536`**.",
+  "twitter_post": "Microsoft's March Patch Tuesday is here! 🚨 84 flaws fixed, including 8 critical RCE & privilege escalation bugs. Two vulnerabilities were publicly disclosed but not yet exploited. Patch now for Windows, Office, SQL Server & Azure! #PatchTuesday #CyberSecurity",
+  "meta_description": "Microsoft's March 2026 Patch Tuesday addresses 84 vulnerabilities, including two publicly disclosed zero-days (CVE-2026-21262, CVE-2026-26127) and eight critical flaws. Learn about the key fixes and prioritize your patching.",
+  "category": [
+    "Patch Management",
+    "Vulnerability"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/en-us/security"
+    },
+    {
+      "name": "Windows",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft Office",
+      "type": "product"
+    },
+    {
+      "name": "Azure",
+      "type": "product",
+      "url": "https://azure.microsoft.com/"
+    },
+    {
+      "name": "SQL Server",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/sql-server"
+    },
+    {
+      "name": ".NET",
+      "type": "product",
+      "url": "https://dotnet.microsoft.com/"
+    },
+    {
+      "name": "Hyper-V",
+      "type": "product"
+    },
+    {
+      "name": "Microsoft Excel",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-21536",
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-26125",
+      "cvss_score": 8.6,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2026-26110",
+      "cvss_score": 8.4,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2026-26113",
+      "cvss_score": 8.4,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2026-21262",
+      "cvss_score": 8.8,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-26127",
+      "cvss_score": 7.5,
+      "severity": "high"
+    },
+    {
+      "id": "CVE-2026-26144",
+      "cvss_score": 7.5,
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.crowdstrike.com/blog/march-2026-patch-tuesday/",
+      "title": "March 2026 Patch Tuesday: Updates and Analysis | CrowdStrike",
+      "date": "2026-03-08",
+      "friendly_name": "CrowdStrike",
+      "website": "crowdstrike.com"
+    },
+    {
+      "url": "https://redmondmag.com/articles/2026/03/10/microsoft-march-patch-tuesday.aspx",
+      "title": "Microsoft March Patch Tuesday: 8 Critical Bulletins and 2 Zero-Days - Redmondmag.com",
+      "date": "2026-03-08",
+      "friendly_name": "Redmond Magazine",
+      "website": "redmondmag.com"
+    },
+    {
+      "url": "https://petri.com/microsofts-march-2026-patch-tuesday-updates-fix-8-critical-vulnerabilities",
+      "title": "Microsoft's March 2026 Patch Tuesday Updates Fix 8 Critical Vulnerabilities",
+      "date": "2026-03-08",
+      "friendly_name": "Petri",
+      "website": "petri.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1212",
+      "name": "Exploitation for Privilege Escalation"
+    },
+    {
+      "id": "T1203",
+      "name": "Exploitation for Client Execution"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation"
+    },
+    {
+      "id": "T1548",
+      "name": "Abuse Elevation Control Mechanism"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Applying the March 2026 security updates from Microsoft is the most direct and effective mitigation for all 84 vulnerabilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        },
+        {
+          "id": "D3-SPP",
+          "name": "Strong Password Policy",
+          "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy"
+        }
+      ],
+      "description": "Enforcing least privilege for database accounts and restricting access helps mitigate the impact of privilege escalation flaws like CVE-2026-21262.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        },
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Disabling the Preview Pane in Outlook and Windows Explorer can serve as a compensating control for the Office RCEs until patches are deployed.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FA",
+          "name": "File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileAnalysis"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        },
+        {
+          "id": "D3-NTA",
+          "name": "Network Traffic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis"
+        },
+        {
+          "id": "D3-UA",
+          "name": "URL Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:URLAnalysis"
+        }
+      ],
+      "description": "Using Web Application Firewalls (WAFs) to filter and inspect file uploads can prevent exploitation of vulnerabilities like CVE-2026-21536.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The primary and most critical action is to deploy Microsoft's March 2026 security updates across the entire environment. A risk-based approach should be adopted for deployment. Start with internet-facing systems, especially any servers running vulnerable versions of SQL Server that are accessible externally. Follow this with critical internal servers, including all database servers, and then proceed to all workstations and end-user devices. Utilize automated patch management systems to ensure comprehensive coverage and track compliance. For the SQL Server flaw (CVE-2026-21262), patching should be considered an emergency change. For the Office RCEs (CVE-2026-26110, CVE-2026-26113), prioritize patching for users in high-risk departments like finance and HR who frequently handle external documents. Verification is key; after deployment, run authenticated vulnerability scans to confirm that the patches have been successfully applied and the vulnerabilities are no longer present.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "In direct response to the SQL Server privilege escalation vulnerability (CVE-2026-21262), a thorough review of all database user account permissions is essential. This goes beyond simply patching. Audit all accounts with access to SQL Server instances and ensure they adhere to the principle of least privilege. No application service account or individual user account should have `sysadmin` rights unless absolutely necessary for a specific, time-bound administrative task. Implement a process for Just-In-Time (JIT) access for elevated privileges. This countermeasure significantly reduces the impact of a potential compromise, as an attacker who gains control of a low-privileged account would not be able to escalate to full control of the database. This should be combined with network segmentation to restrict which hosts can connect to the SQL Server instances in the first place.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "SQL Server Audit Logs",
+      "description": "Logs containing information about authentication, privilege changes, and object access within SQL Server, critical for detecting exploitation of CVE-2026-21262.",
+      "context": "SIEM Monitoring",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "WINWORD.EXE",
+      "description": "Microsoft Word process. Monitor for suspicious child processes (e.g., cmd.exe, powershell.exe) spawned from this process, which could indicate exploitation of Office RCEs.",
+      "context": "EDR Telemetry",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "OUTLOOK.EXE",
+      "description": "Microsoft Outlook process. Monitor for suspicious child processes, especially when the Preview Pane is active.",
+      "context": "EDR Telemetry",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "4672",
+      "description": "Windows Security Event ID for 'Special privileges assigned to new logon'. Can be used to detect potential privilege escalation activities on database servers.",
+      "context": "Windows Event Log Monitoring",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Patch Tuesday",
+    "Microsoft",
+    "Vulnerability",
+    "RCE",
+    "Elevation of Privilege",
+    "Zero-Day",
+    "SQL Server",
+    "Microsoft Office"
+  ],
+  "extract_datetime": "2026-03-08T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government",
+      "Manufacturing",
+      "Retail",
+      "Education",
+      "Transportation",
+      "Telecommunications",
+      "Critical Infrastructure"
+    ]
+  },
+  "pub_date": "2026-03-08",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-03-08T15:00:00.000Z",
+  "updatedAt": "2026-03-08T15:00:00.000Z"
+}

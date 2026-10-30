@@ -1,0 +1,64 @@
+title: SLEEPWALKER DLL Side-Loading via ERAAgent.exe
+id: 8b2a9f7d-c6e5-4d3c-9a8b-7c6d5e4f3a2b
+status: experimental
+description: Detects the ESET Management Agent process (ERAAgent.exe) loading dpapi.dll from a non-system directory, a behavior associated with the SLEEPWALKER backdoor.
+references:
+  - https://thehackernews.com/2026/08/newly-sleepwalker-backdoor-waits-for.html
+author: cyber.netsecops.io
+date: 2026-08-26
+tags:
+  - attack.t1574.002
+level: high
+logsource:
+  category: image_load
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\ERAAgent.exe'
+    ImageLoaded|endswith: '\dpapi.dll'
+  filter:
+    ImageLoaded|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+  condition: selection and not filter
+---
+title: Network Interface in Promiscuous Mode
+id: 7a1b8c6d-e5f4-4c3b-8a7b-6c5d4e3f2a1b
+status: experimental
+description: Detects when a network interface is put into promiscuous mode, which allows it to capture all traffic on the network segment. This is a behavior associated with passive sniffers like the SLEEPWALKER backdoor.
+references:
+  - https://thehackernews.com/2026/08/newly-sleepwalker-backdoor-waits-for.html
+author: cyber.netsecops.io
+date: 2026-08-26
+tags:
+  - attack.t1040
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 5152
+    FilterInformation|contains: 'Promiscuous Mode'
+  condition: selection
+---
+title: Anomalous SLEEPWALKER DLL Found in ESET Directory
+id: 9c1b3a8e-f4d2-4e1a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects the presence of 'dpapi.dll' in the ESET Remote Administrator Agent directory, which is a key indicator of the SLEEPWALKER backdoor.
+references:
+  - https://thehackernews.com/2026/08/newly-sleepwalker-backdoor-waits-for.html
+author: cyber.netsecops.io
+date: 2026-08-26
+tags:
+  - attack.t1574.002
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains|all:
+      - '\ESET\RemoteAdministrator\Agent\'
+      - 'dpapi.dll'
+  condition: selection

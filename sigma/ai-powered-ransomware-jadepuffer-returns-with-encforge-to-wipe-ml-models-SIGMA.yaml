@@ -1,0 +1,91 @@
+title: Suspicious Langflow Code Validation Endpoint Access
+id: 8a3c1e9b-5d2f-4b1a-9c8d-7e6f5d4c3b2a
+status: experimental
+description: Detects suspicious or repeated requests to the vulnerable Langflow /api/v1/validate_code endpoint, which could indicate an exploitation attempt for CVE-2025-3248.
+references:
+  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-stem|contains: '/api/v1/validate_code'
+    cs-method: 'POST'
+  condition: selection
+---
+title: Privileged Docker Container Spawn from Container
+id: 1f9b8d7c-3a2e-4f1b-8c7d-6e5f4d3c2b1a
+status: experimental
+description: Detects a command originating from within a container that attempts to spawn a new privileged container via a mounted Docker socket, a technique used for container escape.
+references:
+  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1611
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/docker'
+    CommandLine|contains|all:
+      - 'run'
+      - '--privileged'
+  filter_known_good_parent:
+    ParentImage|endswith:
+      - '/sshd'
+      - '/bash'
+      - '/zsh'
+  condition: selection and not filter_known_good_parent
+---
+title: Anomalous Modification of ML Model Files
+id: 6ce5945c-a4f1-4d14-927b-782a55c93241
+status: experimental
+description: Detects high-volume read or write activity on files with common ML model extensions, which could indicate a destructive attack like ENCFORGE.
+references:
+  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1485
+level: medium
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.pt'
+      - '.pth'
+      - '.ckpt'
+      - '.safetensors'
+      - '.gguf'
+      - '.faiss'
+      - '.parquet'
+      - '.tfrecord'
+  condition: selection
+---
+title: ENCFORGE Destructive Malware Execution
+id: 2b1f8c7d-9e3a-4f1b-8c7d-9e3a4f1b8c7d
+status: experimental
+description: Detects the execution of the ENCFORGE destructive malware binary.
+references:
+  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1485
+level: critical
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/encforge'
+  condition: selection
