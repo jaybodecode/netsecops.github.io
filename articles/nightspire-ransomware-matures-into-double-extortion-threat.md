@@ -77,8 +77,6 @@ Security teams may want to hunt for the following patterns to detect NightSpire 
 
 ## Sources
 - [NightSpire: Wannabe warlords in ransomware’s shadow realm](https://blog.barracuda.com/2026/05/01/nightspire-wannabe-warlords-in-ransomwares-shadow-realm/) — Barracuda Networks (2026-05-01)
-- [Ransomware in focus: Meet NightSpire](https://www.s-rminform.com/blog/ransomware-in-focus-meet-nightspire) — S-RM (2025-03-25)
-- [NightSpire Ransomware: Emerging Double-Extortion Threat](https://threatlabsnews.xcitium.com/emerging-threat/nightspire-ransomware-analysis-report-by-xcitium/) — Xcitium (2026-02-19)
 - [NightSpire Ransomware Expands Reach with Aggressive Extortion Deadlines](https://www.hivepro.com/threat-advisory/nightspire-ransomware-expands-reach-with-aggressive-extortion-deadlines/) — Hive Pro (2026-05-01)
 
 ---

@@ -57,8 +57,8 @@ Strategic mitigation requires a multi-layered, defense-in-depth approach.
 **Tags:** state-sponsored, threat intelligence, ShinyHunters, Telus, OT security, AI malware
 
 ## Sources
-- [Cybersecurity Incidents and Alerts March 28, 2026 A Roundup of Recent Threats, Data Breaches, and Fraud Schemes](https://www.kcnet.com/cybersecurity-incidents-alerts-march-28-2026) — KCNet
-- [Chinese Hackers Target Canadian Telecoms, CSIS Warns](https://www.globeandmail.com/politics/article-chinese-hackers-target-canadian-telecoms-csis-warns/) — The Globe and Mail
+- [KCNet](https://www.kcnet.com/) — KCNet
+- [The Globe and Mail](https://www.globeandmail.com/) — The Globe and Mail
 
 ---
 Source: https://cyber.netsecops.io/articles/global-cybersecurity-incidents-surge-with-state-sponsored-attacks/

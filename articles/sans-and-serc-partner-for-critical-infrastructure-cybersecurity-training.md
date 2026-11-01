@@ -43,7 +43,6 @@ This initiative is a proactive measure to mitigate the risk of cyberattacks agai
 ## Sources
 - [SANS Institute and SERC Reliability Corporation Announce National NERC CIP Training Initiative to Strengthen Grid Reliability](https://www.globenewswire.com/news-release/2026/04/30/2877508/0/en/SANS-Institute-and-SERC-Reliability-Corporation-Announce-National-NERC-CIP-Training-Initiative-to-Strengthen-Grid-Reliability.html) — GlobeNewswire (2026-04-30)
 - [SANS, SERC introduce ICS456 training program to accelerate cybersecurity skills and critical infrastructure protection](https://www.industrialcyber.com/news/sans-serc-introduce-ics456-training-program-to-accelerate-cybersecurity-skills-and-critical-infrastructure-protection/) — Industrial Cyber (2026-05-05)
-- [SANS Workforce Security and Risk Training](https://www.sans.org/cyber-security-training-for-business/workforce-development/) — SANS Institute (2026-05-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/sans-and-serc-partner-for-critical-infrastructure-cybersecurity-training/

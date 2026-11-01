@@ -49,7 +49,6 @@ Starbucks detected suspicious activity on February 6, nearly three weeks after t
 **Tags:** Starbucks, Data Breach, Phishing, PII, SSN
 
 ## Sources
-- [Starbucks Breach Exposes Employee Data and Financial Info](https://ampcuscyber.com/starbucks-breach-exposes-employee-data-and-financial-info/) — Ampcus Cyber
 - [Starbucks Data Breach Exposes Personal Information of Hundreds of Users](https://www.cyberpress.com/starbucks-data-breach-exposes-personal-information-of-hundreds-of-users/) — Cyber Press
 - [Starbucks discloses data breach affecting hundreds of employees](https://www.bleepingcomputer.com/news/security/starbucks-discloses-data-breach-affecting-hundreds-of-employees/) — BleepingComputer
 - [Starbucks data breach impacts 889 employees](https://securityaffairs.com/159837/data-breach/starbucks-data-breach-impacts-employees.html) — Security Affairs

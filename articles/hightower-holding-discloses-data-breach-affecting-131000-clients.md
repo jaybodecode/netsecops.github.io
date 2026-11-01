@@ -60,9 +60,6 @@ Preventing attacks based on compromised credentials requires a defense-in-depth 
 **Tags:** Data Breach, Financial Services, PII, Social Security Number, Class Action Lawsuit
 
 ## Sources
-- [PRIVACY ALERT: Hightower Holding LLC Under Investigation for Data Breach of Over 131,000 Records](https://www.prnewswire.com/news-releases/privacy-alert-hightower-holding-llc-under-investigation-for-data-breach-of-over-131-000-records-302100067.html) — PR Newswire (2026-03-25)
-- [Hightower Holding Data Breach - The Lyon Firm](https://www.thelyonfirm.com/blog/hightower-holding-data-breach/) — The Lyon Firm (2026-03-25)
-- [Hightower Holding Data Breach Investigation](https://www.classlawdc.com/2026/03/24/hightower-holding-data-breach-investigation/) — Migliaccio & Rathod LLP (2026-03-24)
 - [Hightower Holding Data Breach Class Action Investigation](https://msdlegal.com/hightower-holding-data-breach-class-action-investigation/) — Markovits, Stock & DeMarco (2026-03-24)
 - [Hightower Holding, LLC Breach Investigation – Class Action Litigation](https://slfla.com/investigations/hightower-holding-llc-breach-investigation/) — Schubert Jonckheer & Kolbe LLP (2026-03-25)
 

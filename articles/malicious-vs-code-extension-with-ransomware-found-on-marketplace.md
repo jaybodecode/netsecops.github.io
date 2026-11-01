@@ -54,7 +54,6 @@ Securing developer environments requires a combination of technical controls and
 
 ## Sources
 - [Vibe-Coded Malicious VS Code Extension Found with Built-In Ransomware Capabilities](https://thehackernews.com/2025/11/vibe-coded-malicious-vs-code-extension.html) — The Hacker News (2025-11-07)
-- [Malicious VS Code extension with ransomware capabilities discovered](https://www.techrepublic.com/article/malicious-vs-code-extension-ransomware/) — TechRepublic (2025-11-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-vs-code-extension-with-ransomware-found-on-marketplace/

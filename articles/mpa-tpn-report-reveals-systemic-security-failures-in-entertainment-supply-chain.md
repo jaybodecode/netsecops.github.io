@@ -44,7 +44,7 @@ Based on the report, entertainment industry organizations and their vendors shou
 **Tags:** MPA, TPN, Entertainment Industry, Supply Chain Attack, MFA, Vulnerability Management, Third-Party Risk
 
 ## Sources
-- [New Report from the MPA's Content Security Initiative Links Control Failures to Content Security Incidents Across the Entertainment Industry](https://www.manilatimes.net/2026/04/29/public-square/new-report-from-the-mpas-content-security-initiative-links-control-failures-to-content-security-incidents-across-the-entertainment-industry/1927508) — The Manila Times (2026-04-28)
+- [The Manila Times](https://www.manilatimes.net/) — The Manila Times (2026-04-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/mpa-tpn-report-reveals-systemic-security-failures-in-entertainment-supply-chain/

@@ -77,8 +77,8 @@ Combating the industrialized ransomware threat requires fundamental security hyg
 **Tags:** Ransomware, Threat Intelligence, GuidePoint Security, Symantec, Qilin, Akira, LockBit, RaaS
 
 ## Sources
-- [Ransomware Victims and Threat Groups Surge to Record Levels, GuidePoint Security Finds](https://www.guidepointsecurity.com/blog/ransomware-victims-and-threat-groups-surge-to-record-levels-guidepoint-security-finds/) — GuidePoint Security (2026-01-15)
-- [Ransomware activity never dies, it multiplies](https://www.helpnetsecurity.com/2026/01/16/ransomware-attacks-trends/) — Help Net Security (2026-01-16)
+- [GuidePoint Security](https://www.guidepointsecurity.com/) — GuidePoint Security (2026-01-15)
+- [Help Net Security](https://www.helpnetsecurity.com/) — Help Net Security (2026-01-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/threat-reports-detail-record-breaking-ransomware-activity-in-2025/

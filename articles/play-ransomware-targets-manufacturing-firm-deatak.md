@@ -56,7 +56,7 @@ For a specialized manufacturer like Deatak, the impact could be devastating:
 **Tags:** ransomware, Play, manufacturing, data breach
 
 ## Sources
-- [Top data breaches of February 2026 (so far) (updated daily) - SharkStriker](https://www.sharkstriker.com/blog/top-data-breaches-of-february-2026-so-far-updated-daily) — SharkStriker (2026-02-02)
+- [SharkStriker](https://www.sharkstriker.com/) — SharkStriker (2026-02-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/play-ransomware-targets-manufacturing-firm-deatak/

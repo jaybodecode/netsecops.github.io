@@ -57,8 +57,8 @@ Detection for this variant is the same as for other ESXi-targeting ransomware:
 **Tags:** Nitrogen, Ransomware, VMware ESXi, Cryptography, Data Recovery, Operational Failure
 
 ## Sources
-- [Nitrogen can't unlock its own ransomware after coding error](https://www.theregister.com/2026/02/04/nitrogen_ransomware_fail/) — The Register (2026-02-04)
-- [Nitrogen ransomware's ESXi encryptor is fatally flawed, don't pay](https://www.bleepingcomputer.com/news/security/nitrogen-ransomwares-esxi-encryptor-is-fatally-flawed/) — BleepingComputer (2026-02-04)
+- [The Register](https://www.theregister.com/) — The Register (2026-02-04)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-02-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/nitrogen-ransomware-esxi-encryptor-contains-fatal-coding-error/

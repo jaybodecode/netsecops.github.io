@@ -102,7 +102,6 @@ To prevent and detect similar incidents, organizations should monitor:
 ## Sources
 - [Canadian Tire Data Breach Impacts 38 Million Accounts](https://www.securityweek.com/canadian-tire-data-breach-impacts-38-million-accounts/) — SecurityWeek (2026-02-28)
 - [PCI DSS in 2026: Fortifying Your Digital Wallet Against Cyber Predators Tales from the Breach Frontlines](https://medium.com/the-fintech-guide/pci-dss-in-2026-fortifying-your-digital-wallet-against-cyber-predators-tales-from-the-breach-5b6d925e985b) — Medium (2026-03-01)
-- [Tech Talk – Feb. 28, 2026](https://podcasts.apple.com/ca/podcast/tech-talk-feb-28-2026/id1545464188?i=1000707764137) — Apple Podcasts (2026-02-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/canadian-tire-breach-exposes-38-million-accounts-due-to-cloud-misconfiguration/

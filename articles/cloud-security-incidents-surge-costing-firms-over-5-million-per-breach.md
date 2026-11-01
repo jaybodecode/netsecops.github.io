@@ -61,7 +61,6 @@ Mitigation must focus on strengthening the fundamentals of cloud security.
 
 ## Sources
 - [Cloud Cybersecurity in 2026: Wake Up Before It's Too Late](https://medium.com/@Niharika/cloud-cybersecurity-in-2026-wake-up-before-its-too-late-a1b2c3d4e5f6) — Medium (2026-01-19)
-- [50+ Cloud Security Statistics in 2026](https://www.sentinelone.com/blog/cloud-security-statistics-2026/) — SentinelOne (2026-01-18)
 - [100+ Cloud Security Statistics for 2026](https://spacelift.io/blog/cloud-security-statistics) — Spacelift (2026-01-18)
 
 ---

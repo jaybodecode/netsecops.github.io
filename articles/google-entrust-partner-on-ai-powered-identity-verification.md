@@ -49,7 +49,6 @@ Organizations can prepare to leverage these future technologies by focusing on t
 
 ## Sources
 - [Google - All News And Posts By Crowdfund Insider](https://www.crowdfundinsider.com/company/google/) — Crowdfund Insider (2026-02-14)
-- [Versa Cyber - Threat Intelligence Reports](https://versatrust.com/security/cyber-threat-intelligence-reports/february-14-2026) — VersaTrust (2026-02-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-entrust-partner-on-ai-powered-identity-verification/

@@ -85,9 +85,7 @@ Organizations can take several steps to mitigate the risk of similar attacks:
 ## Sources
 - [ADT confirms data breach after ShinyHunters leak threat](https://www.bleepingcomputer.com/news/security/adt-confirms-data-breach-after-shinyhunters-leak-threat/) — BleepingComputer (2026-04-24)
 - [ADT Confirms Data Breach Following ShinyHunters Data Leak Claim](https://www.cybersecuritynews.net/adt-confirms-data-breach-following-shinyhunters-data-leak-claim/) — Cybersecurity News (2026-04-25)
-- [ADT Suffers Data Breach, 'ShinyHunters' Hackers Say They Stole 10 Million Records](https://www.pcmag.com/news/adt-suffers-data-breach-shinyhunters-hackers-say-they-stole-10-million) — PCMag (2026-04-24)
 - [America's largest home security brand ADT confirms data breach linked to ShinyHunters group](https://www.neowin.net/news/americas-largest-home-security-brand-adt-confirms-data-breach-linked-to-shinyhunters-group/) — Neowin (2026-04-25)
-- [America's largest home security company confirms data breach](https://www.notebookcheck.net/America-s-largest-home-security-company-confirms-data-breach.828859.0.html) — NotebookCheck (2026-04-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/adt-confirms-data-breach-after-shinyhunters-leak-threat/

@@ -62,7 +62,6 @@ Hunting for exploitation of these vulnerabilities involves monitoring administra
 ## Sources
 - [KB5084597: Microsoft outs Windows 11 25H2, 24H2 emergency update for a critical network flaw](https://www.neowin.net/news/kb5084597-microsoft-outs-windows-11-25h2-24h2-emergency-update-for-a-critical-network-flaw/) — Neowin (2026-03-14)
 - [Windows message center](https://learn.microsoft.com/en-us/windows/release-health/windows-message-center) — Microsoft (2026-03-13)
-- [Microsoft Releases Emergency Patch for Critical RRAS RCE Flaw in Windows 11](https://www.bleepingcomputer.com/news/microsoft/microsoft-releases-emergency-patch-for-critical-rras-rce-flaw-in-windows-11/) — BleepingComputer (2026-03-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-issues-emergency-hotpatch-for-critical-windows-rras-rce-flaws/

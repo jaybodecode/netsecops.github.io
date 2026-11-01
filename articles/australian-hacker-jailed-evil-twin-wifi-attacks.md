@@ -74,9 +74,7 @@ For organizations like airports and airlines:
 **Tags:** Evil Twin, Wi-Fi Pineapple, Man-in-the-Middle, Phishing, Cybercrime, Australia
 
 ## Sources
-- [Michael Clapsis: IT guru jailed for seven years for creating fake WiFi on flights, stealing intimate images](https://www.thewest.com.au/news/courts-wa/michael-clapsis-it-guru-jailed-for-seven-years-for-creating-fake-wifi-on-flights-stealing-intimate-images-c-16982842) — The West Australian (2025-11-27)
 - [ThreatsDay Bulletin: Wi-Fi Hack, npm Worm, DeFi Theft, Phishing Blasts— and 15 More Stories](https://thehackernews.com/2025/12/threatsday-bulletin-wi-fi-hack-npm-worm.html) — The Hacker News (2025-12-04)
-- [Australian Man Gets Seven Years for Running “Evil Twin” Wi-Fi](https://infosecurity-magazine.com/news/australian-man-evil-twin-wifi/) — Infosecurity Magazine (2025-12-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/australian-hacker-jailed-evil-twin-wifi-attacks/

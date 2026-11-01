@@ -59,7 +59,6 @@ The coordinated targeting of the DIB poses a direct threat to national security.
 
 ## Sources
 - [Google Links China, Iran, Russia, North Korea to Coordinated Defense Sector Cyber Operations](https://thehackernews.com/2026/02/google-links-china-iran-russia-north.html) — The Hacker News (2026-02-13)
-- [Cyber News Roundup – February 13th 2026](https://www.integrity360.com/ie/blog/2026/02/13/cyber-news-roundup-february-13th-2026/) — Integrity360 (2026-02-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-details-widespread-cyber-threats-targeting-defense-industrial-base/

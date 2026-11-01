@@ -75,8 +75,6 @@ No specific Indicators of Compromise (IOCs) were provided in the source articles
 **Tags:** 8Base, ransomware, Volkswagen, data breach, supply chain, GDPR, Phobos
 
 ## Sources
-- [Volkswagen Allegedly Hacked in Ransomware Attack as 8Base Claims Data Leak](https://gbhackers.com/volkswagen-allegedly-hacked-by-8base/) — GBHackers (2025-10-19)
-- [Volkswagen Reportedly Hacked by Ransomware Attack By 8Base Group and Leaked Sensitive Data](https://cyberpress.com/volkswagen-reportedly-hacked-by-ransomware-attack-by-8base-group-and-leaked-sensitive-data/) — Cyberpress (2025-10-19)
 - [Volkswagen Allegedly Hit by Ransomware Attack as 8Base Claims Sensitive Data Theft](https://cybersecuritynews.co.uk/volkswagen-allegedly-hit-by-ransomware-attack-as-8base-claims-sensitive-data-theft/) — Cybersecurity News (2025-10-19)
 
 ---

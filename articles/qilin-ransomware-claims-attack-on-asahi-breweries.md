@@ -69,7 +69,6 @@ To detect Qilin ransomware activity, security teams should monitor for:
 
 ## Sources
 - [Ransomware Group Claims Attack on Beer Giant Asahi](https://www.securityweek.com/ransomware-group-claims-attack-on-beer-giant-asahi/) — SecurityWeek (2025-10-08)
-- [The Week in Breach News: October 8, 2025](https://www.kaseya.com/blog/the-week-in-breach-news-october-8-2025/) — Kaseya (2025-10-08)
 - [NEWS ROUNDUP – 8th October 2025](https://www.digitalforensicsmagazine.com/news-roundup-8th-october-2025/) — Digital Forensics Magazine (2025-10-08)
 - [News - October 2025 - Cyber Security Review](https://www.cybersecurity-review.com/news/news-october-2025/) — Cyber Security Review (2025-10-08)
 

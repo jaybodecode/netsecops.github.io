@@ -42,7 +42,6 @@ Group-IB's report calls for a fundamental shift in defensive strategy, moving fr
 **Tags:** Supply Chain Attack, Threat Intelligence, Group-IB, Cybercrime, MSP, Initial Access Broker
 
 ## Sources
-- [Supply chain cyber attacks continue to evolve in 2026: Group-IB](https://www.arnnet.com.au/article/710123/supply-chain-cyber-attacks-continue-evolve-2026-group-ib/) — ARNnet (2026-02-11)
 - [Supply Chain Attacks to Dominate Global Cybersecurity Landscape by 2026 Warns New Report](https://www.cyberlifemag.com/security-news/supply-chain-attacks-to-dominate-2026/) — cyberlife Magazine (2026-02-11)
 
 ---

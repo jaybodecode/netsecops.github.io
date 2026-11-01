@@ -58,7 +58,6 @@ No specific IP addresses or file hashes were provided in the source reports, but
 
 ## Sources
 - [Operation DupeHike targeting Russian employees: A rising wave of geopolitical cyber-espionage in 2026](https://etinsights.et-edge.com/operation-dupehike-targeting-russian-employees-a-rising-wave-of-geopolitical-cyber-espionage-in-2026/) — ET Edge (2025-12-11)
-- [Operation DupeHike: A Deep Dive into the Cyber-Espionage Campaign Targeting Russian Entities](https://www.seqrite.com/blog/operation-dupehike-a-new-cyber-espionage-campaign-targeting-russian-organizations/) — Seqrite (2025-12-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/operation-dupehike-cyber-espionage-campaign-targets-russian-companies/

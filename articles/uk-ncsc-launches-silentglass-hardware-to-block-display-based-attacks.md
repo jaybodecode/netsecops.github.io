@@ -43,7 +43,6 @@ SilentGlass is itself a mitigation. It falls under the category of hardware-base
 **Tags:** Hardware Security, NCSC, GCHQ, Data Diode, HDMI, DisplayPort, SilentGlass
 
 ## Sources
-- [NCSC's first gadget blocks malware transfer over HDMI cables](https://www.theregister.com/2026/04/23/ncsc_silentglass_hdmi/) — The Register (2026-04-23)
 - [NCSC Launches SilentGlass Hardware to Stop Cyber-Attacks via Screens](https://digit.fyi/ncsc-launches-silentglass-hardware-to-stop-cyber-attacks-via-screens/) — Digit (2026-04-23)
 - [NCSC launches SilentGlass to combat display cyberattacks](https://www.scmagazine.com/brief/ncsc-launches-silentglass-to-combat-display-cyberattacks) — SC Magazine (2026-04-24)
 

@@ -52,8 +52,6 @@ For developers and organizations, the key mitigation is awareness and process ha
 **Tags:** prompt injection, AI security, GitHub Copilot, data exfiltration, source code leak, DevSecOps
 
 ## Sources
-- [GitHub patches Copilot Chat flaw that could leak secrets](https://www.theregister.com/2025/10/09/github_copilot_camo_leak/) — The Register (2025-10-09)
-- [CamoLeak: GitHub Copilot Flaw Allowed Silent Data Theft](https://www.esecurityplanet.com/threats/camoleak-github-copilot-vulnerability/) — eSecurityPlanet (2025-10-10)
 - [GitHub Copilot Chat Flaw Leaked Data From Private Repositories](https://www.securityweek.com/github-copilot-chat-flaw-leaked-data-from-private-repositories/) — SecurityWeek (2025-10-09)
 - [Private repository info exposed by GitHub Copilot Chat vulnerability](https://www.scmagazine.com/news/private-repository-info-exposed-by-github-copilot-chat-vulnerability) — SC Magazine (2025-10-10)
 

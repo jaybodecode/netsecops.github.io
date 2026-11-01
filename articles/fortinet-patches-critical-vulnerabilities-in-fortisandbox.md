@@ -62,9 +62,7 @@ The impact of compromising a FortiSandbox is severe. As a central analysis tool,
 
 ## Sources
 - [Fortinet Patches Critical FortiSandbox Vulnerabilities](https://www.securityweek.com/fortinet-patches-critical-fortisandbox-vulnerabilities/) — SecurityWeek (2026-04-15)
-- [Critical Fortinet sandbox bugs allow auth bypass and RCE](https://www.theregister.com/2026/04/15/fortinet_sandbox_vulns/) — The Register (2026-04-15)
 - [Fortinet fixes critical FortiSandbox vulnerabilities (CVE-2026-39813, CVE-2026-39808)](https://www.helpnetsecurity.com/2026/04/16/cve-2026-39813-cve-2026-39808/) — Help Net Security (2026-04-16)
-- [Critical Vulnerabilities in Fortinet Product](https://www.csa.gov.sg/alerts-advisories/alerts/al-2026-0416-2) — CSA Singapore (2026-04-16)
 - [PSIRT Advisories](https://www.fortiguard.com/psirt/FG-IR-26-061) — Fortinet (2026-04-14)
 
 ---

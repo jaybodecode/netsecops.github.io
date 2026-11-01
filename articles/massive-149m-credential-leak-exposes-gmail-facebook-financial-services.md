@@ -62,7 +62,6 @@ Mitigation focuses on reducing the impact of compromised credentials.
 
 ## Sources
 - [48 Million Gmail Usernames And Passwords Leaked Online Again](https://www.forbes.com/sites/daveywinder/2026/01/25/48-million-gmail-usernames-and-passwords-leaked-online-again/) — Forbes (2026-01-25)
-- [Nearly 150 Million Online Accounts Exposed In Massive Data Leak](https://evrimagaci.org/news/nearly-150-million-online-accounts-exposed-in-massive-data-leak-14261) — Evrim Ağacı (2026-01-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/massive-149m-credential-leak-exposes-gmail-facebook-financial-services/

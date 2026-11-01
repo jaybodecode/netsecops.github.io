@@ -40,7 +40,7 @@ The financial impact on **SK Telecom** has been catastrophic and multifaceted:
 **Tags:** Data Breach, Financial Impact, SK Telecom, Telecommunications, South Korea, Dwell Time
 
 ## Sources
-- [Data breach costs lead to 90% drop in operating profit at South Korean telecom giant](https://therecord.media/sk-telecom-q3-earnings-data-breach-costs) — The Record from Recorded Future News (2025-11-03)
+- [The Record from Recorded Future News](https://therecord.media/) — The Record from Recorded Future News (2025-11-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/sk-telecom-profit-drops-90-percent-after-massive-data-breach/

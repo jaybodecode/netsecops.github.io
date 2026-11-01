@@ -38,9 +38,7 @@ The exposure of Social Security numbers and driver's license numbers for over 30
 **Tags:** Ransomware, Anubis, Data Breach, Healthcare, HIPAA, SSN
 
 ## Sources
-- [The State of Ransomware: December 2025](https://www.blackfog.com/the-state-of-ransomware-in-2025/) — BlackFog (2025-12-22)
 - [RE: Notice of Data Security Incident](https://www.doj.nh.gov/consumer/security-breaches/documents/allervie-health-20251223.pdf) — New Hampshire Department of Justice (2025-12-22)
-- [AllerVie Health Data Breach Leaks Social Security Numbers](https://claimdepot.com/data-breach/allervie-health-data-breach-leaks-social-security-numbers/) — Claim Depot (2025-12-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/allervie-health-notifies-patients-of-anubis-ransomware-attack/

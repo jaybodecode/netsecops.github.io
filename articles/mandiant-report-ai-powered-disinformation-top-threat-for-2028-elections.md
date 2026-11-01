@@ -65,7 +65,6 @@ Mandiant's report calls for a whole-of-society approach:
 
 ## Sources
 - [Mandiant Threat Horizon Report: AI-Powered Disinformation and the 2028 Elections](https://www.mandiant.com/resources/reports/threat-horizon-2028-elections) — Mandiant (2026-07-01)
-- [Mandiant Warns AI Disinformation is Top Threat to 2028 Election](https://www.wired.com/story/mandiant-report-ai-disinformation-2028-election-threat/) — Wired (2026-07-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/mandiant-report-ai-powered-disinformation-top-threat-for-2028-elections/

@@ -47,7 +47,7 @@ The coordinated nature of the attack across a CHP plant and renewable farms sugg
 **Tags:** Poland, Russia, Cyberattack, Energy Sector, ICS, OT, Critical Infrastructure, NATO
 
 ## Sources
-- [Poland faced a surge in cyberattacks in 2025, including a major assault on the energy sector](https://www.citynews1130.com/2026/03/24/poland-faced-a-surge-in-cyberattacks-in-2025-including-a-major-assault-on-the-energy-sector/) — CityNews (2026-03-24)
+- [CityNews](https://www.citynews1130.com/) — CityNews (2026-03-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/poland-sees-2-5x-increase-in-cyberattacks-including-unprecedented-energy-sector-assault/

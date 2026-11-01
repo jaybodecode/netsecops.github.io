@@ -63,7 +63,6 @@ Here is a tactical plan for organizations to address this change:
 **Tags:** Microsoft Azure, TLS, Cloud Security, Policy, Deprecation
 
 ## Sources
-- [ThreatsDay Bulletin: Codespaces RCE, AsyncRAT C2, BYOVD Abuse, AI Cloud Intrusions & 15+ Stories](https://thehackernews.com/2026/02/05/threatsday-bulletin.html) — The Hacker News (2026-02-05)
 - [Important Security Update: TLS 1.2 Enforcement for Azure Blob Storage](https://msrc.microsoft.com/blog/2026/02/04/tls-azure-update/) — Microsoft Security Response Center (2026-02-04)
 
 ---

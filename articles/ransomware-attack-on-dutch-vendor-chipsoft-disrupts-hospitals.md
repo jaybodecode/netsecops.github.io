@@ -61,11 +61,7 @@ This incident underscores the importance of supply chain risk management.
 
 ## Sources
 - [Healthcare IT solutions provider ChipSoft hit by ransomware attack](https://www.bleepingcomputer.com/news/security/healthcare-it-solutions-provider-chipsoft-hit-by-ransomware-attack/) — BleepingComputer (2026-04-09)
-- [Dutch hospitals face disruptions after ransomware attack on software provider ChipSoft](https://therecord.media/chipsoft-ransomware-attack-dutch-hospitals-disruptions) — The Record (2026-04-09)
 - [Dutch healthcare software vendor ChipSoft hit by ransomware attack](https://www.scmagazine.com/brief/dutch-healthcare-software-vendor-chipsoft-hit-by-ransomware-attack) — SC Magazine (2026-04-09)
-- [Cybersecurity News: ChipSoft popped, APT28 updates, CIA cyber espionage elevation](https://www.cshub.com/threats/news/cybersecurity-news-chipsoft-popped-apt28-updates-cia-cyber-espionage-elevation) — CSHub (2026-04-09)
-- [Dutch healthcare software vendor goes dark after ransomware attack](https://www.theregister.com/2026/04/08/chipsoft_ransomware_attack/) — The Register (2026-04-08)
-- [A ransomware attack on Dutch patient software has forced hospitals to disconnect their systems](https://cybernews.com/security/chipsoft-ransomware-attack-hospitals-disconnect/) — Cybernews (2026-04-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attack-on-dutch-vendor-chipsoft-disrupts-hospitals/

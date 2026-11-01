@@ -44,8 +44,6 @@ Enforcement will be the responsibility of individual signatory nations. The conv
 
 ## Sources
 - [Signing ceremony of UN Convention against Cybercrime opens in Hanoi](https://vietnamlawmagazine.vn/signing-ceremony-of-un-convention-against-cybercrime-opens-in-hanoi-55097.html) — Vietnam Law & Legal Forum magazine
-- [Over 60 Nations Endorse UN Cybercrime Treaty](https://thediplomaticinsight.com/2025/10/25/over-60-nations-endorse-un-cybercrime-treaty/) — The Diplomatic Insight
-- [Counter Ransomware Initiative stresses importance of supply-chain security](https://www.recordedfuture.com/blog/counter-ransomware-initiative-stresses-importance-of-supply-chain-security) — Recorded Future News
 
 ---
 Source: https://cyber.netsecops.io/articles/un-convention-against-cybercrime-signed-in-hanoi-vietnam/

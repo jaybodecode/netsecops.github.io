@@ -45,7 +45,6 @@ Preventing such a catastrophic supply chain breach requires rigorous security fu
 **Tags:** Conduent, Data Breach, Supply Chain Attack, Ransomware, Safepay, PII, PHI, Healthcare
 
 ## Sources
-- [Conduent Data Breach Becomes Largest in U.S. History After Ransomware Group Steals 8 TB](https://cyberpress.com/conduent-data-breach-becomes-largest-in-u-s-history-after-ransomware-group-steals-8-tb-108740/) — Cyber Press (2026-02-24)
 - [4 Data Security Incidents to Know About (February 2026)](https://www.securitymagazine.com/articles/96919-4-data-security-incidents-to-know-about-february-2026) — Security Magazine (2026-02-24)
 
 ---

@@ -60,7 +60,6 @@ Organizations should implement layered defenses to protect against similar attac
 
 ## Sources
 - [NaviGistics Halts Global Shipments After $50M QuantumLeap Ransomware Attack](https://www.techcrunch.com/2026/01/26/navigistics-ransomware-quantumleap) — TechCrunch (2026-01-26)
-- [New QuantumLeap ransomware hits logistics giant NaviGistics, demands $50 million](https://www.bleepingcomputer.com/news/security/new-quantumleap-ransomware-hits-logistics-giant-navigistics/) — BleepingComputer (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/quantumleap-ransomware-cripples-global-logistics-giant-navigistics/

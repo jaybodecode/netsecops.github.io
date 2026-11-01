@@ -65,8 +65,6 @@ Standard ransomware hygiene is the best defense.
 **Tags:** Ransomware, Safepay, Supply Chain Attack, Video Surveillance, Germany, RaaS
 
 ## Sources
-- [Safepay ransomware group claims the hack of professional video surveillance provider Xortec](https://securityaffairs.co/165809/malware/safepay-ransomware-xortec.html) — Security Affairs (2025-10-26)
-- [Safepay ransomware xortec](https://securityaffairs.co/165814/malware/safepay-ransomware-xortec-2.html) — Security Affairs (2025-10-26)
 - [[SAFEPAY] – Ransomware Victim: xortec[.]de](https://redpacket.net/2025/10/25/safepay-ransomware-victim-xortec-de/) — RedPacket Security (2025-10-25)
 
 ---

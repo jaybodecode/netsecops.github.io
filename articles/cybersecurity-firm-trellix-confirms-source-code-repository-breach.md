@@ -80,9 +80,7 @@ For companies looking to protect their own source code, the lessons are clear:
 
 ## Sources
 - [Trellix Confirms Source Code Breach With Unauthorized Repository Access](https://thehackernews.com/2026/05/trellix-confirms-source-code-breach.html) (2026-05-02)
-- [Trellix discloses the breach of a code repository](https://securityaffairs.com/162638/data-breach/trellix-breach-code-repository.html) (2026-05-02)
 - [Trellix Source Code Breach - Hackers Gain Unauthorized Access to Repository](https://gbhackers.com/trellix-source-code-breach/) (2026-05-02)
-- [Cybersecurity Firm Trellix Discloses Breach Involving Unauthorised Source Code Access](https://the420.in/2026/05/02/cybersecurity-firm-trellix-discloses-breach-involving-unauthorised-source-code-access/) (2026-05-02)
 - [Trellix confirms source code breach following unauthorized repository access](https://cxodigitalpulse.com/news/trellix-confirms-source-code-breach-following-unauthorized-repository-access/) (2026-05-02)
 
 ---

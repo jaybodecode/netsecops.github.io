@@ -56,7 +56,6 @@ The use of a kernel-mode rootkit significantly raises the bar for detection and 
 **Tags:** HoneyMyte, Mustang Panda, APT, Rootkit, Kernel, ToneShell, Cyber Espionage
 
 ## Sources
-- [The HoneyMyte APT evolves with a kernel-mode rootkit and a ToneShell backdoor](https://securelist.com/the-honeymyte-apt-now-protects-malware-with-a-kernel-mode-rootkit/111539/) — Kaspersky Securelist (2025-12-26)
 - [HoneyMyte APT Enhances Stealth with New Kernel-Mode Rootkit](https://www.kaspersky.com/about/press-releases/2025_honeymyte-apt-enhances-stealth-with-new-kernel-mode-rootkit) — Kaspersky (2025-12-26)
 
 ---

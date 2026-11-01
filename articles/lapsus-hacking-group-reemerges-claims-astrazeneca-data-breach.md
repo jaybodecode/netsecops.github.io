@@ -48,8 +48,8 @@ Preventing attacks like those favored by LAPSUS$ requires a focus on identity an
 **Tags:** LAPSUS$, AstraZeneca, Data Breach, Threat Actor, Source Code Leak, DevOps Security, CI/CD
 
 ## Sources
-- [AstraZeneca Data Breach - LAPSUS$ Group Allegedly Claims Access to Internal Data](https://www.hackread.com/lapsus-claims-astrazeneca-data-breach/) — HackRead
-- [Lapsus$ hacking group is back, claims AstraZeneca data breach](https://www.bleepingcomputer.com/news/security/lapsus-hacking-group-is-back-claims-astrazeneca-data-breach/) — BleepingComputer
+- [HackRead](https://www.hackread.com/) — HackRead
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
 
 ---
 Source: https://cyber.netsecops.io/articles/lapsus-hacking-group-reemerges-claims-astrazeneca-data-breach/

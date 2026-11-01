@@ -63,9 +63,7 @@ The most significant risk stems from the publicly disclosed SQL Server vulnerabi
 **Tags:** Patch Tuesday, Microsoft, Vulnerability, RCE, Elevation of Privilege, Zero-Day, SQL Server, Microsoft Office
 
 ## Sources
-- [March 2026 Patch Tuesday: Updates and Analysis | CrowdStrike](https://www.crowdstrike.com/blog/march-2026-patch-tuesday/) — CrowdStrike (2026-03-08)
 - [Microsoft March Patch Tuesday: 8 Critical Bulletins and 2 Zero-Days - Redmondmag.com](https://redmondmag.com/articles/2026/03/10/microsoft-march-patch-tuesday.aspx) — Redmond Magazine (2026-03-08)
-- [Microsoft's March 2026 Patch Tuesday Updates Fix 8 Critical Vulnerabilities](https://petri.com/microsofts-march-2026-patch-tuesday-updates-fix-8-critical-vulnerabilities) — Petri (2026-03-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-march-2026-patch-tuesday-fixes-84-flaws-including-two-publicly-disclosed-zero-days/

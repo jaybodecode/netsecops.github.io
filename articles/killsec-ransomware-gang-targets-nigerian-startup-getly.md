@@ -48,7 +48,6 @@ Even for startups with limited budgets, foundational security controls are criti
 **Tags:** KillSec, Ransomware, Nigeria, Startup, Cybercrime
 
 ## Sources
-- [KillSec Ransomware Attack Targets Nigerian Startup Getly](https://www.dexpose.io/blog/killsec-ransomware-attack-targets-nigerian-startup-getly-2026-02-09) — DEXPOSE (2026-02-09)
 - [KillSec Ransomware Strikes Nigerian Startup Getly](https://www.nigeriacybersecurity.com/killsec-targets-getly-in-ransomware-attack/) — Nigeria Cybersecurity (2026-02-09)
 
 ---

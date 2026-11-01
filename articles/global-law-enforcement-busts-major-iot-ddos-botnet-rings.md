@@ -53,7 +53,6 @@ For organizations, detecting if you are being targeted by such a botnet is strai
 
 ## Sources
 - [Global law enforcement operation targets AISURU, Kimwolf, JackSkid botnet operators](https://securityaffairs.com/189620/cyber-crime/law-enforcement-operation-iot-botnet-operators.html) — Security Affairs
-- [Int'l law enforcement disrupts dark web sites used by DDoS botnets](https://www.bleepingcomputer.com/news/security/intnl-law-enforcement-disrupts-major-ddos-botnets/) — BleepingComputer
 
 ---
 Source: https://cyber.netsecops.io/articles/global-law-enforcement-busts-major-iot-ddos-botnet-rings/

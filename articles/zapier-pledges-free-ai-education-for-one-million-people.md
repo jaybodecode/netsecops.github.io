@@ -35,7 +35,6 @@ The first virtual workshop for new participants is scheduled for April 7, 2026. 
 **Tags:** Zapier, Artificial Intelligence, AI Training, Education, Automation, No-Code
 
 ## Sources
-- [Zapier Pledges Free AI Education for 1 Million People](https://www.prnewswire.com/news-releases/zapier-pledges-free-ai-education-for-1-million-people-302090518.html) — PR Newswire (2026-03-17)
 - [Zapier Launches '1 Million AIs' Initiative to Scale AI Adoption Through Free Training](https://www.tipranks.com/news/zapier-launches-1-million-ais-initiative-to-scale-ai-adoption-through-free-training) — TipRanks (2026-03-17)
 - [13:09 ETZapier Pledges Free AI Education for 1 Million People](https://www.longbridgeapp.com/news/13:09:44810619/Zapier-Pledges-Free-AI-Education-for-1-Million-People) — Longbridge (2026-03-17)
 - [The Million AI Pledge](https://zapier.com/million-ai-pledge) — Zapier (2026-03-17)

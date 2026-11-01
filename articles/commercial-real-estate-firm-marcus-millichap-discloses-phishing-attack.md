@@ -44,7 +44,6 @@ To prevent similar phishing-based compromises, organizations should implement a 
 
 ## Sources
 - [Marcus & Millichap Releases Information Regarding Cybersecurity Incident](https://www.marcusmillichap.com/news-events/press-releases/marcus-millichap-releases-information-regarding-cybersecurity-incident) — Marcus & Millichap (2026-04-12)
-- [Marcus & Millichap Reports Cybersecurity Incident](https://www.cpapracticeadvisor.com/2026/04/12/marcus-millichap-reports-cybersecurity-incident/) — CPA Practice Advisor (2026-04-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/commercial-real-estate-firm-marcus-millichap-discloses-phishing-attack/

@@ -58,8 +58,6 @@ Detecting such an attack requires deep visibility into API traffic and third-par
 
 ## Sources
 - [OneDigital Latest to Warn Clients of Salesforce Data Breach](https://www.plansponsor.com/onedigital-latest-to-warn-clients-of-salesforce-data-breach/) — PLANSPONSOR (2026-04-14)
-- [OneDigital Data Breach Affects 28K; Attorneys Investigating](https://www.classaction.org/blog/onedigital-data-breach-affects-28k-attorneys-investigating) — ClassAction.org (2026-04-09)
-- [Data Breach Notifications - OneDigital Investment Advisors LLC](https://apps.web.maine.gov/online/aeviewer/ME/40/2c85e8d2-45e0-40e9-b54c-5da3097b6f38.shtml) — Maine Attorney General (2026-04-08)
 - [OneDigital Warns Clients of Alleged Salesforce Data Breach](https://www.wealthmanagement.com/ria-news/onedigital-warns-clients-alleged-salesforce-data-breach) — WealthManagement.com (2026-04-10)
 
 ---

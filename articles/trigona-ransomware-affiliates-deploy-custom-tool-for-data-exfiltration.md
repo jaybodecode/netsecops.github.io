@@ -54,10 +54,6 @@ Security teams should hunt for behavioral indicators of data exfiltration:
 **Tags:** Trigona, Ransomware, RaaS, Data Exfiltration, Custom Tooling, uploader_client.exe, Symantec, Rhantus
 
 ## Sources
-- [Trigona Affiliates Deploy Custom Exfiltration Tool to Streamline Data Theft](https://www.security.com/archives/trigona-affiliates-deploy-custom-exfiltration-tool-to-streamline-data-theft/) — Security.com (2026-04-26)
-- [Ransomware Hackers Develop Custom Exfiltration Tool to Steal Sensitive Data](https://www.darkreading.com/cyberattacks-data-breaches/ransomware-hackers-develop-custom-exfiltration-tool-to-steal-sensitive-data) — Dark Reading (2026-04-24)
-- [Ransomware Gang Unveils Custom Data-Theft Tool](https://gbhackers.com/ransomware-gang-custom-data-theft-tool/) — GBHackers on Security (2026-04-24)
-- [Hackers Deploy New Exfiltration Tool In Ransomware Attacks](https://cyberpress.com/hackers-deploy-new-exfiltration-tool-in-ransomware-attacks/) — Cyberpress (2026-04-24)
 - [Weekly Recap: Fast16 Malware, XChat Launch, Federal Backdoor, AI Employee Tracking & More](https://thehackernews.com/2026/04/weekly-recap-fast16-malware-xchat.html) — The Hacker News (2026-04-27)
 
 ---

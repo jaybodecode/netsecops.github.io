@@ -76,7 +76,6 @@ General best practices for web application security are key to preventing such b
 **Tags:** Substack, data breach, PII, phishing, privacy
 
 ## Sources
-- [Major Data Breaches Expose Millions Across Multiple Sectors](https://www.evrimagaci.org/en/massive-data-breaches-shake-major-tech-platforms-worldwide-13498) — Evrim Ağacı (2026-02-06)
 - [Data breach at fintech firm Betterment exposes 1.4 million accounts (mentions Substack breach)](https://www.bleepingcomputer.com/news/security/data-breach-at-fintech-firm-betterment-exposes-14-million-accounts/) — BleepingComputer (2026-02-05)
 
 ---

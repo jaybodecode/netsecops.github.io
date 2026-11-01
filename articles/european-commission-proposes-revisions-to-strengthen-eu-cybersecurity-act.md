@@ -52,7 +52,6 @@ Organizations should begin preparing now:
 - [New year, new laws? Data, AI and cybersecurity in 2026](https://www.foxwilliams.com/2026/01/28/new-year-new-laws-data-ai-and-cybersecurity-in-2026/) — Fox Williams (2026-01-28)
 - [Proposal for a Regulation for the EU Cybersecurity Act](https://digital-strategy.ec.europa.eu/en/library/proposal-regulation-eu-cybersecurity-act) — European Commission (2026-01-28)
 - [What to Watch in 2026: Key EU Privacy & Cybersecurity Developments](https://www.insideprivacy.com/data-security/what-to-watch-in-2026-key-eu-privacy-cybersecurity-developments/) — Covington & Burling LLP (2026-01-27)
-- [EU Cybersecurity Act Proposal Key Provisions, Scope, and Implications for Organisations](https://www.proskauer.com/alert/eu-cybersecurity-act-proposal-key-provisions-scope-and-implications-for-organisations) — Proskauer (2026-01-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/european-commission-proposes-revisions-to-strengthen-eu-cybersecurity-act/

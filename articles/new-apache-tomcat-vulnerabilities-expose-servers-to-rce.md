@@ -56,10 +56,7 @@ The primary risk comes from **CVE-2025-55752**. A successful exploit could lead 
 **Tags:** Apache Tomcat, path traversal, RCE, vulnerability, Java
 
 ## Sources
-- [CVE-2025-55752 and CVE-2025-55754: Apache Tomcat Vulnerabilities Expose Servers to RCE Attacks](https://socprime.com/blog/cve-2025-55752-and-cve-2025-55754-apache-tomcat-vulnerabilities-expose-servers-to-rce-attacks/) — SOC Prime (2025-10-29)
 - [Apache Tomcat 9 vulnerabilities](https://tomcat.apache.org/security-9.html) — Apache Software Foundation (2025-10-27)
-- [Apache Tomcat CVE-2025-55752: Brief Summary of Relative Path Traversal Vulnerability](https://zeropath.com/blog/apache-tomcat-cve-2025-55752-brief-summary-of-relative-path-traversal-vulnerability/) — ZeroPath (2025-10-27)
-- [Two vulnerabilities in Apache Tomcat](https://www.cybersecurity-help.cz/vdb/vulnerabilities/291681/) — CyberSecurity Help (2025-10-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-apache-tomcat-vulnerabilities-expose-servers-to-rce/

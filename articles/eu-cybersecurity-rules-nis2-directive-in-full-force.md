@@ -39,7 +39,6 @@ NIS2 represents a major compliance challenge for many organizations. The expande
 
 ## Sources
 - [Cybersecurity rules saw big changes in 2024. Here's what to know](https://www.weforum.org/agenda/2024/10/cybersecurity-rules-regulations-2024/) — World Economic Forum (2026-02-13)
-- [5 Big Cybersecurity Laws You Need to Know About Ahead of 2025](https://www.schellman.com/blog/5-big-cybersecurity-laws-you-need-to-know-about-ahead-of-2025) — Schellman (2026-02-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/eu-cybersecurity-rules-nis2-directive-in-full-force/

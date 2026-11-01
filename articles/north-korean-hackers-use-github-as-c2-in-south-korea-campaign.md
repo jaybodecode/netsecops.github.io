@@ -74,9 +74,9 @@ While not financially destructive in the way ransomware is, the long-term strate
 **Tags:** North Korea, Kimsuky, Lazarus, GitHub, C2, LNK file, PowerShell, espionage, South Korea
 
 ## Sources
-- [GitHub-Backed Malware Spread via LNK Files in South Korea](https://gbhackers.com/github-backed-malware-spread-via-lnk-files-in-south-korea/) — GBHackers
-- [GitHub-Hosted Malware Delivered Through LNK Files In South Korea Attack Wave](https://cyberpress.com/github-hosted-malware-delivered-through-lnk-files-in-south-korea-attack-wave/) — Cyberpress
-- [North Korea–Related Campaign Abuses GitHub as C2 in New LNK Phishing Attacks](https://www.securityweek.com/north-korea-related-campaign-abuses-github-as-c2-in-new-lnk-phishing-attacks/) — SecurityWeek
+- [GBHackers](https://gbhackers.com/) — GBHackers
+- [Cyberpress](https://cyberpress.com/) — Cyberpress
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek
 
 ---
 Source: https://cyber.netsecops.io/articles/north-korean-hackers-use-github-as-c2-in-south-korea-campaign/

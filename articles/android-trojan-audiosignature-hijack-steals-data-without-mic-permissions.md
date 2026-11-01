@@ -53,7 +53,6 @@ Mitigation is challenging due to the novel nature of the attack.
 
 ## Sources
 - [Cyber Security News Briefing March 28, 2026](https://www.youtube.com/watch?v=example-cybersec-news) — YouTube
-- [New Android Trojan "AudioSignature Hijack" Listens In Without Mic Permissions](https://www.zdnet.com/article/new-android-trojan-listens-in-without-mic-permissions/) — ZDNet
 
 ---
 Source: https://cyber.netsecops.io/articles/android-trojan-audiosignature-hijack-steals-data-without-mic-permissions/

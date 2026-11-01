@@ -62,7 +62,6 @@ While Google is responsible for patching the core vulnerability, organizations a
 **Tags:** Prompt Injection, LLM Security, AI Security, Google Gemini, Google Calendar, Data Exfiltration
 
 ## Sources
-- [Google Gemini Prompt Injection Flaw Exposed Private Calendar Data via Malicious Invites](https://thehackernews.com/2026/01/19/google-gemini-prompt-injection-flaw.html) — The Hacker News (2026-01-19)
 - [Weaponized Invite Enabled Calendar Data Theft via Google Gemini](https://www.securityweek.com/weaponized-invite-enabled-calendar-data-theft-via-google-gemini/) — SecurityWeek (2026-01-19)
 
 ---

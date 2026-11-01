@@ -57,10 +57,7 @@ For local governments, which are frequent targets, a defense-in-depth strategy i
 **Tags:** ransomware, local government, minnesota, winona county, national guard, incident response
 
 ## Sources
-- [Minnesota National Guard deployed to help Winona County after cyberattack](https://www.cbsnews.com/minnesota/news/minnesota-national-guard-deployed-to-help-winona-county-after-cyberattack/) — CBS News (2026-04-10)
 - [Some Winona County services remain down and off-line following cyberattack](https://www.mprnews.org/story/2026/04/10/some-winona-county-services-remain-down-and-offline-following-cyberattack) — MPR News (2026-04-10)
-- [Winona County works to fully restore services following ransomware attack](https://www.fox9.com/news/winona-county-works-to-fully-restore-services-following-ransomware-attack) — FOX 9 (2026-04-10)
-- [Winona County Battles Second Cyberattack This Year](https://nationaltoday.com/blog/winona-county-battles-second-cyberattack-this-year/) — National Today (2026-04-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/winona-county-minnesota-hit-by-second-cyberattack-in-2026/

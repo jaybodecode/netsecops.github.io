@@ -82,7 +82,6 @@ No specific malware hashes or C2 domains were provided in the source articles. T
 - [Major phishing campaign on GitHub using fake security alerts](https://www.techzine.eu/news/security/121087/major-phishing-campaign-on-github-using-fake-security-alerts/) — Techzine Europe
 - [Fake VS Code alerts on GitHub spread malware to developers](https://www.bleepingcomputer.com/news/security/fake-vs-code-alerts-on-github-spread-malware-to-developers/) — BleepingComputer
 - [Fake VS Code Security Alerts on GitHub Used to Push Malware in Widespread Phishing Campaign](https://cryptikacybersecurity.com/fake-vs-code-security-alerts-on-github-used-to-push-malware-in-widespread-phishing-campaign/) — Cryptika Cybersecurity
-- [GitHub Notifications Are Being Weaponized to Deliver Malware at Scale](https://trolleyesecurity.com/github-notifications-are-being-weaponized-to-deliver-malware-at-scale/) — TrollEye Security
 
 ---
 Source: https://cyber.netsecops.io/articles/github-discussions-weaponized-for-developer-phishing/

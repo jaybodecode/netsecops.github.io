@@ -84,7 +84,6 @@ Defending against a persistent threat like UAT-8837 requires a proactive and lay
 **Tags:** APT, UAT-8837, China, Cisco Talos, Critical Infrastructure, CVE-2025-53690, Earthworm
 
 ## Sources
-- [Chinese hackers targeting 'high value' North American critical infrastructure, Cisco says](https://therecord.media/cisco-talos-china-critical-infrastructure-sitecore-vulnerability) — The Record (2026-01-15)
 - [Predicting 2026](https://blog.talosintelligence.com/predicting-2026/) — Cisco Talos (2026-01-15)
 
 ---

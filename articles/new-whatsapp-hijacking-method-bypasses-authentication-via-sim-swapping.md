@@ -42,7 +42,7 @@ Mitigation involves both user-level and carrier-level actions.
 **Tags:** SIM Swapping, WhatsApp, Account Takeover, Social Engineering, APT37, Mobile Security
 
 ## Sources
-- [Hackers hijacking WhatsApp accounts without any need to crack the authentication](https://www.hackread.com/hackers-hijacking-whatsapp-accounts-without-cracking-authentication/) — HackRead (2025-12-21)
+- [HackRead](https://www.hackread.com/) — HackRead (2025-12-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-whatsapp-hijacking-method-bypasses-authentication-via-sim-swapping/

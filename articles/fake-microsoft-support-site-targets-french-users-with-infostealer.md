@@ -63,7 +63,6 @@ A successful infection results in the comprehensive theft of a user's personal a
 
 ## Sources
 - [This fake Windows support website delivers password-stealing malware](https://www.malwarebytes.com/blog/threat-intelligence/2026/04/this-fake-windows-support-website-delivers-password-stealing-malware) — Malwarebytes (2026-04-09)
-- [A fake Windows update is spreading an information stealer](https://www.pcrisk.fr/actualites-et-articles-sur-la-securite-informatique/15324-fausse-mise-a-jour-de-windows-diffuse-un-voleur-d-informations) — PCRisk (2026-04-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/fake-microsoft-support-site-targets-french-users-with-infostealer/

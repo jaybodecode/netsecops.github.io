@@ -66,12 +66,8 @@ This event serves as a lesson in operational security for any organization, legi
 **Tags:** Cybercrime, Hacking Forum, Database Leak, Law Enforcement, Threat Intelligence, OPSEC
 
 ## Sources
-- [BreachForums Data Breach Exposes Nearly 324,000 Users](https://www.esecurityplanet.com/threats/breachforums-data-breach-exposes-users/) — eSecurity Planet (2026-01-12)
-- [BreachForums Database Leaked](https://www.infosecurity-magazine.com/news/breachforums-database-leaked/) — Infosecurity Magazine (2026-01-12)
 - [BreachForums database leak exposes over 320,000 users](https://scmedianews.us/breachforums-database-leak-exposes-over-320000-users/) — SC Media (2026-01-12)
-- [BreachForums Breach Exposes 324K Cybercriminals](https://www.darkreading.com/cyberattacks-data-breaches/breachforums-breach-exposes-324k-cybercriminals) — Dark Reading (2026-01-12)
 - [Hackers get hacked, as BreachForums database is leaked](https://www.bitdefender.com/blog/hotforsecurity/hackers-get-hacked-as-breachforums-database-is-leaked/) — Bitdefender (2026-01-13)
-- [Infamous BreachForums forum breached, spilling data on 325K users](https://www.theregister.com/2026/01/12/breachforums_data_spill/) — The Register (2026-01-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/breachforums-user-database-leaked-exposing-324000-cybercriminals/

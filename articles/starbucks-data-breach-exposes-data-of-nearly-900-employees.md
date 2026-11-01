@@ -45,8 +45,6 @@ For Starbucks, the impact is primarily reputational. While the number of affecte
 ## Sources
 - [Starbucks Data Breach Impacts Employees](https://www.securityweek.com/starbucks-data-breach-impacts-employees/) — SecurityWeek (2026-03-13)
 - [Starbucks discloses data breach affecting hundreds of employees](https://www.bleepingcomputer.com/news/security/starbucks-discloses-data-breach-affecting-hundreds-of-employees/) — BleepingComputer (2026-03-13)
-- [Starbucks HR Portal Breach Exposes Employee Information](https://www.esecurityplanet.com/data-breaches/starbucks-hr-portal-breach/) — eSecurity Planet (2026-03-13)
-- [Starbucks Data Breach Exposes SSNs and Financial Account Information](https://www.claimdepot.com/starbucks-data-breach-ssn-financial-information) — Claim Depot (2026-03-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/starbucks-data-breach-exposes-data-of-nearly-900-employees/

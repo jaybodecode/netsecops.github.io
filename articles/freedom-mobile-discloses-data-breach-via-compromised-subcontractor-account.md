@@ -53,7 +53,6 @@ For Freedom Mobile, the breach results in reputational damage, customer churn, a
 - [Freedom Mobile discloses data breach exposing customer data](https://www.bleepingcomputer.com/news/security/freedom-mobile-discloses-data-breach-exposing-customer-data/) — BleepingComputer (2025-12-03)
 - [Personal Information Compromised in Freedom Mobile Data Breach](https://www.securityweek.com/personal-information-compromised-in-freedom-mobile-data-breach/) — SecurityWeek (2025-12-04)
 - [Freedom Mobile reports breach involving customer information](https://www.scmagazine.com/news/breach/freedom-mobile-reports-breach-involving-customer-information) — SC Magazine (2025-12-04)
-- [Freedom Mobile Discloses Data Breach after Attackers Access Customer Account Platform](https://techreport.com/news/freedom-mobile-discloses-data-breach-after-attackers-access-customer-account-platform/) — TechReport (2025-12-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/freedom-mobile-discloses-data-breach-via-compromised-subcontractor-account/

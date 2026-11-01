@@ -39,9 +39,9 @@ Project Glasswing itself is a mitigation strategy—an attempt to get ahead of t
 **Tags:** AI, Anthropic, Mythos, Artificial Intelligence, Vulnerability Research, Zero-Day, Responsible AI
 
 ## Sources
-- [Anthropic's new AI model is too dangerous to release to public, developers say](https://www.ctvnews.ca/sci-tech/anthropic-s-new-ai-model-is-too-dangerous-to-release-to-public-developers-say-1.7824550) — CTV News (2026-04-11)
-- [How AI is getting better at finding security holes](https://www.wvtf.org/npr-news/2026-04-11/how-ai-is-getting-better-at-finding-security-holes) — WVTF (2026-04-11)
-- [What smart people are saying about Mythos, Anthropic's new AI model that has some cybersecurity experts spooked](https://www.businessinsider.com/what-people-are-saying-about-mythos-anthropic-ai-model-2026-4) — Business Insider (2026-04-11)
+- [CTV News](https://www.ctvnews.ca/) — CTV News (2026-04-11)
+- [WVTF](https://www.wvtf.org/) — WVTF (2026-04-11)
+- [Business Insider](https://www.businessinsider.com/) — Business Insider (2026-04-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/anthropics-new-ai-mythos-deemed-too-dangerous-for-public-release/

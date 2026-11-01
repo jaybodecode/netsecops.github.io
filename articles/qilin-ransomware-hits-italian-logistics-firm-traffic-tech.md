@@ -49,7 +49,7 @@ To detect attacks from groups like Qilin, security teams should:
 **Tags:** Qilin, Ransomware, Italy, Logistics, Supply Chain, Cyberattack
 
 ## Sources
-- [Qilin Ransomware Strikes Italian Logistics Firm Traffic Tech - DeXpose](https://www.dexpose.io/blog/qilin-ransomware-strikes-italian-logistics-firm-traffic-tech) — DeXpose (2026-03-01)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-03-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-hits-italian-logistics-firm-traffic-tech/

@@ -49,10 +49,7 @@ Security teams may want to hunt for activity related to the exploitation of educ
 **Tags:** ed-tech, LMS, student data, ransom negotiation, cyber extortion
 
 ## Sources
-- [Canvas platform strikes deal with hackers to delete students’ stolen data](https://www.theguardian.com/technology/article/2026/may/12/canvas-platform-hackers-instructure-deal) — The Guardian (2026-05-12)
 - [Canvas’s owner strikes deal with hackers who disrupted thousands of schools](https://www.washingtonpost.com/education/2026/05/12/canvas-hack-deal-instructure/) — The Washington Post (2026-05-12)
-- [Canvas' parent company strikes deal with hackers to delete data stolen from educational platform](https://www.cbsnews.com/news/canvas-parent-company-instructure-deal-hackers-delete-data/) — CBS News (2026-05-12)
-- [Instructure strikes deal with ShinyHunters before ransom deadline](https://mashable.com/article/instructure-canvas-shinyhunters-hackers-deal) — Mashable (2026-05-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/instructure-strikes-deal-with-shinyhunters-after-massive-canvas-breach/

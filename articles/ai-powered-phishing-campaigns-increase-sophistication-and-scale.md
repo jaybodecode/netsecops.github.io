@@ -41,7 +41,6 @@ The impact of these advanced phishing campaigns is severe. A successful attack r
 **Tags:** Phishing, AI, Generative AI, MFA, Device Code Phishing, TA4903, Tycoon, PhaaS
 
 ## Sources
-- [Phishing Attack Alert 2026: New AI Email Scams in UK](https://blog.usecure.io/phishing-attack-alert-2026-new-ai-email-scams) — usecure (2026-05-20)
 - [Device Code Phishing is an Evolution in Identity Takeover](https://www.proofpoint.com/us/blog/threat-insight/device-code-phishing-evolution-identity-takeover) — Proofpoint (2026-05-20)
 
 ---

@@ -96,8 +96,6 @@ Implementing D3FEND countermeasures like **Application Isolation** and **Hardeni
 
 ## Sources
 - [TrapDoor Supply Chain Attack Actively Exploiting npm, PyPI, and CratesIO to Steal Developer Credentials in Crypto, DeFi, Solana, and AI Sectors](https://www.rescanatech.com/blog/trapdoor-supply-chain-attack) — Rescana Tech (2026-05-26)
-- [TrapDoor malware campaign puts developer workstations in CISO spotlight](https://www.csoonline.com/article/2099307/trapdoor-malware-campaign-puts-developer-workstations-in-ciso-spotlight.html) — CSO Online (2026-05-26)
-- [TrapDoor Supply Chain Attack Spreads Credential-Stealing Malware via npm, PyPI, and CratesIO](https://thehackernews.com/2026/05/trapdoor-supply-chain-attack.html) — The Hacker News (2026-05-25)
 - [TrapDoor Malware Campaign Targets Crypto Developer Environments With 34+ Malicious Packages](https://unchainedcrypto.com/trapdoor-malware-campaign-targets-crypto-developer-environments-with-34-malicious-packages/) — Unchained Crypto (2026-05-26)
 - [TrapDoor malware crypto developers face supply-chain risk](https://en.cryptonomist.ch/2026/05/25/trapdoor-malware-crypto-developers/) — The Cryptonomist (2026-05-25)
 

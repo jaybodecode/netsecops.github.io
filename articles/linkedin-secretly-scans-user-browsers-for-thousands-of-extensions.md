@@ -34,7 +34,6 @@ This incident highlights the inherent tension between platform security and user
 
 ## Sources
 - [LinkedIn secretly scans for 6,000+ Chrome extensions, collects data](https://www.bleepingcomputer.com/news/security/linkedin-secretly-scans-for-6-000-plus-chrome-extensions-collects-data/) — BleepingComputer (2026-04-03)
-- [Cyber Security News 03 April 2026](https://www.vlrstories.com/2026/04/cyber-security-news-03-april-2026.html) — VLR Stories (2026-04-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/linkedin-secretly-scans-user-browsers-for-thousands-of-extensions/

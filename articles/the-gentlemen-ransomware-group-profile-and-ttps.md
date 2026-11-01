@@ -50,7 +50,6 @@ The ransomware itself has a key feature designed to evade automated analysis: it
 **Tags:** ransomware, RaaS, The Gentlemen, double extortion, GPO, Active Directory, AnyDesk
 
 ## Sources
-- [In Other News: ... The Gentlemen ransomware group.](https://securityaffairs.com/161033/security/cisa-adds-apple-laravel-livewire-and-craft-cms-flaws-to-its-known-exploited-vulnerabilities-catalog.html) — Security Affairs
 - [License to Encrypt: “The Gentlemen” Make Their Move](https://www.cybereason.com/blog/license-to-encrypt-the-gentlemen-make-their-move) — Cybereason
 - [The Gentlemen Ransomware: A Rising Global Cyber Threat](https://www.hive-pro.com/threat-advisory-the-gentlemen-ransomware/) — Hive Pro
 - [Dark Web Profile: The Gentlemen Ransomware](https://socradar.io/dark-web-profile-the-gentlemen-ransomware/) — SOCRadar

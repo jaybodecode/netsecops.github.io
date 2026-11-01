@@ -98,8 +98,6 @@ No specific Indicators of Compromise (IOCs) were provided in the source articles
 
 ## Sources
 - [Cyber Advisory: Increased Cyber Risk Amid U.S.–Israel–Iran Escalation](https://news.sophos.com/en-us/2026/03/01/cyber-advisory-increased-cyber-risk-amid-u-s-israel-iran-escalation/) — Sophos (2026-03-01)
-- [US-Iran conflict halts West Asia operations; over 170 flights cancelled from India](https://infra.economictimes.indiatimes.com/news/aviation/us-iran-conflict-halts-west-asia-operations-over-170-flights-cancelled-from-india/107085292) — The Economic Times (2026-03-01)
-- [Situation Report: Middle East Escalation (February 27–1st March, 2026)](https://cloudsek.com/threat-intelligence-reports/situation-report-middle-east-escalation-february-27-1st-march-2026) — CloudSEK (2026-03-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/geopolitical-tensions-spark-surge-in-middle-east-cyber-hostilities/

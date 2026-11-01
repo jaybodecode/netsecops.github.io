@@ -53,7 +53,6 @@ Detection in this scenario is not based on traditional cyber observables but on 
 **Tags:** Undersea Cable, Sabotage, Hybrid Warfare, Finland, Estonia, Baltic Sea, Critical Infrastructure
 
 ## Sources
-- [Finland Advances Cable Breach Investigation with Arrests](https://www.marinelink.com/news/finland-advances-cable-breach-510493) — MarineLink (2026-01-02)
 - [Two crew members arrested in Finland over submarine cable damage](https://www.yenisafak.com/en/news/two-crew-members-arrested-in-finland-over-submarine-cable-damage-3677983) — Yeni Şafak (2026-01-02)
 - [Hybrid Warfare in the Baltic: Finland Arrests Two Over Damaged Undersea Cable](https://allthingsnordic.com/hybrid-warfare-in-the-baltic-finland-arrests-two-over-damaged-undersea-cable/) — All Things Nordic (2026-01-03)
 - [Police in Finland arrest 2 members of cargo ship’s crew in connection with damage to undersea cable](https://www.washingtonpost.com/world/2026/01/02/finland-underwater-cable-damage-arrests/669528d4-aa31-11ee-bc8c-7f57f3b58210_story.html) — The Washington Post (2026-01-02)

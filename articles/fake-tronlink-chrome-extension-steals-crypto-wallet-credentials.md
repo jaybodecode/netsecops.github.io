@@ -52,8 +52,8 @@ Users who install the fake extension and enter their credentials face catastroph
 **Tags:** Cryptocurrency, Phishing, Malware, Chrome Extension, TronLink, TRON, SlowMist
 
 ## Sources
-- [SlowMist Discloses Phishing Campaign Involving Fake TronLink Chrome Extension That Steals Wallet Credentials Such as Mnemonics and Private Keys](https://www.techflowpost.com/slowmist_discloses_phishing_campaign_involving_fake_tronlink_chrome_extension_that_steals_wallet_credentials_such_as_mnemonics_and_private_keys_18635.html) — TechFlow (2026-05-10)
-- [SlowMist reveals a phishing campaign involving fake Chrome extensions that can steal wallet credentials such as seed phrases and private keys.](https://www.bitget.com/news/detail/12560603995874) — Bitget (2026-05-10)
+- [TechFlow](https://www.techflowpost.com/) — TechFlow (2026-05-10)
+- [Bitget](https://www.bitget.com/) — Bitget (2026-05-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/fake-tronlink-chrome-extension-steals-crypto-wallet-credentials/

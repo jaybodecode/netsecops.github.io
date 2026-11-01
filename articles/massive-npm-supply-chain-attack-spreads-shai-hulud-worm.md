@@ -71,7 +71,7 @@ The business impact is severe, particularly for the cryptocurrency and Web3 sect
 **Tags:** NPM, JavaScript, Supply Chain Attack, Shai-Hulud, Worm, Credential Stealing, Cryptocurrency, ENS
 
 ## Sources
-- [New NPM supply-chain attack compromises major ENS and crypto libraries](https://www.tradingview.com/news/cointelegraph:2025-11-24:0/) — TradingView (2025-11-24)
+- [TradingView](https://www.tradingview.com/) — TradingView (2025-11-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/massive-npm-supply-chain-attack-spreads-shai-hulud-worm/

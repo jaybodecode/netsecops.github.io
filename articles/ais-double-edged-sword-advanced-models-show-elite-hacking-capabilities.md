@@ -44,7 +44,7 @@ Defending against AI-driven attacks requires fighting fire with fire.
 **Tags:** AI, Anthropic, Artificial Intelligence, automated exploitation, offensive AI, vulnerability research, zero-day
 
 ## Sources
-- [Forget the scam phone texts – cyber attacks are about to move to a whole new level](https://www.irishtimes.com/business/2026/05/28/forget-the-scam-phone-texts-cyber-attacks-are-about-to-move-to-a-whole-new-level/) (2026-05-28)
+- [irishtimes.com](https://www.irishtimes.com/) (2026-05-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/ais-double-edged-sword-advanced-models-show-elite-hacking-capabilities/

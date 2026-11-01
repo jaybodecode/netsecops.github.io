@@ -54,9 +54,6 @@ For users and organizations, the guidance is nuanced:
 
 ## Sources
 - [Password managers less secure than promised](https://ethz.ch/en/news-and-events/eth-news/news/2026/02/password-managers-less-secure-than-promised.html) — ETH Zurich
-- [Password managers don't protect secrets if pwned](https://www.theregister.com/2026/02/16/password_managers_security_research/) — The Register
-- [Zero knowledge vs. a malicious server: A look at ETH Zurich's research](https://blog.1password.com/malicious-server-eth-zurich-research/) — 1Password
-- [Warning for Wisconsin Businesses: New Research Just Exposed Gaps in Popular Password Managers](https://www.forgeguardit.com/blog/password-manager-flaws-wisconsin-eth-zurich-study-2026) — ForgeGuardIT.com
 
 ---
 Source: https://cyber.netsecops.io/articles/eth-zurich-study-finds-gaps-in-zero-knowledge-password-managers/

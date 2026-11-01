@@ -49,7 +49,6 @@ For end-users, the immediate mitigation is to prepare for a wave of critical pat
 ## Sources
 - [Pwn2Own Berlin 2026, Day Three: DEVCORE Crowned Master of Pwn, $1.298 Million Total](https://securityaffairs.co/192250/hacking/pwn2own-berlin-2026-day-three-devcore-crowned-master-of-pwn-1-298-million-total.html) — Security Affairs (2026-05-17)
 - [Hackers earn $1,298,250 for 47 zero-days at Pwn2Own Berlin 2026](https://www.bleepingcomputer.com/news/security/hackers-earn-1-298-250-for-47-zero-days-at-pwn2own-berlin-2026/) — BleepingComputer (2026-05-18)
-- [At Pwn2Own Berlin 2026, hackers push enterprises to the limit and earn $1.3 million](https://cybernews.com/news/pwn2own-berlin-2026-hackers-earn-1-3-million/) — Cybernews (2026-05-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/pwn2own-berlin-2026-awards-1-3m-for-47-zero-days-in-enterprise-software/

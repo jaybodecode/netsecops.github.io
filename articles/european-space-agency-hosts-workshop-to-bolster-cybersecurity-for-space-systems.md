@@ -67,7 +67,6 @@ For industry partners looking to participate or align with this initiative, the 
 ## Sources
 - [Strengthening Space Cybersecurity through ESA's GSTP](https://www.esa.int/Enabling_Support/Space_Engineering_Technology/Shaping_the_Future/Strengthening_Space_Cybersecurity_through_ESA_s_GSTP) — European Space Agency (2026-05-06)
 - [ESA Cybersecurity Workshop for Industry 2026](https://www.spaceagenda.com/event/17581/esa-cybersecurity-workshop-for-industry-2026) — SpaceAgenda (2026-05-07)
-- [(Cyber)security workshop for industry 2026](https://www.esa.int/Enabling_Support/General_Support_Technology_Programme/Cybersecurity_workshop_for_industry_2026) — European Space Agency (2026-01-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/european-space-agency-hosts-workshop-to-bolster-cybersecurity-for-space-systems/

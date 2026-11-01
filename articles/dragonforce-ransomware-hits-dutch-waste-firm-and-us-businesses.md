@@ -55,7 +55,7 @@ No specific technical indicators of compromise (IPs, hashes, domains) were provi
 **Tags:** ransomware, dragonforce, double extortion, data leak, saver nv
 
 ## Sources
-- [DragonForce Ransomware Attack on Saver NV Waste Management](https://www.dexpose.io/post/dragonforce-ransomware-attack-on-saver-nv-waste-management) — dExpose (2026-05-26)
+- [dExpose](https://www.dexpose.io/) — dExpose (2026-05-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/dragonforce-ransomware-hits-dutch-waste-firm-and-us-businesses/

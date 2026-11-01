@@ -52,7 +52,6 @@ For organizations relying on open-source projects like OpenClaw, this event shou
 **Tags:** OpenAI, OpenClaw, Peter Steinberger, AI, Open Source, Supply Chain Security
 
 ## Sources
-- [OpenClaw February 2026 — Creator Joins OpenAI, Critical Vulnerability, and New SaaS | Grand Linux](https://grandlinux.com/openclaw-february-2026-creator-joins-openai-critical-vulnerability-and-new-saas/) — Grand Linux (2026-02-14)
 - [The Pull Request Illusion: How AI Is Hollowing Out Software’s Last Line of Defense](https://medium.com/@flamehaven/the-pull-request-illusion-how-ai-is-hollowing-out-softwares-last-line-of-defense-d5e4b3b1e8e4) — Medium (2026-02-15)
 
 ---

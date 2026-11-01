@@ -58,8 +58,8 @@ Detecting LotL activity requires a focus on behavior, not signatures.
 **Tags:** Volt Typhoon, APT, nation-state, critical infrastructure, living off the land, CISA, water utility
 
 ## Sources
-- [PRC State-Sponsored Actors (Volt Typhoon) Compromise U.S. Water Utility](https://www.cisa.gov/news-events/alerts/2026/01/25/volt-typhoon-actors-compromise-us-water-utility) — CISA (2026-01-25)
-- [Volt Typhoon Hits Another US Critical Infrastructure Organization](https://www.securityweek.com/volt-typhoon-hits-another-us-critical-infrastructure-organization/) — SecurityWeek (2026-01-26)
+- [CISA](https://www.cisa.gov/) — CISA (2026-01-25)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/volt-typhoon-linked-to-data-breach-at-us-water-utility/

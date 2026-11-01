@@ -45,10 +45,7 @@ While the NCSC itself does not issue fines, incidents it manages often fall unde
 **Tags:** NCSC, UK, Cyberattack, Ransomware, Threat Intelligence, Policy and Compliance, CNI
 
 ## Sources
-- [Chapter 01: Countering the cyber threat](https://www.ncsc.gov.uk/report/annual-review-2025/chapter-01) — NCSC (2025-10-14)
-- [UK experiencing four 'nationally significant' cyber attacks every week](https://www.gov.uk/government/news/uk-experiencing-four-nationally-significant-cyber-attacks-every-week) — GOV.UK (2025-10-14)
 - [NCSC Annual Review 2025: Surge in ransomware and hacking; growing gap between threats and national defenses](https://industrialcyber.co/news/ncsc-annual-review-2025-surge-in-ransomware-and-hacking-growing-gap-between-threats-and-national-defenses/) — Industrial Cyber (2025-10-16)
-- [Ministerial letter on cyber security](https://www.gov.uk/government/publications/ministerial-letter-on-cyber-security/ministerial-letter-on-cyber-security) — GOV.UK (2025-10-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-ncsc-reports-nationally-significant-cyber-attacks-doubled/

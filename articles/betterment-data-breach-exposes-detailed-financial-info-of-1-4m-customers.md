@@ -48,7 +48,6 @@ This breach is highly impactful due to the sensitivity and richness of the expos
 
 ## Sources
 - [Betterment data breach might be worse than we thought](https://www.malwarebytes.com/blog/news/2026/02/betterment-data-breach-might-be-worse-than-we-thought) — Malwarebytes (2026-02-18)
-- [Betterment Breach Exposes Over 1 Million Customers After Extortion Attempt](https://www.securityweek.com/betterment-breach-extortion-data-leak/) — SecurityWeek (2026-02-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/betterment-data-breach-exposes-detailed-financial-info-of-1-4m-customers/

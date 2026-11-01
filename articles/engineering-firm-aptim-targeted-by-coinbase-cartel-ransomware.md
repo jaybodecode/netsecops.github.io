@@ -82,10 +82,7 @@ Mitigating Kerberoasting is a critical Active Directory hardening task:
 **Tags:** Coinbase Cartel, Ransomware, Aptim, Kerberoasting, Data Breach, Engineering
 
 ## Sources
-- [Coinbase Cartel Infiltrates Engineering Leader Aptim](https://dexpose.io/blog/coinbase-cartel-infiltrates-engineering-leader-aptim) — Dexpose (2026-04-24)
-- [APTIM Data Breach in 2026](https://breachsense.com/breach/aptim-com) — BreachSense (2026-04-24)
 - [Ransomware Group coinbasecartel Hits: Aptim](https://www.hookphish.com/blog/ransomware-group-coinbasecartel-hits-aptim) — HookPhish (2026-04-24)
-- [Victim: Aptim](https://ransomware.live/victim/aptim/) — Ransomware.live (2026-04-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/engineering-firm-aptim-targeted-by-coinbase-cartel-ransomware/

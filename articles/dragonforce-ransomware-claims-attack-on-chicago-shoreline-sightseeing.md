@@ -82,7 +82,6 @@ Security teams can hunt for general ransomware precursor activity:
 
 ## Sources
 - [DragonForce Ransomware Attack on Shoreline Sightseeing](https://www.dexpose.io/dragonforce-ransomware-attack-on-shoreline-sightseeing/) (2026-06-01)
-- [Victim: Shoreline Sightseeing](https://ransomware.live/victim/shoreline-sightseeing/) (2026-05-29)
 - [Nova Targets LTI Services and Larick Towing in Ransomware Attack](https://www.dexpose.io/nova-targets-lti-services-and-larick-towing-in-ransomware-attack/) (2026-06-01)
 - [Ransomware.live](https://ransomware.live/) (2026-06-01)
 

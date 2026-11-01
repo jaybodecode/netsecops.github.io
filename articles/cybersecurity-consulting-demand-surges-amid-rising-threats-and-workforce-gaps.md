@@ -38,8 +38,7 @@ For businesses looking to navigate this landscape, the report implicitly suggest
 **Tags:** Cybersecurity Consulting, Workforce Gap, Cyber Resilience, Threat Intelligence, MSSP
 
 ## Sources
-- [Asante Babers Consulting Highlights Increased Cybersecurity Threats As Companies Speed Up Digital Transformation](https://markets.businessinsider.com/news/stocks/asante-babers-consulting-highlights-increased-cybersecurity-threats-as-companies-speed-up-digital-transformation-1033282436) — Markets Insider (2026-04-18)
-- [Surging Cybersecurity Incidents Highlight Global Threats April 2026](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGmgL0f6EExGx9wlo_b-ds-s1G1l8LOo7cGg3j74mOh6S26__cvhM1Q7D1wa2LprWxltOk5tAvpI2mRookXwLAXg10la_RM07Yg2pMaL3mTPY5yehv-amKZwnCcVDZdXWtr6_LF0kUNnmn6fMutgkKIao7SP6_2kuOi3uWGUwY1PkFE73667XWfDV0dGDvIpkjkGDdFIesVKDX-LQ==) — KCNet (2026-04-18)
+- [Markets Insider](https://markets.businessinsider.com/) — Markets Insider (2026-04-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/cybersecurity-consulting-demand-surges-amid-rising-threats-and-workforce-gaps/

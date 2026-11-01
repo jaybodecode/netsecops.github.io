@@ -42,7 +42,6 @@ For individuals and organizations, detection is about skepticism and verificatio
 
 ## Sources
 - [Traffic violation scams swap links for QR codes to steal your card details](https://www.malwarebytes.com/blog/scams/2026/04/traffic-violation-scams-swap-links-for-qr-codes-to-steal-your-card-details) — Malwarebytes
-- [New traffic violation phishing scam uses QR codes to steal your money](https://www.bleepingcomputer.com/news/security/new-traffic-violation-phishing-scam-uses-qr-codes-to-steal-your-money/) — BleepingComputer
 
 ---
 Source: https://cyber.netsecops.io/articles/qr-code-scams-evolve-to-steal-payment-card-details/

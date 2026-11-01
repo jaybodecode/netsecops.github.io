@@ -65,13 +65,8 @@ Security teams should focus on detecting abuse of platform features and anomalou
 **Tags:** ShinyHunters, Canvas, LMS, Data Breach, Education, Extortion, PII
 
 ## Sources
-- [A cyberattack hit universities worldwide, including top Canadian schools. Here's what we know](https://www.cbc.ca/news/science/canvas-cyberattack-shinyhunters-1.7200213) — CBC News (2026-05-09)
-- [Some Canvas Users Receive Ransomware Threat After Data Breach](https://www.govtech.com/education/higher-ed/some-canvas-users-receive-ransomware-threat-after-data-breach) — Government Technology (2026-05-08)
-- [Canvas back online after major breach, but some California campuses locked amid ongoing threat](https://www.latimes.com/california/story/2026-05-07/cyber-attack-on-canvas-learning-platform-disrupts-california-colleges-during-finals) — Los Angeles Times (2026-05-09)
 - [Canvas hack exposes schools’ vulnerability to cyberattacks](https://www.washingtonpost.com/education/2026/05/09/canvas-hack-schools-student-data/) — The Washington Post (2026-05-09)
 - [2026 Canvas security incident](https://en.wikipedia.org/wiki/2026_Canvas_security_incident) — Wikipedia (2026-05-09)
-- [Data breach fears for schools and unis grow after suspected ransom note](https://www.educationhq.com/news/data-breach-fears-for-schools-and-unis-grow-after-suspected-ransom-note-162791/) — EducationHQ (2026-05-10)
-- [Canvas outage and Instructure cybersecurity incident updates](https://www.canberra.edu.au/about-uc/media/newsroom/2026/may/canvas-outage-and-instructure-cybersecurity-incident-impact-updates) — University of Canberra (2026-05-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-claims-massive-canvas-breach-affecting-9000-institutions/

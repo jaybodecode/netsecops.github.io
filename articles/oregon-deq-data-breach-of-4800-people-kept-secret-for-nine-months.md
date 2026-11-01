@@ -45,8 +45,6 @@ This incident provides several lessons for public sector organizations.
 
 ## Sources
 - [Oregon DEQ data breach leaked thousands of people's information, but the agency hasn't told the public](https://www.klcc.org/politics-government/2026-01-13/oregon-deq-data-breach-leaked-thousands-of-peoples-information-but-the-agency-hasnt-told-the-public) — KLCC (2026-01-13)
-- [Oregon DEQ data breach leaked thousands of people’s information, but the agency hasn’t told the public](https://www.opb.org/article/2026/01/13/oregon-deq-data-breach-leaked-thousands-of-peoples-information-but-the-agency-hasnt-told-the-public/) — OPB (2026-01-13)
-- [Oregon’s environmental agency shuts down network after cyberattack](https://therecord.media/oregon-deq-shuts-down-network-cyberattack) — The Record (2026-01-13)
 - [Oregon DEQ Conducts Forensic Investigation in Cyber Attack](https://www.govtech.com/security/oregon-deq-conducts-forensic-investigation-in-cyber-attack) — GovTech (2026-01-13)
 - [DEQ works to resolve cyber attack](https://www.deq.state.or.us/news/deq-works-to-resolve-cyber-attack/) — Oregon DEQ (2026-01-13)
 

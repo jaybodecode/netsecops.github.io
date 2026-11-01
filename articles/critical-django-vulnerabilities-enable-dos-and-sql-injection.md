@@ -55,7 +55,7 @@ The impact of exploitation could be severe.
 **Tags:** Django, Vulnerability, SQL Injection, DoS, Patch Management, Python
 
 ## Sources
-- [Critical Django Vulnerabilities Enables DoS and SQl injection Attacks](https://cyberpress.com/critical-django-vulnerabilities-enables-dos-and-sql-injection-attacks/) — Cyber Press
+- [Cyber Press](https://cyberpress.com/) — Cyber Press
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-django-vulnerabilities-enable-dos-and-sql-injection/

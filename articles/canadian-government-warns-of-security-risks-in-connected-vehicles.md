@@ -68,7 +68,7 @@ While there are no new rules for consumers or businesses yet, proactive steps ca
 
 ## Sources
 - [Connected vehicle data 'can have intelligence value' to adversaries: federal document](https://toronto.citynews.ca/2026/06/01/connected-vehicle-data-can-have-intelligence-value-to-adversaries-federal-document/) — CityNews Toronto (2026-06-01)
-- [Connected vehicle data 'can have intelligence value' to adversaries: federal document](https://www.ctvnews.ca/canada/connected-vehicle-data-can-have-intelligence-value-to-adversaries-federal-document-1.6908332) — CTV News (2026-06-01)
+- [Connected vehicle data 'can have intelligence value' to adversaries: federal document](https://www.ctvnews.ca/politics/article/connected-vehicle-data-can-have-intelligence-value-to-adversaries-federal-document/) — CTV News (2026-06-01)
 - [In the news today: Carney on antisemitism, Canada Post vote, 'Heated Rivalry' at CSAs](https://www.thestar.com/politics/in-the-news-today-carney-on-antisemitism-canada-post-vote-heated-rivalry-at-csas/article_018a166a-1ff7-11ef-89a3-a75908865a7e.html) — Toronto Star (2026-06-01)
 - [Cars Spying On Us? Expert Shares Safety Tips](https://www.miragenews.com/cars-spying-on-us-expert-shares-safety-tips-1250275/) — Mirage News (2026-06-01)
 

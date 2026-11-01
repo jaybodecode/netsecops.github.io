@@ -58,7 +58,7 @@ Regardless of the outcome, this case highlights the increasing legal and regulat
 **Tags:** Supreme Court, FCC, data privacy, regulation, law, telecom
 
 ## Sources
-- [Former FCC Commissioners and Consumer Advocacy Groups To Supreme Court: Wireless Carriers Must Be Held Accountable for Data Breach](https://democracyforward.org/newsroom/former-fcc-commissioners-and-consumer-advocacy-groups-to-supreme-court-wireless-carriers-must-be-held-accountable-for-data-breach/) — Democracy Forward (2026-03-27)
+- [Democracy Forward](https://democracyforward.org/) — Democracy Forward (2026-03-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/supreme-court-to-hear-case-on-fcc-authority-to-penalize-carriers-for-data-breaches/

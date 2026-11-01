@@ -59,7 +59,6 @@ Detecting this evolved threat requires moving beyond simple IOCs.
 
 ## Sources
 - [Developments in the APT landscape, new campaigns and previously unseen malware, multiple data breaches reported](https://www.telsy.com/en/cyber-threat-intelligence/2026-01-18-apt-landscape-developments/) — Telsy (2026-01-18)
-- [APT Activity in Q4 2025: ScarCruft's Artemis Campaign](https://www.securelist.com/apt-report-q4-2025/) — Securelist (2026-01-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/north-korean-apt-scarcruft-evolves-tactics-in-artemis-campaign/

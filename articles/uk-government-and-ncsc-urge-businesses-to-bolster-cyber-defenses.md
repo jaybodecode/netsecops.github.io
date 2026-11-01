@@ -43,7 +43,6 @@ Boards and security leaders should take the following prioritized steps:
 
 ## Sources
 - [Cyber security is business survival](https://www.ncsc.gov.uk/blog-post/cyber-security-is-business-survival) — NCSC (2025-10-21)
-- [Government urges stronger cyber security: What businesses need to know](https://www.walkermorris.co.uk/insights/government-urges-stronger-cyber-security-what-businesses-need-to-know/) — Walker Morris (2025-10-21)
 - [Minister urges businesses to take cyber security seriously](https://meacher-jones.co.uk/minister-urges-businesses-to-take-cyber-security-seriously/) — Meacher-Jones (2025-10-22)
 
 ---

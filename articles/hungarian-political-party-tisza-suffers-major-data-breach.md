@@ -55,8 +55,8 @@ To prevent such breaches, organizations handling PII must implement fundamental 
 **Tags:** Data Breach, PII, Hungary, Politics, GDPR, Have I Been Pwned
 
 ## Sources
-- [TISZA Világ Data Breach](https://haveibeenpwned.com/Breaches/TISZA-Vilag-Data-Breach) — Have I Been Pwned (2025-11-08)
-- [Data of 200,000 Supporters of Hungarian Political Party Leaked Online](https://www.securityweek.com/data-200000-supporters-hungarian-political-party-leaked-online/) — SecurityWeek (2025-11-08)
+- [Have I Been Pwned](https://haveibeenpwned.com/) — Have I Been Pwned (2025-11-08)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2025-11-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/hungarian-political-party-tisza-suffers-major-data-breach/

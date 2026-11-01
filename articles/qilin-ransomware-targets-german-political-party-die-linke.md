@@ -71,10 +71,7 @@ Standard best practices to defend against ransomware groups like Qilin include:
 **Tags:** Qilin, ransomware, Die Linke, Germany, political party, hybrid warfare, data leak
 
 ## Sources
-- [Hackers threaten to leak data after cyberattack on German party Die Linke](https://therecord.media/die-linke-german-political-party-qilin-ransomware) — The Record
-- [Qilin Ransomware Hits German Political Party Die Linke](https://safestate.com/blog/qilin-ransomware-hits-german-political-party-die-linke/) — SafeState
 - [Qilin ransomware group targets German political party Die Linke, threatens data leak](https://www.scmagazine.com/brief/data-security/qilin-ransomware-group-targets-german-political-party-die-linke-threatens-data-leak) — SC Magazine
-- [Qilin ransomware group claims the hack of German political party Die Linke](https://securityaffairs.co/162002/cyber-crime/qilin-ransomware-die-linke.html) — Security Affairs
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-targets-german-political-party-die-linke/

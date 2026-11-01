@@ -63,8 +63,7 @@ General best practices for defending against ransomware include:
 **Tags:** Nightspire, Ransomware, Double Extortion, Data Leak
 
 ## Sources
-- [Nightspire Targets Pat**** S.r.l in Confirmed Ransomware Incident](https://www.dexpose.io/blog/nightspire-targets-pat-s-r-l-in-confirmed-ransomware-incident) — DeXpose (2026-05-24)
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) — DeXpose (2026-05-25)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-05-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/nightspire-ransomware-group-claims-attack-on-pat-srl/

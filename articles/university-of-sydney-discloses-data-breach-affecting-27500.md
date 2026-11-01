@@ -60,7 +60,6 @@ The exposure of this PII places affected individuals at significant risk of vari
 **Tags:** PII, Education, Code Repository, Insider Threat, Misconfiguration
 
 ## Sources
-- [University of Sydney reports data breach affecting over 20,000 staff, affiliates](https://www.recordedfuture.com/the-record/university-of-sydney-data-breach-staff-affiliates) — The Record by Recorded Future (2025-12-19)
 - [University of Sydney Data Breach Affects 27,000 Individuals](https://www.securityweek.com/university-of-sydney-data-breach-affects-27000-individuals/) — SecurityWeek (2025-12-19)
 
 ---

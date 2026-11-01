@@ -48,11 +48,7 @@ This is a 'Sputnik moment' for cybersecurity. The theoretical threat of AI-gener
 
 ## Sources
 - [Bracing for Mythos: AI power pushes global cybersecurity overhaul](https://www.business-standard.com/technology/tech-news/bracing-for-mythos-ai-power-pushes-global-cybersecurity-overhaul-126042600869_1.html) — Business Standard (2026-04-26)
-- [What is Mythos AI and why could it be a threat to global cybersecurity?](https://www.theguardian.com/technology/2026/apr/22/what-is-mythos-ai-and-why-could-it-be-a-threat-to-global-cybersecurity) — The Guardian (2026-04-26)
 - [How Mythos-class AI is changing cyber security risk](https://www.gtlaw.com.au/knowledge/how-mythos-class-ai-changing-cyber-security-risk) — Gilbert + Tobin (2026-04-26)
-- [Why Anthropic's Mythos has energised China's cybersecurity industry](https://www.scmp.com/tech/big-tech/article/3321151/why-anthropics-mythos-has-energised-chinas-cybersecurity-industry) — South China Morning Post (2026-04-26)
-- [Al-Driven Cyber Threats: Why the Claude Mythos Era Demands Preemptive Cybersecurity Transformation](https://blog.morphisec.com/ai-driven-cyber-threats-claude-mythos) — Morphisec (2026-04-26)
-- [Anthropic's Claude Mythos: What organizations should do now to boost cyber resilience](https://www.barracuda.com/blog/2026/04/20/anthropics-claude-mythos-what-organizations-should-do-now-to-boost-cyber-resilience/) — Barracuda (2026-04-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/anthropics-mythos-ai-model-forces-global-cybersecurity-rethink/

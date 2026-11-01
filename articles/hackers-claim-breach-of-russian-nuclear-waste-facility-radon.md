@@ -43,8 +43,8 @@ This incident underscores the critical importance of robust security in all OT a
 **Tags:** Data Breach, Cyberattack, Nuclear, Radon, Rosatom, Russia, Critical Infrastructure, OT
 
 ## Sources
-- [Attackers breach nuclear waste plant, allegedly stealing its entire database](https://cybernews.com/news/attackers-breach-nuclear-waste-plant/) — Cybernews (2025-11-05)
-- [Hackers Claim Breach of Russian Nuclear Operator Radon](https://www.securityweek.com/hackers-claim-breach-of-russian-nuclear-operator-radon/) — SecurityWeek (2025-11-05)
+- [Cybernews](https://cybernews.com/) — Cybernews (2025-11-05)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2025-11-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/hackers-claim-breach-of-russian-nuclear-waste-facility-radon/

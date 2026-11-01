@@ -51,9 +51,7 @@ This threat poses a severe risk to organizations, effectively planting a state-s
 **Tags:** Lazarus Group, North Korea, social engineering, identity fraud, remote work, APT
 
 ## Sources
-- [Researchers Capture Lazarus APT's Remote-Worker Scheme Live on Camera](https://thehackernews.com/2025/12/researchers-capture-lazarus-apts.html) — The Hacker News (2025-12-02)
 - [Researchers spotted Lazarus’s remote IT workers in action](https://securityaffairs.co/155184/apt/lazarus-remote-it-workers-scheme.html) — Security Affairs (2025-12-03)
-- [How We Caught Lazarus's IT Workers Scheme Live on Camera](https://any.run/cybersecurity-blog/how-we-caught-lazarus-group/) — ANY.RUN (2025-12-04)
 - [North Korean IT worker recruitment tactics exposed](https://www.scmagazine.com/news/north-korean-it-worker-recruitment-tactics-exposed) — SC Magazine (2025-12-03)
 
 ---

@@ -59,7 +59,6 @@ This incident is a case study in the consequences of neglecting basic cybersecur
 
 ## Sources
 - [Fine of nearly £1m issued against South Staffordshire Plc and South Staffordshire Water Plc following major cyber attack and data breach](https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2026/05/fine-of-nearly-1m-issued-against-south-staffordshire-plc-and-south-staffordshire-water-plc-following-major-cyber-attack-and-data-breach/) (2026-05-11)
-- [ICO fines Staffordshire water provider over serious cyber attack](https://www.nationaltechnology.co.uk/ico-fines-staffordshire-water-provider-over-serious-cyber-attack/) (2026-05-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-water-company-fined-nearly-1m-over-major-cyberattack/

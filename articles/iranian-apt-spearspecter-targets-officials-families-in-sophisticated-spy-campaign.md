@@ -50,8 +50,6 @@ The primary impact of this campaign is espionage. By successfully targeting seni
 
 ## Sources
 - [Iranian Hackers Target Defense and Government Officials in Ongoing Campaign](https://www.securityweek.com/iranian-hackers-target-defense-and-government-officials-in-ongoing-campaign/) — SecurityWeek (2025-11-17)
-- [Personalized Social-Engineering Strikes by Iranian SpearSpecter Threaten High-Profile Officials](https://cyberpress.com/personalized-social-engineering-strikes-by-iranian-spearspecter-threaten-high-profile-officials/) — Cyberpress (2025-11-17)
-- [Iran-Linked SpearSpecter Campaign Leveraging Personalized Social Engineering Against High-Value Officials](https://www.gbhackers.com/iran-linked-spearspecter-campaign/) — GBHackers on Security (2025-11-17)
 - [Iranian SpearSpecter Attacking High-Value Officials Using Personalized Social Engineering Tactics](https://www.cybersecuritynews.com/iranian-spearspecter/) — Cyber Security News (2025-11-17)
 
 ---

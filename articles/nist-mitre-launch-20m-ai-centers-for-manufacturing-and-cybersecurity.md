@@ -37,9 +37,7 @@ This investment represents a proactive, strategic effort by the U.S. government 
 **Tags:** NIST, MITRE, AI, Cybersecurity, Critical Infrastructure, Manufacturing, Government, Research
 
 ## Sources
-- [NIST, MITRE Partner on $20m AI Centers For Manufacturing and Cybersecurity](https://www.infosecurity-magazine.com/news/nist-mitre-partner-20m-ai-centers/) — Infosecurity Magazine (2025-12-24)
 - [NIST, MITRE invest $20 million in AI centers to counter cyberthreats, boost US manufacturing competitiveness](https://industrialcyber.co/news/nist-mitre-invest-20-million-in-ai-centers-to-counter-cyberthreats-boost-us-manufacturing-competitiveness/) — Industrial Cyber (2025-12-25)
-- [NIST, MITRE announce $20 million research effort on AI cybersecurity](https://www.cyberscoop.com/nist-mitre-ai-cybersecurity-research/) — CyberScoop (2025-12-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/nist-mitre-launch-20m-ai-centers-for-manufacturing-and-cybersecurity/

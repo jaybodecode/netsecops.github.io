@@ -37,9 +37,9 @@ This attack is a textbook example of a supply-chain compromise with a geopolitic
 **Tags:** supply chain attack, qilin, ransomware, south korea, msp, financial services, moonstone sleet
 
 ## Sources
-- [Qilin Ransomware Turns South Korean MSP Breach Into 28-Victim 'Korean Leaks' Data Heist](https://thehackernews.com/2025/11/qilin-ransomware-turns-south-korean.html) — The Hacker News (2025-11-26)
-- [The Korean Leaks – Analyzing the Hybrid Geopolitical Campaign Targeting South Korean Financial Services With Qilin RaaS](https://www.bitdefender.com/blog/business-insights/the-korean-leaks-analyzing-the-hybrid-geopolitical-campaign-targeting-south-korean-financial-services-with-qilin-raas) — Bitdefender (2025-11-24)
-- ["Korean Leaks”: Qilin’s Supply Chain Attack Hits Dozens of South Korean Financial Firms](https://infosecurity-magazine.com/news/qilin-korean-leaks-supply-chain/) — Infosecurity Magazine (2025-11-27)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2025-11-26)
+- [Bitdefender](https://www.bitdefender.com/) — Bitdefender (2025-11-24)
+- [Infosecurity Magazine](https://infosecurity-magazine.com/) — Infosecurity Magazine (2025-11-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-korean-leaks-supply-chain-attack-hits-financial-firms/

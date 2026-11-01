@@ -55,8 +55,6 @@ Security teams may want to hunt for the following patterns to detect potential c
 ## Sources
 - [Mini Shai-Hulud Worm Compromises TanStack, Mistral AI, Guardrails AI & More Packages](https://thehackernews.com/2026/05/mini-shai-hulud-worm-compromises.html) — The Hacker News (2026-05-12)
 - [TanStack, Mistral AI, UiPath Hit in Fresh Supply Chain Attack](https://www.securityweek.com/tanstack-mistral-ai-uipath-hit-in-fresh-supply-chain-attack/) — SecurityWeek (2026-05-12)
-- [Mini Shai-Hulud Hits TanStack npm Packages](https://www.infosecurity-magazine.com/news/mini-shai-hulud-hits-tanstack-npm/) — Infosecurity Magazine (2026-05-12)
-- [Mistral AI SDK, TanStack Router hit in npm software supply chain attack](https://www.csoonline.com/article/2126487/mistral-ai-sdk-tanstack-router-hit-in-npm-software-supply-chain-attack.html) — CSO Online (2026-05-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/mini-shai-hulud-worm-compromises-over-170-npm-and-pypi-packages/

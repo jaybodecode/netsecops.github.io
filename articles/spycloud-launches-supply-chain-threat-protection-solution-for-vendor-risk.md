@@ -39,10 +39,7 @@ SpyCloud's solution shifts the paradigm of vendor risk management from a passive
 **Tags:** SpyCloud, Supply Chain Security, Third-Party Risk Management, TPRM, Identity Threat, Credential Stuffing, Dark Web
 
 ## Sources
-- [SpyCloud Launches Supply Chain Solution to Combat Rising Third-Party Identity Threats](https://www.spycloud.com/newsroom/spycloud-launches-supply-chain-solution-to-combat-rising-third-party-identity-threats/) — SpyCloud (2026-01-14)
 - [New infosec products of the week: January 16, 2026](https://www.helpnetsecurity.com/2026/01/16/new-infosec-products-of-the-week-january-16-2026/) — Help Net Security (2026-01-16)
-- [SpyCloud Launches Supply Chain Solution to Combat Rising Third-Party Identity Threats](https://www.prnewswire.com/news-releases/spycloud-launches-supply-chain-solution-to-combat-rising-third-party-identity-threats-302034515.html) — PR Newswire (2026-01-14)
-- [SpyCloud Launches Supply Chain Solution to Combat Rising Third-Party Identity Threats](https://www.csoonline.com/article/1309839/spycloud-launches-supply-chain-solution-to-combat-rising-third-party-identity-threats.html) — CSO Online (2026-01-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/spycloud-launches-supply-chain-threat-protection-solution-for-vendor-risk/

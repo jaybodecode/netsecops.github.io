@@ -65,7 +65,6 @@ Organizations can hunt for signs of a similar breach by looking for:
 
 ## Sources
 - [Everest Ransomware Group Allegedly Claims Breach of McDonald's India Systems](https://www.cyber.press/everest-ransomware-group-allegedly-claims-breach-of-mcdonalds-india-systems/) — Cyber Press (2026-01-21)
-- [McDonald’s India Data Breach: Everest Ransomware Claims 861GB Data Theft](https://thecyberexpress.com/mcdonalds-india-data-breach/) — The Cyber Express (2026-01-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/everest-ransomware-claims-major-data-breach-at-mcdonalds-india/

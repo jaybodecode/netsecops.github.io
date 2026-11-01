@@ -63,7 +63,6 @@ This effort is aligned with other major EU legislative acts, such as the **EU Cy
 
 ## Sources
 - [ECCC seeks cybersecurity experts for major funding programmes](https://cybersecurity-centre.europa.eu/news/eccc-seeks-cybersecurity-experts-major-funding-programmes-2026-05-18_en) — European Cybersecurity Competence Centre
-- [Call for Expressions of Interest](https://cybersecurity-centre.europa.eu/calls-expressions-interest_en) — European Cybersecurity Competence Centre
 - [NEWS - New Cybersecurity calls under Digital Europe](https://www.ncpflanders.be/news/new-cybersecurity-calls-under-digital-europe) — NCP Flanders
 
 ---

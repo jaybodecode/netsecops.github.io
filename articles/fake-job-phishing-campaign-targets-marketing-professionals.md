@@ -48,8 +48,8 @@ For the individuals targeted, it represents a significant breach of personal pri
 **Tags:** Phishing, Social Engineering, Credential Harvesting, PII, Cofense
 
 ## Sources
-- [Phishing Alert: Fake Job Applications Targeting Marketers](https://cofense.com/blog/phishing-alert-fake-job-applications-targeting-marketers/) — Cofense (2025-10-08)
-- [Cybersecurity Threat Research Feed – Latest Intelligence Updates](https://securonix.com/blog/threat-research-feed-updates/) — Securonix (2025-10-08)
+- [Cofense](https://cofense.com/) — Cofense (2025-10-08)
+- [Securonix](https://securonix.com/) — Securonix (2025-10-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/fake-job-phishing-campaign-targets-marketing-professionals/

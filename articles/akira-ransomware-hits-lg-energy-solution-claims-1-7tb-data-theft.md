@@ -68,7 +68,6 @@ The operational impact was limited to a single overseas facility, which has sinc
 
 ## Sources
 - [24th November – Threat Intelligence Report](https://research.checkpoint.com/2025/24th-november-threat-intelligence-report/) — Check Point Research (2025-11-24)
-- [Half of Ransomware Access Due to Hijacked VPN Credentials](https://www.infosecurity-magazine.com/news/half-ransomware-access-hijacked-vpn/) — Infosecurity Magazine (2025-11-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/akira-ransomware-hits-lg-energy-solution-claims-1-7tb-data-theft/

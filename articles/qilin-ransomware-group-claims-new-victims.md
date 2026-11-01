@@ -52,7 +52,6 @@ A defense-in-depth strategy is essential to protect against ransomware like Qili
 **Tags:** Ransomware, Qilin, RaaS, Double Extortion, Data Leak
 
 ## Sources
-- [Qilin Ransomware announced new victims](https://securityaffairs.com/176994/security/qilin-ransomware-new-victims.html) — Security Affairs (2025-10-15)
 - [Cybersecurity | AHA](https://www.aha.org/cybersecurity) — American Hospital Association (2025-10-15)
 - [Ransomware.live](https://ransomware.live/) — Ransomware.live (2025-10-15)
 - [Security Affairs - Read, think, share … Security is everyone's responsibility](https://securityaffairs.com/) — Security Affairs (2025-10-15)

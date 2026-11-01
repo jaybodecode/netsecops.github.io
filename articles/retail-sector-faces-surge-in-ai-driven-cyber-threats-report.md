@@ -44,7 +44,6 @@ To counter these advanced threats, retailers must evolve their security operatio
 - [LevelBlue Research Reveals Surge in Cyber Threats, Driving Retailers to Bolster Resilience](https://www.businesswire.com/news/home/20251112674312/en/LevelBlue-Research-Reveals-Surge-in-Cyber-Threats-Driving-Retailers-to-Bolster-Resilience) — Business Wire
 - [LevelBlue Futures Report: Retail Leaders Reveal Security Concerns](https://www.trustwave.com/en-us/resources/blogs/trustwave-blog/levelblue-futures-report-retail-leaders-reveal-security-concerns/) — Trustwave
 - [Retailers face surge in AI-driven cyber threats & supply chain risks](https://securitybrief.com.au/story/retailers-face-surge-in-ai-driven-cyber-threats-supply-chain-risks) — SecurityBrief
-- [2025 Futures: Cybersecurity Trends & Predictions](https://www.levelblue.com/resources/2025-futures-cybersecurity-report) — LevelBlue
 
 ---
 Source: https://cyber.netsecops.io/articles/retail-sector-faces-surge-in-ai-driven-cyber-threats-report/

@@ -77,8 +77,8 @@ The impact on the over 150,000 patients is severe and long-lasting:
 **Tags:** Data Leak, Double Extortion, Healthcare, HIPAA, PII, PHI
 
 ## Sources
-- [Data Breaches Reported by Southern Illinois Dermatology; Heart South Cardiovascular Group - The HIPAA Journal](https://www.hipaajournal.com/data-breaches-reported-by-southern-illinois-dermatology-heart-south-cardiovascular-group/) — The HIPAA Journal (2026-04-08)
-- [Data Breach Alert: Southern Illinois Dermatology](https://www.jdsupra.com/legalnews/data-breach-alert-southern-illinois-6458921/) — JD Supra (2026-04-08)
+- [The HIPAA Journal](https://www.hipaajournal.com/) — The HIPAA Journal (2026-04-08)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2026-04-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/southern-illinois-dermatology-breach-exposes-data-of-over-150000-patients/

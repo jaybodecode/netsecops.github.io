@@ -81,7 +81,6 @@ Mitigating this threat requires a multi-layered, strategic approach.
 
 ## Sources
 - [Anthropic's Mythos signals new era of autonomous cyber threats, raising stakes for AI governance and cyber resilience](https://www.industrialcyber.co/assessment-and-monitoring/anthropics-mythos-signals-new-era-of-autonomous-cyber-threats-raising-stakes-for-ai-governance-and-cyber-resilience/) — Industrial Cyber (2026-04-23)
-- [What is Mythos AI and why could it be a threat to global cybersecurity?](https://www.theguardian.com/technology/2026/apr/22/what-is-mythos-ai-and-why-could-it-be-a-threat-to-global-cybersecurity) — The Guardian (2026-04-22)
 - [How Mythos-class AI is changing cyber security risk](https://www.gtlaw.com.au/knowledge/how-mythos-class-ai-changing-cyber-security-risk) — Gilbert + Tobin (2026-04-22)
 - [Claude Mythos and the AI Cybersecurity Wake-Up Call](https://www.bain.com/insights/claude-mythos-and-the-ai-cybersecurity-wake-up-call/) — Bain & Company (2026-04-22)
 

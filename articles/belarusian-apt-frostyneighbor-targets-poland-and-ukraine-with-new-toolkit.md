@@ -69,7 +69,6 @@ Security teams may want to hunt for activity related to the **FrostyNeighbor** g
 **Tags:** APT, Belarus, Cobalt Strike, Espionage, FrostyNeighbor, Ghostwriter, PicassoLoader, Poland, Ukraine
 
 ## Sources
-- ['FrostyNeighbor' APT Carefully Targets Govt Orgs in Poland, Ukraine](https://www.darkreading.com/apt-groups/frostyneighbor-apt-carefully-targets-govt-orgs-in-poland-ukraine) (2026-05-14)
 - [Belarus-aligned FrostyNeighbor attacks Ukrainian government, again — ESET Research discovers](https://www.marketscreener.com/quote/stock/ESET-V-B-121059306/news/Belarus-aligned-FrostyNeighbor-attacks-Ukrainian-government-again-ESET-Research-discovers-46734185/) (2026-05-14)
 - ['FrostyNeighbor' APT Carefully Targets Govt Orgs in Poland, Ukraine](https://www.backbox.org/news/frostyneighbor-apt-carefully-targets-govt-orgs-in-poland-ukraine/) (2026-05-14)
 - ['FrostyNeighbor' APT Carefully Targets Govt Orgs in Poland, Ukraine](https://secureitinside.com/frostyneighbor-apt-carefully-targets-govt-orgs-in-poland-ukraine/) (2026-05-14)

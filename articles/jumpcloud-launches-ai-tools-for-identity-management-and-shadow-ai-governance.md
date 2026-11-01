@@ -37,7 +37,6 @@ Organizations using JumpCloud can take the following steps to leverage the new f
 **Tags:** JumpCloud, AI, Artificial Intelligence, Shadow AI, Identity and Access Management, IAM, Zero Trust
 
 ## Sources
-- [JumpCloud introduces AI features to govern shadow AI and autonomous agents](https://www.helpnetsecurity.com/2026/01/15/jumpcloud-ai-governance/) — Help Net Security (2026-01-15)
 - [Identity Management and Information Security News for the Week of January 16th: One Identity, JumpCloud, Pathlock, and More](https://www.solutionsreview.com/identity-management/identity-management-and-information-security-news-for-the-week-of-january-16th-one-identity-jumpcloud-pathlock-and-more/) — Solutions Review (2026-01-16)
 - [JumpCloud unveils new AI capabilities to secure and manage enterprise AI adoption](https://siliconangle.com/2026/01/14/jumpcloud-unveils-new-ai-capabilities-secure-manage-enterprise-ai-adoption/) — SiliconANGLE (2026-01-14)
 - [Key Channel Headlines: Acronis Archival Storage, Measuring the Real Value of AI, and More](https://www.channelpronetwork.com/news/key-channel-headlines-acronis-archival-storage-measuring-real-value-ai-and-more) — ChannelPro Network (2026-01-17)

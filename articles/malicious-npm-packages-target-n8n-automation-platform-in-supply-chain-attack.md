@@ -60,7 +60,6 @@ The attack turns a tool designed for efficiency into a single point of catastrop
 **Tags:** n8n, npm, Supply Chain Attack, Credential Theft, Endor Labs, Workflow Automation, CVE-2026-21858
 
 ## Sources
-- [Malicious npm packages target the n8n automation platform in a supply chain attack](https://www.csoonline.com/article/1310153/malicious-npm-packages-target-the-n8n-automation-platform-in-a-supply-chain-attack.html) — CSO Online (2026-01-12)
 - [n8mare on auth street: supply chain attack targets n8n ecosystem | Blog](https://www.endorlabs.com/blog/n8mare-on-auth-street-supply-chain-attack-targets-n8n-ecosystem) — Endor Labs (2026-01-12)
 
 ---

@@ -68,10 +68,7 @@ Detecting such a stealthy, long-term intrusion is extremely challenging and requ
 ## Sources
 - [Major telecom services provider Ribbon breached by state hackers](https://www.bleepingcomputer.com/news/security/major-telecom-services-provider-ribbon-breached-by-state-hackers/) — BleepingComputer (2025-10-30)
 - [Telco provider used by US government and others hit by nation-state hackers](https://www.techradar.com/pro/security/telco-provider-used-by-us-government-and-others-hit-by-nation-state-hackers) — TechRadar (2025-10-30)
-- [State-sponsored hackers breached the systems of US telecoms services firm Ribbon Communications, and stayed undetected for nearly a year](https://www.itpro.com/security/breaches/state-sponsored-hackers-breached-us-telco-ribbon-communications-and-stayed-undetected-for-nearly-a-year) — ITPro (2025-10-31)
 - [Hackers stayed undetected in Ribbon Communications’ network for nearly a year](https://techhq.com/2025/10/hackers-stayed-undetected-in-ribbon-communications-network-for-nearly-a-year/) — TechHQ (2025-10-30)
-- [Ribbon Communications nation-state breach](https://cybernews.com/news/ribbon-communications-nation-state-breach-sec/) — Cybernews (2025-10-29)
-- [Ribbon Communications breached by nation-state hackers for 10 months](https://thetechbuzz.net/telecom/ribbon-communications-breached-by-nation-state-hackers-for-10-months/) — The Tech Buzz (2025-10-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/telecom-provider-ribbon-communications-discloses-year-long-nation-state-breach/

@@ -49,7 +49,6 @@ These methods are generally beyond the capabilities of most organizations, which
 - [If cyber espionage via HDMI worries you, NCSC built a device to stop it](https://www.helpnetsecurity.com/2026/04/23/silentglass-cybersecurity-device/) (2026-04-26)
 - [National Cyber Security Centre unveils 'SilentGlass' - a new plug-in device to protect computer monitors from hackers](https://www.futurescot.com/national-cyber-security-centre-unveils-silentglass-a-new-plug-in-device-to-protect-computer-monitors-from-hackers/) (2026-04-26)
 - [NCSC launches SilentGlass to combat display cyberattacks](https://www.scmagazine.com/brief/ncsc-launches-silentglass-to-combat-display-cyberattacks) (2026-04-26)
-- [UK NCSC launches its first hardware security product](https://www.thestack.technology/uk-ncsc-launches-its-first-hardware-security-product/) (2026-04-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-ncsc-launches-silentglass-to-block-hardware-based-cyberattacks/

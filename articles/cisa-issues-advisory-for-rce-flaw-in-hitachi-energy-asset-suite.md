@@ -48,7 +48,6 @@ CISA and Hitachi Energy recommend the following actions:
 
 ## Sources
 - [Hitachi Energy Asset Suite](https://www.cisa.gov/news-events/ics-advisories/icsa-26-008-01) — CISA (2026-01-08)
-- [CISA warns of vulnerabilities in Hitachi Energy products](https://www.cisa.gov/news-events/news/cisa-warns-vulnerabilities-hitachi-energy-products) — CISA (2026-01-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-issues-advisory-for-rce-flaw-in-hitachi-energy-asset-suite/

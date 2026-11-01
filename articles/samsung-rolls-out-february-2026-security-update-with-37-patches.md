@@ -53,8 +53,8 @@ It is recommended to be connected to a Wi-Fi network and have sufficient battery
 **Tags:** Samsung, Android, Patch Management, Mobile Security, Vulnerability
 
 ## Sources
-- [Samsung details February 2026 security update](https://www.sammobile.com/news/samsung-february-2026-security-update-details/) — SamMobile
-- [February 2026 update brings 37 patches to Samsung devices [Details]](https://www.sammyfans.com/2026/02/02/february-2026-update-brings-37-patches-to-samsung-devices-details/) — Sammy Fans
+- [SamMobile](https://www.sammobile.com/) — SamMobile
+- [Sammy Fans](https://www.sammyfans.com/) — Sammy Fans
 
 ---
 Source: https://cyber.netsecops.io/articles/samsung-rolls-out-february-2026-security-update-with-37-patches/

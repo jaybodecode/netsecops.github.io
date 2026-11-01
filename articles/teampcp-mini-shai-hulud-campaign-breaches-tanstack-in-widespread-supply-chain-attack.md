@@ -64,7 +64,7 @@ No specific package names, versions, or C2 domains were mentioned in the source 
 **Tags:** TeamPCP, Mini Shai-Hulud, TanStack, Supply Chain Attack, npm, PyPI, Malware
 
 ## Sources
-- [This Week's Top Five Stories in Cyber](https://cybermagazine.com/articles/this-weeks-top-five-stories-in-cyber) — Cyber Magazine (2026-05-23)
+- [Cyber Magazine](https://cybermagazine.com/) — Cyber Magazine (2026-05-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/teampcp-mini-shai-hulud-campaign-breaches-tanstack-in-widespread-supply-chain-attack/

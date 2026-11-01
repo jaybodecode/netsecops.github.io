@@ -51,7 +51,6 @@ For businesses operating in the region:
 
 ## Sources
 - [Togo and Mozambique Forge Landmark Cybersecurity Partnership to Boost African Digital Resilience](https://techafricamag.com/togo-and-mozambique-forge-landmark-cybersecurity-partnership-to-boost-african-digital-resilience/) — TechAfrica News (2025-11-19)
-- [128th Incident Prevention and Response Mechanism meeting takes place in Ergneti](https://www.osce.org/secretariat/580172) — OSCE (2025-11-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/togo-and-mozambique-sign-cybersecurity-pact-to-bolster-african-digital-defense/

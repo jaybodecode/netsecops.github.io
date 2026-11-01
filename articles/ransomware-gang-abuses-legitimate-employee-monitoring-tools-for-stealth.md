@@ -50,7 +50,6 @@ The use of this stealthy TTP increases the potential dwell time of attackers, al
 **Tags:** Ransomware, Living off the Land, TTP, Persistence, Remote Access Software, Defense Evasion
 
 ## Sources
-- [Cyber News Roundup – February 13th 2026](https://www.integrity360.com/ie/blog/2026/02/13/cyber-news-roundup-february-13th-2026/) — Integrity360 (2026-02-13)
 - [Top 5 Cybersecurity News Stories February 13, 2026](https://diesec.com/blog/top-5-cybersecurity-news-stories-february-13-2026) — Diesec (2026-02-13)
 
 ---

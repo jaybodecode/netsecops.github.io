@@ -49,7 +49,6 @@ Overall, the regulations represent a significant step by the Indian government t
 **Tags:** India, Regulation, Policy, Cybersecurity, IMEI, Telecom
 
 ## Sources
-- [Telecommunications (Telecom Cyber Security) Amendment Rules, 2025: Strengthening Mobile Number Validation and IMEI compliance in India](https://www.scconline.com/blog/post/2025/10/25/telecommunications-telecom-cyber-security-amendment-rules-2025-strengthening-mobile-number-validation-and-imei-compliance-in-india/) — SCC Online
 - [Telecommunications (Telecom Cyber Security) Amendment Rules, 2025](https://legalitysimplified.com/telecommunications-telecom-cyber-security-amendment-rules-2025/) — Legality Simplified
 
 ---

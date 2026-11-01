@@ -52,8 +52,8 @@ Addressing the ransomware threat in Africa requires both technical controls and 
 **Tags:** ransomware, Medusa, Africa, cybersecurity gap, double extortion, critical infrastructure
 
 ## Sources
-- [2026-01 - Ransomware: What it is and why it's your problem](https://www.wits.ac.za/news/latest-news/in-their-own-words/2026/2026-01/2026-01---ransomware-what-it-is-and-why-its-your-problem.html) — Wits University (2026-01-26)
-- [Ransomware gangs thrive in Africa's cybersecurity vacuum](https://www.itweb.co.za/content/PmxVEMKX2A2qQY85) — ITWeb (2026-01-26)
+- [Wits University](https://www.wits.ac.za/) — Wits University (2026-01-26)
+- [ITWeb](https://www.itweb.co.za/) — ITWeb (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/medusa-ransomware-group-escalates-attacks-in-africa/

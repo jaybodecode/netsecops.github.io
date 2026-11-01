@@ -73,8 +73,8 @@ Security teams can hunt for generic signs of ransomware precursor activity:
 **Tags:** ransomware, INC ransomware, data breach, double extortion, financial services
 
 ## Sources
-- [Industrial Acceptance Data Breach Affects 79,216 Individuals](https://www.claimdepot.com/data-breach/industrial-acceptance-data-breach-affects-79216-individuals/) — Claim Depot (2026-05-29)
-- [Industrial Acceptance Corp. Files Notice of Data Breach Following Ransomware Attack](https://www.jdsupra.com/legalnews/industrial-acceptance-corp-files-notice-3945102/) — JD Supra (2026-05-29)
+- [Claim Depot](https://www.claimdepot.com/) — Claim Depot (2026-05-29)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2026-05-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/industrial-acceptance-corp-discloses-breach-by-inc-ransomware/

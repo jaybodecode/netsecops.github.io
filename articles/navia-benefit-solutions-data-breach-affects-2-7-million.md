@@ -65,8 +65,6 @@ Organizations handling large volumes of PII/PHI must implement robust security c
 **Tags:** data breach, PII, PHI, HIPAA, identity theft, healthcare, supply chain
 
 ## Sources
-- [Data Breach Alert: Edelson Lechtzin LLP Investigates Navia Benefit Solutions Data Breach Impacting Millions](https://www.prnewswire.com/news-releases/data-breach-alert-edelson-lechtzin-llp-investigates-navia-benefit-solutions-data-breach-impacting-millions-302096303.html) — PR Newswire
-- [Navia Benefit Solutions Discloses Data Breach Affecting 2.7 Million Individuals](https://www.hipaajournal.com/navia-benefit-solutions-discloses-data-breach-affecting-2-7-million-individuals/) — HIPAA Journal
 - [Navia Data Breach Impacts 2.7 Million](https://www.securityweek.com/navia-data-breach-impacts-2-7-million/) — SecurityWeek
 - [Navia discloses data breach impacting 2.7 million people](https://www.bleepingcomputer.com/news/security/navia-discloses-data-breach-impacting-27-million-people/) — BleepingComputer
 - [Navia data breach impacts nearly 2.7 Million people](https://securityaffairs.com/160933/data-breach/navia-data-breach.html) — Security Affairs

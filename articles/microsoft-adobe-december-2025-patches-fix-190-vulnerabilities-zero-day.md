@@ -62,7 +62,6 @@ To hunt for pre-patch exploitation of **CVE-2025-62221**, security teams can loo
 **Tags:** Patch Tuesday, Zero-Day, Microsoft, Adobe, Vulnerability, Privilege Escalation
 
 ## Sources
-- [Adobe and Microsoft Release December 2025 Security Patches](https://www.cybersecflux.com/adobe-and-microsoft-release-december-2025-security-patches/) — CyberSecFlux (2025-12-28)
 - [Patching Became A Race in 2025: Microsoft Security Reckoning](https://thecyberthrone.com/2025/12/28/patching-became-a-race-in-2025-microsoft-security-reckoning/) — The Cyber Throne (2025-12-28)
 
 ---

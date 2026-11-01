@@ -76,7 +76,6 @@ For organizations in the financial and virtual asset sectors:
 **Tags:** OFAC, Sanctions, Cryptocurrency, Money Laundering, Ransomware, LockBit, Qilin, Treasury
 
 ## Sources
-- [Treasury Sanctions Virtual Currency Exchange and Mixers for Facilitating Ransomware Transactions](https://home.treasury.gov/news/press-releases/jy12345) — U.S. Department of the Treasury (2026-04-25)
 - [US Treasury sanctions crypto exchange Cortexchange and two mixers for laundering ransomware funds](https://www.theblock.co/post/298765/us-treasury-sanctions-crypto-exchange-cortexchange-mixers) — The Block (2026-04-25)
 
 ---

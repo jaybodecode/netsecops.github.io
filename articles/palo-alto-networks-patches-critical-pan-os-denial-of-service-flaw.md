@@ -77,10 +77,8 @@ Because the attack is unauthenticated and can be launched remotely, any organiza
 **Tags:** CVE-2026-0227, Palo Alto Networks, PAN-OS, GlobalProtect, DoS, Vulnerability, Patch Management
 
 ## Sources
-- [Palo Alto Networks addressed a GlobalProtect flaw, PoC exists](https://securityaffairs.com/157762/hacking/palo-alto-networks-globalprotect-flaw-poc.html) — Security Affairs (2026-01-15)
 - [Palo Alto Fixes GlobalProtect DoS Flaw That Can Crash Firewalls Without Login](https://thehackernews.com/2026/01/palo-alto-fixes-globalprotect-dos-flaw.html) — The Hacker News (2026-01-15)
 - [Palo Alto Networks warns of DoS bug letting hackers disable firewalls](https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-dos-bug-letting-hackers-disable-firewalls/) — BleepingComputer (2026-01-15)
-- [Palo Alto Networks patches firewalls after discovery of a new denial-of-service flaw](https://www.techradar.com/pro/security/palo-alto-networks-patches-firewalls-after-discovery-of-a-new-denial-of-service-flaw) — TechRadar Pro (2026-01-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/palo-alto-networks-patches-critical-pan-os-denial-of-service-flaw/

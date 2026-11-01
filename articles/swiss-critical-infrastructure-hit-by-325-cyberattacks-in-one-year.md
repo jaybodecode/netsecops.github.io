@@ -82,7 +82,6 @@ The NCSC report underscores the need for robust, foundational security controls 
 **Tags:** switzerland, critical infrastructure, cybersecurity report, government, ddos, hacking
 
 ## Sources
-- [Almost one attack a day reported on critical Swiss infrastructures](https://www.swissinfo.ch/eng/business/almost-one-attack-a-day-reported-on-critical-swiss-infrastructures/74518836) — SWI swissinfo.ch
 - [NCSC Semi-Annual Report: Second Half of 2025](https://www.ncs.admin.ch/ncs/en/home/aktuell/im-fokus/lagedarstellung-2-halbjahr-2025.html) — Swiss Federal Office for Cybersecurity
 
 ---

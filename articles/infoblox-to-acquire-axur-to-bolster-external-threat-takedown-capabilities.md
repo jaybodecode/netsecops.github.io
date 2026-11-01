@@ -39,7 +39,6 @@ The integrated solution provides multiple layers of mitigation against external 
 **Tags:** Infoblox, Axur, Acquisition, M&A, Threat Intelligence, Phishing, Brand Protection, AI
 
 ## Sources
-- [Infoblox Expands Its Preemptive Security Offering to Combat Brand Abuse, Credential Exposure and External Threats with Planned Acquisition of Axur](https://www.infoblox.com/company/press-releases/infoblox-expands-its-preemptive-security-offering-to-combat-brand-abuse-credential-exposure-and-external-threats-with-planned-acquisition-of-axur/) — Infoblox (2026-01-14)
 - [Infoblox to buy Axur to bolster AI-powered threat defence](https://securitybrief.com.au/story/infoblox-to-buy-axur-to-bolster-ai-powered-threat-defence) — SecurityBrief Australia (2026-01-15)
 - [Infoblox deepens exposure management through Axur](https://www.techzine.eu/news/security/120612/infoblox-deepens-exposure-management-through-axur/) — Techzine Europe (2026-01-14)
 - [Endpoint Security and Network Monitoring News for the Week of January 16th: Asimily, OneSpan, Infoblox, and More](https://www.solutionsreview.com/endpoint-security/endpoint-security-and-network-monitoring-news-for-the-week-of-january-16th-asimily-onespan-infoblox-and-more/) — Solutions Review (2026-01-16)

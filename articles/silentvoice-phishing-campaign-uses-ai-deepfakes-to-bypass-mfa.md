@@ -51,8 +51,8 @@ Detection is challenging as the attack manipulates legitimate processes. Focus s
 **Tags:** phishing, vishing, deepfake, AI, social engineering, MFA bypass, account takeover
 
 ## Sources
-- [SilentVoice Campaign Uses AI Deepfake Audio to Defeat MFA](https://www.proofpoint.com/us/blog/threat-insight/silentvoice-deepfake-audio-phishing) — Proofpoint (2026-01-26)
-- [AI Voice Cloning Used to Bypass MFA in Corporate Breaches](https://krebsonsecurity.com/2026/01/ai-voice-cloning-used-to-bypass-mfa-in-corporate-breaches/) — Krebs on Security (2026-01-26)
+- [Proofpoint](https://www.proofpoint.com/) — Proofpoint (2026-01-26)
+- [Krebs on Security](https://krebsonsecurity.com/) — Krebs on Security (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/silentvoice-phishing-campaign-uses-ai-deepfakes-to-bypass-mfa/

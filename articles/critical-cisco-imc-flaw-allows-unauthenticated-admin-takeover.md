@@ -99,8 +99,6 @@ Compromise of the Cisco IMC provides an attacker with full hardware-level contro
 ## Sources
 - [Emerging Threat: (CVE-2026-20093) Cisco IMC Authentication Bypass | CyCognito Blog](https://www.cycognito.com/blog/emerging-threat-cve-2026-20093-cisco-imc-authentication-bypass) — CyCognito
 - [6th April – Threat Intelligence Report](https://research.checkpoint.com/2026/04/06/6th-april-threat-intelligence-report/) — Check Point Research
-- [CVE-2026-20093: Critical Cisco IMC Flaw Allows Unauthenticated Admin Access to UCS Servers](https://socradar.io/critical-cisco-imc-flaw-allows-unauthenticated-admin-access-to-ucs-servers-cve-2026-20093/) — SOCRadar
-- [Latest Cisco IMC vulnerabilities: How to find impacted assets](https://www.runzero.com/blog/cisco-imc-vulnerabilities-2026-04-02/) — runZero
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-cisco-imc-flaw-allows-unauthenticated-admin-takeover/

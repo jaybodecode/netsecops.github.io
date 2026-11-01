@@ -88,9 +88,6 @@ It is recommended to test the updates in a pilot group before broad deployment t
 
 ## Sources
 - [Two New Windows Zero-Days Exploited in the Wild — One Affects Every Version Ever Shipped](https://www.thehackernews.com/2025/10/two-new-windows-zero-days-exploited-in.html) — The Hacker News (2025-10-15)
-- [Microsoft and Adobe Patch Tuesday, October 2025 Security Update Review](https://blog.qualys.com/vulnerabilities-threat-research/2025/10/16/microsoft-and-adobe-patch-tuesday-october-2025-security-update-review) — Qualys (2025-10-16)
-- [Microsoft Patch Tuesday – October 2025](https://www.lansweeper.com/patch-tuesday/microsoft-patch-tuesday-october-2025/) — Lansweeper (2025-10-14)
-- [Microsoft Patch Tuesday October 2025: 4 Zero-Days and 172 Vulnerabilities Fixed](https://www.bleepingcomputer.com/news/microsoft/microsoft-october-2025-patch-tuesday-fixes-4-zero-days-172-vulnerabilities/) — BleepingComputer (2025-10-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-october-2025-patch-tuesday-fixes-four-zero-days/

@@ -56,7 +56,6 @@ Exploitation of these vulnerabilities could have severe consequences for industr
 **Tags:** ICS, OT, CISA, Vulnerability, CVE-2025-64130, Rockwell Automation, Zenitel, Critical Infrastructure
 
 ## Sources
-- [CISA Releases Seven Industrial Control Systems Advisories](https://www.cisa.gov/news-events/ics-advisories/cisa-releases-seven-industrial-control-systems-advisories) — CISA (2025-11-25)
 - [Zenitel TCIV-3+](https://www.cisa.gov/news-events/ics-advisories/icsa-25-329-03) — CISA (2025-11-25)
 - [Ashlar-Vellum Cobalt, Xenon, Argon, Lithium, Cobalt Share](https://www.cisa.gov/news-events/ics-advisories/icsa-25-329-01) — CISA (2025-11-25)
 - [Opto 22 groov View](https://www.cisa.gov/news-events/ics-advisories/icsa-25-329-04) — CISA (2025-11-25)

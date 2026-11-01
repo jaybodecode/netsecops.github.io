@@ -65,7 +65,6 @@ No specific IOCs such as commit hashes, attacker domains, or IP addresses were p
 
 ## Sources
 - [Megalodon GitHub Attack Targets 5,561 Repos with Malicious CI/CD Workflows](https://thehackernews.com/2026/05/megalodon-github-attack-targets-5561.html) (2026-05-22)
-- [Laravel-Lang supply chain attack hits 233 versions, Megalodon poisons 5,500 GitHub repos](https://daily.dev/blog/laravel-lang-supply-chain-attack-hits-233-versions-megalodon-poisons-5500-github-repos) (2026-05-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/megalodon-attack-poisons-over-5500-github-repos-with-malicious-ci-cd-workflows/

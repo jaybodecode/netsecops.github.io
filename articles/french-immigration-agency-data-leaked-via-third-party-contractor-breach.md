@@ -46,9 +46,7 @@ This incident underscores the critical importance of third-party risk management
 
 ## Sources
 - [12th January – Threat Intelligence Report](https://research.checkpoint.com/2026/01/12/12th-january-threat-intelligence-report/) — Check Point Research (2026-01-12)
-- [Cyberattaque contre l'Agence française de l'immigration : les données personnelles des résidents étrangers compromises](https://www.visahq.fr/news/A12A619D704D1A2A) — VisaHQ (2026-01-12)
 - [Cyberattaque majeure visant l'Office français de l'immigration et de l'intégration](https://www.mac4ever.com/securite/180231-cyberattaque-majeure-visant-l-office-francais-de-l-immigration-et-de-l-integration) — Mac4Ever (2026-01-12)
-- [Cyber-attack on French Immigration Agency Exposes Foreign Residents' Personal Data](https://www.visahq.com/news/A12A619D704D1A2A) — VisaHQ (2026-01-12)
 - [Foreigners' data stolen in hack of French immigration agency – Le Monde.fr](https://www.hacknotice.com/hack/foreigners-data-stolen-in-hack-of-french-immigration-agency-le-monde-fr) — HackNotice (2026-01-12)
 
 ---

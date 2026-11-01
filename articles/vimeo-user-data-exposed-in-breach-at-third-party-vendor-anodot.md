@@ -90,7 +90,6 @@ For detection, organizations should focus on **[`D3-CUA - Cloud User Activity An
 **Tags:** Anodot, Data Breach, ShinyHunters, Snowflake, Supply Chain Attack, Third-Party Risk, Vimeo
 
 ## Sources
-- [Video site Vimeo blames security incident on Anodot breach](https://www.recordedfuture.com/news/articles/video-site-vimeo-blames-security-incident-on-anodot-breach) (2026-04-28)
 - [Video service Vimeo confirms Anodot breach exposed user data](https://www.bleepingcomputer.com/news/security/video-service-vimeo-confirms-anodot-breach-exposed-user-data/) (2026-04-28)
 - [Vimeo confirms customer data accessed following Anodot breach](https://www.scmagazine.com/brief/vimeo-confirms-customer-data-accessed-following-anodot-breach) (2026-04-29)
 - [Anodot third-party security incident](https://vimeo.com/blog/post/anodot-third-party-security-incident/) (2026-04-27)

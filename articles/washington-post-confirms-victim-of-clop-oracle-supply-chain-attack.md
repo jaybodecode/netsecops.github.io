@@ -58,9 +58,7 @@ No specific Indicators of Compromise (IOCs) were provided in the source articles
 **Tags:** Cl0p, Ransomware, Supply Chain Attack, Oracle, Zero-Day, Data Breach, The Washington Post
 
 ## Sources
-- [Washington Post is latest victim of Oracle-hacking Cl0p gang](https://cybernews.com/news/washington-post-oracle-clop-victim/) — Cybernews (2025-11-05)
 - [Washington Post impacted in sweeping Oracle EBS cyberattack](https://dxbnewsnetwork.com/washington-post-impacted-in-sweeping-oracle-ebs-cyberattack/) — DXB News Network (2025-11-07)
-- [The Washington Post Confirms Impact in Cyber-Breach of Oracle Corporation’s E-Business Suite](https://www.the420.in/the-washington-post-confirms-impact-in-cyber-breach-of-oracle-corporations-e-business-suite/) — The420.in (2025-11-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/washington-post-confirms-victim-of-clop-oracle-supply-chain-attack/

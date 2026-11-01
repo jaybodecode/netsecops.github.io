@@ -55,8 +55,8 @@ To detect activity associated with ransomware groups like Genesis, security team
 **Tags:** Ransomware, Genesis, Healthcare, Data Breach, Double Extortion, Supply Chain Attack
 
 ## Sources
-- [Sierra Management Group Data Breach: What California Victims Need to Know](https://www.classaction.org/news/sierra-management-group-data-breach-what-california-victims-need-to-know) — ClassAction.org (2026-03-07)
-- [Sierra Management Group Data Breach: 100 GB Stolen](https://claimdepot.com/sierra-management-group-data-breach-100-gb-stolen/) — ClaimDepot (2026-03-07)
+- [ClassAction.org](https://www.classaction.org/) — ClassAction.org (2026-03-07)
+- [ClaimDepot](https://claimdepot.com/) — ClaimDepot (2026-03-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/genesis-ransomware-group-claims-attack-on-sierra-management-group/

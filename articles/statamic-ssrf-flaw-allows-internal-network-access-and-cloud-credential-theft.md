@@ -77,7 +77,6 @@ A successful SSRF attack can have several serious consequences:
 
 ## Sources
 - [CVE-2026-28423 - Exploits & Severity](https://feedly.com/i/subscription/subscriptions%2Fpart-83) — Feedly (2026-03-01)
-- [Statamic SSRF Bug Could Let Attackers Steal Cloud Credentials](https://thehackernews.com/2026/02/statamic-ssrf-bug-could-let-attackers.html) — The Hacker News (2026-02-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/statamic-ssrf-flaw-allows-internal-network-access-and-cloud-credential-theft/

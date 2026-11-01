@@ -38,7 +38,6 @@ To comply with regulations like DORA and effectively manage these threats, finan
 **Tags:** Supply Chain, Indirect Ransomware, DORA, Financial Services, Threat Report, Third-Party Risk
 
 ## Sources
-- [RadioCSIRT – English Edition – Your Cybersecurity News for Saturday, January 10, 2026 (Ep. 66)](https://radiocsirt.com/podcast/radiocsirt-english-edition/episode/radiocsirt-english-edition-your-cybersecurity-news-for-saturday-january-10-2026-ep-66) — RadioCSIRT (2026-01-10)
 - [RadioCSIRT – English Edition – Your Cybersecurity News for Saturday, January 10, 2026 (Ep. 66)](https://podcastics.com/podcast/episode/radiocsirt-english-edition-your-cybersecurity-news-for-saturday-january-10-2026-ep-66-319985/) — Podcastics (2026-01-10)
 
 ---

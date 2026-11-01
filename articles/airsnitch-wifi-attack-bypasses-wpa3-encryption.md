@@ -63,10 +63,6 @@ Given the fundamental nature of the flaw, mitigation requires a layered defense 
 
 ## Sources
 - [AirSnitch Wi‑Fi Attack Exposes Critical Vulnerabilities in Home and Enterprise Networks](https://ubos.tech/airsnitch-wi%E2%80%91fi-attack-exposes-critical-vulnerabilities-in-home-and-enterprise-networks/) — ubos.tech (2026-02-26)
-- [Researchers discover massive Wi-Fi vulnerability affecting multiple access points — AirSnitch lets attackers on the same network intercept data and launch machine-in-the-middle-attacks](https://www.tomshardware.com/networking/researchers-discover-massive-wi-fi-vulnerability-affecting-multiple-access-points-airsnitch-lets-attackers-on-the-same-network-intercept-data-and-launch-machine-in-the-middle-attacks) — Tom's Hardware (2026-02-26)
-- [New router security issue - "AirSnitch"](https://community.hubitat.com/t/new-router-security-issue-airsnitch/145895) — Hubitat Community (2026-02-26)
-- [New AirSnitch attack bypasses Wi-Fi encryption in homes, offices, and enterprises](https://swissfinance.ai/blog/new-airsnitch-attack-bypasses-wi-fi-encryption-in-homes-offices-and-enterprises) — SwissFinanceAI (2026-02-26)
-- [AirSnitch Exploit Cracks Wi-Fi Encryption – Immediate Patch Required](https://www.diesec.com/blog/airnitch-exploit) — DIESEC (2026-02-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/airsnitch-wifi-attack-bypasses-wpa3-encryption/

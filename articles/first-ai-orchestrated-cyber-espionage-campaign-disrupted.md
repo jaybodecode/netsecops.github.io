@@ -59,8 +59,8 @@ Countering AI-driven attacks requires a focus on both foundational security and 
 **Tags:** AI, artificial intelligence, cyber espionage, Anthropic, Claude Code, China, state-sponsored
 
 ## Sources
-- [Disrupting the first reported AI-orchestrated cyber espionage campaign - Anthropic](https://www.anthropic.com/news/disrupting-the-first-reported-ai-orchestrated-cyber-espionage-campaign) — Anthropic (2025-11-13)
-- [Monthly Cyber Threats Report - November 2025 Issue 11 - Mishcon de Reya](https://www.mishcon.com/news/monthly-cyber-threats-report-november-2025-issue-11) — Mishcon de Reya (2025-11-14)
+- [Anthropic](https://www.anthropic.com/) — Anthropic (2025-11-13)
+- [Mishcon de Reya](https://www.mishcon.com/) — Mishcon de Reya (2025-11-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/first-ai-orchestrated-cyber-espionage-campaign-disrupted/

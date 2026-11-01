@@ -49,10 +49,10 @@ Defending against groups like Everest requires a defense-in-depth strategy.
 **Tags:** RaaS, Automotive, Data Exfiltration, Dark Web, Japan, Manufacturing
 
 ## Sources
-- [Everest Cybercrime Group Alleges Successful Breach of Nissan Motors](https://cyberpress.com/everest-cybercrime-group-alleges-successful-breach-of-nissan-motors/) — Cyberpress (2026-01-11)
-- [Hacking Group “Everest” Allegedly Claims Nissan Motor Breach](https://gbhackers.com/hacking-group-everest-nissan-motor/) — GBHackers on Security (2026-01-12)
-- [Everest Ransomware Claims Breach at Nissan, Says 900GB of Data Stolen](https://www.hackread.com/everest-ransomware-nissan-breach-data-stolen/) — HackRead (2026-01-12)
-- [製造業標的の新脅威：日産、900GB侵害の可能性｜角砂糖](https://note.com/sumisato/n/nbd3027b147d7) — note.com (2026-01-11)
+- [Cyberpress](https://cyberpress.com/) — Cyberpress (2026-01-11)
+- [GBHackers on Security](https://gbhackers.com/) — GBHackers on Security (2026-01-12)
+- [HackRead](https://www.hackread.com/) — HackRead (2026-01-12)
+- [note.com](https://note.com/) — note.com (2026-01-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/everest-ransomware-group-claims-major-breach-at-nissan/

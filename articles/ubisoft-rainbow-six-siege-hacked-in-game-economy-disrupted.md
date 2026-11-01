@@ -60,7 +60,6 @@ Ubisoft's response involved a complete shutdown and rollback, indicating the bre
 **Tags:** Ubisoft, Rainbow Six Siege, Gaming, Cyberattack, In-Game Economy, Data Breach, MongoBleed
 
 ## Sources
-- [Ubisoft's Rainbow Six Siege Hacked, $13.33M in In-Game Currency Distributed](https://www.kucoin.com/news/ubisoft-s-rainbow-six-siege-hacked-13-33m-in-in-game-currency-distributed) — KuCoin (2025-12-29)
 - [Rainbow Six Siege Hackers Crashed Christmas with a $13 Million Currency Heist](https://www.cyberkendra.com/2025/12/rainbow-six-siege-hackers-crashed-christmas.html) — Cyber Kendra (2025-12-29)
 - [Ubisoft's in-game currency system breached in $13M hacker exploit](https://www.mexc.com/news/article/26079731671958) — MEXC News (2025-12-29)
 

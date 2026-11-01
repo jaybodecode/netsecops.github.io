@@ -61,7 +61,6 @@ Detecting this activity requires a focus on the IT/OT boundary.
 **Tags:** Sandworm, APT44, APT, Russia, OT Security, ICS, Critical Infrastructure, Edge Devices
 
 ## Sources
-- [Latest Cyber Security Attack News Today – Cyber Threat Post](https://varutra.com/blog/latest-cyber-security-attack-news-today-cyber-threat-post/) — Varutra Consulting (2026-05-15)
 - [State-backed ransomware activity raises new concerns over escalating threats to OT, critical infrastructure operations](https://industrialcyber.co/threats-vulnerabilities/state-backed-ransomware-activity-raises-new-concerns-over-escalating-threats-to-ot-critical-infrastructure-operations/) — Industrial Cyber (2026-05-15)
 
 ---

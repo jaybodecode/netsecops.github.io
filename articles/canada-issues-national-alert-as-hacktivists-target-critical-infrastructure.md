@@ -68,7 +68,6 @@ Organizations should take the following tactical steps:
 
 ## Sources
 - [Canada's Cyber Centre urges action as Internet-accessible ICS face growing cyber threats from hacktivists](https://industrialcyber.co/canada/canadas-cyber-centre-urges-action-as-internet-accessible-ics-face-growing-cyber-threats-from-hacktivists/) — Industrial Cyber (2025-10-30)
-- [Canada Warns of Cyberattacks Targeting Industrial Control Systems](https://www.techrepublic.com/article/canada-warns-cyberattacks-industrial-control-systems/) — TechRepublic (2025-10-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/canada-issues-national-alert-as-hacktivists-target-critical-infrastructure/

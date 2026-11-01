@@ -59,7 +59,6 @@ This is a politically motivated cyber-espionage campaign attributed to an Irania
 
 ## Sources
 - [Daily Cybersecurity Roundup, February 18, 2026](https://www.cyware.com/news/daily-cybersecurity-roundup-february-18-2026-6a9b3c4d) — Cyware Social (2026-02-18)
-- [New Campaigns Target MetaMask Users and Iranian Dissidents](https://thehackernews.com/2026/02/new-campaigns-target-metamask-and-iranian-dissidents.html) — The Hacker News (2026-02-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/contagious-interview-and-crescentharvest-campaigns-target-crypto-and-dissidents/

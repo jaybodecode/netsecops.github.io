@@ -52,8 +52,6 @@ The primary goal of the Silver Fox APT is likely intelligence gathering for econ
 - [Silver Fox expands Asia cyber campaign with new ABCDoor malware](https://www.scmagazine.com/brief/silver-fox-expands-asia-cyber-campaign-with-new-abcdoor-malware) — SC Media (2026-05-05)
 - [Silver Fox Campaign Deploys ValleyRAT Through Tax-Themed Lures](https://www.cyberpress.com/apt/silver-fox-campaign-deploys-valleyrat-through-tax-themed-lures/) — Cyber Press (2026-05-05)
 - [Silver Fox Springs Tax-Themed Attacks on Orgs in India, Russia](https://www.darkreading.com/apt-groups/silver-fox-springs-tax-themed-attacks-on-orgs-in-india-russia) — Dark Reading (2026-05-04)
-- [Analyzing the Silver Fox tax campaign and the new ABCDoor backdoor](https://securelist.com/silver-fox-tax-campaign-abcdoor/112613/) — Kaspersky (2026-04-30)
-- [China-linked Silver Fox hackers target Russia with new malware](https://www.bleepingcomputer.com/news/security/china-linked-silver-fox-hackers-target-russia-with-new-malware/) — BleepingComputer (2026-05-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/china-based-silver-fox-apt-targets-india-russia-with-new-abcdoor-backdoor/

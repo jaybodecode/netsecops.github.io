@@ -92,8 +92,8 @@ Mitigating the risk of social engineering requires a combination of technical co
 
 ## Sources
 - [Carnival announces data breach where the information of nearly 6 million people may have been leaked](https://www.wbrz.com/news/carnival-announces-data-breach-where-the-information-of-nearly-6-million-people-may-have-been-leaked/) — WBRZ (2026-05-31)
-- [Carnival cruise company data breach may affect 800,000 Texans](https://www.houstonchronicle.com/business/article/carnival-cruise-data-breach-19491039.php) — Houston Chronicle (2026-05-31)
-- [Carnival data breach may affect thousands of Texans, exposing passport and driver's license information](https://www.click2houston.com/news/local/2026/05/31/carnival-data-breach-may-affect-thousands-of-texans-exposing-passport-and-drivers-license-information/) — Click2Houston (2026-05-31)
+- [Carnival cruise company data breach may affect 800,000 Texans](https://www.houstonchronicle.com/news/houston-texas/trending/article/carnival-cruise-lines-data-breach-22284847.php) — Houston Chronicle (2026-05-31)
+- [Carnival data breach may affect thousands of Texans, exposing passport and driver's license information](https://www.click2houston.com/news/local/2026/05/31/carnival-data-breach-may-affect-thousands-of-texans-exposing-passport-and-driver's-license-information/) — Click2Houston (2026-05-31)
 - [Carnival data breach: Personal information compromised in social engineering attack](https://www.wcnc.com/article/news/nation-world/carnival-data-breach-social-engineering-hack/275-c089a87d-30f1-4b10-85bb-650212ce9251) — WCNC (2026-06-01)
 
 ---

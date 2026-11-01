@@ -52,9 +52,7 @@ Security teams can hunt for exploitation attempts by inspecting mail server logs
 **Tags:** CVE-2025-59419, Netty, Java, zero-day, vulnerability, email security, SMTP injection, phishing
 
 ## Sources
-- [Netty Zero-Day Vulnerability Allows Attackers Bypass Defenses Via Crafted Email](https://gbhackers.com/netty-zero-day-vulnerability/) — GBHackers on Security (2025-10-22)
 - [Casting a Net(ty) for Bugs, and Catching a Big One (CVE-2025-59419)](https://themadhacker.com/casting-a-netty-for-bugs-and-catching-a-big-one-cve-2025-59419) — The Mad Hacker (2025-10-21)
-- [CVE-2025-59419 is a critical zero-day vulnerability discovered in the Netty framework that allows bypassing email authentication mechanisms.](https://radar.offseq.com/cve-2025-59419) — Offensive Security Radar (2025-10-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-zero-day-in-netty-library-allows-email-auth-bypass/

@@ -65,9 +65,7 @@ Preventing future large-scale scraping requires hardening the application and it
 
 ## Sources
 - [Hacktivists claim near-total Spotify music scrape](https://www.malwarebytes.com/blog/news/2025/12/hacktivists-claim-near-total-spotify-music-scrape) — Malwarebytes Labs (2025-12-23)
-- [Spotify Confirms Massive Music Metadata Scrape As Pirate Archive Claims ‘Preservation’ Mission](https://www.noise11.com/news/spotify-confirms-massive-music-metadata-scrape-as-pirate-archive-claims-preservation-mission/) — Noise11 (2025-12-23)
 - [Spotify shutters accounts behind major scraping operation.](https://thecyberwire.com/newsletters/daily-briefing/14/244) — The CyberWire (2025-12-23)
-- [Anna's Archive Suggests It Scraped 86 Million Spotify Songs](https://www.findarticles.com/articles/mi_8194/is_20251223/annas-archive-suggests-scraped-million/) — FindArticles (2025-12-23)
 - [Pirate Group Claims To Have “Scraped” The Entirety Of Spotify](https://www.lowyat.net/2025/313351/pirate-group-claims-to-have-scraped-the-entirety-of-spotify/) — Lowyat.NET (2025-12-23)
 
 ---

@@ -68,7 +68,6 @@ Mitigation strategies follow directly from the FBI's recommendations. The key is
 
 ## Sources
 - [FBI links First VPN Service to ransomware gangs, botnets, criminal dark web activity; calls for layered defensive controls](https://www.industrialcyber.co/news/fbi-links-first-vpn-service-to-ransomware-gangs-botnets-criminal-dark-web-activity-calls-for-layered-defensive-controls/) — Industrial Cyber (2026-05-27)
-- [Silent Ransom Group Impersonating IT Personnel through Social Engineering](https://www.ic3.gov/Media/News/2026/260526-2.pdf) — IC3 (2026-05-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/fbi-warns-of-first-vpn-service-linked-to-ransomware-and-cybercrime/

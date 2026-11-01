@@ -55,9 +55,7 @@ Ultimately, tools like Protos AI aim to help organizations move from a reactive 
 **Tags:** AI, agentic AI, threat intelligence, CTI, RSAC, automation
 
 ## Sources
-- [Will Protos Labs' Freemium Agentic AI Reset Cyber Threat Intelligence Economics?](https://futurumgroup.com/research-notes/will-protos-labs-freemium-agentic-ai-reset-cyber-threat-intelligence-economics/) — Futurum Group (2026-03-25)
 - [Protos Labs Launches Freemium Agentic AI Platform for Cyber Threat Intelligence at RSA Conference 2026](https://www.businesswire.com/news/home/20260323985732/en/Protos-Labs-Launches-Freemium-Agentic-AI-Platform-for-Cyber-Threat-Intelligence-at-RSA-Conference-2026) — Business Wire (2026-03-25)
-- [Protos Labs Opens Up Protos AI for Free, Targeting CTI Teams at RSAC 2026](https://www.channelinsider.com/security/protos-labs-freemium-ai-cti-rsac-2026/) — Channel Insider (2026-03-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/protos-labs-launches-freemium-agentic-ai-threat-intelligence-platform/

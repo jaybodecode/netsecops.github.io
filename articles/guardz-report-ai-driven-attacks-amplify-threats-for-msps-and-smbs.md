@@ -51,7 +51,6 @@ MSPs and their clients should hunt for signs of RMM tool abuse:
 **Tags:** MSP, SMB, Supply Chain Attack, RMM, ScreenConnect, BEC, AI, Guardz
 
 ## Sources
-- [Guardz Report: 9 Out Of 10 SMBs Have Compromised Users as AI-Driven Attacks Reshape the MSP Threat Landscape](https://www.prnewswire.com/news-releases/guardz-report-9-out-of-10-smbs-have-compromised-users-as-ai-driven-attacks-reshape-the-msp-threat-landscape-302128795.html) — PR Newswire (2026-04-28)
 - [CISO Gap: SMBs Exposed; MSSPs To The Rescue](https://cybercrimemagazine.com/ciso-gap-smbs-exposed-mssps-to-the-rescue/) — Cybercrime Magazine (2026-04-28)
 
 ---

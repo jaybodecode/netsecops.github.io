@@ -53,7 +53,6 @@ Mitigation strategies must focus on making credentials harder to steal and less 
 
 ## Sources
 - [Ransomware is now less about malware and more about impersonation](https://www.cybersecuritydive.com/news/cloudflare-ransomware-report-malware-impersonation/708911/) — Cybersecurity Dive (2026-03-03)
-- [Cloudflare 2026 Threat Intelligence Report: Nation-State Actors and Cybercriminals Shift from ‘Breaking In’ to ‘Logging In’](https://www.cloudflare.com/press-releases/2026/2026-threat-intelligence-report/) — Cloudflare (2026-03-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/cloudflare-report-attackers-shift-from-breaking-in-to-logging-in/

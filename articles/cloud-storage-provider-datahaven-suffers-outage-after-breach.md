@@ -59,8 +59,8 @@ While **DataHaven** successfully prevented permanent data loss, the eight-hour g
 **Tags:** cloud security, outage, data breach, kubernetes, api security, zero-day, incident response
 
 ## Sources
-- [DataHaven admits global outage was caused by security breach aimed at wiping customer data](https://www.theregister.com/2026/07/01/datahaven_outage_security_breach/) — The Register (2026-07-01)
-- [DataHaven outage was a safety lockdown triggered after breach of internal management API](https://www.scmagazine.com/news/cloud-security/datahaven-outage-triggered-by-security-lockdown-after-api-breach) — SC Magazine (2026-07-01)
+- [The Register](https://www.theregister.com/) — The Register (2026-07-01)
+- [SC Magazine](https://www.scmagazine.com/) — SC Magazine (2026-07-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/cloud-storage-provider-datahaven-suffers-outage-after-breach/

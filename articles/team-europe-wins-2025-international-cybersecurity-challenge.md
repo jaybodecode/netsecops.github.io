@@ -45,8 +45,6 @@ Following the success of the ICC, **ENISA** is also promoting the 2025 Kunoichi 
 
 ## Sources
 - [Cyber Unbeatable: Team Europe Aces the 2025 International Cybersecurity Challenge](https://www.enisa.europa.eu/news/cyber-unbeatable-team-europe-aces-the-2025-international-cybersecurity-challenge) — ENISA (2025-11-14)
-- [Let's Cheer for ITALY Winner of the 2025 European Cybersecurity Challenge - ENISA](https://www.enisa.europa.eu/news/lets-cheer-for-italy-winner-of-the-2025-european-cybersecurity-challenge) — ENISA (2025-11-14)
-- [Italy Wins 2025 European Cybersecurity Challenge (ECSC) - The Cyber Express](https://thecyberexpress.com/italy-wins-2025-european-cybersecurity-challenge-ecsc/) — The Cyber Express (2025-11-14)
 - [L'Italia vince la cyberchallenge europea 2025](https://www.cybersecitalia.it/litalia-vince-la-cyberchallenge-europea-2025/11543/) — Cybersec Italia (2025-11-14)
 
 ---

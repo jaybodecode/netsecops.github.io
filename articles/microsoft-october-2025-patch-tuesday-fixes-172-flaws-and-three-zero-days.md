@@ -67,10 +67,7 @@ This month's Patch Tuesday addresses a wide array of flaws, but several stand ou
 **Tags:** Patch Tuesday, Zero-Day, RCE, EoP, Windows 10, Windows 11, WSUS, CISA, KEV
 
 ## Sources
-- [Microsoft patches three zero-days actively exploited by attackers](https://www.helpnetsecurity.com/2025/10/15/microsoft-patch-tuesday-october-2025-zero-days/) — Help Net Security (2025-10-15)
 - [Patch Tuesday, October 2025 'End of 10' Edition](https://krebsonsecurity.com/2025/10/patch-tuesday-october-2025-end-of-10-edition/) — Krebs on Security (2025-10-14)
-- [Microsoft and Adobe Patch Tuesday, October 2025 Security Update Review](https://blog.qualys.com/vulnerabilities-threat-research/2025/10/16/microsoft-and-adobe-patch-tuesday-october-2025-security-update-review) — Qualys (2025-10-16)
-- [CISA Alerts on Actively Exploited Windows Improper Access Control Flaw](https://gbhackers.com/cisa-alerts-on-actively-exploited-windows-improper-access-control-flaw/) — GBHackers (2025-10-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-october-2025-patch-tuesday-fixes-172-flaws-and-three-zero-days/

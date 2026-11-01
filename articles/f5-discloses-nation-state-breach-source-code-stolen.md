@@ -50,7 +50,6 @@ Given that the breach was internal to F5, customer detection efforts should focu
 - [F5 reveals security incident one expert calls a '5-alarm fire'](https://www.cyberdaily.au/security/10398-f5-reveals-security-incident-one-expert-calls-a-5-alarm-fire) — Cyber Daily (2025-10-17)
 - [F5 Security Incident Advisory](https://www.zscaler.com/blogs/security-research/f5-security-incident-advisory) — Zscaler (2025-10-17)
 - [F5 Cybersecurity Breach Sparks National Security Concerns, ASD Issues Urgent Advisory](https://www.asd.gov.au/news-and-media/f5-cybersecurity-breach-sparks-national-security-concerns-asd-issues-urgent-advisory) — Australian Signals Directorate (2025-10-17)
-- [K000154696: F5 Security Incident](https://www.f5.com/company/news/security-advisories/k000154696-f5-security-incident) — F5 (2025-10-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/f5-discloses-nation-state-breach-source-code-stolen/

@@ -85,8 +85,8 @@ Detecting this attack chain requires a multi-layered defense strategy.
 **Tags:** ransomware, double extortion, logistics, supply chain, vpn security, incident response
 
 ## Sources
-- [Logistics giant LogiTrans Global paralyzed by QuantumLock ransomware](https://www.bleepingcomputer.com/news/security/logistics-giant-logitrans-global-paralyzed-by-quantumlock-ransomware/) — BleepingComputer (2026-07-01)
-- [LogiTrans Global halts shipments after $45 million ransomware attack](https://www.zdnet.com/article/logitrans-global-halts-shipments-after-45-million-ransomware-attack/) — ZDNet (2026-07-01)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-07-01)
+- [ZDNet](https://www.zdnet.com/) — ZDNet (2026-07-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/logitrans-global-paralyzed-by-quantumlock-ransomware/

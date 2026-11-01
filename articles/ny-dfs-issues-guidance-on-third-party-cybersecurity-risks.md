@@ -65,7 +65,7 @@ Firms should take the following tactical steps:
 **Tags:** NYDFS, Regulation, Compliance, Third-Party Risk Management, Financial Services, Supply Chain
 
 ## Sources
-- [NY Insurance Regulator Warns of Cyber Threats From Third-Party Service Providers](https://www.insurancejournal.com/news/east/2025/10/23/826746.htm) — Insurance Journal (2025-10-23)
+- [Insurance Journal](https://www.insurancejournal.com/) — Insurance Journal (2025-10-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/ny-dfs-issues-guidance-on-third-party-cybersecurity-risks/

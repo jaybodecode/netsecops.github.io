@@ -61,7 +61,6 @@ SonicWall has advised the following urgent actions, which align with D3FEND coun
 **Tags:** data breach, SonicWall, firewall, cloud security, API security, configuration management
 
 ## Sources
-- [Threat actors steal firewall configs, impacting all SonicWall Cloud Backup users](https://securityaffairs.co/169470/data-breach/sonicwall-cloud-backup-users-data-breach.html) — Security Affairs (2025-10-09)
 - [All SonicWall Cloud Backup Users Had Firewall Configurations Stolen](https://www.securityweek.com/all-sonicwall-cloud-backup-users-had-firewall-configurations-stolen/) — SecurityWeek (2025-10-09)
 - [SonicWall confirms all Cloud Backup Service users were compromised](https://www.scmagazine.com/news/sonicwall-confirms-all-cloud-backup-service-users-were-compromised) — SC Magazine (2025-10-09)
 

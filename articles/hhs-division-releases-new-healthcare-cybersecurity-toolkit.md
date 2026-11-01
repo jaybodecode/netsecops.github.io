@@ -55,7 +55,6 @@ Healthcare organizations should take the following steps to leverage this new re
 **Tags:** Risk Assessment, Healthcare Security, HHS, NIST CSF, Compliance, CPG
 
 ## Sources
-- [Pete Recommends – Weekly highlights on cyber security issues, March 14, 2026](https://www.llrx.com/2026/03/pete-recommends-weekly-highlights-on-cyber-security-issues-march-14-2026-2/) — LLRX.com (2026-03-14)
 - [Generative AI Archives - Ermer and Suter PLLC](https://www.ermersuter.com/category/generative-ai/) — Ermer and Suter (2026-03-14)
 
 ---

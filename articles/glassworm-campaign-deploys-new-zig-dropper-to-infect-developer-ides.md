@@ -75,7 +75,6 @@ The impact of compromising a developer's primary workspace is catastrophic for s
 **Tags:** Developer, GlassWorm, IDE, Malware, Open VSX, Supply Chain Attack, Zig
 
 ## Sources
-- [Cybersecurity News - Western Illinois University](https://www.wiu.edu/cbt/cybersecurity_center/cybersecurity_news.php) (2026-04-10)
 - [Top 5 Cybersecurity News Stories April 10, 2026](https://www.diesec.com/blog/top-5-cybersecurity-news-stories-april-10-2026) (2026-04-10)
 
 ---

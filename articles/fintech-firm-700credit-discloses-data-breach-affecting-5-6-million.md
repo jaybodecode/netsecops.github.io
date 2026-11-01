@@ -75,7 +75,6 @@ Upon detecting a potential breach, the response plan should involve isolating th
 **Tags:** 700Credit, Data Breach, Fintech, Automotive, PII, Social Security Number
 
 ## Sources
-- [U.S. fintech and data services firm 700Credit suffered a data breach impacting at least 5.6 million people - Security Affairs](https://securityaffairs.com/152862/data-breach/700credit-data-breach.html) — Security Affairs (2025-12-15)
 - [15th December – Threat Intelligence Report - Check Point Research](https://research.checkpoint.com/2025/15th-december-threat-intelligence-report/) — Check Point Research (2025-12-15)
 
 ---

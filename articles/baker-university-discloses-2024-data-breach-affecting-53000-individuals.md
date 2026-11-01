@@ -72,9 +72,6 @@ To detect similar intrusions, organizations should monitor for:
 
 ## Sources
 - [More than 53K impacted by Baker University hack](https://www.scmagazine.com/news/more-than-53k-impacted-by-baker-university-hack) — SC Magazine (2025-12-23)
-- [Baker University Data Breach Exposes Personal Information of Over 50,000 Individuals](https://www.teiss.co.uk/baker-university-data-breach-2/) — teiss (2025-12-23)
-- [Baker University says 2024 data breach impacts 53,000 people](https://www.bleepingcomputer.com/news/security/baker-university-says-2024-data-breach-impacts-53-000-people/) — BleepingComputer (2025-12-23)
-- [Baker University Data Breach Affects 53K; Attorneys Investigating](https://www.classaction.org/news/baker-university-data-breach-may-2025) — ClassAction.org (2025-12-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/baker-university-discloses-2024-data-breach-affecting-53000-individuals/

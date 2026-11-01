@@ -38,7 +38,6 @@ The trend is expected to continue into 2026, with private equity firms and strat
 **Tags:** M&A, Cybersecurity Industry, Consolidation, Google, Wiz, Palo Alto Networks, CyberArk, ServiceNow, Armis
 
 ## Sources
-- [The Biggest Cybersecurity Mergers and Acquisitions of 2025](https://www.infosecurity-magazine.com/news-features/biggest-cybersecurity-mergers-2025/) — Infosecurity Magazine (2025-12-25)
 - [Cybersecurity M&A Surges in 2025 as Mega-Deals Redefine the Industry](https://prismsight.com/cybersecurity-ma-surges-in-2025-as-mega-deals-redefine-the-industry/) — Prism Sight (2025-12-25)
 
 ---

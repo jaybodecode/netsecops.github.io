@@ -46,8 +46,6 @@ Based on the lessons from the Capita fine, organizations should take the followi
 ## Sources
 - [Cybersecurity Roundup: Partnerships, Funding, and Emerging Threats – October 16, 2025](https://blog.boltive.com/cybersecurity-roundup-partnerships-funding-and-emerging-threats-october-16-2025) — Boltive (2025-10-17)
 - [In Other News: CrowdStrike Vulnerabilities, CISA Layoffs, Mango Data Breach](https://www.securityweek.com/in-other-news-crowdstrike-vulnerabilities-cisa-layoffs-mango-data-breach/) — SecurityWeek (2025-10-17)
-- [Data breaches across two continents draw record fines on Capita and US insurers | Cyber Intelligence Briefing: 17 October 2025](https://www.s-rminform.com/cyber-intelligence-briefing-17-october-2025) — S-RM (2025-10-17)
-- [Cyber News Roundup – October 17 2025](https://www.integrity360.com/resources/cyber-news-roundup-october-17-2025/) — Integrity360 (2025-10-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-regulator-fines-capita-14-million-for-preventable-2023-data-breach/

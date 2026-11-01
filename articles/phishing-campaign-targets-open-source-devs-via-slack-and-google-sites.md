@@ -57,7 +57,6 @@ Detection focuses on identifying the installation of untrusted certificates and 
 
 ## Sources
 - [Attackers are targeting developers via Slack and Google Sites](https://www.techzine.eu/2026/04/14/attackers-are-targeting-developers-via-slack-and-google-sites/) — Techzine (2026-04-14)
-- [Fake Linux Foundation leader using Slack to phish devs](https://www.theregister.com/2026/04/13/linux_foundation_impersonation_phishing/) — The Register (2026-04-13)
 - [Social engineering attacks on open source developers are escalating](https://www.helpnetsecurity.com/2026/04/08/social-engineering-attacks-open-source-developers/) — Help Net Security (2026-04-08)
 - [Social Engineering Attack Targets Open Source Developers via Slack Impersonation](https://malware.news/t/social-engineering-attack-targets-open-source-developers-via-slack-impersonation/83287) — Malware News (2026-04-09)
 

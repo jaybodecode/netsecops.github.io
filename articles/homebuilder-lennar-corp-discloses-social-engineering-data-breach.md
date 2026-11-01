@@ -56,7 +56,6 @@ Detecting social engineering often involves monitoring for behavioral anomalies.
 
 ## Sources
 - [Lennar Corp. Data Breach Exposes Social Security Numbers](https://www.kaseya.com/blog/the-week-in-breach-news-08-05-2026/) — Kaseya (2026-08-11)
-- [Notice of Privacy Event](https://www.lennar.com/priven) — Lennar Corp. (2026-08-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/homebuilder-lennar-corp-discloses-social-engineering-data-breach/

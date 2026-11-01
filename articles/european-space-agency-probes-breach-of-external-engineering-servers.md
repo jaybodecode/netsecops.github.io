@@ -67,8 +67,8 @@ To detect similar breaches, organizations should monitor for:
 **Tags:** data breach, space security, esa, cyber espionage, source code leak
 
 ## Sources
-- [European Space Agency Confirms Breach of Servers Outside the Corporate Network](https://gbhackers.com/european-space-agency-confirms-breach/) — GBHackers on Security (2025-12-30)
-- [European Space Agency investigates breach after hacker claims 200GB data theft](https://siliconangle.com/2025/12/31/european-space-agency-investigates-breach-after-hacker-claims-200gb-data-theft/) — SiliconANGLE (2025-12-31)
+- [GBHackers on Security](https://gbhackers.com/) — GBHackers on Security (2025-12-30)
+- [SiliconANGLE](https://siliconangle.com/) — SiliconANGLE (2025-12-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/european-space-agency-probes-breach-of-external-engineering-servers/

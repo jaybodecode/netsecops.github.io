@@ -43,7 +43,6 @@ A successful ransomware attack on a manufacturer like Dynex/Rivett can have seve
 **Tags:** Ransomware, Dragonforce, Double Extortion, Manufacturing, Data Leak
 
 ## Sources
-- [Dragonforce Ransomware Attack on Dynex/Rivett Inc.](https://dexpose.io/dragonforce-ransomware-attack-on-dynex-rivett-inc-dexpose-2/) — DeXpose (2026-03-18)
 - [Dragonforce Ransomware Attack on Dynex/Rivett Inc. - DeXpose](https://www.google.com/search?q=Dragonforce+Ransomware+Attack+on+Dynex/Rivett+Inc.+-+DeXpose&sca_esv=3f52a78b31d2be18&sxsrf=ACQVn08_yVjTUn6xV-hI-5x3n1kL0u3Hhg%3A1708453489814&ei=hPDRZZz3H4-fvr0PzN-qgAc&ved=0ahUKEwimyY_o6bmEAxWPT98KHcwrCnAQ4dUDCBA&uact=5&oq=Dragonforce+Ransomware+Attack+on+Dynex/Rivett+Inc.+-+DeXpose&gs_lp=Egxnd3Mtd2l6LXNlcnAiPERyYWdvbmZvcmNlIFJhbnNvbXdhcmUgQXR0YWNrIG9uIER5bmV4L1JpdmV0dCBJbmMuIC0gRGVYcG9zZUiYF1AAWABwAHgAkAEAmAF2oAF2qgEDMC4xuAEDyAEA-AEB-AECiAIB&sclient=gws-wiz-serp) — DeXpose (2026-03-18)
 
 ---

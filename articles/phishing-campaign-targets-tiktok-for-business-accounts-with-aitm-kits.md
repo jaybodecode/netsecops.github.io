@@ -44,7 +44,6 @@ Compromise of a TikTok for Business account can have severe consequences:
 
 ## Sources
 - [TikTok for Business accounts targeted in phishing campaign — here's how to stay safe](https://www.techradar.com/pro/security/tiktok-for-business-accounts-targeted-in-phishing-campaign-heres-how-to-stay-safe) — TechRadar Pro (2026-03-27)
-- [Push Security uncovers phishing campaign targeting TikTok Business accounts](https://www.pushsecurity.com/blog/tiktok-business-phishing-aitm/) — Push Security (2026-03-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/phishing-campaign-targets-tiktok-for-business-accounts-with-aitm-kits/

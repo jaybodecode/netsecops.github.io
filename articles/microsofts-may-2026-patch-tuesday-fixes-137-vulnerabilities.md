@@ -68,9 +68,7 @@ Microsoft has released security updates for all affected products. These updates
 
 ## Sources
 - [It's Patch Tuesday for Microsoft and Not a Zero-Day In Sight](https://www.darkreading.com/vulnerabilities-threats/patch-tuesday-microsoft-not-a-zero-day-in-sight) (2026-05-12)
-- [No Zero-Days, but Plenty to Patch in Microsoft May Update](https://www.redmondmag.com/articles/2026/05/12/no-zero-days-but-plenty-to-patch-in-microsoft-may-update.aspx) (2026-05-12)
 - [Microsoft May 2026 Patch Tuesday fixes 120 flaws, no zero-days](https://www.bleepingcomputer.com/news/microsoft/microsoft-may-2026-patch-tuesday-fixes-120-flaws-no-zero-days/) (2026-05-12)
-- [Microsoft Fixes 17 Critical Flaws in May Patch Tuesday](https://www.infosecurity-magazine.com/news/microsoft-may-patch-tuesday-rce/) (2026-05-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsofts-may-2026-patch-tuesday-fixes-137-vulnerabilities/

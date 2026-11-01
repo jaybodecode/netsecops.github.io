@@ -41,7 +41,6 @@ This series of unrelated incidents demonstrates multiple attack vectors targetin
 
 ## Sources
 - [27th October – Threat Intelligence Report](https://research.checkpoint.com/2025/27th-october-threat-intelligence-report/) — Check Point Research (2025-10-27)
-- [Multiple Retailers Announce Customer Data Breaches](https://www.example.com/second_source_breaches) — Example.com (2025-10-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/data-breaches-hit-toys-r-us-askul-verisure/

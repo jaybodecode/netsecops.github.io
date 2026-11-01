@@ -50,7 +50,7 @@ To detect early signs of a ransomware attack, security teams should hunt for:
 **Tags:** Ransomware, Healthcare, Manufacturing, Supply Chain, West Pharmaceutical Services
 
 ## Sources
-- [The Week in Breach News: May 20, 2026](https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/) — Kaseya (2026-05-20)
+- [Kaseya](https://www.kaseya.com/) — Kaseya (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/west-pharmaceutical-services-hit-by-ransomware-attack/

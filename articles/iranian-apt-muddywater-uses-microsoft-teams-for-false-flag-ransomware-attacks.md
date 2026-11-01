@@ -79,10 +79,7 @@ Mitigation efforts should focus on user awareness, access controls, and hardenin
 
 ## Sources
 - [MuddyWater Uses Microsoft Teams to Steal Credentials in False Flag Ransomware Attack](https://www.thehackernews.com/2026/05/muddywater-uses-microsoft-teams-to.html) (2026-05-06)
-- [Iran-sponsored threat group behind false flag social engineering campaign](https://www.cyberscoop.com/iran-muddywater-false-flag-microsoft-teams-chaos-ransomware/) (2026-05-06)
-- [Iranian state-backed spies pose as ransomware slingers in false flag attacks](https://www.csoonline.com/article/1314227/iranian-state-backed-spies-pose-as-ransomware-slingers-in-false-flag-attacks.html) (2026-05-06)
 - [MuddyWater Uses Microsoft Teams to Steal Credentials in False Flag Ransomware Attack](https://socdefenders.com/soc-news/muddywater-uses-microsoft-teams-to-steal-credentials-in-false-flag-ransomware-attack/) (2026-05-06)
-- [MuddyWater Uses Microsoft Teams to Steal Credentials in False Flag Ransomware Attack](https://www.cypro.se/muddywater-uses-microsoft-teams-to-steal-credentials-in-false-flag-ransomware-attack/) (2026-05-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/iranian-apt-muddywater-uses-microsoft-teams-for-false-flag-ransomware-attacks/

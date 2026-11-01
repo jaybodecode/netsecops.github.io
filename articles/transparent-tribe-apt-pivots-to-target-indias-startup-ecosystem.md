@@ -54,7 +54,6 @@ This campaign poses a multi-faceted threat to India's technology sector and nati
 **Tags:** APT, Crimson RAT, ISO file, Phishing, Startup, India, Pakistan
 
 ## Sources
-- [Transparent Tribe Hacker Group Attacking India's Startup Ecosystem](https://www.gbhackers.com/transparent-tribe-hacker-group-attacking-indias-startup-ecosystem/) — GBHackers on Security (2026-02-06)
 - [Transparent Tribe Hacker Group Attacking India's Startup Ecosystem](https://teamwinglobal.com/2026/02/07/transparent-tribe-hacker-group-attacking-indias-startup-ecosystem/) — Team Vin Global (2026-02-07)
 
 ---

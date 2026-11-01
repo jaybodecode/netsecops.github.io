@@ -56,7 +56,6 @@ Since a patch is not yet available, organizations must prioritize mitigation.
 
 ## Sources
 - [CISA Flags Critical PTC Vulnerability That Had German Police Mobilized](https://www.securityweek.com/cisa-flags-critical-ptc-vulnerability-that-had-german-police-mobilized/) — SecurityWeek (2026-03-27)
-- [CISA flags critical PTC vulnerability after German police mobilized to warn companies](https://securityaffairs.com/161041/security/cisa-critical-ptc-vulnerability-german-police-mobilized.html) — Security Affairs (2026-03-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-ptc-windchill-flaw-triggers-unprecedented-police-mobilization-in-germany/

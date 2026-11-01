@@ -48,7 +48,6 @@ Bitrefill's response included isolating affected systems, engaging external secu
 ## Sources
 - [Bitrefill disclosed that it suffered a data breach in early March due to a suspected North Korean hacking attack. - Longbridge](https://www.longbridge.hk/news/Bitrefill-disclosed-that-it-suffered-a-data-breach-in-early-March-due-to-a-suspected-North-Korean-hacking-attack-29369328.html) — Longbridge (2026-03-01)
 - [Bitrefill Discloses Data Breach Following Cyberattack - Binance](https://www.binance.com/en/square/post/5034873995368) — Binance (2026-03-01)
-- [Bitrefill Discloses March Data Breach Linked to DPRK Lazarus Hackers | KuCoin](https://www.kucoin.com/learn/crypto/bitrefill-discloses-march-data-breach-linked-to-dprk-lazarus-hackers) — KuCoin (2026-03-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/bitrefill-data-breach-linked-to-north-korean-hackers/

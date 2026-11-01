@@ -57,7 +57,6 @@ While specific regulations are yet to be detailed, organizations affected by thi
 **Tags:** Japan, Cybersecurity, Policy, Critical Infrastructure, AI, Government
 
 ## Sources
-- [Japan to Strengthen Cyber Defense for Critical Infrastructure](https://www.nippon.com/en/news/yjj2026051800762/) — nippon.com
 - [Japan to bolster cyber defenses amid AI-driven threats](https://www.japantimes.co.jp/news/2026/05/18/japan/politics/cyber-defense-ai/) — The Japan Times
 
 ---

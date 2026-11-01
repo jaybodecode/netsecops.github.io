@@ -41,7 +41,6 @@ The report offers several high-level recommendations for public-sector leaders t
 **Tags:** Public Sector, AI, Cybersecurity Report, Supply Chain Risk, Government, Education
 
 ## Sources
-- [Report: AI-Driven Cyber Attacks Outpace Public-Sector Defenses](https://www.govtech.com/security/report-ai-driven-cyber-attacks-outpace-public-sector-defenses) — GovTech (2026-03-18)
 - [Report: AI-Driven Cyber Attacks Outpace Public-Sector Defenses - GovTech](https://www.google.com/search?q=Report%3A+AI-Driven+Cyber+Attacks+Outpace+Public-Sector+Defenses+-+GovTech&sca_esv=74f9d2bb785ddf42&sxsrf=ACQVn08x48y1V8T6q7XFfT808H4q0WJ25Q%3A1708453647185&ei=G_HRZZj4Ns-hvr0PyIuHkAs&ved=0ahUKEwi5h8uH6rmEAxXPUN8KHSKFAeIQ4dUDCBA&uact=5&oq=Report%3A+AI-Driven+Cyber+Attacks+Outpace+Public-Sector+Defenses+-+GovTech&gs_lp=Egxnd3Mtd2l6LXNlcnAiP1JlcG9ydDogQUktRHJpdmVuIEN5YmVyIEF0dGFja3MgT3V0cGFjZSBQdWJsaWMtU2VjdG9yIERlZmVuc2VzIC0gR292VGVjaEj-B1AAWABwAngAkAEAmAFdoAFdqgEDMC4xuAEDyAEA-AEB-AECiAIB&sclient=gws-wiz-serp) — GovTech (2026-03-18)
 
 ---

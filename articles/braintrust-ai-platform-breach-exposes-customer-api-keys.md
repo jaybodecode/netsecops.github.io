@@ -58,8 +58,6 @@ Customers of Braintrust and similar platforms should proactively hunt for signs 
 **Tags:** AI, API Keys, AWS, Braintrust, Cloud Security, Data Breach, Supply Chain Attack
 
 ## Sources
-- [Braintrust AWS Data Breach Prompts Urgent API Key Rotation for AI Platform Customers](https://rescana.com/blogs/braintrust-aws-data-breach-prompts-urgent-api-key-rotation-for-ai-platform-customers) (2026-05-10)
-- [Braintrust security incident raises concerns over AI supply chain risks](https://securityaffairs.co/wordpress/162981/data-breach/braintrust-security-incident-ai-supply-chain.html) (2026-05-09)
 - [JDownloader site hacked to replace installers with Python RAT malware](https://www.bleepingcomputer.com/news/security/jdownloader-site-hacked-to-replace-installers-with-python-rat-malware/) (2026-05-09)
 - [Rapid7 links Chaos ransomware campaign to Iranian state-sponsored MuddyWater espionage operation](https://www.industrialcyber.co/management-strategy/rapid7-links-chaos-ransomware-campaign-to-iranian-state-sponsored-muddywater-espionage-operation/) (2026-05-10)
 

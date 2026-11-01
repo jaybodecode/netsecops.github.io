@@ -78,7 +78,6 @@ If a user reports falling for the phish, the immediate response is to assume the
 
 ## Sources
 - [ThreatsDay Bulletin: New RCEs, Darknet Busts, Kernel Bugs & 25+ More Stories](https://thehackernews.com/2026/01/threatsday-bulletin-new-rces-darknet.html) — The Hacker News (2026-01-29)
-- [Recruitment-Themed Phishing Campaign Targets Job Seekers Globally](https://www.bitdefender.com/blog/labs/recruitment-themed-phishing-campaign-targets-job-seekers-globally/) — Bitdefender (2026-01-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/widespread-phishing-campaign-uses-fake-job-offers-to-steal-credentials/

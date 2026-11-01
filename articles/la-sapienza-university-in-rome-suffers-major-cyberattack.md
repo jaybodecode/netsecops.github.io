@@ -51,10 +51,7 @@ No specific technical Indicators of Compromise have been publicly released.
 **Tags:** Ransomware, La Sapienza, University, Education, Italy, Cyberattack, Bablock, Rorschach
 
 ## Sources
-- [The Week in Breach News: February 11, 2026](https://www.kaseya.com/blog/2026/02/11/the-week-in-breach-news-february-11-2026/) — Kaseya
 - [Italian university La Sapienza goes offline after cyberattack](https://www.bleepingcomputer.com/news/security/italian-university-la-sapienza-goes-offline-after-cyberattack/) — BleepingComputer
-- [La Sapienza Cyberattack Forces Italy's Largest University Offline](https://thecyberexpress.com/la-sapienza-cyber-attack/) — The Cyber Express
-- [Italian university La Sapienza still offline to mitigate recent cyber attack](https://securityaffairs.com/158784/hacking/la-sapienza-university-cyber-attack.html) — Security Affairs
 
 ---
 Source: https://cyber.netsecops.io/articles/la-sapienza-university-in-rome-suffers-major-cyberattack/

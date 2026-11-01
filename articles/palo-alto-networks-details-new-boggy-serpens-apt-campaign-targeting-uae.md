@@ -64,8 +64,8 @@ The primary impact of this campaign is espionage. The compromise of a national m
 **Tags:** APT, Boggy Serpens, MuddyWater, Cyber Espionage, Threat Actor, Energy Sector, UAE, Malware
 
 ## Sources
-- [Boggy Serpens: Mature APT Group Targets UAE Marine and Energy Sector in Sustained Campaign](https://thehackernews.com/2026/02/11/boggy-serpens-apt-uae-marine.html) — The Hacker News (2026-02-11)
-- [Boggy Serpens' Recent Activity Exemplifies a Maturing Threat Profile](https://unit42.paloaltonetworks.com/boggy-serpens-update/) — Unit 42 (2026-02-11)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-02-11)
+- [Unit 42](https://unit42.paloaltonetworks.com/) — Unit 42 (2026-02-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/palo-alto-networks-details-new-boggy-serpens-apt-campaign-targeting-uae/

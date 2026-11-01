@@ -40,8 +40,8 @@ Organizations can hunt for similar types of breaches by monitoring for the follo
 **Tags:** Data Breach, Conduent, PII, PHI, Government Contractor, Social Security Number, Medical Data, Cybersecurity
 
 ## Sources
-- [DATA BREACH ALERT: Edelson Lechtzin LLP is Investigating Claims on Behalf of Conduent Business Services, LLC Customers Whose Data May Have Been Compromised](https://www.morningstar.com/news/pr-newswire/20251029ph83570/data-breach-alert-edelson-lechtzin-llp-is-investigating-claims-on-behalf-of-conduent-business-services-llc-customers-whose-data-may-have-been-compromised) — Morningstar (2025-10-29)
-- [More than 10 million impacted by breach of government contractor Conduent](https://therecord.media/conduent-data-breach-government-contractor) — The Record (2025-10-29)
+- [Morningstar](https://www.morningstar.com/) — Morningstar (2025-10-29)
+- [The Record](https://therecord.media/) — The Record (2025-10-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/government-contractor-conduent-breach-exposes-data-of-10-million/

@@ -72,8 +72,6 @@ Security teams should proactively hunt for similar exposures:
 ## Sources
 - [Lawmakers Demand Answers as CISA Tries to Contain Data Leak](https://krebsonsecurity.com/2026/05/lawmakers-demand-answers-as-cisa-tries-to-contain-data-leak/) (2026-05-23)
 - [CISA Admin Leaked AWS GovCloud Keys on Github](https://krebsonsecurity.com/2026/05/cisa-admin-leaked-aws-govcloud-keys-on-github/) (2026-05-18)
-- [How We Got a CISA GitHub Leak Taken Down in Under a Day](https://dev.to/gitguardian/how-we-got-a-cisa-github-leak-taken-down-in-under-a-day-4g3f) (2026-05-20)
-- [Reported exposure of federal cybersecurity agency login data prompts Hill scrutiny](https://www.nextgov.com/cybersecurity/2026/05/reported-exposure-federal-cybersecurity-agency-login-data-prompts-hill-scrutiny/80786/) (2026-05-20)
 - [CISA credentials get leaked on GitHub](https://fedscoop.com/cisa-credentials-get-leaked-on-github/) (2026-05-20)
 
 ---

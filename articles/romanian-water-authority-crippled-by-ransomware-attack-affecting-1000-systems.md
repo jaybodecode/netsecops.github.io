@@ -51,7 +51,6 @@ Detecting LotL attacks requires a focus on behavior rather than signatures.
 
 ## Sources
 - [Romanian water authority hit by ransomware attack over weekend](https://www.bleepingcomputer.com/news/security/romanian-water-authority-hit-by-ransomware-attack-over-weekend/) — BleepingComputer (2025-12-22)
-- [Romanian Waters confirms cyberattack, critical water operations unaffected](https://securityaffairs.com/156322/cyber-crime/romanian-waters-cyberattack.html) — Security Affairs (2025-12-22)
 - [Romanian water authority hit by ransomware attack over weekend](https://www.simply-secure-group.com/blog/romanian-water-authority-hit-by-ransomware-attack-over-weekend) — Simply Secure Group (2025-12-22)
 - [1,000 Systems Pwned in Romanian Waters Ransomware Attack](https://ground.news/article/1000-systems-pwned-in-romanian-waters-ransomware-attack) — Ground News (2025-12-21)
 

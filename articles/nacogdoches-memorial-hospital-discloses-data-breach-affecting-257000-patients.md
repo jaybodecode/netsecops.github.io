@@ -61,9 +61,6 @@ NMH has stated it is strengthening its security. General recommendations for hea
 
 ## Sources
 - [Cyberattack hits Texas hospital](https://www.beckershospitalreview.com/cybersecurity/cyberattack-hits-texas-hospital-3) — Becker's Hospital Review (2026-04-01)
-- [Nacogdoches Memorial Breach Affects 257k: SSNs and Medical Info Exposed](https://www.claimdepot.com/nacogdoches-memorial-breach-affects-257k-ssns-and-medical-info-exposed/) — ClaimDepot (2026-04-01)
-- [Nacogdoches Memorial Hospital hit by data breach, patient info possibly exposed](https://foxsanantonio.com/news/nation-world/nacogdoches-memorial-hospital-hit-by-data-breach-patient-info-possibly-exposed-cybersecurity-identity-theft-financial-fraud-social-security-numbers-medical-record) — Fox San Antonio (2026-04-01)
-- [Nacogdoches Memorial Hospital Data Breach More Than 257,000 Individuals](https://www.hipaajournal.com/nacogdoches-memorial-hospital-data-breach-more-than-257000-individuals/) — HIPAA Journal (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/nacogdoches-memorial-hospital-discloses-data-breach-affecting-257000-patients/

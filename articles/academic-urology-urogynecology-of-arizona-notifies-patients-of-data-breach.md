@@ -47,8 +47,6 @@ Healthcare organizations must implement robust security controls to protect sens
 **Tags:** Data Breach, Healthcare, HIPAA, PHI, PII, Arizona
 
 ## Sources
-- [Academic Urology & Urogynecology of Arizona Provides Notice of Data Security Incident](https://www.prnewswire.com/news-releases/academic-urology--urogynecology-of-arizona-provides-notice-of-data-security-incident-302688820.html) — PR Newswire
-- [Academic Urology & Urogynecology of Arizona Data Breach Affects 73K Patients](https://www.hipaajournal.com/academic-urology-urogynecology-of-arizona-data-breach-affects-73k-patients/) — HIPAA Journal
 - [Academic Urology & Urogynecology of Arizona faces 73K data breach](https://www.paubox.com/blog/academic-urology-urogynecology-of-arizona-faces-73k-data-breach) — Paubox
 
 ---

@@ -53,9 +53,7 @@ The trends outlined by **[Fortinet](https://www.fortinet.com)** have profound im
 
 ## Sources
 - [The Fortinet 2026 Global Threat Landscape Report Reveals a...](https://www.globenewswire.com/news-release/2026/04/30/2750379/0/en/The-Fortinet-2026-Global-Threat-Landscape-Report-Reveals-a-Surge-in-AI-Enabled-Cybercrime-Contributing-to-a-389-Increase-in-Ransomware-Victims-Year-over-Year.html) — GlobeNewswire (2026-04-30)
-- [The Fortinet 2026 Global Threat Landscape R...](https://www.stocktitan.net/news/FTNT/the-fortinet-2026-global-threat-landscape-report-reveals-a-surge-in-x7k9y9nscq8i.html) — Stock Titan (2026-04-30)
 - [Ransomware victims increase 389 percent fueled by AI](https://betanews.com/2026/04/30/ransomware-victims-increase-389-percent-fueled-by-ai/) — BetaNews (2026-04-30)
-- [Global Threat Landscape Report](https://www.fortinet.com/fortiguard/threat-intelligence/threat-research/global-threat-landscape-report) — Fortinet (2026-04-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/fortinet-report-ai-enabled-attacks-fuel-389-percent-surge-in-ransomware/

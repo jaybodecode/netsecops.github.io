@@ -56,8 +56,8 @@ Strengthening defenses against initial access is the key to devaluing the produc
 **Tags:** Initial Access Broker, IAB, Cybercrime, FBI, Ransomware, Threat Actor
 
 ## Sources
-- [Jordanian Admits in US Court to Selling Access to 50 Enterprise Networks](https://www.securityweek.com/jordanian-admits-us-court-selling-access-50-enterprise-networks/) — SecurityWeek (2026-01-18)
-- [Jordanian national pleads guilty after unknowingly selling FBI agent access to 50 company networks](https://www.cyberscoop.com/jordanian-national-pleads-guilty-fbi-access-broker/) — CyberScoop (2026-01-18)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-01-18)
+- [CyberScoop](https://www.cyberscoop.com/) — CyberScoop (2026-01-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/jordanian-access-broker-pleads-guilty-to-selling-network-access/

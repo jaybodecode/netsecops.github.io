@@ -69,9 +69,6 @@ The potential impact of this attack was enormous. TanStack tools are used by cou
 
 ## Sources
 - [The TanStack Breach and the Fragility of Trusted Code](https://www.securityboulevard.com/2026/05/the-tanstack-breach-and-the-fragility-of-trusted-code/) — Security Boulevard
-- [TanStack Details Sophisticated npm Supply Chain Attack That Compromised 42 Packages](https://tech.wrapt.dev/posts/tanstack-details-sophisticated-npm-supply-chain-attack) — WRAPT
-- [What now? explaining the TanStack Supply Chain Attack](https://dev.to/flippedcoding/what-now-explaining-the-tanstack-supply-chain-attack-1j3a) — DEV Community
-- [Defending against Team PCP software supply chain attacks](https://www.okta.com/blog/2026/05/defending-against-team-pcp-software-supply-chain-attacks/) — Okta
 
 ---
 Source: https://cyber.netsecops.io/articles/tanstack-discloses-sophisticated-supply-chain-attack-on-npm-packages/

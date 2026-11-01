@@ -82,7 +82,6 @@ As an advisory, there are no direct penalties for non-compliance. However, in th
 **Tags:** Supply Chain Security, DevSecOps, SBOM, npm, Open Source
 
 ## Sources
-- [Advisory on Securing the Software Supply Chain and Development Workflows - Cyber Security Agency of Singapore (CSA)](https://www.csa.gov.sg/alerts-advisories/advisories/advisory-on-securing-the-software-supply-chain-and-development-workflows) — Cyber Security Agency of Singapore (CSA) (2026-04-07)
 - [Mitigating the Axios npm supply chain compromise | Microsoft Security Blog](https://www.microsoft.com/en-us/security/blog/2026/04/01/mitigating-the-axios-npm-supply-chain-compromise/) — Microsoft (2026-04-01)
 
 ---

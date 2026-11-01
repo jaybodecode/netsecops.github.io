@@ -51,7 +51,6 @@ The attack chain follows a classic social engineering pattern, mapped to the MIT
 **Tags:** data breach, social engineering, phishing, DoorDash, human element
 
 ## Sources
-- [DoorDash Hit by Cybersecurity Breach, Millions of Users Potentially Exposed](https://www.cybersecurityinsider.com/doordash-hit-by-cybersecurity-breach-millions-of-users-potentially-exposed/) — Cybersecurity Insider (2025-11-17)
 - [17th November – Threat Intelligence Report](https://research.checkpoint.com/2025/17th-november-threat-intelligence-report/) — Check Point Research (2025-11-17)
 
 ---

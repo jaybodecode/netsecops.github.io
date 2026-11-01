@@ -62,8 +62,8 @@ For organizations looking to manage vendor risk, hunting is less about technical
 **Tags:** data breach, healthcare, hipaa, supply chain attack, vendor risk, oncology
 
 ## Sources
-- [The Oncology Institute Confirms Unauthorized Access to Systems Due to Vendor Breach](https://www.hipaajournal.com/the-oncology-institute-confirms-unauthorized-access-to-systems-due-to-vendor-breach/) — HIPAA Journal (2026-05-27)
-- [The Week in Breach News: May 20, 2026](https://www.kaseya.com/resources/the-week-in-breach-news-may-20-2026/) — Kaseya (2026-05-27)
+- [HIPAA Journal](https://www.hipaajournal.com/) — HIPAA Journal (2026-05-27)
+- [Kaseya](https://www.kaseya.com/) — Kaseya (2026-05-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/the-oncology-institute-confirms-vendor-related-data-breach/

@@ -61,7 +61,6 @@ With this information, an attacker could potentially gain direct, privileged acc
 ## Sources
 - [Eurofiber reports data breach in France, major customers affected](https://www.techzine.eu/news/security/126071/eurofiber-reports-data-breach-in-france-major-customers-affected/) — Techzine Europe (2025-11-17)
 - [Eurofiber Data Breach Exposes 3,600+ Clients and Critical Infrastructure in Massive Supply Chain Attack](https://botcrawl.com/eurofiber-data-breach-exposes-3600-clients-and-critical-infrastructure-in-massive-supply-chain-attack/) — Botcrawl (2025-11-16)
-- [Eurofiber Breach Exposes Critical Infrastructure Data Across Europe – What You Need to Know](https://socradar.io/eurofiber-breach-exposes-critical-infrastructure-data-across-europe-what-you-need-to-know/) — SOCRadar (2025-11-17)
 - [Eurofiber meldt datalek in Frankrijk, grote klanten getroffen](https://www.techzine.nl/nieuws/security/539343/eurofiber-meldt-datalek-in-frankrijk-grote-klanten-getroffen/) — Techzine Netherlands (2025-11-17)
 
 ---

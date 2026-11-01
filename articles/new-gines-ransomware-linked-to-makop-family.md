@@ -77,7 +77,6 @@ Standard ransomware mitigation strategies apply:
 **Tags:** ransomware, Gines, Makop, threat intelligence, malware analysis, double extortion
 
 ## Sources
-- [Weekly Intelligence Report – 29 May 2026](https://www.cyfirma.com/research/weekly-intelligence-report-29-may-2026/) — CYFIRMA (2026-05-29)
 - [Gines Ransomware: A New Makop Variant Emerges with Double-Extortion Tactics](https://www.securityboulevard.com/2026/05/gines-ransomware-a-new-makop-variant-emerges/) — Security Boulevard (2026-05-29)
 
 ---

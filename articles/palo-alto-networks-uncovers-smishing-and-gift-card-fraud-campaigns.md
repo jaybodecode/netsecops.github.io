@@ -66,7 +66,7 @@ This campaign is more technical and automated.
 **Tags:** Smishing, Phishing, Fraud, Gift Card, Unit 42, Cloud Security, China
 
 ## Sources
-- [Unit 42 - Latest Cybersecurity Research](https://www.paloaltonetworks.com/unit42/latest-research) — Unit 42 (2025-10-23)
+- [Unit 42](https://www.paloaltonetworks.com/) — Unit 42 (2025-10-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/palo-alto-networks-uncovers-smishing-and-gift-card-fraud-campaigns/

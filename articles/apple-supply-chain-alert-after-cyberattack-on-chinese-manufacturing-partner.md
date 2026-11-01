@@ -48,10 +48,7 @@ Detecting attacks within a third-party supplier's network is challenging. Howeve
 **Tags:** intellectual property, trade secrets, third-party risk, manufacturing security, espionage
 
 ## Sources
-- [As cyberattack hits China-based manufacturing partner, Apple supply chain on alert](https://www.varindia.com/news/as-cyberattack-hits-chinabased-manufacturing-partner-apple-supply-chain-on-alert) — VARINDIA (2026-01-01)
 - [News on the sidelines, December 26, 2025 - January 1, 2026](https://www.iphoneislam.com/news/67018) — iPhone Islam (2026-01-01)
-- [Apple Supplier Targeted in Cyberattack](https://www.macrumors.com/2025/12/29/apple-supplier-cyberattack/) — MacRumors (2025-12-29)
-- [Hacked: Cyberattack on China factory sparks fears of leaked Apple secrets](https://www.indiatoday.in/technology/news/story/hacked-cyberattack-on-china-factory-sparks-fears-of-leaked-apple-secrets-2868297-2025-12-30) — India Today (2025-12-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/apple-supply-chain-alert-after-cyberattack-on-chinese-manufacturing-partner/

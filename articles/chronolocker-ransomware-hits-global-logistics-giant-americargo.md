@@ -53,7 +53,6 @@ Preventing and mitigating ransomware requires a defense-in-depth strategy:
 **Tags:** ransomware, ChronoLocker, supply chain, logistics, data exfiltration, double extortion
 
 ## Sources
-- [AmeriCargo logistics giant hit by ChronoLocker ransomware, operations halted](https://www.bleepingcomputer.com/news/security/americargo-logistics-giant-hit-by-chronolocker-ransomware/) — BleepingComputer (2026-02-16)
 - [Ransomware Attack on AmeriCargo Disrupts U.S. Supply Chains](https://www.wsj.com/articles/ransomware-attack-on-americargo-disrupts-us-supply-chains) — The Wall Street Journal (2026-02-16)
 
 ---

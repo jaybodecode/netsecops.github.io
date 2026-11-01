@@ -53,7 +53,7 @@ Immediate and long-term mitigation strategies are crucial.
 **Tags:** CitrixBleed, ZeroDay, DataBreach, DHS, FEMA, CBP, RemoteAccess
 
 ## Sources
-- [20th October 2025 Cyber Update: US Government Hit by Major Data Breach Affecting FEMA and Border Patrol](https://cybernewscentre.com/20th-october-2025-cyber-update-us-government-data-breach/) — Cyber News Centre (2025-10-20)
+- [Cyber News Centre](https://cybernewscentre.com/) — Cyber News Centre (2025-10-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/dhs-breach-fema-cbp-data-exposed-via-citrix-zero-day/

@@ -50,7 +50,6 @@ The targeting of energy and defense entities indicates a direct alignment with R
 - [Recorded Future: GRU-linked BlueDelta evolves credential-harvesting tactics targeting energy and defense research](https://industrialcyber.co/news/recorded-future-gru-linked-bluedelta-evolves-credential-harvesting-tactics-targeting-energy-and-defense-research/) — Industrial Cyber (2026-01-14)
 - [State-linked Russians go on spear phishing spree](https://www.computing.co.uk/news/4177579/state-linked-russians-spear-phishing-spree) — Computing (2026-01-13)
 - [Russia's APT28 Targeting Energy Research, Defense Collaboration Entities](https://www.securityweek.com/russias-apt28-targeting-energy-research-defense-collaboration-entities/) — SecurityWeek (2026-01-12)
-- [Fancy Bear's Use Of Credential Theft](https://www.pcrisk.com/transfer-files/78505-fancy-bears-use-of-credential-theft) — PCRisk (2026-01-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/gru-linked-hackers-bluedelta-apt28-evolve-credential-harvesting-tactics/

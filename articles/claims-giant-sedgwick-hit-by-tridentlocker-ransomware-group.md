@@ -51,7 +51,6 @@ Early detection is key to thwarting a double-extortion attack before the encrypt
 
 ## Sources
 - [Ransomware Hits a Claims Giant: What the Sedgwick Breach Reveals About Modern Extortion Attacks](https://www.seceon.com/blog/ransomware-hits-a-claims-giant-what-the-sedgwick-breach-reveals-about-modern-extortion-attacks/) — Seceon (2026-01-07)
-- [Ransomware Hits a Claims Giant: What the Sedgwick Breach Reveals About Modern Extortion Attacks](https://www.cybersecuritynews.com/sedgwick-breach-tridentlocker/) — Cybersecurity News (2026-01-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/claims-giant-sedgwick-hit-by-tridentlocker-ransomware-group/

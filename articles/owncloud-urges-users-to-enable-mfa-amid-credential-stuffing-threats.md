@@ -29,8 +29,8 @@ A successful credential stuffing attack against an **OwnCloud** instance would h
 **Tags:** ownCloud, MFA, Credential Stuffing, Security Advisory, Infostealer, Cloud Security
 
 ## Sources
-- [File-sharing platform ownCloud warned users today to enable multi-factor authentication (MFA) to block attackers using compromised credentials from stealing their data.](https://www.bleepingcomputer.com/news/security/owncloud-warns-users-to-enable-mfa-to-block-credential-theft-attacks/) — BleepingComputer (2026-01-07)
-- [MFA indispensable in the fight against cybercrime](https://owncloud.com/news/mfa-indispensable-in-the-fight-against-cybercrime/) — ownCloud (2026-01-07)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-01-07)
+- [ownCloud](https://owncloud.com/) — ownCloud (2026-01-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/owncloud-urges-users-to-enable-mfa-amid-credential-stuffing-threats/

@@ -85,8 +85,8 @@ Strategic and tactical mitigations are crucial to defend against the capabilitie
 **Tags:** Data Leak, State-Sponsored Hacking, China, Espionage, RAT, Hardware Attack, Threat Intelligence
 
 ## Sources
-- [Data Breach at Chinese Cybersecurity Firm Reveals State-Backed Hacking Tools and Target Lists - Cyber Press](https://cyberpress.com/data-breach-at-chinese-cybersecurity-firm-reveals-state-backed-hacking-tools-and-target-lists/) — Cyber Press (2025-11-10)
-- [Data Leak Exposes Chinese State-Sponsored Cyber Arsenal and Target Database](https://gbhackers.com/data-leak-exposes-chinese-state-sponsored-cyber-arsenal-and-target-database/) — GBHackers (2025-11-10)
+- [Cyber Press](https://cyberpress.com/) — Cyber Press (2025-11-10)
+- [GBHackers](https://gbhackers.com/) — GBHackers (2025-11-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/chinese-firm-knownsec-breached-exposing-state-hacking-tools-and-global-target-lists/

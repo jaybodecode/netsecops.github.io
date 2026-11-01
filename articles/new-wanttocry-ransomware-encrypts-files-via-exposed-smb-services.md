@@ -78,9 +78,7 @@ Detecting WantToCry requires focusing on network activity and anomalous SMB beha
 
 ## Sources
 - [WantToCry ransomware remotely encrypts files](https://news.sophos.com/en-us/2026/05/19/wanttocry-ransomware-remotely-encrypts-files/)
-- [What is WantToCry Ransomware?](https://www.elastio.com/ransomware/wanttocry-ransomware)
 - [Exposed SMB: The Hidden Risk Behind ‘WantToCry’ Ransomware Attacks](https://blogs.quickheal.com/exposed-smb-the-hidden-risk-behind-wanttocry-ransomware-attacks/)
-- [WantToCry Ransomware Exploits SMB Vulnerabilities: A Serious Cybersecurity Threat](https://www.npav.net/blog/wanttocry-ransomware-exploits-smb-vulnerabilities-a-serious-cybersecurity-threat/)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-wanttocry-ransomware-encrypts-files-via-exposed-smb-services/

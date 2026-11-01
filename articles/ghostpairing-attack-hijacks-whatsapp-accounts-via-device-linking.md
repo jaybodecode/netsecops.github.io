@@ -61,7 +61,6 @@ Mitigation is entirely based on user awareness and cautious behavior.
 
 ## Sources
 - [Top 5 Cybersecurity News Stories December 19, 2025](https://www.diesec.com/blog/top-5-cybersecurity-news-stories-december-19-2025) — DieSec (2025-12-19)
-- [GhostPairing Attack Explained: CERT-In Warns WhatsApp Users of Silent Account Hijacking](https://www.studyiq.com/articles/ghostpairing-attack/) — StudyIQ (2025-12-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/ghostpairing-attack-hijacks-whatsapp-accounts-via-device-linking/

@@ -51,8 +51,8 @@ Organizations have a legal obligation under UK GDPR to implement appropriate tec
 **Tags:** Data Breach, Human Error, Hybrid Work, ICO, GDPR, Compliance, UK
 
 ## Sources
-- [Employee Data Breaches Surge to Seven-Year High](https://www.infosecurity-magazine.com/news/employee-data-breaches-seven-year/) — Infosecurity Magazine (2026-03-31)
-- [Employee Data Breaches Reach Record Levels Amidst Rise in Hybrid Working](https://www.nockolds.co.uk/news/employee-data-breaches-reach-record-levels) — Nockolds (2026-03-31)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2026-03-31)
+- [Nockolds](https://www.nockolds.co.uk/) — Nockolds (2026-03-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-employee-data-breaches-hit-seven-year-high-driven-by-hybrid-work/

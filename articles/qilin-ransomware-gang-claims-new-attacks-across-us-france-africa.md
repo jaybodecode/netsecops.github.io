@@ -76,7 +76,6 @@ The impact of these attacks is severe and multi-faceted:
 
 ## Sources
 - [More Qilin ransomware-hit organizations disclosed](https://www.scmagazine.com/news/more-qilin-ransomware-hit-organizations-disclosed) — SC Magazine (2025-10-16)
-- [China-linked APT Jewelbug targets Russian IT provider in rare cross-nation cyberattack (Mentions Qilin)](https://securityaffairs.co/169830/apt/china-apt-jewelbug-targets-russian-it-provider.html) — Security Affairs (2025-10-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-gang-claims-new-attacks-across-us-france-africa/

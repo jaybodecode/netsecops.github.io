@@ -39,9 +39,6 @@ For organizations considering using platforms like Daybreak:
 **Tags:** AI, AppSec, Artificial Intelligence, DevSecOps, automation, vulnerability management
 
 ## Sources
-- [OpenAI Launches Daybreak for AI-Powered Vulnerability Detection and Patch Validation](https://thehackernews.com/2026/05/openai-launches-daybreak-for-ai.html) (2026-05-12)
-- [OpenAI launches Daybreak to combat cyber threats](https://www.cio.com/article/2126488/openai-launches-daybreak-to-combat-cyber-threats.html) (2026-05-12)
-- ['Daybreak': OpenAI's Answer to Anthropic's Project Glasswing Has Arrived](https://gizmodo.com/daybreak-opena-is-answer-to-anthropics-project-glasswi-1851470557) (2026-05-12)
 - [OpenAI Launches Daybreak, a New Initiative to Challenge Glasswing](https://www.aibususiness.com/security/openai-launches-daybreak-a-new-initiative-to-challenge-glasswing) (2026-05-12)
 
 ---

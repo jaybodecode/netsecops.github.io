@@ -57,7 +57,6 @@ By enabling this feature, users are applying a form of **data minimization**, a 
 
 ## Sources
 - [ThreatsDay Bulletin: New RCEs, Darknet Busts, Kernel Bugs & 25+ More Stories](https://thehackernews.com/2026/01/threatsday-bulletin-new-rces-darknet.html) — The Hacker News (2026-01-29)
-- [Apple Adds 'Limit Precise Location' Privacy Feature in iOS 26.3](https://www.macrumors.com/2026/01/29/apple-ios-26-3-limit-precise-location/) — MacRumors (2026-01-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/apple-enhances-location-privacy-in-ios-26-3-update/

@@ -50,7 +50,6 @@ NorthGrid Power outlined its remediation efforts, which serve as a model for oth
 **Tags:** incident report, ICS, OT security, critical infrastructure, network segmentation, power grid
 
 ## Sources
-- [NorthGrid Power report details cyberattack that caused blackouts](https://www.eenews.net/articles/northgrid-power-report-details-cyberattack-that-caused-blackouts/) — E&E News (2026-02-15)
 - ['A failure of segmentation': NorthGrid Power incident report highlights IT-OT security gaps](https://www.utilitydive.com/news/northgrid-power-incident-report-it-ot-segmentation-failure/192744/) — Utility Dive (2026-02-16)
 
 ---

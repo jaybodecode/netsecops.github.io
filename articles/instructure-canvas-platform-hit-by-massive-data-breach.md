@@ -61,7 +61,6 @@ Instructure's response involved taking the platform offline, a drastic but somet
 
 ## Sources
 - [Canvas System Is Online After a Cyberattack Disrupted Thousands of Schools](https://www.securityweek.com/canvas-system-is-online-after-a-cyberattack-disrupted-thousands-of-schools/) — SecurityWeek (2026-05-11)
-- [Weekly Recap: Linux Rootkit, macOS Crypto Stealer, WebSocket Skimmers and More](https://thehackernews.com/2026/05/weekly-recap-linux-rootkit-macos.html) — The Hacker News (2026-05-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/instructure-canvas-platform-hit-by-massive-data-breach/

@@ -45,7 +45,6 @@ While details of the attack vector are not provided, the incident offers critica
 **Tags:** Data Breach, Deloitte, Rhode Island, Settlement, Class Action, Government, PII, Dark Web
 
 ## Sources
-- [Lawsuit Over Deloitte Data Breach Settling for $6.3M, Lawyers Want $2.1M Plus](https://www.golocalprov.com/news/lawsuit-over-deloitte-data-breach-settling-for-6.3m-lawyers-want-2.1m-pl) — GoLocalProv (2025-10-18)
 - [In Other News: CrowdStrike Vulnerabilities, CISA Layoffs, Mango Data Breach](https://www.securityweek.com/in-other-news-crowdstrike-vulnerabilities-cisa-layoffs-mango-data-breach/) — SecurityWeek (2025-10-17)
 
 ---

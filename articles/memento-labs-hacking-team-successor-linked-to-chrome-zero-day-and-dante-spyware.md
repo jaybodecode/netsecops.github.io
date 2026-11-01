@@ -52,10 +52,7 @@ The use of a commercial spyware platform like Dante in conjunction with a zero-d
 **Tags:** spyware, zero-day, Hacking Team, Memento Labs, Google Chrome, espionage
 
 ## Sources
-- [Mem3nt0 mori – The Hacking Team is back!](https://securelist.com/mem3nt0-mori-the-hacking-team-is-back/116988/) — Securelist (2025-10-27)
 - [Chrome Zero-Day Exploitation Linked to Hacking Team Spyware](https://www.securityweek.com/chrome-zero-day-exploitation-linked-to-hacking-team-spyware/) — SecurityWeek (2025-10-27)
-- [Hacking Team successor linked to malware campaign, new 'Dante' commercial spyware](https://cyberscoop.com/memento-labs-hacking-team-kaspersky/) — CyberScoop (2025-10-27)
-- [Memento Labs Spyware Used in Chrome Zero-Day Campaign](https://www.adminbyrequest.com/blog/memento-labs-spyware-chrome-zero-day) — Admin By Request (2025-10-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/memento-labs-hacking-team-successor-linked-to-chrome-zero-day-and-dante-spyware/

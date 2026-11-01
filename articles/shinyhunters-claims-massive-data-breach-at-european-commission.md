@@ -60,11 +60,7 @@ For organizations managing AWS environments, the following observables are key t
 **Tags:** ShinyHunters, Data Breach, European Commission, AWS, Cloud Security, Cyberattack, Government
 
 ## Sources
-- [European Commission downplays ShinyHunters cyberattack impact](https://therecord.media/european-commission-downplays-shinyhunters-cyberattack-impact) — The Record (2026-03-30)
 - [European Commission Reports Cyber Intrusion and Data Theft](https://www.securityweek.com/european-commission-reports-cyber-intrusion-and-data-theft/) — SecurityWeek (2026-03-30)
-- [European Commission confirms data breach after Europa.eu hack](https://www.bleepingcomputer.com/news/security/european-commission-confirms-data-breach-after-europa-eu-hack/) — BleepingComputer (2026-03-30)
-- [ShinyHunters claims responsibility for European Commission breach](https://www.siliconrepublic.com/enterprise/shinyhunters-european-commission-data-breach-europa-eu) — Silicon Republic (2026-03-30)
-- [The Week in Breach News: April 01, 2026 | Kaseya](https://www.kaseya.com/blog/2026/04/01/the-week-in-breach-news-april-01-2026/) — Kaseya (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-claims-massive-data-breach-at-european-commission/

@@ -60,9 +60,7 @@ Updates are available via the standard Windows Update, Windows Server Update Ser
 **Tags:** Patch Tuesday, Microsoft, ZeroDay, SharePoint, RDP, Vulnerability, CVE
 
 ## Sources
-- [April 2026 Patch Tuesday: Two Zero-Days and Eight Critical Vulnerabilities Among 164 CVEs](https://www.crowdstrike.com/blog/april-2026-patch-tuesday/) — CrowdStrike (2026-04-17)
 - [Warning: Microsoft Patch Tuesday April 2026 patches 163 vulnerabilities (8 Critical, 154 Important, 1 Moderate), patch Immediately!!](https://www.ccb.belgium.be/en/warning-microsoft-patch-tuesday-april-2026-patches-163-vulnerabilities-8-critical-154-important) — Centre for Cybersecurity Belgium (2026-04-17)
-- [Microsoft Patch Tuesday April 2026: Critical Vulnerabilities, RDP and Secure Boot Zero-Days Impacting Windows Systems](https://www.rescana.com/blogs/microsoft-patch-tuesday-april-2026-critical-vulnerabilities) — Rescana (2026-04-17)
 - [20th April – Threat Intelligence Report](https://research.checkpoint.com/2026/04/20/20th-april-threat-intelligence-report/) — Check Point Research (2026-04-18)
 
 ---

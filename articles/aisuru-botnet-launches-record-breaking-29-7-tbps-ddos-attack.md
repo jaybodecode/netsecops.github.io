@@ -53,7 +53,6 @@ The impact of Aisuru is **critical**. The availability of such a powerful DDoS w
 **Tags:** DDoS, Botnet, Aisuru, IoT Security, Cyberattack, Record Attack
 
 ## Sources
-- [Cyware Monthly Threat Intelligence, December 2025](https://cyware.com/threat-intelligence/monthly-reports/december-2025) — Cyware (2025-12-28)
 - [Dec 2025: Biggest Cyber Attacks, Ransomware Attacks and Data Breaches](https://www.cybermanagementalliance.com/dec-2025-biggest-cyber-attacks-ransomware-attacks-and-data-breaches/) — Cyber Management Alliance (2025-12-28)
 - [Emerging Malware, Ransomware, and Threat Groups: Trends (December 2025)](https://sisa.com/emerging-cyber-threats-december-2025/) — SISA (2025-12-27)
 

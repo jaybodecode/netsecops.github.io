@@ -46,10 +46,7 @@ Fighting AI with AI is becoming a necessity. Traditional, signature-based detect
 **Tags:** Fortinet, Threat Intelligence, AI, Cybercrime, Ransomware, WormGPT, Time-to-Exploit
 
 ## Sources
-- [The Fortinet 2026 Global Threat Landscape Report Reveals a Surge in AI-Enabled Cybercrime, Contributing to a 389% Increase in Ransomware Victims Year-over-Year](https://www.fortinet.com/corporate/about-us/newsroom/press-releases/2026/fortinet-2026-global-threat-landscape-report-reveals-surge-in-ai-enabled-cybercrime) — Fortinet (2026-04-30)
-- [Fortinet warns ransomware victims rise 389% amid AI](https://www.securitybrief.com.au/story/fortinet-warns-ransomware-victims-rise-389-amid-ai-use) — SecurityBrief (2026-05-01)
 - [News | Fortinet Report Reveals Surge in AI Cybercrime | Pipeline Publishing](https://www.pipelinepublishing.com/news/fortinet-report-reveals-surge-in-ai-cybercrime) — Pipeline Publishing (2026-05-01)
-- [2026 Fortinet Global Threat Landscape Report](https://www.fortinet.com/resources/threat-reports/threat-landscape-report-2026) — Fortinet (2026-05-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/fortinet-report-ai-cybercrime-drives-389-percent-ransomware-surge/

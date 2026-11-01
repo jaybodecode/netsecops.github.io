@@ -42,7 +42,7 @@ The compromise of a senior government official's or journalist's secure messagin
 **Tags:** Phishing, Social Engineering, Signal, WhatsApp, State-Sponsored, Russia
 
 ## Sources
-- [Signal and WhatsApp accounts targeted in phishing campaign](https://www.malwarebytes.com/blog/news/2026/03/10/signal-and-whatsapp-accounts-targeted-in-phishing-campaign) — Malwarebytes (2026-03-10)
+- [Malwarebytes](https://www.malwarebytes.com/) — Malwarebytes (2026-03-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/russian-state-hackers-target-signal-whatsapp-accounts-in-phishing-campaign/

@@ -53,10 +53,7 @@ Security teams may want to hunt for:
 **Tags:** RaaS, The Gentlemen, SystemBC, double extortion, XChaCha20, threat actor, cybercrime
 
 ## Sources
-- [The Gentlemen emerging as key ransomware player](https://www.computerweekly.com/news/366585108/The-Gentlemen-emerging-as-key-ransomware-player) — Computer Weekly (2026-05-27)
 - [The Gentlemen is Making Its Mark in the Ransomware World](https://securityboulevard.com/2026/05/the-gentlemen-is-making-its-mark-in-the-ransomware-world/) — Security Boulevard (2026-05-28)
-- [Reviewing the trends in ransomware attacks in 2026](https://securelist.com/reviewing-the-trends-in-ransomware-attacks-in-2026/112651/) — Securelist (2026-05-12)
-- [Inside The Gentlemen Ransomware Leak: When the Hunter Becomes the Hunted](https://www.socradar.io/inside-the-gentlemen-ransomware-leak-when-the-hunter-becomes-the-hunted/) — SOCRadar (2026-05-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/the-gentlemen-ransomware-groups-rapid-rise-and-sophistication/

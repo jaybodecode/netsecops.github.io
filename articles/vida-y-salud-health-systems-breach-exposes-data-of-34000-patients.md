@@ -60,9 +60,7 @@ Healthcare organizations are high-value targets and must implement robust securi
 **Tags:** PHI, SSN, Patient Data, Healthcare Breach, Texas, Data Breach
 
 ## Sources
-- [Vida Y Salud Breach Impacts 34k - Is Your Patient Data at Risk?](https://www.brightdefense.com/blog/vida-y-salud-breach-impacts-34k) — BrightDefense (2026-01-11)
 - [Vida Y Salud-Health Systems, Inc. Data Breach – Investigated by Federman & Sherwood](https://www.federmanlaw.com/blog/vida-y-salud-health-systems-inc-data-breach-investigated-by-federman-sherwood/) — Federman & Sherwood (2026-01-06)
-- [Vida Y Salud Health Data Breach Affects 34k Texans & Exposes Social Security Numbers](https://www.jdsupra.com/legalnews/vida-y-salud-health-data-breach-9904581/) — JD Supra (2026-01-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/vida-y-salud-health-systems-breach-exposes-data-of-34000-patients/

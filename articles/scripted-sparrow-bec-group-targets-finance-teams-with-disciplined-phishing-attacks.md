@@ -43,8 +43,8 @@ The primary impact of a successful **Scripted Sparrow** attack is direct financi
 **Tags:** BEC, Business Email Compromise, Phishing, Wire Fraud, Social Engineering, Scripted Sparrow
 
 ## Sources
-- [Clipping Scripted Sparrow’s wings: Tracking a global phishing ring](https://www.helpnetsecurity.com/2025/12/18/scripted-sparrow-bec/) — Help Net Security (2025-12-18)
-- [Fortra Details ‘Scripted Sparrow,’ a Highly Organized BEC Operation](https://www.securityweek.com/fortra-uncovers-scripted-sparrow-bec-campaign/) — SecurityWeek (2025-12-18)
+- [Help Net Security](https://www.helpnetsecurity.com/) — Help Net Security (2025-12-18)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2025-12-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/scripted-sparrow-bec-group-targets-finance-teams-with-disciplined-phishing-attacks/

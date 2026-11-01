@@ -59,7 +59,6 @@ Microsoft has observed several distinct but related campaigns:
 
 ## Sources
 - [When tax season becomes cyberattack season: Phishing and malware campaigns using tax-related lures | Microsoft Security Blog](https://www.microsoft.com/en-us/security/blog/2026/03/19/when-tax-season-becomes-cyberattack-season-phishing-and-malware-campaigns-using-tax-related-lures/) — Microsoft Security (2026-03-08)
-- [FBI warns of tax season phishing scams impersonating the IRS](https://www.bleepingcomputer.com/news/security/fbi-warns-of-tax-season-phishing-scams-impersonating-the-irs/) — BleepingComputer (2026-03-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/tax-season-spurs-wave-of-phishing-campaigns-using-irs-and-w2-lures/

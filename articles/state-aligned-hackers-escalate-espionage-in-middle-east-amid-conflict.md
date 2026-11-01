@@ -51,8 +51,8 @@ The targeting of a U.S. think tank by TA453 shows that the impact is not confine
 **Tags:** Cyberespionage, State-Sponsored, APT, Middle East, Proofpoint, Phishing
 
 ## Sources
-- [Iran conflict drives heightened espionage activity against Middle East targets](https://www.proofpoint.com/us/blog/threat-research/iran-conflict-drives-heightened-espionage-activity-against-middle-east) — Proofpoint (2026-03-11)
-- [Iran’s Cyber Playbook in the Escalating Regional Conflict](https://www.rapid7.com/blog/post/2026/03/11/irans-cyber-playbook-in-the-escalating-regional-conflict/) — Rapid7 (2026-03-11)
+- [Proofpoint](https://www.proofpoint.com/) — Proofpoint (2026-03-11)
+- [Rapid7](https://www.rapid7.com/) — Rapid7 (2026-03-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/state-aligned-hackers-escalate-espionage-in-middle-east-amid-conflict/

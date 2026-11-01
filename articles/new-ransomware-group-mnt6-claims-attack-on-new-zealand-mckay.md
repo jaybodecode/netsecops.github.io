@@ -83,8 +83,6 @@ Standard ransomware mitigations are recommended:
 ## Sources
 - [Exclusive: Kiwi electrical contractor confirms cyber attack](https://www.cyberdaily.au/security/10777-exclusive-kiwi-electrical-contractor-confirms-cyber-attack) — Cyber Daily (2026-05-04)
 - [McKay.co.nz Data Breach: Industry Reaction and Fallout](https://www.ferbexloop.com/mckay-co-nz-data-breach-industry-reaction-and-fallout/) — Ferbexloop (2026-04-04)
-- [Victim: McKay](https://ransomware.live/victim/mckay/) — Ransomware.live (2026-04-30)
-- [mnt6 Ransomware Attack on Engineering Leader McKay](https://www.dexpose.io/blog/mnt6-ransomware-attack-on-engineering-leader-mckay) — DeXpose (2026-05-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-ransomware-group-mnt6-claims-attack-on-new-zealand-mckay/

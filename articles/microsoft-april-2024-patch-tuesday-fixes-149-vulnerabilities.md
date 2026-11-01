@@ -57,8 +57,8 @@ Organizations should leverage Windows Update, WSUS, or their enterprise patch ma
 **Tags:** Patch Tuesday, Microsoft, Vulnerability, RCE, SQL Server, Secure Boot, Windows
 
 ## Sources
-- [Microsoft April 2024 Patch Tuesday fixes 149 flaws, 3 critical](https://www.bleepingcomputer.com/news/microsoft/microsoft-april-2024-patch-tuesday-fixes-149-flaws-3-critical/) — BleepingComputer
-- [Patch Tuesday: Microsoft Plugs 149 Holes, Including Critical SQL Flaw](https://www.securityweek.com/patch-tuesday-microsoft-plugs-149-holes-including-critical-sql-flaw/) — SecurityWeek
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-april-2024-patch-tuesday-fixes-149-vulnerabilities/

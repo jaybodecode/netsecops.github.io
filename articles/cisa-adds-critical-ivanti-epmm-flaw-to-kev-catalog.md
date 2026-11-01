@@ -73,8 +73,6 @@ Immediate action is required.
 ## Sources
 - [CISA Adds One Known Exploited Vulnerability to Catalog](https://www.cisa.gov/news-events/alerts/2026/04/08/cisa-adds-one-known-exploited-vulnerability-catalog) — CISA (2026-04-08)
 - [CISA adds second critical flaw in Ivanti EPMM to exploited vulnerabilities catalog](https://www.cybersecuritydive.com/news/cisa-ivanti-epmm-vulnerability-kev/746430/) — Cybersecurity Dive (2026-04-09)
-- [CISA Warns of Critical Ivanti EPMM Code Injection Vulnerability Exploited in Attacks](https://gbhackers.com/cisa-ivanti-epmm-code-injection/) — GBHackers on Security (2026-04-09)
-- [CISA Warns of Actively Exploited Ivanti EPMM Code Injection Vulnerability](https://cyberpress.com/cisa-warns-of-actively-exploited-ivanti-epmm-code-injection-vulnerability/) — Cyberpress (2026-04-09)
 - [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — CISA (2026-04-08)
 
 ---

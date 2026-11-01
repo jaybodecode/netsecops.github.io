@@ -63,7 +63,6 @@ Security teams can hunt for potential VECT 2.0 activity by focusing on its flawe
 
 ## Sources
 - [VECT: Ransomware by design, Wiper by accident](https://research.checkpoint.com/2026/04/28/vect-ransomware-by-design-wiper-by-accident/) — Check Point Research (2026-04-28)
-- [Don't pay VECT a ransom - your big files are likely gone](https://www.theregister.com/2026/04/28/vect_ransomware_wiper/) — The Register (2026-04-28)
 - [VECT 2.0 Ransomware Irreversibly Destroys Files Over 131KB on Windows, Linux, ESXi](https://thehackernews.com/2026/04/vect-20-ransomware-irreversibly.html) — The Hacker News (2026-04-28)
 
 ---

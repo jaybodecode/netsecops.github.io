@@ -39,7 +39,6 @@ The business impact of ignoring these evolving threats is significant. A single 
 **Tags:** Automotive Cybersecurity, VicOne, SDV, OTA, AI, Zero-Day, UN R155, Threat Intelligence
 
 ## Sources
-- [VicOne 2026 Automotive Cybersecurity Report: Cyber Incidents Now Span Entire Organizations](https://www.prnewswire.com/news-releases/vicone-2026-automotive-cybersecurity-report-cyber-incidents-now-span-entire-organizations-302684992.html) — PR Newswire
 - [Crossroads: VicOne 2026 Automotive Cybersecurity Report](https://vicone.com/en/reports/2026-automotive-cybersecurity-report) — VicOne
 - [At a Crossroads: Automotive Cybersecurity in the Overlap Era](https://vicone.com/en/blog/at-a-crossroads-automotive-cybersecurity-in-the-overlap-era) — VicOne
 

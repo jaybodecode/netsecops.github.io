@@ -45,7 +45,6 @@ For non-ICS applications, the random process termination would lead to instabili
 **Tags:** Supply Chain Attack, ICS, OT, NuGet, Sabotage, Malware
 
 ## Sources
-- [Malicious NuGet Packages Hide Time-Delayed Sabotage Code](https://www.esecurityplanet.com/dev-sec-ops/malicious-nuget-packages-hide-time-delayed-sabotage-code/) — eSecurityPlanet (2025-11-07)
 - [Vibe-Coded Malicious VS Code Extension Found with Built-In Ransomware Capabilities](https://thehackernews.com/2025/11/vibe-coded-malicious-vs-code-extension.html) — The Hacker News (2025-11-07)
 
 ---

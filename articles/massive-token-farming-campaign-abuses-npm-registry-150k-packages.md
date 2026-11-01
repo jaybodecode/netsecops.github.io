@@ -50,8 +50,8 @@ The primary impact of this campaign is the pollution and degradation of trust in
 **Tags:** NPM, Supply Chain Attack, Open Source, Cryptocurrency, Token Farming, tea.xyz, AWS
 
 ## Sources
-- [Crims flood npm with 150K+ junk packages to farm TEA tokens](https://www.theregister.com/2025/11/14/npm_token_farming_campaign/) — The Register (2025-11-14)
-- [2025 Security Predictions: Attacks on the AI Supply Chain](https://www.extrahop.com/company/blog/2024/2025-security-predictions/) — ExtraHop (2025-11-14)
+- [The Register](https://www.theregister.com/) — The Register (2025-11-14)
+- [ExtraHop](https://www.extrahop.com/) — ExtraHop (2025-11-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/massive-token-farming-campaign-abuses-npm-registry-150k-packages/

@@ -50,7 +50,6 @@ Security firm Sansec recently disclosed a separate critical file upload vulnerab
 ## Sources
 - [Thousands of Magento Sites Hit in Ongoing Defacement Campaign](https://www.securityweek.com/thousands-of-magento-sites-hit-in-ongoing-defacement-campaign/) — SecurityWeek
 - [7,500+ Magento sites defaced in global hacking campaign](https://securityaffairs.com/160951/hacking/7500-magento-sites-defaced.html) — Security Affairs
-- [Large-Scale Magento Defacement Campaign Impacts Global Brands and Government Domains](https://www.netcraft.com/blog/large-scale-magento-defacement-campaign-impacts-global-brands-and-government-domains/) — Netcraft
 - [Hackers compromised 7,500+ Magento Websites to Upload Hidden Malicious Files and Steal Data](https://www.cyberssecuritynews.com/hackers-compromised-7500-magento-websites/) — Cyberssecurity News
 - [Ongoing Defacement Campaign Hits Thousands of Magento Sites](https://www.reddit.com/r/pwnhub/comments/1bjq8a4/ongoing_defacement_campaign_hits_thousands_of/) — Reddit
 - [7,500 Magento sites hit in mass defacement campaign tied to suspected file upload flaw](https://www.csnews.com/7500-magento-sites-hit-in-mass-defacement-campaign-tied-to-suspected-file-upload-flaw) — CS News

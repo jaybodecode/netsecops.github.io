@@ -44,7 +44,6 @@ The consequences of this misconfiguration are severe:
 **Tags:** Cloud Security, Misconfiguration, AWS, Azure, OWASP Juice Shop, Supply Chain Attack, Credential Theft
 
 ## Sources
-- [Threat actors exploit security-testing apps to breach cloud infrastructure](https://www.fieldeffect.com/threat-intelligence/threat-actors-exploit-security-testing-apps-breach-cloud-infrastructure) — Field Effect (2026-01-21)
 - [Are You at Risk? What Hackers Breaching Security Testing Apps Mean for Your Cloud Security](https://cloaked.com/blog/hackers-breaching-security-testing-apps) — Cloaked (2026-01-21)
 
 ---

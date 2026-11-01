@@ -66,7 +66,6 @@ Defending against a threat actor like Clop requires a multi-layered, defense-in-
 **Tags:** Ransomware, Clop, TA505, Harvard University, Data Leak, Big Game Hunting, Zero-Day
 
 ## Sources
-- [Clop Ransomware group claims the hack of Harvard University](https://securityaffairs.com/175960/cyber-crime/clop-ransomware-group-claims-harvard-university-hack.html) — Security Affairs (2025-10-12)
 - [Oracle Hack Confirmed by Google, Over 100 Companies Affected](https://www.salesforceben.com/oracle-hack-confirmed-by-google-over-100-companies-affected/) — Salesforce Ben (2025-10-11)
 
 ---

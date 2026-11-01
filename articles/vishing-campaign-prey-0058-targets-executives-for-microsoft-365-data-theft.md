@@ -62,7 +62,6 @@ Because the attack bypasses MFA, it undermines confidence in a foundational secu
 
 ## Sources
 - [Fake IT Calls Target Executives in Microsoft 365 Data Theft and Extortion Attacks](https://thehackernews.com/2026/09/microsoft-365-attackers-use-help-desk.html) — The Hacker News (2026-09-07)
-- [Widespread Vishing and Data Extortion Campaign (PREY-0058) Targeting Microsoft 365](https://arcticwolf.com/resources/blog/prey-0058-vishing-campaign-targets-microsoft-365/) — Arctic Wolf (2026-09-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/vishing-campaign-prey-0058-targets-executives-for-microsoft-365-data-theft/

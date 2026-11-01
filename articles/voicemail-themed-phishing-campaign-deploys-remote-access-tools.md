@@ -60,8 +60,8 @@ A successful attack results in a complete and persistent compromise of the victi
 **Tags:** Phishing, Social Engineering, RMM, Backdoor, Living off the Land
 
 ## Sources
-- [ThreatsDay Bulletin: Codespaces RCE, AsyncRAT C2, BYOVD Abuse, AI Cloud Intrusions & 15+ Stories](https://thehackernews.com/2026/02/05/threatsday-bulletin.html) — The Hacker News (2026-02-05)
-- [Beware of the Voicemail: New Phishing Attack Installs Backdoors](https://www.techrepublic.com/article/voicemail-phishing-attacks/) — TechRepublic (2026-02-05)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-02-05)
+- [TechRepublic](https://www.techrepublic.com/) — TechRepublic (2026-02-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/voicemail-themed-phishing-campaign-deploys-remote-access-tools/

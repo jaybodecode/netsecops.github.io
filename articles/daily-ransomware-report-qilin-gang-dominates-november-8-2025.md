@@ -58,7 +58,6 @@ A multi-layered, defense-in-depth approach is required to defend against ransomw
 
 ## Sources
 - [Daily Ransomware Report 11-08-2025](https://purpleops.com/daily-ransomware-report/11-08-2025) — PurpleOps (2025-11-08)
-- [List of Recent Data Breaches in 2025](https://brightdefense.com/list-of-recent-data-breaches-in-2025/) — BrightDefense (2025-11-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/daily-ransomware-report-qilin-gang-dominates-november-8-2025/

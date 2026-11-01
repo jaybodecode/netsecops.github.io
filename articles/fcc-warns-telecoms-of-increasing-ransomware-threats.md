@@ -51,7 +51,6 @@ Telecommunications companies should treat this alert as a call to action and per
 **Tags:** FCC, telecom, ransomware, regulation, national security
 
 ## Sources
-- [FCC urges telecoms to boost cybersecurity amid growing ransomware threat](https://www.cyberscoop.com/fcc-telecoms-ransomware-alert/) — CyberScoop (2026-02-02)
 - [5 cybersecurity trends to watch in 2026](https://www.cybersecuritydive.com/news/5-cybersecurity-trends-to-watch-in-2026/705461/) — Cybersecurity Dive (2026-01-23)
 
 ---

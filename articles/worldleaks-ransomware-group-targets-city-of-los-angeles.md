@@ -55,8 +55,6 @@ Preventing data extortion requires a defense-in-depth strategy.
 **Tags:** ransomware, data extortion, WorldLeaks, Hunters International, Los Angeles, government, data breach
 
 ## Sources
-- [WorldLeaks ransomware group breached the City of Los Angels](https://securityaffairs.com/160995/data-breach/worldleaks-ransomware-group-breached-the-city-of-los-angels.html) — Security Affairs
-- [WorldLeaks Ransomware Group Breaches City of Los Angeles](https://nationaltoday.com/security/worldleaks-ransomware-group-breaches-city-of-los-angeles/) — National Today
 - [Ransomware Attack on Los Angeles Exposed by Worldleaks](https://www.reddit.com/r/pwnhub/comments/1bjn7d9/ransomware_attack_on_los_angeles_exposed_by/) — Reddit
 - [Ransomware Group worldleaks Hits: City of Los Angeles (LA)](https://www.hookphish.com/blog/ransomware-group-worldleaks-hits-city-of-los-angeles-la) — HookPhish
 - [LA Metro shuts down employee access following ‘unauthorised activity’ on network](https://www.databreaches.net/la-metro-shuts-down-employee-access-following-unauthorised-activity-on-network/) — DataBreaches.net

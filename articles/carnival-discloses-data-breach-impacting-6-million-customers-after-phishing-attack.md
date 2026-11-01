@@ -57,7 +57,6 @@ To prevent similar incidents, organizations must adopt a defense-in-depth strate
 ## Sources
 - [Carnival Cruise confirms data breach affecting nearly 6 million people](https://www.bleepingcomputer.com/news/security/carnival-cruise-confirms-data-breach-affecting-nearly-6-million-people/) (2026-05-28)
 - [Scam of the day – May 28, 2026 – Carnival Cruise Line Data Breach Class Action Filed](https://www.scamicide.com/2026/05/27/scam-of-the-day-may-28-2026-carnival-cruise-line-data-breach-class-action-filed/) (2026-05-27)
-- [Carnival Corporation Data Breach Investigation](https://www.almeidalawgroup.com/post/carnival-corporation-data-breach-investigation) (2026-05-28)
 - [Carnival confirms data breach impacting nearly 6 million](https://blog.malwarebytes.com/scams/2026/05/carnival-confirms-data-breach-impacting-nearly-6-million/) (2026-05-28)
 
 ---

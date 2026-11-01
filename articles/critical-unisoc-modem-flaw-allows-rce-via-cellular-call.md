@@ -58,7 +58,6 @@ Detection on the device itself is nearly impossible for a user. Detection would 
 
 ## Sources
 - [Critical UNISOC T612 Modem Flaw Enables Remote Code Execution via Cellular Calls](https://gbhackers.com/critical-unisoc-t612-modem-flaw/) — GBHackers
-- [Critical UNISOC T612 Modem Flaw Enables RCE via Cellular Calls](https://cyberpress.com/critical-unisoc-t612-modem-flaw-enables-rce-via-cellular-calls/) — Cyberpress
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-unisoc-modem-flaw-allows-rce-via-cellular-call/

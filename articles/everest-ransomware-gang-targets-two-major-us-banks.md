@@ -62,8 +62,8 @@ To detect ransomware precursor activity, security teams should hunt for:
 **Tags:** Ransomware, Everest, Banking, Finance, Data Breach, Third Party Risk
 
 ## Sources
-- [Two major US banks targeted — Citizens Bank confirms breach, Frost Bank allegedly hit](https://cybernews.com/news/two-major-us-banks-targeted-citizens-bank-confirms-breach-frost-bank-allegedly-hit/) — Cybernews (2026-04-22)
-- [Citizens Bank, Frost Bank Targeted by Everest Ransomware Gang](https://www.securityweek.com/citizens-bank-frost-bank-targeted-by-everest-ransomware-gang/) — SecurityWeek (2026-04-22)
+- [Cybernews](https://cybernews.com/) — Cybernews (2026-04-22)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-04-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/everest-ransomware-gang-targets-two-major-us-banks/

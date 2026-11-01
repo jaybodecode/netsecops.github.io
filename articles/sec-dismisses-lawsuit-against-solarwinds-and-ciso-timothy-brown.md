@@ -65,8 +65,6 @@ While this is a legal and policy issue, the underlying event was a technical fai
 
 ## Sources
 - [SEC Dismisses Civil Enforcement Action Against SolarWinds and Chief Information Security Officer](https://www.sec.gov/litigation/litreleases/2025/lr26423.htm) — U.S. Securities and Exchange Commission (2025-11-20)
-- [SEC voluntarily dismisses SolarWinds lawsuit](https://therecord.media/sec-voluntarily-dismisses-solarwinds-lawsuit) — The Record (2025-11-21)
-- [SEC bails on SolarWinds lawsuit](https://www.theregister.com/2025/11/20/sec_solarwinds_lawsuit_dropped/) — The Register (2025-11-20)
 - [SEC Drops SolarWinds Case After Years of High-Stakes Cybersecurity Scrutiny](https://thehackernews.com/2025/11/sec-drops-solarwinds-case-after-years.html) — The Hacker News (2025-11-21)
 
 ---

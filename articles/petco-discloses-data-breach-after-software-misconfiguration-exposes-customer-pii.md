@@ -58,7 +58,6 @@ Preventing misconfiguration breaches requires a combination of technology, proce
 
 ## Sources
 - [Top Data Breaches of December 2025](https://www.stobes.io/blog/top-data-breaches-of-december-2025/) — Strobes Security (2025-12-31)
-- [Data Breaches 2025: Biggest Cybersecurity Incidents So Far](https://www.pkware.com/blog/biggest-cybersecurity-incidents-2025/) — PKWARE (2025-12-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/petco-discloses-data-breach-after-software-misconfiguration-exposes-customer-pii/

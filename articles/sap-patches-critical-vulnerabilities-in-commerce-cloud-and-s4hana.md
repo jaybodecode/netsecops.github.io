@@ -57,8 +57,8 @@ Security teams should hunt for signs of attempted exploitation:
 **Tags:** SAP, Vulnerability, Critical, CVE-2026-34263, CVE-2026-34260, S/4HANA, Commerce Cloud, SQL Injection, RCE
 
 ## Sources
-- [Critical Vulnerabilities in SAP Commerce Cloud and SAP S/4HANA](https://www.csa.gov.sg/alerts-advisories/alerts/2026/al-2026-0513-001) — Cyber Security Agency of Singapore (2026-05-13)
-- [SAP Patches Critical Vulnerabilities in Commerce Cloud, S/4HANA](https://www.securityweek.com/sap-patches-critical-vulnerabilities-in-commerce-cloud-s-4hana/) — SecurityWeek (2026-05-13)
+- [Cyber Security Agency of Singapore](https://www.csa.gov.sg/) — Cyber Security Agency of Singapore (2026-05-13)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-05-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/sap-patches-critical-vulnerabilities-in-commerce-cloud-and-s4hana/

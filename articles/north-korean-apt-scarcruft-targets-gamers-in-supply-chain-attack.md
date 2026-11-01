@@ -52,7 +52,6 @@ This campaign poses a severe threat to the targeted community. For the individua
 **Tags:** ScarCruft, APT37, North Korea, Supply Chain Attack, Android, BirdCall, Spyware, Espionage
 
 ## Sources
-- [North Korean APT Targets Yanbian Gamers via Trojanized Platform](https://www.infosecurity-magazine.com/news/north-korean-apt-yanbian-gamers/) — Infosecurity Magazine (2026-05-05)
 - [North Koreans Spy on Defectors Via Android Game Apps](https://www.bankinfosecurity.com/north-koreans-spy-on-defectors-via-android-game-apps-a-25164) — BankInfoSecurity (2026-05-05)
 - [ScarCruft Targets Gaming Platform With Windows, Android Backdoors](https://www.gbhackers.com/scarcruft-targets-gaming-platform/) — GBHackers (2026-05-05)
 - [ScarCruft Supply Chain Attack Targets Gaming Platform Users](https://www.cyberpress.com/apt/scarcruft-supply-chain-attack-targets-gaming-platform-users/) — Cyber Press (2026-05-05)

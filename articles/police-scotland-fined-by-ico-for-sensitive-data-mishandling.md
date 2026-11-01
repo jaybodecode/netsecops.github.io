@@ -43,7 +43,6 @@ To prevent similar incidents, organizations should implement the following tacti
 **Tags:** Data Protection, ICO, GDPR, Compliance, Law Enforcement, Privacy
 
 ## Sources
-- [Police Scotland fined over data protection 'failures'](https://www.centralfifetimes.com/news/national/24183864.police-scotland-fined-data-protection-failures/) — Central Fife Times (2026-03-14)
 - [Police Scotland fined £66k and reprimanded following serious data mishandling](https://www.ico.org.uk/about-the-ico/media-centre/news-and-blogs/2026/03/police-scotland-fined-66k-and-reprimanded-following-serious-data-mishandling/) — ICO (2026-03-11)
 
 ---

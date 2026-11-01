@@ -67,7 +67,6 @@ Detecting the malicious use of legitimate RATs requires behavioral analysis.
 **Tags:** Bloody Wolf, APT, Cyber Espionage, NetSupport, RAT, Central Asia, Group-IB
 
 ## Sources
-- [Bloody Wolf Threat Actor Expands Activity Across Central Asia](https://www.infosecurity-magazine.com/news/bloody-wolf-threat-actor-expands/) — Infosecurity Magazine (2025-11-27)
 - [Current time information in Kanimeh tumani, UZ.](https://www.google.com/search?q=time+in+Kanimeh+tumani,+UZ)
 - [Current time information in Ак-Талинский район, KG.](https://www.google.com/search?q=time+in+%D0%90%D0%BA-%D0%A2%D0%B0%D0%BB%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D0%B9+%D1%80%D0%B0%D0%B9%D0%BE%D0%BD,+KG)
 

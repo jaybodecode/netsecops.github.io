@@ -75,7 +75,6 @@ To detect similar breaches, organizations should monitor:
 **Tags:** Supply Chain Attack, GitLab, Source Code Leak, Extortion, Client Data
 
 ## Sources
-- [The Week in Breach News: October 8, 2025](https://www.kaseya.com/blog/the-week-in-breach-news-october-8-2025/) — Kaseya (2025-10-08)
 - [Daily Cyber News – October 7th, 2025](https://www.youtube.com/watch?v=F3aZRxiVGu0) — YouTube (2025-10-07)
 - [Oracle E-Business Suite: Patch Zero-Day Actively Exploited by Cl0p; Okta and Zscaler Report on Salesloft Drift Breaches](https://www.sans.org/newsletters/newsbites/xxvii-73/) — SANS Institute (2025-10-07)
 - [Cyber Briefing: 2025.10.07. What's the latest in the cyber world…](https://medium.com/@CyberMaterial/cyber-briefing-2025-10-07-whats-the-latest-in-the-cyber-world-995a94a28249) — Medium (2025-10-07)

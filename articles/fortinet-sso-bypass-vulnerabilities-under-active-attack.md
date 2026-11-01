@@ -80,7 +80,6 @@ Arctic Wolf has observed malicious login attempts from the following IP ranges:
 **Tags:** Fortinet, CVE-2025-59718, CVE-2025-59719, SSO, SAML, Authentication Bypass, Active Exploitation, Cyberattack
 
 ## Sources
-- [Critical FortiGate Devices SSO Vulnerabilities Actively Exploited in the Wild](https://www.gbhackers.com/critical-fortigate-devices-sso-vulnerabilities/) — GBHackers (2025-12-16)
 - [Arctic Wolf Observes Malicious SSO Logins on FortiGate Devices Following Disclosure of CVE-2025-59718 and CVE-2025-59719](https://arcticwolf.com/resources/blog/arctic-wolf-observes-malicious-sso-logins-on-fortigate-devices-following-disclosure-of-cve-2025-59718-and-cve-2025-59719/) — Arctic Wolf (2025-12-15)
 - [Fortinet fixed two critical authentication-bypass vulnerabilities](https://securityaffairs.co/165389/security/fortinet-authentication-bypass-flaws.html) — Security Affairs (2025-12-15)
 

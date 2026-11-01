@@ -52,7 +52,6 @@ The primary network indicator for this campaign is traffic to the Telegram Bot A
 
 ## Sources
 - [Telegram bots exploited in European credential phishing campaign](https://www.scmagazine.com/news/phishing/telegram-bots-exploited-in-european-credential-phishing-campaign) — SC Magazine
-- [Multi-Brand themed Phishing Campaign Harvests Credentials via Telegram Bot API](https://cyble.com/blog/multi-brand-themed-phishing-campaign-harvests-credentials-via-telegram-bot-api/) — Cyble
 
 ---
 Source: https://cyber.netsecops.io/articles/european-organizations-targeted-by-phishing-campaign-using-html-smuggling-and-telegram-bots/

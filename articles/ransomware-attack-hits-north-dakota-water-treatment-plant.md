@@ -50,7 +50,7 @@ Mitigating cyber risk in OT environments requires a defense-in-depth approach:
 **Tags:** ransomware, ICS, OT, SCADA, critical infrastructure, water sector
 
 ## Sources
-- [Water treatment plant in North Dakota suffered ransomware attack](https://statescoop.com/water-treatment-plant-in-north-dakota-suffered-ransomware-attack/) — StateScoop (2026-04-01)
+- [StateScoop](https://statescoop.com/) — StateScoop (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attack-hits-north-dakota-water-treatment-plant/

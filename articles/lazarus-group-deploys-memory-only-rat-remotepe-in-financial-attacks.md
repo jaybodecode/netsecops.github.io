@@ -73,7 +73,6 @@ Security teams should hunt for the following patterns to detect **RemotePE** act
 
 ## Sources
 - [Lazarus Deploys RemotePE Memory-Only RAT Against Financial and Crypto Firms](https://thehackernews.com/2026/05/lazarus-deploys-remotepe-memory-only.html) (2026-05-25)
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) (2026-05-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/lazarus-group-deploys-memory-only-rat-remotepe-in-financial-attacks/

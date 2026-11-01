@@ -61,8 +61,8 @@ The attack on Envoy Air likely followed Clop's established TTPs for mass exploit
 **Tags:** Clop, Ransomware, Envoy Air, American Airlines, Oracle, E-Business Suite, CVE-2023-21931, Data Breach
 
 ## Sources
-- [American Airlines Subsidiary Envoy Compromised in Oracle Hacking Campaign](https://www.cshub.com/threats/news/american-airlines-subsidiary-envoy-compromised-in-oracle-hacking-campaign) — CSHub (2025-10-18)
-- [Harvard University hit in Oracle EBS cyberattack, 1.3 TB of data leaked by Cl0p group.](https://securityaffairs.com/169970/data-breach/cl0p-group-hacked-harvard-university.html) — Security Affairs (2025-10-18)
+- [CSHub](https://www.cshub.com/) — CSHub (2025-10-18)
+- [Security Affairs](https://securityaffairs.com/) — Security Affairs (2025-10-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/clop-ransomware-breaches-american-airlines-subsidiary-via-oracle-ebs-flaw/

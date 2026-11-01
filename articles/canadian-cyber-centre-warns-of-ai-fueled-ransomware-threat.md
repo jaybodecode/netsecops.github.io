@@ -55,7 +55,6 @@ The CCCS stresses the importance of collaboration and robust cyber hygiene.
 **Tags:** ransomware, AI, multi-extortion, threat outlook, Canada, CCCS
 
 ## Sources
-- [More criminals are using AI for ransomware attacks, cybersecurity centre warns](https://www.cbc.ca/news/politics/ransomware-cyber-security-cse-1.7097721) — CBC News (2026-01-28)
 - [Cyber Centre releases Ransomware Threat Outlook 2025 to 2027](https://www.canada.ca/en/communications-security/news/2026/01/cyber-centre-releases-ransomware-threat-outlook-2025-to-2027.html) — Government of Canada (2026-01-28)
 - [Criminals using AI to commit ransomware attacks, cybersecurity centre warns](https://www.bnnbloomberg.ca/criminals-using-ai-to-commit-ransomware-attacks-cybersecurity-centre-warns-1.2027117) — BNN Bloomberg (2026-01-28)
 

@@ -56,8 +56,8 @@ Security teams can hunt for potential exploitation attempts by monitoring for th
 **Tags:** Zscaler, CVE-2024-5407, Privilege Escalation, Windows Security, Patch Management, Zero Trust
 
 ## Sources
-- [Zscaler patches critical flaw in Client Connector for Windows](https://www.bleepingcomputer.com/news/security/zscaler-patches-critical-flaw-in-client-connector-for-windows/) — BleepingComputer
-- [Zscaler fixes a high-severity flaw in Client Connector for Windows](https://securityaffairs.com/164324/security/zscaler-client-connector-flaw.html) — Security Affairs
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
+- [Security Affairs](https://securityaffairs.com/) — Security Affairs
 
 ---
 Source: https://cyber.netsecops.io/articles/zscaler-patches-critical-privilege-escalation-flaw-in-windows-client-connector/

@@ -84,10 +84,9 @@ A prioritized action plan for a regulated firm should look like this:
 **Tags:** AI, Artificial Intelligence, Cybersecurity Policy, Financial Services, NYDFS, Regulation
 
 ## Sources
-- [NYDFS issues dual advisories on 'frontier AI' cybersecurity risks and heightened threat preparedness](https://www.jdsupra.com/legalnews/nydfs-issues-dual-advisories-on-9125345/) (2026-06-01)
-- [Industry Letter - May 21, 2026: Heightened Cybersecurity Risks Associated with Frontier AI Models](https://www.dfs.ny.gov/industry_guidance/industry_letters/il20260521_heightened_cybersecurity_risks_ai) (2026-05-21)
+- [NYDFS issues dual advisories on 'frontier AI' cybersecurity risks and heightened threat preparedness](https://www.jdsupra.com/legalnews/nydfs-issues-dual-advisories-on-5567241/) (2026-06-01)
+- [Industry Letter - May 21, 2026: Heightened Cybersecurity Risks Associated with Frontier AI Models](https://www.dfs.ny.gov/industry-guidance/industry-letters/20260521-heightened-cybersecurity-risks-assoc-with-frontier-ai-models) (2026-05-21)
 - [NYDFS's Frontier AI Guidance: Familiar Vulnerabilities, Faster Threats](https://www.cov.com/en/news-and-insights/insights/2026/05/nydfss-frontier-ai-guidance-familiar-vulnerabilities-faster-threats) (2026-05-29)
-- [NYDFS issues dual advisories on 'frontier AI' cybersecurity risks and heightened threat preparedness](https://www.infobytes.com/orrick-herrington-sutcliffe-llp-nydfs-issues-dual-advisories-on-frontier-ai-cybersecurity-risks-and-heightened-threat-preparedness/) (2026-05-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/nydfs-issues-advisories-on-frontier-ai-and-heightened-cyber-threats/

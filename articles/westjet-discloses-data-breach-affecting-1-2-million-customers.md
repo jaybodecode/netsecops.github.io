@@ -42,7 +42,6 @@ The breach has significant consequences for both WestJet and its customers:
 
 ## Sources
 - [WestJet Data Breach Affects 1.2 Million Customers](https://www.bagservant.com/westjet-data-breach-affects-1-2-million-customers/) — Bag Servant (2025-12-13)
-- [WestJet Data Breach Impacts 1.2 Million Customers](https://www.jdsupra.com/legalnews/westjet-data-breach-impacts-1-2-million-9834562/) — JD Supra (2025-12-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/westjet-discloses-data-breach-affecting-1-2-million-customers/

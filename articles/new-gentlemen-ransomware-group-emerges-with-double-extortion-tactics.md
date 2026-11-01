@@ -69,7 +69,7 @@ No specific Indicators of Compromise (hashes, domains) for the Gentlemen ransomw
 **Tags:** Gentlemen, Ransomware, Threat Actor, Double Extortion, BYOVD, GPO
 
 ## Sources
-- [Daily Cybersecurity Roundup, December 15, 2025 - Cyware Social](https://cyware.com/social/post/158514-daily-cybersecurity-roundup-december-15-2025) — Cyware (2025-12-15)
+- [Cyware](https://cyware.com/) — Cyware (2025-12-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-gentlemen-ransomware-group-emerges-with-double-extortion-tactics/

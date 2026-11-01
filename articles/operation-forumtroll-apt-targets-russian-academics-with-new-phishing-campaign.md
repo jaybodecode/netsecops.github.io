@@ -50,7 +50,6 @@ The impact of this campaign is not financial but strategic. A successful comprom
 
 ## Sources
 - [Operation ForumTroll resurfaces with new phishing campaign targeting Russian academics](https://www.scmagazine.com/news/malware/operation-forumtroll-resurfaces-with-new-phishing-campaign-targeting-russian-academics) — SC Magazine (2025-12-18)
-- [Operation ForumTroll continues: Russian political scientists targeted using plagiarism reports](https://securelist.com/operation-forumtroll-continues-russian-political-scientists-targeted-using-plagiarism-reports/112345/) — Securelist (2025-12-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/operation-forumtroll-apt-targets-russian-academics-with-new-phishing-campaign/

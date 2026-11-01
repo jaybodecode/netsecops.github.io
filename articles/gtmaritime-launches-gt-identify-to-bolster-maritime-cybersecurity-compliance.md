@@ -40,7 +40,6 @@ Maritime organizations should take the following steps:
 
 ## Sources
 - [GTMaritime launches new cybersecurity system](https://smartmaritimenetwork.com/2026/01/20/gtmaritime-launches-new-cybersecurity-system/) — Smart Maritime Network (2026-01-20)
-- [GTMaritime launches GT Identify, delivering fleet-wide visibility and control of maritime IT assets](https://shipmanagementinternational.com/gtmaritime-launches-gt-identify-delivering-fleet-wide-visibility-and-control-of-maritime-it-assets/) — Ship Management International (2026-01-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/gtmaritime-launches-gt-identify-to-bolster-maritime-cybersecurity-compliance/

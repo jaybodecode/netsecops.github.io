@@ -39,8 +39,6 @@ Organizations can defend against Akira and similar ransomware threats with a def
 
 ## Sources
 - [Apache OpenOffice data allegedly stolen by Akira ransomware](https://www.scmagazine.com/news/apache-openoffice-data-allegedly-stolen-by-akira-ransomware) — SC Magazine (2025-10-31)
-- [Software Supply Chain Attacks Surge to Record High in October 2025](https://cyble.com/blog/software-supply-chain-attacks-surge-to-record-high-in-october-2025/) — Cyble (2025-11-04)
-- [Akira Ransomware Strikes Apache OpenOffice, Allegedly Exfiltrates 23GB of Data](https://gbhackers.com/akira-ransomware-apache-openoffice/) — GBHackers on Security (2025-11-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/akira-ransomware-claims-attack-on-apache-openoffice-threatens-data-leak/

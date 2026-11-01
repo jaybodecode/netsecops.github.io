@@ -54,8 +54,6 @@ To detect similar attacks, organizations using Oracle E-Business Suite should mo
 
 ## Sources
 - [Barts Health NHS Reveals Data Breach Linked to Oracle Zero-Day Exploited by Clop Ransomware](https://gbhackers.on-line/barts-health-nhs-reveals-data-breach-linked-to-oracle-zero-day-exploited-by-clop-ransomware/) — GBHackers (2025-12-06)
-- [Barts Health NHS Confirms Data Breach After Oracle Zero-Day Attack by Clop](https://cyberpress.com/barts-health-nhs-confirms-data-breach-after-oracle-zero-day-attack-by-clop/) — Cyberpress (2025-12-06)
-- [Barts Health NHS Confirms Cl0p Ransomware Behind Data Breach](https://www.hackread.com/barts-health-nhs-clop-ransomware-data-breach/) — HackRead (2025-12-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/barts-health-nhs-trust-hit-by-clop-ransomware-via-oracle-zero-day/

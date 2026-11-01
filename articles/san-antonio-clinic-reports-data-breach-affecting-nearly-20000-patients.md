@@ -47,9 +47,7 @@ The exposure of this combination of PII and PHI poses a significant risk to the 
 **Tags:** Data Breach, Healthcare, HIPAA, PII, PHI, Email Security, CommuniCare
 
 ## Sources
-- [CommuniCare Data Breach Affects 19,885 Texans: PHI and PII Exposed](https://www.claimdepot.com/article/communicare-data-breach-affects-19885-texans-phi-and-pii-exposed) — Claim Depot (2026-03-09)
 - [CommuniCare Data Breach – Nearly 20,000 Texas Residents Potentially Affected](https://www.reddit.com/r/classactions/comments/1f9r8i2/communicare_data_breach_nearly_20000_texas/) — Reddit (2026-03-10)
-- [Barrio Comprehensive Family Health Care Center Data Breach Lawsuit](https://www.classactionu.com/data-breach/barrio-comprehensive-family-health-care-center) — Class Action U (2026-03-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/san-antonio-clinic-reports-data-breach-affecting-nearly-20000-patients/

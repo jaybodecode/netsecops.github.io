@@ -43,7 +43,6 @@ If the claim is true, the impact on Cressi, a company with a global presence in 
 
 ## Sources
 - [Qilin ransomware gang alleges cyberattack against Cressi](https://www.scmagazine.com/news/qilin-ransomware-gang-alleges-cyberattack-against-cressi) — SC Media (2026-01-09)
-- [Weekly Intelligence Report – 09 January 2026](https://www.cyfir.com/wp-content/uploads/2026/01/CYFIRMA-Weekly-Threat-Intel-Report-09-Jan-2026.pdf) — CYFIRMA (2026-01-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-gang-claims-attack-on-italian-manufacturer-cressi/

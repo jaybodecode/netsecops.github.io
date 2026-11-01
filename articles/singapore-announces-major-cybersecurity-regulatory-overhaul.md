@@ -53,7 +53,6 @@ These new regulations represent a significant step-up in Singapore's national cy
 
 ## Sources
 - [Singapore: Cybersecurity Regulatory Developments Ahead](https://www.bakermckenzie.com/en/insight/publications/2026/04/singapore-cybersecurity-regulatory-developments-ahead) — Baker McKenzie (2026-04-27)
-- [UK – AI cyber alert](https://www.twobirds.com/en/insights/2026/uk/uk-ai-cyber-alert) — Bird & Bird (2026-04-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/singapore-announces-major-cybersecurity-regulatory-overhaul/

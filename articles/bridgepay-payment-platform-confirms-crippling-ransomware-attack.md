@@ -49,9 +49,6 @@ While specific details of the intrusion vector and the ransomware variant are no
 
 ## Sources
 - [BridgePay Confirms Ransomware Attack, No Card Data Compromised](https://www.infosecurity-magazine.com/news/bridgepay-confirms-ransomware/) — Infosecurity Magazine (2026-02-09)
-- [Payments platform BridgePay confirms ransomware attack behind outage](https://www.cyware.com/social-feed/payments-platform-bridgepay-confirms-ransomware-attack-behind-outage-0f0896089d81) — Cyware (2026-02-09)
-- [OpenClaw finds VirusTotal, CISA EOL deadline, BridgePay ransom](https://www.csoonline.com/article/1308311/openclaw-finds-virustotal-cisa-eol-deadline-bridgepay-ransom.html) — CSO Online (2026-02-09)
-- [BridgePay Payment Gateway Hit by Ransomware, Causing Nationwide Outages](https://gbhackers.com/bridgepay-payment-gateway-hit-by-ransomware/) — GBHackers on Security (2026-02-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/bridgepay-payment-platform-confirms-crippling-ransomware-attack/

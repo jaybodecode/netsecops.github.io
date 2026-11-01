@@ -52,8 +52,8 @@ This incident underscores the importance of protecting employee data with the sa
 **Tags:** Data Breach, Panda Express, Panda Restaurant Group, PII, Employee Data, Incident Response
 
 ## Sources
-- [Panda Express parent company discloses data breach affecting employees](https://www.bleepingcomputer.com/news/security/panda-express-parent-company-discloses-data-breach-affecting-employees/) — BleepingComputer
-- [Panda Restaurant Group Discloses Data Breach Impacting Employees](https://www.securityweek.com/panda-restaurant-group-discloses-data-breach-impacting-employees/) — SecurityWeek
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek
 
 ---
 Source: https://cyber.netsecops.io/articles/panda-restaurant-group-discloses-data-breach-affecting-employees/

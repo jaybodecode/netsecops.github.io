@@ -57,8 +57,8 @@ Security teams should hunt for the following indicators associated with this cam
 **Tags:** APT, Flax Typhoon, Web Shell, Living-off-the-land, Espionage, ArcGIS, Government
 
 ## Sources
-- [Flax Typhoon APT exploited ArcGIS server for over a year as a backdoor](https://securityaffairs.co/wordpress/169829/apt/flax-typhoon-arcgis-server-backdoor.html) — Security Affairs (2025-10-06)
-- [Chinese Hackers Use Trusted ArcGIS App For Year-Long Persistence](https://www.infosecurity-magazine.com/news/chinese-hackers-trusted-arcgis-app/) — Infosecurity Magazine (2025-10-05)
+- [Security Affairs](https://securityaffairs.co/) — Security Affairs (2025-10-06)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-10-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/chinese-apt-flax-typhoon-uses-arcgis-server-as-backdoor-for-espionage/

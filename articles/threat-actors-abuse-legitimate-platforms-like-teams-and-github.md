@@ -65,7 +65,6 @@ No specific Indicators of Compromise were provided in the source articles, as th
 **Tags:** Living off the Land, Microsoft Teams, GitHub, Windows Phone Link, MFA Bypass, TTP, Evasion
 
 ## Sources
-- [Threat Intelligence: May 11, 2026](https://www.resecurity.com/blog/threat-intelligence-may-11-2026) — ReSecurity (2026-05-11)
 - [11th May – Threat Intelligence Report](https://research.checkpoint.com/2026/05/11th-may-threat-intelligence-report/) — Check Point Research (2026-05-11)
 
 ---

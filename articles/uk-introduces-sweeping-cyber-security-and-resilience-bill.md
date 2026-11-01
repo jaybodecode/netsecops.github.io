@@ -60,7 +60,6 @@ The bill will have a profound operational and financial impact on affected organ
 **Tags:** UK, Cybersecurity Law, Regulation, NIS2, MSP, Supply Chain, Incident Reporting
 
 ## Sources
-- [UK Government Finally Introduces Cyber Security and Resilience Bill](https://www.infosecurity-magazine.com/news/uk-introduces-cyber-resilience-bill/) — Infosecurity Magazine
 - [ABI responds to the introduction of the Cyber Security and Resilience Bill](https://www.abi.org.uk/news/news-articles/2025/11/abi-responds-to-the-introduction-of-the-cyber-security-and-resilience-bill/) — Association of British Insurers
 
 ---

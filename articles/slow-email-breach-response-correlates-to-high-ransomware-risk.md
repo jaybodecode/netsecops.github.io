@@ -50,9 +50,9 @@ The report quantifies the business impact in several ways:
 **Tags:** incident response, email security, phishing, ransomware, cybersecurity report
 
 ## Sources
-- [Organizations That Delay Responding to Email Breaches are 79% More Likely to Suffer a Ransomware Hit](https://www.barracuda.com/news/press-release/2366/organizations-delay-responding-email-breaches-are-79-more-likely-suffer) — Barracuda Networks (2025-10-28)
-- [Email breach delays can multiply ransomware risk eight-fold](https://blog.barracuda.com/2025/10/28/email-breach-delays-can-multiply-ransomware-risk-eight-fold/) — Barracuda Networks (2025-10-28)
-- [Organizations That Delay Responding to Email Breaches are 79% More Likely to Suffer a Ransomware Hit](https://www.prnewswire.com/news-releases/organizations-that-delay-responding-to-email-breaches-are-79-more-likely-to-suffer-a-ransomware-hit-302283038.html) — PR Newswire (2025-10-28)
+- [Barracuda Networks](https://www.barracuda.com/) — Barracuda Networks (2025-10-28)
+- [Barracuda Networks](https://blog.barracuda.com/) — Barracuda Networks (2025-10-28)
+- [PR Newswire](https://www.prnewswire.com/) — PR Newswire (2025-10-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/slow-email-breach-response-correlates-to-high-ransomware-risk/

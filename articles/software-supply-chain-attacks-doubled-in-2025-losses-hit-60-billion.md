@@ -49,8 +49,8 @@ Detecting supply chain attacks requires a shift left in security—embedding con
 **Tags:** Supply Chain, DevSecOps, SBOM, CI/CD, Open Source Security, Systemic Risk
 
 ## Sources
-- [Software Supply Chain Attacks Hit Record Levels in 2025; Exposes Gaps in Enterprise Readiness](https://cisoforum.com/software-supply-chain-attacks-hit-record-levels-in-2025-exposes-gaps-in-enterprise-readiness/) — CISO Forum (2025-12-29)
-- [Cyber Threat Intelligence Report | 12/29/2025](https://www.packetwatch.com/blog/cyber-threat-intelligence-report-12-29-2025) — PacketWatch (2025-12-29)
+- [CISO Forum](https://cisoforum.com/) — CISO Forum (2025-12-29)
+- [PacketWatch](https://www.packetwatch.com/) — PacketWatch (2025-12-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/software-supply-chain-attacks-doubled-in-2025-losses-hit-60-billion/

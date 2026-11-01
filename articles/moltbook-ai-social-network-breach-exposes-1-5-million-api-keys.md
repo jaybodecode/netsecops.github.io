@@ -45,7 +45,6 @@ This breach serves as a case study in essential security practices for any web p
 **Tags:** data breach, API security, rate limiting, AI, social media, Wiz, misconfiguration
 
 ## Sources
-- [Hacking Moltbook: AI Social Network Reveals 1.5M API Keys | Wiz Blog](https://www.wiz.io/blog/hacking-moltbook-ai-social-network-reveals-1-5m-api-keys) — Wiz (2026-02-02)
 - [2nd February – Threat Intelligence Report](https://research.checkpoint.com/2026/02/02/2nd-february-threat-intelligence-report/) — Check Point Research (2026-02-02)
 
 ---

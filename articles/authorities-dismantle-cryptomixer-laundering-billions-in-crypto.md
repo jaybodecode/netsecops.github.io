@@ -35,9 +35,6 @@ Virtual Asset Service Providers (VASPs), such as cryptocurrency exchanges, shoul
 ## Sources
 - [Authorities Dismantled ‘Cryptomixer’ Platform Facilitating Cybercrime and Money Laundering](https://www.cyberpress.org/authorities-dismantled-cryptomixer-platform-facilitating-cybercrime-and-money-laundering/) — Cyberpress (2025-12-01)
 - [Europol and partners shut down 'Cryptomixer' - EUR 25 million in cryptocurrency seized during the operation](https://www.europol.europa.eu/media-press/newsroom/news/europol-and-partners-shut-down-%E2%80%98cryptomixer%E2%80%99) — Europol (2025-12-01)
-- [Europol, Swiss Police Dismantle ‘Cryptomixer’ in Major Bitcoin Laundering Crackdown](https://therecord.media/europol-swiss-police-dismantle-cryptomixer-bitcoin-laundering) — The Record by Recorded Future (2025-12-01)
-- [Europol nukes Cryptomixer laundering hub, seizing €25M in Bitcoin](https://www.theregister.com/2025/12/02/europol_cryptomixer_takedown/) — The Register (2025-12-02)
-- [Europol Takes Down Illegal Crypto Mixing Laundering Service Used by Ransomware Actors](https://www.hipaajournal.com/europol-takes-down-illegal-crypto-mixing-laundering-service-used-by-ransomware-actors/) — HIPAA Journal (2025-12-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/authorities-dismantle-cryptomixer-laundering-billions-in-crypto/

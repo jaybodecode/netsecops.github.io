@@ -37,7 +37,6 @@ Government contractors who may be affected by this directive should take the fol
 **Tags:** Artificial Intelligence, AI Ethics, Supply Chain Risk, US Government, National Security, Policy
 
 ## Sources
-- [Pentagon Designates Anthropic a Supply Chain Risk — What Government Contractors Need to Know](https://www.jdsupra.com/legalnews/pentagon-designates-anthropic-a-supply-69fd9226/) — JD Supra (2026-03-02)
 - [In extraordinary move, Pentagon designates Anthropic a 'supply chain risk' to U.S. national security](https://www.washingtontimes.com/staff/ben-wolfgang/) — The Washington Times (2026-03-02)
 
 ---

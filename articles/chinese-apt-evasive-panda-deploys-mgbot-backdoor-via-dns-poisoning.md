@@ -65,7 +65,6 @@ Security teams should hunt for the following patterns:
 
 ## Sources
 - [China-Linked Evasive Panda Ran DNS Poisoning Campaign to Deliver MgBot Backdoor](https://thehackernews.com/2025/12/china-linked-evasive-panda-ran-dns.html) — The Hacker News (2025-12-26)
-- [China-Linked ‘Evasive Panda’ Poisoned DNS to Hack Users in India, Türkiye and China](https://the420.in/2025/12/26/china-linked-evasive-panda-poisoned-dns-to-hack-users-in-india-turkiye-and-china/) — The420.in (2025-12-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/chinese-apt-evasive-panda-deploys-mgbot-backdoor-via-dns-poisoning/

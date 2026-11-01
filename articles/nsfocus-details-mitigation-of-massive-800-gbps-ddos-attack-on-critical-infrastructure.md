@@ -57,7 +57,6 @@ This incident demonstrates the necessity for critical infrastructure operators t
 
 ## Sources
 - [NSFOCUS Cloud DDoS Protection Service (Cloud DPS) Detected and Mitigated an 800G+ DDoS Attack towards a Critical Infrastructure Operator](https://nsfocusglobal.com/nsfocus-cloud-ddos-protection-service-cloud-dps-detected-and-mitigated-an-800g-ddos-attack-towards-a-critical-infrastructure-operator/) — NSFOCUS (2025-11-17)
-- [How an 843 Gbps DDoS Attack on Critical Infrastructure Was Thwarted](https://www.example.com/nsfocus-ddos-source2) — Fictional Source 2 (2025-11-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/nsfocus-details-mitigation-of-massive-800-gbps-ddos-attack-on-critical-infrastructure/

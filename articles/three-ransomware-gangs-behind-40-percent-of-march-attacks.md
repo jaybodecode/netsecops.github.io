@@ -44,7 +44,6 @@ While the report focuses on attack volume, the TTPs of these top groups are well
 
 ## Sources
 - [Three ransomware gangs behind 40% of March attacks](https://www.digit.fyi/three-ransomware-gangs-behind-40-of-march-attacks/) (2026-04-13)
-- [Just Three Ransomware Gangs Accounted for 40% of Attacks Last Month](https://www.infosecurity-magazine.com/news/three-ransomware-gangs-40-attacks/) (2026-04-13)
 - [13th April – Threat Intelligence Report](https://research.checkpoint.com/2026/04/13/13th-april-threat-intelligence-report/) (2026-04-13)
 
 ---

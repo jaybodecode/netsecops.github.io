@@ -84,7 +84,6 @@ A successful exploit of **CVE-2025-14892** would be catastrophic for an affected
 **Tags:** WordPress, Vulnerability, CVE-2025-14892, Privilege Escalation, Plugin, CVSS 9.8
 
 ## Sources
-- [Mitigating Privilege Escalation in Prime Listing Manager//Published on 2026-02-15//CVE-2025-14892 - WP-Firewall](https://wp-firewall.com/blog/mitigating-privilege-escalation-in-prime-listing-manager/) — WP-Firewall (2026-02-15)
 - [Daily Cyber Security News – February 15, 2026](https://daily-cyber-security-news.com/2026/02/15/daily-cyber-security-news-february-15-2026/) — Daily Cyber Security News (2026-02-15)
 
 ---

@@ -70,7 +70,6 @@ As an end-user or enterprise, the best course of action is to:
 ## Sources
 - [Microsoft Uncovers 'Whisper Leak' Attack That Identifies AI Chat Topics in Encrypted Traffic](https://thehackernews.com/2025/11/microsoft-uncovers-whisper-leak-attack.html) — The Hacker News (2025-11-08)
 - [Breaking News – Cyber Threats – 2025-11-08 12:00 PST](https://xloggs.com/breaking-news-cyber-threats-2025-11-08-1200-pst/) — XLoggs (2025-11-08)
-- [AI chat privacy at risk: Microsoft details Whisper Leak side-channel attack](https://securityaffairs.com/169990/hacking/whisper-leak-side-channel-attack.html) — Security Affairs (2025-11-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-reveals-whisper-leak-attack-infers-ai-chat-topics-from-encrypted-traffic/

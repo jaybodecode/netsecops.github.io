@@ -39,8 +39,8 @@ The impact is widespread, affecting at least 766 hosts compromised in a single 2
 **Tags:** React2Shell, CVE-2025-55182, Next.js, Cisco Talos, vulnerability, credential harvesting, OPSEC
 
 ## Sources
-- [Security lapse lets researchers view React2Shell hackers' dashboard](https://www.csoonline.com/article/2126239/security-lapse-lets-researchers-view-react2shell-hackers-dashboard.html) — CSO Online
-- [React2Shell Vulnerability (CVE-2025-55182) Actively Exploited in the Wild](https://www.action1.com/blog/react2shell-vulnerability-actively-exploited-in-the-wild/) — Action1
+- [CSO Online](https://www.csoonline.com/) — CSO Online
+- [Action1](https://www.action1.com/) — Action1
 
 ---
 Source: https://cyber.netsecops.io/articles/security-lapse-exposes-react2shell-attackers-credential-harvesting-dashboard/

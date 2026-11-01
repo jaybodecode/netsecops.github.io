@@ -60,10 +60,7 @@ Organizations should take a phased, risk-based approach:
 **Tags:** Zero Trust, OT Security, ICS, CISA, Critical Infrastructure, Volt Typhoon
 
 ## Sources
-- [CISA and U.S. Government Partners Unveil Guide to Accelerate Zero Trust Adoption in Operational Technology](https://www.cisa.gov/news-events/news/cisa-and-us-government-partners-unveil-guide-accelerate-zero-trust-adoption-operational) — CISA (2026-04-29)
-- [April 2026 Cybersecurity News](https://cimetrics.com/blog-posts/2026/04/29/april-2026-cybersecurity-news) — Cimetrics (2026-04-29)
 - [New CISA guidance outlines zero trust roadmap for OT environments...](https://industrialcyber.co/threat-landscape/new-cisa-guidance-outlines-zero-trust-roadmap-for-ot-environments-facing-legacy-constraints-and-growing-attack-surfaces/) — Industrial Cyber (2026-04-30)
-- [CISA and Partners Publish Zero Trust Guidance For OT Security](https://www.infosecurity-magazine.com/news/cisa-partners-publish-zero-trust-ot/) — Infosecurity Magazine (2026-04-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/us-government-releases-joint-guidance-for-zero-trust-in-ot/

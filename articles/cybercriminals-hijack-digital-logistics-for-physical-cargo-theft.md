@@ -60,8 +60,6 @@ No specific Indicators of Compromise (IOCs) were provided in the source articles
 
 ## Sources
 - [Cargo Theft Goes Digital as Cybercrime Invades the Supply Chain](https://www.pymnts.com/cybersecurity/2025/cargo-theft-goes-digital-as-cybercrime-invades-the-supply-chain/) — PYMNTS.com (2025-11-06)
-- [Hackers commit highway robbery, stealing cargo and goods](https://blog.malwarebytes.com/threat-intelligence/2025/11/hackers-help-organized-crime-groups-in-cargo-freight-heists/) — Malwarebytes (2025-11-06)
-- [Cybercriminals Exploit Remote Monitoring Tools to Infiltrate Logistics and Freight Networks](https://thecyberexpress.com/cybercriminals-and-cargo-freight-heists/) — The Cyber Express (2025-11-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/cybercriminals-hijack-digital-logistics-for-physical-cargo-theft/

@@ -78,7 +78,6 @@ This tool is a prime example of **[Security by Design](https://en.wikipedia.org/
 
 ## Sources
 - [If cyber espionage via HDMI worries you, NCSC built a device to stop it](https://www.helpnetsecurity.com/2026/04/23/silentglass-ncsc/) — Help Net Security (2026-04-23)
-- [NCSC Unveils SilentGlass, a Plug-In Device to Protect Monitors from Cyber-Attacks](https://www.infosecurity-magazine.com/news/ncsc-silentglass-protect-monitors/) — Infosecurity Magazine (2026-04-22)
 - [National Cyber Security Centre unveils ‘SilentGlass’ - a new plug-in device to protect computer monitors from hackers](https://futurescot.com/national-cyber-security-centre-unveils-silentglass-a-new-plug-in-device-to-protect-computer-monitors-from-hackers/) — FutureScot (2026-04-22)
 - [NCSC Launches SilentGlass Hardware to Stop Cyber-Attacks via Screens](https://www.digit.fyi/ncsc-launches-silentglass-hardware-to-stop-cyber-attacks-via-screens/) — Digit.fyi (2026-04-23)
 

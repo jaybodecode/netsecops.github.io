@@ -53,7 +53,7 @@ No specific IOCs were provided in the source articles.
 **Tags:** Data Breach, Healthcare, HIPAA, PHI, PII, Email Security
 
 ## Sources
-- [Aligned Orthopedic Discloses Data Breach Affecting Social Security Numbers](https://claimdepot.com/blog/aligned-orthopedic-discloses-data-breach-affecting-social-security-numbers/) — Claim Depot (2026-04-18)
+- [Claim Depot](https://claimdepot.com/) — Claim Depot (2026-04-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/aligned-orthopedic-partners-discloses-breach-exposing-patient-phi-and-pii/

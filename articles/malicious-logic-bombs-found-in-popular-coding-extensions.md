@@ -70,7 +70,6 @@ Mitigation focuses on reducing the attack surface and controlling the developmen
 
 ## Sources
 - [Cyber Security News Briefing March 28, 2026](https://www.youtube.com/watch?v=example-cybersec-news) — YouTube
-- [Malicious Logic Bombs Found in Popular IDE Extensions](https://www.securityweek.com/malicious-logic-bombs-found-in-popular-ide-extensions/) — SecurityWeek
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-logic-bombs-found-in-popular-coding-extensions/

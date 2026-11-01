@@ -60,7 +60,6 @@ For organizations looking to adopt a similar AI-driven offensive security model,
 **Tags:** Accenture, XBOW, AI, Artificial Intelligence, Offensive Security, Penetration Testing, Exposure Management, Investment
 
 ## Sources
-- [Accenture Invests in XBOW to Advance Continuous Offensive Security Testing and Exposure Management](https://newsroom.accenture.com/news/accenture-invests-in-xbow-to-advance-continuous-offensive-security-testing-and-exposure-management.htm) — Accenture Newsroom (2026-05-06)
 - [Autonomous Offensive Security Firm XBOW Raises $35 Million](https://securityweek.com/autonomous-offensive-security-firm-xbow-raises-35-million/) — SecurityWeek (2026-05-06)
 
 ---

@@ -76,10 +76,7 @@ Mitigating insider threats requires a holistic program that addresses technology
 **Tags:** Insider Threat, CrowdStrike, Scattered Lapsus$ Hunters, Okta, Data Leak, Incident Response
 
 ## Sources
-- [CrowdStrike denies breach after insider sent internal screenshots to hackers](https://securityaffairs.com/165977/hacking/crowdstrike-insider-leaked-data.html) — Security Affairs (2025-11-21)
 - [CrowdStrike catches insider feeding information to ScatteredLapsus$Hunters](https://www.databreaches.net/crowdstrike-catches-insider-feeding-information-to-scatteredlapsushunters/) — DataBreaches.Net (2025-11-21)
-- [CrowdStrike Fires Worker Over Insider Leak to Scattered Lapsus Hunters](https://www.hackread.com/crowdstrike-fires-worker-insider-leak-lapsus-hunters/) — HackRead (2025-11-22)
-- [CrowdStrike fires insider who leaked data to hacker group | The Tech Buzz](https://www.thetechbuzz.net/crowdstrike-fires-insider-who-leaked-data-to-hacker-group/) — The Tech Buzz (2025-11-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/crowdstrike-fires-employee-for-leaking-internal-data-to-hacking-group/

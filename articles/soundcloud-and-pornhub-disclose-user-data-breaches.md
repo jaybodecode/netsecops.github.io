@@ -47,7 +47,6 @@ For Pornhub users, the potential impact is far more severe due to the highly sen
 ## Sources
 - [User Data Compromised in SoundCloud Hack](https://www.securityweek.com/user-data-compromised-in-soundcloud-hack/) — SecurityWeek (2025-12-16)
 - [Pornhub Data Breach Exposes Premium Member Search and Watch History](https://botcrawl.com/pornhub-data-breach-exposes-premium-member-search-and-watch-history/) — Botcrawl (2025-12-16)
-- [Pornhub targeted in extortion attempt following Mixpanel breach exposing user activity](https://securityaffairs.co/165524/data-breach/pornhub-extortion-attempt-mixpanel-breach.html) — Security Affairs (2025-12-16)
 - [SoundCloud discloses data breach incident impacting 20% of users](https://cyberinsider.com/soundcloud-discloses-data-breach-incident-impacting-20-of-users/) — Cyber Insider (2025-12-16)
 
 ---

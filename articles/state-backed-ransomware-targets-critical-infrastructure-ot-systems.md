@@ -50,7 +50,6 @@ Mitigation must focus on resilience and segmentation.
 ## Sources
 - [State-backed ransomware activity raises new concerns over escalating threats to OT, critical infrastructure operations](https://industrialcyber.co/threats-attacks/state-backed-ransomware-activity-raises-new-concerns-over-escalating-threats-to-ot-critical-infrastructure-operations/) (2026-05-17)
 - [Global Cyber Threat Outlook 2026: Rising Infrastructure Attacks](https://securityboulevard.com/2026/05/global-cyber-threat-outlook-2026-rising-infrastructure-attacks/) (2026-05-17)
-- [2026 Cyber Threat Assessment](https://www.nj.gov/njccic/resource/2026-cyber-threat-assessment) (2026-05-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/state-backed-ransomware-targets-critical-infrastructure-ot-systems/

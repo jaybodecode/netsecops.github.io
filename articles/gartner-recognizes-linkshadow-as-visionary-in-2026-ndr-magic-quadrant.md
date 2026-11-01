@@ -35,8 +35,8 @@ Gartner's recognition of LinkShadow as a Visionary in the 2026 NDR Magic Quadran
 **Tags:** Gartner, Magic Quadrant, NDR, LinkShadow, Industry News
 
 ## Sources
-- [LinkShadow Named Visionary in 2026 Gartner NDR Quadrant](https://www.miragenews.com/linkshadow-named-visionary-in-2026-gartner-ndr-1245678/) — Mirage News
-- [LinkShadow Recognized as a Visionary in 2026 Gartner® Magic Quadrant™ for Network Detection and Response](https://www.linkshadow.com/news/linkshadow-in-2026-gartner-magic-quadrant-for-ndr) — LinkShadow
+- [Mirage News](https://www.miragenews.com/) — Mirage News
+- [LinkShadow](https://www.linkshadow.com/) — LinkShadow
 
 ---
 Source: https://cyber.netsecops.io/articles/gartner-recognizes-linkshadow-as-visionary-in-2026-ndr-magic-quadrant/

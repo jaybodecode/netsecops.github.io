@@ -96,7 +96,6 @@ The primary point of failure in Netmarble's response was the **72-hour delay** i
 
 ## Sources
 - [Your Breaches of the Week! Nov 24 to Nov 30, 2025](https://www.youtube.com/watch?v=example_video_id_for_nov30) — YouTube (2025-11-30)
-- [Threat Intel Digest for Nov 30, 2025](https://wwwhttps://threatintel.com/briefs/2025-11-30-digest) — Threat Intel Digest (2025-11-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/netmarble-data-breach-exposes-6-million-gaming-members/

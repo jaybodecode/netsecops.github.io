@@ -41,8 +41,8 @@ While LabHost is gone, the threat of phishing remains. The techniques it enabled
 **Tags:** Phishing, PhaaS, LabHost, Europol, Takedown, Law Enforcement
 
 ## Sources
-- [International investigation disrupts one of world's largest phishing-as-a-service providers](https://www.europol.europa.eu/media-press/newsroom/news/international-investigation-disrupts-one-of-worlds-largest-phishing-services) — Europol (2026-02-23)
-- [LabHost: Police takedown of huge online fraud site](https://www.bbc.com/news/technology-68379123) — BBC News (2026-02-23)
+- [Europol](https://www.europol.europa.eu/) — Europol (2026-02-23)
+- [BBC News](https://www.bbc.com/) — BBC News (2026-02-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/cyber-surge-operation-dismantles-major-phishing-as-a-service-platform/

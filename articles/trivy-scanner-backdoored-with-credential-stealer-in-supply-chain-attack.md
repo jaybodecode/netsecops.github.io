@@ -62,10 +62,7 @@ Security teams should hunt for the following indicators:
 **Tags:** CI/CD, DevSecOps, GitHub Actions, credential theft, infostealer, open source, software supply chain
 
 ## Sources
-- [Trivy vulnerability scanner backdoored with credential stealer in supply chain attack](https://www.csoonline.com/article/2099395/trivy-vulnerability-scanner-backdoored-with-credential-stealer-in-supply-chain-attack.html) — CSO Online
 - [Trivy vulnerability scanner breach pushed infostealer via GitHub Actions](https://www.bleepingcomputer.com/news/security/trivy-vulnerability-scanner-breach-pushed-infostealer-via-github-actions/) — BleepingComputer
-- [From Scanner to Stealer: Inside the trivy-action Supply Chain Compromise](https://www.crowdstrike.com/blog/from-scanner-to-stealer-inside-the-trivy-action-supply-chain-compromise/) — CrowdStrike
-- [Update: Ongoing Investigation and Additional Activity](https://blog.aquasec.com/trivy-update-ongoing-investigation-and-additional-activity) — Aqua Security
 
 ---
 Source: https://cyber.netsecops.io/articles/trivy-scanner-backdoored-with-credential-stealer-in-supply-chain-attack/

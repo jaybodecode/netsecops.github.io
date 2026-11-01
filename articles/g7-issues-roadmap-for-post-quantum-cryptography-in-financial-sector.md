@@ -47,7 +47,6 @@ The transition to PQC represents one of the most significant and complex technol
 
 ## Sources
 - [G7 Cyber Expert Group Releases Roadmap for Coordinating the Transition to Post-Quantum Cryptography in the Financial Sector](https://home.treasury.gov/news/press-releases/jy2026) — U.S. Department of the Treasury (2026-01-12)
-- [G7 Cyber Expert Group Statement on Planning for the Opportunities and Risks of Quantum Computing](https://home.treasury.gov/system/files/136/G7-CEG-Statement-on-Quantum-September-2024.pdf) — U.S. Department of the Treasury (2026-01-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/g7-issues-roadmap-for-post-quantum-cryptography-in-financial-sector/

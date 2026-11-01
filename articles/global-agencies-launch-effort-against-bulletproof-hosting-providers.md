@@ -60,9 +60,6 @@ For network defenders in enterprises, the advisory provides a framework for acti
 
 ## Sources
 - [Cybersecurity Snapshot: Global Agencies Target Criminal “Bulletproof” Hosts, as CSA Unveils Agentic AI Risk Framework](https://www.securityboulevard.com/2025/11/cybersecurity-snapshot-global-agencies-target-criminal-bulletproof-hosts-as-csa-unveils-agentic-ai-risk-framework/) — Security Boulevard (2025-11-21)
-- [Bulletproof Defense: Mitigating Risks From Bulletproof Hosting Providers](https://www.cisa.gov/news-events/news/bulletproof-defense-mitigating-risks-bulletproof-hosting-providers) — CISA (2025-11-19)
-- [NSA Issues Guidance for ISPs and Network Defenders to Combat Malicious Activity](https://www.infosecurity-magazine.com/news/nsa-isps-network-defenders-guidance/) — Infosecurity Magazine (2025-11-20)
-- [Agencies release guide to protect against bulletproof hosting provider cybercrimes](https://www.aha.org/news/headline/2025-11-20-agencies-release-guide-protect-against-bulletproof-hosting-provider) — American Hospital Association (2025-11-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/global-agencies-launch-effort-against-bulletproof-hosting-providers/

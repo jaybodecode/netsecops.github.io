@@ -74,7 +74,7 @@ Organizations in manufacturing supply chains should hunt for signs of compromise
 ## Sources
 - [Apple and Tesla supplier Tata Electronics confirms cyber breach](https://www.computing.co.uk/news/2026/security/tata-electronics-confirms-cyber-breach) (2026-06-24)
 - [Tata Electronics Confirms Cyberattack After World Leaks Claims Theft and Publication of Company Data](https://www.thaicert.or.th/en/2026/06/25/tata-electronics-confirms-cyberattack-after-world-leaks-claims-theft-and-publication-of-company-data/) (2026-06-25)
-- [Tata Electronics Confirms Cyberattack As Hackers Claim Apple And Tesla Files Were Stolen](https://thehackacademy.com/news/tata-electronics-confirms-cyberattack-as-hackers-claim-apple-and-tesla-files-were-stolen/) (2026-06-24)
+- [Tata Electronics Confirms Cyberattack As Hackers Claim Apple And Tesla Files Were Stolen](https://www.thehackacademy.com/news/tata-electronics-confirms-cyberattack-as-hackers-claim-apple-and-tesla-files-were-stolen/) (2026-06-24)
 - [Hackers Leak Apple, Tesla Secrets from Tata Electronics](https://thepenpk.com/hackers-leak-apple-tesla-secrets-from-tata-electronics/) (2026-06-25)
 - [Cyberattack on Tata iPhone plant exposes Apple and Tesla data](https://vietnamnet.vn/en/cyberattack-on-tata-iphone-plant-exposes-apple-and-tesla-data-2529224.html) (2026-06-25)
 - [India’s Tata Electronics Hit by Cyber Breach Claiming to Expose Apple, Tesla Trade Secrets](https://hstoday.us/subject-matter-areas/cybersecurity/indias-tata-electronics-hit-by-cyber-breach-claiming-to-expose-apple-tesla-trade-secrets/) (2026-06-24)

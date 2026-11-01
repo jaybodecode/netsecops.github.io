@@ -79,8 +79,6 @@ No specific IOCs were provided, as the infrastructure is dynamic. The primary in
 **Tags:** phishing, phaas, eviltokens, oauth, mfa, microsoft 365, azure ad, token theft
 
 ## Sources
-- [Riding the Rails: Arctic Wolf Tracking Threat Actors Abusing Railway PaaS for Microsoft 365 Token Compromise](https://www.arcticwolf.com/resources/blog/riding-the-rails-abusing-railway-paas-for-m365-token-compromise/) — Arctic Wolf
-- [The EvilTokens Attack: How Device Code Phishing Hijacks Your Cloud](https://www.huntress.com/blog/the-eviltokens-attack-how-device-code-phishing-hijacks-your-cloud) — Huntress
 - [New widespread EvilTokens kit: device code phishing as-a-service – Part 1](https://www.sekoia.io/en/new-widespread-eviltokens-kit-device-code-phishing-as-a-service-part-1/) — Sekoia.io
 - [EvilTokens: From device codes to token theft](https://mnemonic.io/resources/blog/eviltokens-from-device-codes-to-token-theft/) — mnemonic
 

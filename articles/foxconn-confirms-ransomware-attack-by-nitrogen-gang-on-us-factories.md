@@ -49,10 +49,7 @@ Security teams should hunt for TTPs associated with Conti-derived ransomware:
 **Tags:** IT/OT, dark web, data leak, intellectual property, manufacturing, supply chain
 
 ## Sources
-- [Foxconn confirms cyberattack impacting North American factories](https://therecord.media/foxconn-confirms-cyberattack-north-america-factories) (2026-05-12)
 - [Foxconn confirms Ransomware Attack](https://www.cybersecurity-insiders.com/foxconn-confirms-ransomware-attack/) (2026-05-13)
-- [Apple Project Files Allegedly Stolen in Foxconn Ransomware Attack](https://www.macrumors.com/2026/05/13/apple-project-files-stolen-foxconn-attack/) (2026-05-13)
-- [Foxconn confirms cyberattack claimed by Nitrogen ransomware gang](https://www.bleepingcomputer.com/news/security/foxconn-confirms-cyberattack-claimed-by-nitrogen-ransomware-gang/) (2026-05-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/foxconn-confirms-ransomware-attack-by-nitrogen-gang-on-us-factories/

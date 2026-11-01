@@ -47,7 +47,6 @@ Mitigating attacks from groups like **ShinyHunters** requires a combination of t
 **Tags:** ShinyHunters, CarGurus, Data Breach, Data Leak, Extortion, Vishing, PII
 
 ## Sources
-- [12.4 Million Accounts Exposed in CarGurus Leak](https://www.esecurityplanet.com/threats/cargurus-data-leak/) — eSecurity Planet (2026-02-25)
 - [ShinyHunters leaks alleged CarGurus records](https://www.scmagazine.com/brief/shinyhunters-leaks-alleged-cargurus-records) — SC Media (2026-02-25)
 
 ---

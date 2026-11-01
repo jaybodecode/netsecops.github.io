@@ -69,8 +69,8 @@ Security teams can hunt for this activity by looking for the following patterns:
 **Tags:** purelogs, phishing, malware, infostealer, process hollowing, powershell, fortiguard
 
 ## Sources
-- [Phishing Campaign Deploys JavaScript-Driven PureLogs Variant to Steal Sensitive Data | FortiGuard Labs](https://www.fortinet.com/fortiguard/labs/phishing-campaign-deploys-javascript-driven-purelogs-variant-to-steal-sensitive-data) — FortiGuard Labs (2026-05-26)
-- [Major Cyber Attacks in May 2026: Fake Invitations, Agent Tesla, BlobPhish, and More](https://www.any.run/cybersecurity-blog/major-cyber-attacks-in-may-2026/) — ANY.RUN (2026-05-26)
+- [FortiGuard Labs](https://www.fortinet.com/) — FortiGuard Labs (2026-05-26)
+- [ANY.RUN](https://www.any.run/) — ANY.RUN (2026-05-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/phishing-campaign-deploys-purelogs-variant-to-steal-data/

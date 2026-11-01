@@ -106,8 +106,6 @@ This incident forces organizations to re-evaluate their third-party risk managem
 ## Sources
 - [Salesforce investigating campaign targeting customer environments connected to Gainsight app](https://www.cybersecuritydive.com/news/salesforce-gainsight-breach-shinyhunters/733365/) — Cybersecurity Dive (2025-11-20)
 - [Threat actors have reportedly launched yet another campaign involving an application connected to Salesforce](https://www.databreaches.net/threat-actors-have-reportedly-launched-yet-another-campaign-involving-an-application-connected-to-salesforce/) — DataBreaches.net (2025-11-20)
-- [Hundreds of Salesforce customers hit by yet another third-party vendor breach](https://www.cyberscoop.com/salesforce-gainsight-breach-shinyhunters/) — Cyberscoop (2025-11-20)
-- [Obsidian Security Customer Alert on Salesforce-Gainsight Data Breach](https://www.obsidiansecurity.com/blog/salesforce-gainsight-data-breach/) — Obsidian Security (2025-11-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-implicated-in-salesforce-data-breach-via-gainsight-app/

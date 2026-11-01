@@ -51,7 +51,6 @@ Organizations must adapt their processes to handle the new 200-day reality.
 - [Reminder: SSL Certificate Validity Is Dropping to 200 Days](https://www.thesslstore.com/blog/reminder-ssl-certificate-validity-is-dropping-to-200-days/) — The SSL Store (2026-03-15)
 - [The 200-Day TLS Era Has Begun — Is Your Infrastructure Ready?](https://scytale.io/blog/the-200-day-tls-era) — Scytale (2026-03-15)
 - [Upcoming SSL validity changes: what this means and how to prepare](https://www.realtimeregister.com/blog/upcoming-ssl-validity-changes-what-this-means-and-how-to-prepare) — Realtime Register (2026-03-15)
-- [Certificate Expiration Risk: 200 Day Validity Starts March 15](https://sectigo.com/resource-library/certificate-expiration-risk-200-day-validity-starts-march-15) — Sectigo (2026-03-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/tls-certificate-lifespan-reduced-to-200-days/

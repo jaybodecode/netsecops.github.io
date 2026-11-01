@@ -49,7 +49,6 @@ The abuse of trusted SaaS platforms for phishing has a significant impact:
 
 ## Sources
 - [Spam Campaign Abuses Atlassian Jira, Targets Government and Corporate Entities](https://gurucul.com/blog/spam-campaign-abuses-atlassian-jira-targets-government-and-corporate-entities) — Gurucul (2026-02-18)
-- [Jira Notification System Abused in Large-Scale Phishing Campaign](https://www.securityweek.com/jira-abuse-phishing-campaign-targets-gov-corp/) — SecurityWeek (2026-02-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/phishing-campaign-abuses-atlassian-jira-notifications-to-bypass-security/

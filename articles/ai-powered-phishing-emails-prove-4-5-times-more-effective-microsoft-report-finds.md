@@ -63,11 +63,11 @@ The widespread use of AI in cyberattacks has several significant impacts:
 **Tags:** AI, Phishing, Microsoft, Threat Intelligence, MFA, Identity Attack, Infostealer, ClickFix
 
 ## Sources
-- [AI-Generated Phishing Emails Now 4.5x More Effective, Microsoft Report Reveals](https://the420.in/ai-generated-phishing-emails-now-4-5x-more-effective-microsoft-report-reveals/) — The 420 (2025-10-18)
-- [Microsoft Report Warns of AI-Powered Automation in Cyberattacks and Malware Creation](https://gbhackers.com/microsoft-report-warns-of-ai-powered-automation-in-cyberattacks-and-malware-creation/) — GBHackers on Security (2025-10-17)
-- [Microsoft: Ransomware Powers Most Cyberattacks](https://www.esecurityplanet.com/threats/microsoft-ransomware-powers-most-cyberattacks/) — eSecurityPlanet (2025-10-17)
-- [Extortion and ransomware drive over half of cyberattacks - Source Asia - Microsoft News](https://news.microsoft.com/en-au/features/extortion-and-ransomware-drive-over-half-of-cyberattacks/) — Microsoft News (2025-10-17)
-- [AI boosts phishing “conversion” 4.5-fold, Microsoft data shows](https://caliber.az/en/post/ai-boosts-phishing-conversion-45-fold-microsoft-data-shows) — Caliber.az (2025-10-18)
+- [The 420](https://the420.in/) — The 420 (2025-10-18)
+- [GBHackers on Security](https://gbhackers.com/) — GBHackers on Security (2025-10-17)
+- [eSecurityPlanet](https://www.esecurityplanet.com/) — eSecurityPlanet (2025-10-17)
+- [Microsoft News](https://news.microsoft.com/) — Microsoft News (2025-10-17)
+- [Caliber.az](https://caliber.az/) — Caliber.az (2025-10-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-powered-phishing-emails-prove-4-5-times-more-effective-microsoft-report-finds/

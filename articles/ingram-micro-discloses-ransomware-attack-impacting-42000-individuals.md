@@ -57,7 +57,6 @@ Security teams should hunt for generic ransomware precursors and behaviors, incl
 - [Ingram Micro says ransomware attack affected 42,000 people](https://www.bleepingcomputer.com/news/security/ingram-micro-says-ransomware-attack-affected-42-000-people/) — BleepingComputer (2026-01-19)
 - [Ransomware attack on Ingram Micro impacts 42,000 individuals](https://securityaffairs.com/157790/data-breach/ransomware-attack-on-ingram-micro.html) — Security Affairs (2026-01-19)
 - [Ingram Micro breach affects more than 42,000](https://www.computing.co.uk/news/4181048/ingram-micro-breach-affects-42000) — Computing UK (2026-01-20)
-- [Ingram Micro reveals ransomware attack hit 42000 people - here's how to find out more](https://www.techradar.com/pro/security/ingram-micro-reveals-ransomware-attack-hit-42000-people-heres-how-to-find-out-more) — TechRadar Pro (2026-01-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/ingram-micro-discloses-ransomware-attack-impacting-42000-individuals/

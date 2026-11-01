@@ -48,7 +48,6 @@ Organizations using Oracle E-Business Suite should:
 
 ## Sources
 - [8th December – Threat Intelligence Report](https://research.checkpoint.com/2025/8th-december-threat-intelligence-report/) — Check Point Research (2025-12-08)
-- [Universities of Pennsylvania, Phoenix Hit by Oracle Zero-Day Attacks; Cl0p Implicated](https://www.securityweek.com/universities-hit-by-oracle-zero-day-attacks-clop-implicated/) — SecurityWeek (2025-12-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/clop-suspected-in-oracle-zero-day-attacks-on-upenn-and-university-of-phoenix/

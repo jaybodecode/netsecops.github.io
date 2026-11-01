@@ -70,7 +70,6 @@ For companies, mitigation includes:
 ## Sources
 - [October 11, 2025](https://reddotsec.com/2025/10/11/) — Red Dot Security (2025-10-11)
 - [CyberRadar - Real-time Cybersecurity Threat Intelligence](https://www.fortecyberx.com/cyberradar/) — ForteCyberX (2025-10-12)
-- [Discord data breach claims 1.5TB leak; government-issued IDs exposed, company denies](https://www.trustifi.com/discord-data-breach-claims-1-5tb-leak-government-issued-ids-exposed-company-denies/) — Trustifi (2025-10-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/discord-denies-breach-as-hackers-claim-to-leak-1-5tb-of-user-data/

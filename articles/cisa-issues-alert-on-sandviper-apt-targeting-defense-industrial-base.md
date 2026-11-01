@@ -60,7 +60,6 @@ The CISA advisory includes a comprehensive list of Indicators of Compromise. Whi
 **Tags:** APT, SandViper, CISA, Cyber-espionage, Defense Industrial Base, DIB, North Korea
 
 ## Sources
-- [CISA Alert (AA26-054A): SandViper APT Targets Defense Industrial Base](https://www.cisa.gov/news-events/alerts/2026/02/23/sandviper-apt-targets-defense-industrial-base) — CISA (2026-02-23)
 - [‘SandViper’ APT Espionage Campaign Hits US Defense Sector](https://www.darkreading.com/threat-intelligence/sandviper-apt-espionage-campaign-hits-us-defense-sector) — Dark Reading (2026-02-23)
 
 ---

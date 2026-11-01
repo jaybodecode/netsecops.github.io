@@ -112,7 +112,6 @@ Mitigation for this type of threat lies in proactive supply chain risk managemen
 
 ## Sources
 - [Global Wings Airline Breach Exposes 5 Million Passengers' Data](https://www.wsj.com/articles/global-wings-airline-breach-exposes-5-million-passengers-data) — The Wall Street Journal (2026-04-26)
-- [Airline data breach affects 5 million passengers after vendor was hacked](https://www.techcrunch.com/2026/04/26/global-wings-airline-data-breach/) — TechCrunch (2026-04-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/global-wings-airline-discloses-data-breach-of-5-million-passengers/

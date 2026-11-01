@@ -53,7 +53,6 @@ Defending against AI-assisted attacks requires focusing on the outcomes, not the
 
 ## Sources
 - [Data Breach Roundup (Feb 20 – Feb 26, 2026)](https://www.privacyguides.io/blog/data-breach-roundup-feb-20-feb-26-2026/) — Privacy Guides (2026-02-27)
-- [Risky Bulletin: Russian man investigated for extorting Conti ransomware group](https://www.risky.biz/bulletin/risky-bulletin-russian-man-investigated-for-extorting-conti-ransomware-group/) — Risky Business (2026-02-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/hacker-used-ai-chatbot-claude-to-breach-mexican-government-agencies/

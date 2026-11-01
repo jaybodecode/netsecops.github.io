@@ -32,7 +32,6 @@ CrowdStrike's recognition and sales milestone reflect a major shift in how enter
 
 ## Sources
 - [CrowdStrike Named AWS 2025 Global Security Partner & Global Marketplace Partner of the Year](https://www.businesswire.com/news/home/20251202788321/en/CrowdStrike-Named-AWS-2025-Global-Security-Partner-Global-Marketplace-Partner-of-the-Year) — Business Wire (2025-12-02)
-- [CrowdStrike Named AWS 2025 Global Security Partner & Global Marketplace Partner of the Year](https://www.crn.com/news/cloud/2025/crowdstrike-named-aws-2025-global-security-partner-global-marketplace-partner-of-the-year) — CRN (2025-12-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/crowdstrike-named-aws-global-security-marketplace-partner-of-the-year-2025/

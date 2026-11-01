@@ -52,7 +52,6 @@ Manage My Health's response appears to follow a standard, albeit reactive, playb
 - [Who are the hackers behind Manage My Health's cyber attack?](https://www.rnz.co.nz/news/national/506240/who-are-the-hackers-behind-manage-my-health-s-cyber-attack) — RNZ (2026-01-12)
 - [ManageMyHealth data breach - Wikipedia](https://en.wikipedia.org/wiki/ManageMyHealth_data_breach) — Wikipedia (2026-01-12)
 - [126,000 affected by IT hack on patient portal Manage My Health](https://www.healthcareitnews.com/news/emea/126000-affected-it-hack-patient-portal-manage-my-health) — Healthcare IT News (2026-01-12)
-- [New Zealand Orders Review of Manage My Health Breach](https://www.infosecurity-magazine.com/news/new-zealand-review-manage-health/) — Infosecurity Magazine (2026-01-12)
 - [Data breach compromises New Zealand's ManageMyHealth portal](https://www.scmagazine.com/news/data-breach-compromises-new-zealands-managemyhealth-portal) — SC Magazine (2026-01-12)
 
 ---

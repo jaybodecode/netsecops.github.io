@@ -36,7 +36,6 @@ For B Dynamic, the impact is severe. The company is facing significant business 
 
 ## Sources
 - [Qilin Ransomware Claims New Victim: B Dynamic](https://dig-sec.com/) — DigiSec (2025-12-01)
-- [December 1, 2025 Cyber Threat Intelligence Briefing](https://www.kroll.com/en/insights/publications/cyber/dec-1-2025-cyber-threat-intelligence-briefing) — Kroll (2025-12-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-group-claims-b-dynamic-as-new-victim/

@@ -62,7 +62,6 @@ Remediation for all three vulnerabilities involves applying the latest security 
 **Tags:** CISA, KEV, vulnerability, Apple, Laravel, Craft CMS, zero-day, patch management
 
 ## Sources
-- [U.S. CISA adds Apple, Laravel Livewire and Craft CMS flaws to its Known Exploited Vulnerabilities catalog](https://securityaffairs.com/161033/security/cisa-adds-apple-laravel-livewire-and-craft-cms-flaws-to-its-known-exploited-vulnerabilities-catalog.html) — Security Affairs
 - [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — CISA
 
 ---

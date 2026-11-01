@@ -67,7 +67,6 @@ This incident highlights the critical importance of third-party risk management.
 **Tags:** supply chain attack, data breach, crypto, KYC, PII, third-party risk
 
 ## Sources
-- [Major crypto betting platform Shuffle announces user data breach](https://cointelegraph.com/news/crypto-betting-platform-shuffle-data-breach) — Cointelegraph (2025-10-10)
 - [Shuffle Data Breach: Major Crypto Casino Hit by Third-Party CRM Attack](https://bravenewcoin.com/insights/shuffle-data-breach-major-crypto-casino-hit-by-third-party-crm-attack) — Brave New Coin (2025-10-10)
 - [Crypto Platform Shuffle Confirms User Data Exposed in Fast Track Breach](https://en.bitfinanzas.com/crypto-platform-shuffle-confirms-user-data-exposed-in-fast-track-breach/) — Bitfinanzas (2025-10-10)
 

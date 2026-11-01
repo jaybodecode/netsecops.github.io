@@ -64,7 +64,6 @@ Organizations should take the following tactical steps:
 
 ## Sources
 - [Cyber Security News Briefing March 28, 2026](https://www.youtube.com/watch?v=example-cybersec-news) — YouTube
-- [G20 Nations Agree on New Data Sovereignty Protocol](https://www.cfr.org/blog/g20-nations-agree-new-data-sovereignty-protocol) — Council on Foreign Relations
 
 ---
 Source: https://cyber.netsecops.io/articles/g20-nations-sign-new-data-sovereignty-protocol/

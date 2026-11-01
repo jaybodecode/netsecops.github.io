@@ -73,7 +73,6 @@ Since the attacker's actions appear to originate from a legitimate, authenticate
 **Tags:** Session Hijacking, Chrome Extension, Malware, Workday, NetSuite, MFA Bypass, SaaS Security
 
 ## Sources
-- [Five Chrome extensions caught hijacking enterprise sessions](https://www.resecurity.com/blog/article/five-chrome-extensions-caught-hijacking-enterprise-sessions) — ReSecurity (2026-01-19)
 - [These Chrome extensions spoof Workday, NetSuite, and others to trick victims - here's what to look for](https://www.techradar.com/pro/security/these-chrome-extensions-spoof-workday-netsuite-and-others-to-trick-victims-heres-what-to-look-for) — TechRadar (2026-01-19)
 
 ---

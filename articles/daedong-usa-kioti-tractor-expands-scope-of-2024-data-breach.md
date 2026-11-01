@@ -60,8 +60,6 @@ The original source does not specify the attack vector. However, the type of dat
 **Tags:** Data Breach, Daedong-USA, KIOTI Tractor, PII, SSN, Health Information, Breach Notification
 
 ## Sources
-- [DD-USA PROVIDES UPDATE ON CYBERSECURITY ISSUE](https://www.prnewswire.com/news-releases/dd-usa-provides-update-on-cybersecurity-issue-302324706.html) — PR Newswire (2026-01-02)
-- [DD-USA PROVIDES UPDATE ON CYBERSECURITY ISSUE](https://www.fox19.com/prnewswire/2026/01/02/dd-usa-provides-update-cybersecurity-issue/) — FOX19 (2026-01-02)
 - [14:00 ET DD-USA PROVIDES UPDATE ON CYBERSECURITY ISSUE](https://www.longbridgeapp.com/news/376269971032133632) — Longbridge (2026-01-02)
 
 ---

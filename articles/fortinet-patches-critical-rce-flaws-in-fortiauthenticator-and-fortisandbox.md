@@ -66,7 +66,7 @@ Security teams should hunt for signs of compromise or scanning activity targetin
 **Tags:** Fortinet, FortiAuthenticator, FortiSandbox, CVE-2026-44277, CVE-2026-26083, RCE, Critical Vulnerability, Patch Management
 
 ## Sources
-- [Critical Vulnerabilities in Fortinet FortiAuthenticator and FortiSandbox](https://www.csa.gov.sg/alerts-advisories/alerts/20260515_critical-vulnerabilities-in-fortinet) — Cyber Security Agency of Singapore (2026-05-15)
+- [Cyber Security Agency of Singapore](https://www.csa.gov.sg/) — Cyber Security Agency of Singapore (2026-05-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/fortinet-patches-critical-rce-flaws-in-fortiauthenticator-and-fortisandbox/

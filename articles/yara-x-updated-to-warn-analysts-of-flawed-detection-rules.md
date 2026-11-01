@@ -39,8 +39,8 @@ This update helps security teams create more accurate observables.
 **Tags:** YARA, Malware Analysis, Threat Hunting, Detection Engineering, False Negatives, SecOps
 
 ## Sources
-- [YARA-X 1.11.0 Release: Hash Function Warnings, (Sun, Jan 11th)](https://offseq.com/2026/01/11/yara-x-1-11-0-release-hash-function-warnings-sun-jan-11th/) — Offensive Security (2026-01-11)
-- [YARA-X 1.11.0 Released With a New Hash Function Warnings](https://cyberwrites.com/network-security/yara-x-1-11-0-released-with-a-new-hash-function-warnings/) — Cyberwrites (2026-01-11)
+- [Offensive Security](https://offseq.com/) — Offensive Security (2026-01-11)
+- [Cyberwrites](https://cyberwrites.com/) — Cyberwrites (2026-01-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/yara-x-updated-to-warn-analysts-of-flawed-detection-rules/

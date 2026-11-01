@@ -63,8 +63,8 @@ Security teams may want to hunt for the following patterns:
 **Tags:** Phishing, Email Security, Barracuda, Artificial Intelligence, QR Code, PhaaS, Account Takeover
 
 ## Sources
-- [AI and Phishing-as-a-Service Drive Increase in Email Attacks, Barracuda Reports](https://www.barracuda.com/news-release/ai-and-phishing-as-a-service-drive-increase-in-email-attacks-barracuda-reports) — Barracuda (2026-05-12)
-- [How AI and phishing-as-a-service are changing the email threat landscape](https://blog.barracuda.com/2026/05/12/how-ai-and-phishing-as-a-service-are-changing-the-email-threat-landscape) — Barracuda (2026-05-12)
+- [Barracuda](https://www.barracuda.com/) — Barracuda (2026-05-12)
+- [Barracuda](https://blog.barracuda.com/) — Barracuda (2026-05-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/email-threats-surge-with-ai-qr-codes-and-phishing-as-a-service/

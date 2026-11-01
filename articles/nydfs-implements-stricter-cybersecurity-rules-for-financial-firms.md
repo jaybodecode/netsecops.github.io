@@ -65,7 +65,6 @@ The NYDFS has signaled a shift towards more aggressive enforcement. With the rul
 
 ## Sources
 - [NYDFS Regulated Entities Face Stronger Cybersecurity Regulations](https://www.ropesgray.com/en/insights/alerts/2026/january/nydfs-regulated-entities-face-stronger-cybersecurity-regulations) — Ropes & Gray (2026-01-20)
-- [Three cyber trends we'll be seeing in the new year – plus Data Privacy Day!](https://www.jdsupra.com/legalnews/three-cyber-trends-we-ll-be-seeing-in-8107931/) — JD Supra (2026-01-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/nydfs-implements-stricter-cybersecurity-rules-for-financial-firms/

@@ -66,9 +66,7 @@ Mitigating supply chain risk requires a multi-faceted approach.
 ## Sources
 - [The Week in Breach News: May 06, 2026](https://blog.kaseya.com/2026/05/06/the-week-in-breach-news-may-06-2026/) — Kaseya (2026-05-06)
 - [IBM Italy Subsidiary 2026 Network Breach Reportedly Linked to Salt Typhoon](https://www.technadu.com/ibm-italy-subsidiary-2026-network-breach-reportedly-linked-to-salt-typhoon/302636/) — TechNadu (2026-05-06)
-- [Cyberattack on Sistemi Informativi Highlights Risks to Europe's Digital Infrastructure](https://www.thaicert.or.th/en/news/2026/05/05/cyberattack-on-sistemi-informativi-highlights-risks-to-europes-digital-infrastructure.html) — ThaiCERT (2026-05-05)
 - [Chinese-linked Salt Typhoon suspected in Italy’s Sistemi Informativi breach](https://www.scmagazine.com/brief/data-security/chinese-linked-salt-typhoon-suspected-in-italys-sistemi-informativi-breach) — SC Magazine (2026-05-04)
-- [Salt Typhoon Suspected in Breach of IBM Italy Subsidiary Managing Public Infrastructure](https://www.cyberscoop.com/salt-typhoon-sistemi-informativi-breach-ibm-italy/) — CyberScoop (2026-05-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/ibm-italian-subsidiary-sistemi-informativi-hit-by-cyberattack-salt-typhoon-suspected/

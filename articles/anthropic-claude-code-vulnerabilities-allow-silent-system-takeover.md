@@ -61,10 +61,8 @@ Detecting exploitation of these vulnerabilities would require monitoring for ano
 **Tags:** AI Security, Claude Code, Anthropic, Check Point, RCE, API Security, DevSecOps, Vulnerability
 
 ## Sources
-- [Security Flaws in Anthropic's Claude Code Risk Stolen Data, System Takeover](https://thenextweb.com/news/security-flaws-in-anthropics-claude-code-risk-stolen-data-system-takeover) — The Next Web (2026-02-26)
 - [Claude Code Flaws Exposed Developer Devices to Silent Hacking](https://www.securityweek.com/claude-code-flaws-exposed-developer-devices-to-silent-hacking/) — SecurityWeek (2026-02-26)
 - [Malicious Repo Files Could Hijack Claude Code Sessions](https://www.cuinfosecurity.com/malicious-repo-files-could-hijack-claude-code-sessions-a-24443) — CUInfoSecurity (2026-02-26)
-- [RCE, API credential theft likely with now-patched Claude Code vulnerabilities](https://www.scmagazine.com/brief/rce-api-credential-theft-likely-with-now-patched-claude-code-vulnerabilities) — SC Magazine (2026-02-26)
 - [Daily Cybersecurity Roundup, February 27, 2026](https://www.cyware.com/news/daily-cybersecurity-roundup-february-27-2026-4b486f0d) — Cyware (2026-02-27)
 
 ---

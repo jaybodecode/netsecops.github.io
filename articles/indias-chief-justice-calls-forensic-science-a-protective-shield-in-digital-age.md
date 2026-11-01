@@ -53,8 +53,8 @@ For organizations operating in India, the key takeaway is the growing importance
 **Tags:** Digital Forensics, Legal, Judiciary, Cybercrime Law, Digital Evidence
 
 ## Sources
-- [Forensic Science key to justice in digital age: CJI Surya Kant](https://www.hindustantimes.com/india-news/forensic-science-key-to-justice-in-digital-age-cji-surya-kant-101709181559892.html) — Hindustan Times (2026-02-28)
-- [Decline of CASA due to structural shift in banking: Bank of India MD & CEO](https://timesofindia.indiatimes.com/business/india-business/decline-of-casa-due-to-structural-shift-in-banking-bank-of-india-md-ceo/articleshow/107055938.cms) — The Times of India (2026-02-28)
+- [Hindustan Times](https://www.hindustantimes.com/) — Hindustan Times (2026-02-28)
+- [The Times of India](https://timesofindia.indiatimes.com/) — The Times of India (2026-02-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/indias-chief-justice-calls-forensic-science-a-protective-shield-in-digital-age/

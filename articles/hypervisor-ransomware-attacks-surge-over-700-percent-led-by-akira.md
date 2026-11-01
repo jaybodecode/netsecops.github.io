@@ -86,7 +86,6 @@ This attack vector targets the very foundation of modern IT infrastructure, turn
 **Tags:** Ransomware, Akira, Hypervisor, VMware, ESXi, Huntress, Cyberattack
 
 ## Sources
-- [Researchers spot 700 percent increase in hypervisor ransomware attacks](https://www.theregister.com/2025/12/09/hypervisor_ransomware_increase/) — The Register (2025-12-09)
 - [Ransomware surge intensifies across industrial sectors, with manufacturing accounting for 72% of Q3 cases](https://industrialcyber.co/ransomware-2/ransomware-surge-intensifies-across-industrial-sectors-with-manufacturing-accounting-for-72-of-q3-cases/) — Industrial Cyber (2025-12-10)
 
 ---

@@ -55,7 +55,6 @@ This incident offers critical lessons for both infrastructure providers and thei
 
 ## Sources
 - [Cloudflare Outage Caused by React2Shell Mitigations](https://www.securityweek.com/cloudflare-outage-caused-by-react2shell-mitigations/) — SecurityWeek (2025-12-05)
-- [Cloudflare blames today's outage on React2Shell mitigations](https://www.bleepingcomputer.com/news/security/cloudflare-blames-todays-outage-on-react2shell-mitigations/) — BleepingComputer (2025-12-05)
 - [React Flaw Mitigation Leads to Cloudflare Outage](https://www.govinfosecurity.com/react-flaw-mitigation-leads-to-cloudflare-outage-a-27150) — GovInfoSecurity (2025-12-05)
 - [Cloudflare Outage Traced to Emergency React2Shell Patch Deployment](https://scripthome.com/2025/12/05/cloudflare-outage-traced-to-emergency-react2shell-patch-deployment/) — ScriptHome (2025-12-05)
 

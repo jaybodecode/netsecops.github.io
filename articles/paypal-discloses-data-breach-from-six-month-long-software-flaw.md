@@ -48,9 +48,7 @@ This incident provides key lessons for organizations developing and maintaining 
 **Tags:** PayPal, Data Breach, Software Bug, Vulnerability, PII, SSN, Fintech
 
 ## Sources
-- [PayPal discloses data breach that exposed user info for 6 months](https://www.bleepingcomputer.com/news/security/paypal-discloses-data-breach-that-exposed-user-info-for-6-months/) — BleepingComputer (2026-02-20)
 - [PayPal data breach: Here's what you need to know about cyber attack](https://www.cdotimes.com/paypal-data-breach-heres-what-you-need-to-know-about-cyber-attack/) — CDO Times (2026-02-21)
-- [PayPal Flaw Exposed Email Addresses, Social Security Numbers for 6 Months](https://www.infosecurity-magazine.com/news/paypal-flaw-exposed-email-addresses/) — Infosecurity Magazine (2026-02-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/paypal-discloses-data-breach-from-six-month-long-software-flaw/

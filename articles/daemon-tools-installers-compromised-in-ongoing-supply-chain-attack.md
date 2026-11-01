@@ -67,9 +67,7 @@ Security teams may want to hunt for the following patterns to identify potential
 **Tags:** DAEMON Tools, Supply Chain Attack, QUIC RAT, Kaspersky, Digital Signature, Trojan
 
 ## Sources
-- [DAEMON Tools software infected – supply chain attack ongoing since April 8, 2026](https://securelist.com/supply-chain-attack-via-daemon-tools/112630/) — Securelist (2026-05-05)
 - [Popular Daemon Tools utility exploited in supply chain attack](https://www.techzine.eu/online/120614/popular-daemon-tools-utility-exploited-in-supply-chain-attack/) — Techzine Global (2026-05-05)
-- [Information collector](https://securelist.com/supply-chain-attack-via-daemon-tools/112630/#information-collector) — Securelist (2026-05-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/daemon-tools-installers-compromised-in-ongoing-supply-chain-attack/

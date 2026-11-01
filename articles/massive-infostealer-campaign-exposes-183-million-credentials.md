@@ -61,10 +61,8 @@ Security teams should hunt for signs of infostealer activity. These are not expl
 **Tags:** credential stuffing, infostealer, password reuse, data leak, cybersecurity
 
 ## Sources
-- [2025 Data Leak: 183 Million Emails & Gmail Passwords Exposed](https://cerebra.sa/2025-data-leak-183-million-emails-gmail-passwords-exposed/) — Cerebra.sa (2025-10-28)
 - [Massive Data Breach Exposes 183 Million Email Credentials](https://www.gadgets360.com/internet/news/massive-data-breach-gmail-email-credentials-exposed-online-dark-web-hacking-forums-5768391) — Gadgets360 (2025-10-28)
 - [The Password Reuse Crisis Hits a New High: 183 Million Credentials Dumped from Malware Stealer Logs](https://www.cyware.com/news/the-password-reuse-crisis-hits-a-new-high-183-million-credentials-dumped-from-malware-stealer-logs-8c7a6e13/) — Cyware (2025-10-28)
-- [Gmail-Linked Credentials Exposed in Massive Breach](https://www.esecurityplanet.com/data-security/gmail-linked-credentials-exposed-in-massive-breach/) — eSecurity Planet (2025-10-28)
 - [Google denies reports of massive Gmail breach](https://www.scmagazine.com/brief/google-denies-reports-of-massive-gmail-breach) — SC Media (2025-10-28)
 
 ---

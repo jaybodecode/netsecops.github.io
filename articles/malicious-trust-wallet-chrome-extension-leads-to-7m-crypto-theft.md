@@ -42,7 +42,6 @@ Preventing similar supply chain attacks requires hardening the software developm
 
 ## Sources
 - [Trust Wallet Chrome Extension Breach Caused $7 Million Crypto Loss via Malicious Code](https://thehackernews.com/2025/12/trust-wallet-chrome-extension-bug.html) — The Hacker News (2025-12-26)
-- [TRUST WALLET ANNOUNCED THAT UNKNOWN HACKERS BREACHED ITS CHROME EXTENSION, DECRYPTING PASSWORDS, AND CYBERTHREAT ACTORS EXPLOITED A MONGODB VULNERABILITY TO EXTRACT SENSITIVE DATA](https://www.ctgroup.com/cy-insights/trust-wallet-announced-that-unknown-hackers-breached-its-chrome-extension-decrypting-passwords-and-cyberthreat-actors-exploited-a-mongodb-vulnerability-to-extract-sensitive-data) — CT Group (2026-01-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-trust-wallet-chrome-extension-leads-to-7m-crypto-theft/

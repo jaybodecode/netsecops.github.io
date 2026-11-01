@@ -55,7 +55,6 @@ The primary impact of this attack is reputational and psychological. The defacem
 
 ## Sources
 - [Multiple Kenyan Government Sites Temporarily Offline Following Cybersecurity Breach](https://techafric.com/multiple-kenyan-government-sites-temporarily-offline-following-cybersecurity-breach/) — TechAfrica News (2025-11-18)
-- [Kenyan Government Vows Action After Cyber-Attack](https://www.example.com/kenya-attack-source2) — Fictional Source 2 (2025-11-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/kenyan-government-websites-knocked-offline-in-defacement-attack/

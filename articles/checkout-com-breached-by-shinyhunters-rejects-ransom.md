@@ -61,11 +61,7 @@ To prevent similar breaches, organizations must focus on fundamental cybersecuri
 **Tags:** ShinyHunters, data breach, Checkout.com, cloud security, ransom, asset management
 
 ## Sources
-- [Checkout.com Hacked - ShinyHunters Breached Cloud Storage - Cyber Security News](https://www.hackread.com/checkout-com-hacked-shinyhunters-breached-cloud-storage/) — HackRead (2025-11-14)
-- [Checkout.com Breach: ShinyHunters Hack Cloud Storage, Ransom Demand Rejected](https://www.infosecurity-magazine.com/news/checkoutcom-breach-shinyhunters/) — Infosecurity Magazine (2025-11-14)
 - [Checkout.com Suffers Data Breach as ShinyHunters Attack Cloud Storage - GBHackers](https://gbhackers.com/checkout-com-suffers-data-breach/) — GBHackers (2025-11-14)
-- [They refused to pay the ransom demanded by the cybercrime group, saying they would donate it to security research instead. - GIGAZINE](https://gigazine.net/gsc_news/en/20251114-checkout-com-extortion/) — GIGAZINE (2025-11-14)
-- [Checkout.com Data Breach Exposes Old Merchant Files - The Cyber Express](https://thecyberexpress.com/checkout-com-data-breach-legacy-system/) — The Cyber Express (2025-11-14)
 - [Checkout Ltd refuses to pay, donates ransom to research instead - Computing UK](https://www.computing.co.uk/news/4217154/checkout-refuses-pay-donates-ransom-research) — Computing UK (2025-11-14)
 
 ---

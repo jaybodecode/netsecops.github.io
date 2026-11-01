@@ -41,8 +41,6 @@ Based on the report's findings, state and local government IT leaders should con
 **Tags:** AI, Budget, CISO, Cybersecurity Leadership, Deloitte, Government, NASCIO, Public Sector
 
 ## Sources
-- [State cyber officials are losing confidence as challenges mount](https://statescoop.com/state-ciso-confidence-nascio-deloitte-survey-2026/) (2026-04-27)
-- [State CISOs Report Lower Confidence Across the Public Sector Cyber Ecosystem, 2026 NASCIO-Deloitte Survey Finds](https://www.prnewswire.com/news-releases/state-cisos-report-lower-confidence-across-the-public-sector-cyber-ecosystem-2026-nascio-deloitte-survey-finds-302127111.html) (2026-04-27)
 - [A Tale of Two States: The 2026 Cybersecurity Paradox](https://securityboulevard.com/2026/05/a-tale-of-two-states-the-2026-cybersecurity-paradox/) (2026-05-03)
 
 ---

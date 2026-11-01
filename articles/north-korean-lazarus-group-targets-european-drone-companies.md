@@ -48,8 +48,6 @@ No specific Indicators of Compromise (IOCs) have been publicly released in the i
 **Tags:** Lazarus Group, Operation DreamJob, APT, Cyber-espionage, Defense Industry
 
 ## Sources
-- [Lazarus targets European defense firms in UAV-themed Operation DreamJob](https://securityaffairs.com/169970/apt/lazarus-operation-dreamjob-european-defense-firms.html) — Security Affairs (2025-10-23)
-- [North Korean Hackers Deploy “Drone” Malware in Targeting of European UAV Manufacturers](https://thecyberexpress.com/north-korean-hackers-drone-malware/) — The Cyber Express (2025-10-24)
 - [SecurityWeek: Cybersecurity News, Insights and Analysis](https://www.securityweek.com/) — SecurityWeek (2025-10-24)
 
 ---

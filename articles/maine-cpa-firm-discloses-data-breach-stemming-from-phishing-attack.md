@@ -49,7 +49,7 @@ This incident highlights the critical need for basic cybersecurity hygiene, espe
 **Tags:** data breach, phishing, accounting firm, CPA, PII, tax information, SMB
 
 ## Sources
-- [Edwards, Faust & Smith Data Breach Investigation](https://www.almeidalawgroup.com/post/edwards-faust-smith-data-breach-investigation) — Almeida Law Group (2026-05-28)
+- [Almeida Law Group](https://www.almeidalawgroup.com/) — Almeida Law Group (2026-05-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/maine-cpa-firm-discloses-data-breach-stemming-from-phishing-attack/

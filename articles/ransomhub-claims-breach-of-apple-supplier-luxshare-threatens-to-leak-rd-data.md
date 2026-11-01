@@ -69,7 +69,6 @@ Detecting a RansomHub attack involves looking for common ransomware TTPs:
 
 ## Sources
 - [RansomHub claims alleged breach of Apple partner Luxshare](https://www.helpnetsecurity.com/2026/01/21/luxshare-data-breach-apple-ransomhub/) — Help Net Security (2026-01-21)
-- [RansomHub Claims Breach on Apple Partner Luxshare, Stealing Confidential Data on Nvidia and Tesla](https://www.bitdefender.com/blog/hotforsecurity/ransomhub-claims-breach-on-apple-partner-luxshare-stealing-confidential-data-on-nvidia-and-tesla/) — Bitdefender (2026-01-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomhub-claims-breach-of-apple-supplier-luxshare-threatens-to-leak-rd-data/

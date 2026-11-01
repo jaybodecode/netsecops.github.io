@@ -66,9 +66,7 @@ Mitigation must address both technical and human elements of the supply chain.
 **Tags:** Data Breach, Supply Chain Attack, Scattered Lapsus$ Hunters, Salesforce, Qantas, Social Engineering, PII, Dark Web
 
 ## Sources
-- [Qantas confirms customer data released following cyber attack](https://www.xinhuanet.com/english/20251012/0359aa925828469c8a99264c78b4d1b7/c.html) — Xinhua Net (2025-10-12)
 - [Qantas confirms customer data released following cyber attack; more than five million customers affected](https://www.thestar.com.my/aseanplus/aseanplus-news/2025/10/12/qantas-confirms-customer-data-released-following-cyber-attack-more-than-five-million-customers-affected) — The Star (2025-10-12)
-- [Qantas hack: Data from 5.7 million customers posted online after cyber attack](https://www.nzherald.co.nz/world/qantas-hack-data-from-57-million-customers-posted-online-after-cyber-attack/K4S7F4GQ2JCYZPK5W2Q42F3JRU/) — The New Zealand Herald (2025-10-12)
 - ['Second wave' of scams warning to Qantas flyers](https://indaily.com.au/news/2025/10/12/second-wave-of-scams-warning-to-qantas-flyers/) — InDaily (2025-10-12)
 
 ---

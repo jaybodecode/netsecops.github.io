@@ -62,7 +62,6 @@ Security teams should hunt for anomalous requests to the Oracle Configurator UI.
 ## Sources
 - [Oracle E-Business Suite RCE Vulnerability Exposes Sensitive Data to Hackers Without Authentication](https://cybersecuritynews.com/oracle-e-business-suite-rce/) — Cybersecurity News (2025-10-11)
 - [Oracle E-Business Suite CVE-2025-61884: Brief Summary of Unauthenticated Data Exposure in Configurator Runtime UI](https://www.zeropath.io/blog/oracle-e-business-suite-cve-2025-61884-brief-summary-of-unauthenticated-data-exposure-in-configurator-runtime-ui) — ZeroPath (2025-10-12)
-- [Oracle EBS CVE-2025-61884 Allows Unauthenticated Access](https://ampcus.com/cyber/oracle-ebs-cve-2025-61884-allows-unauthenticated-access/) — Ampcus Cyber (2025-10-12)
 - [CVE-2025-61884: Oracle Releases Emergency Patch for Information Disclosure Flaw](https://www.arcticwolf.com/resources/blog/cve-2025-61884/) — Arctic Wolf (2025-10-11)
 
 ---

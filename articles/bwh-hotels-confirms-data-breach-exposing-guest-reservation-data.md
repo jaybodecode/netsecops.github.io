@@ -50,7 +50,7 @@ To detect similar intrusions, security teams in the hospitality industry should 
 **Tags:** Data Breach, Hospitality, BWH Hotels, Best Western, Phishing, Dwell Time
 
 ## Sources
-- [The Week in Breach News: May 20, 2026](https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/) — Kaseya (2026-05-20)
+- [Kaseya](https://www.kaseya.com/) — Kaseya (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/bwh-hotels-confirms-data-breach-exposing-guest-reservation-data/

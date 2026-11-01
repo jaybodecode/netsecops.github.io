@@ -72,7 +72,6 @@ Detection for this type of attack falls primarily on the service provider (Robin
 ## Sources
 - [Robinhood account creation flaw abused to send phishing emails](https://www.bleepingcomputer.com/news/security/robinhood-account-creation-flaw-abused-to-send-phishing-emails/) — BleepingComputer (2026-04-27)
 - [Robinhood Account Creation Flaw Abused to Send Phishing Emails](https://securityboulevard.com/2026/04/robinhood-account-creation-flaw-abused-to-send-phishing-emails/) — Security Boulevard (2026-04-29)
-- [Robinhood warns: Some customers have received fake emails due to abuse of the account creation process.](https://www.panewslab.com/zh/news/7063469.html) — PANews (2026-04-27)
 - [Robinhood Phishing Scam Explained: How Legit Emails Can Still Hack You](https://www.youtube.com/watch?v=xxxxxxxx) — YouTube (2026-04-30)
 
 ---

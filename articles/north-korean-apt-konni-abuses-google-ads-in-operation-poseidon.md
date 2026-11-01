@@ -48,7 +48,6 @@ No specific IOCs (domains, hashes) were provided in the source articles.
 **Tags:** APT, North Korea, Konni, EndRAT, Google Ads, spear-phishing, malvertising
 
 ## Sources
-- [North Korea-linked hackers weaponize Google ads in malware campaign](https://cybernews.com/news/north-korea-google-ads-malware/) — Cybernews (2026-01-19)
 - [Malicious Chrome Extension Crashes Browser in ClickFix Variant 'CrashFix'](https://www.securityweek.com/malicious-chrome-extension-crashes-browser-in-clickfix-variant-crashfix/) — SecurityWeek (2026-01-19)
 
 ---

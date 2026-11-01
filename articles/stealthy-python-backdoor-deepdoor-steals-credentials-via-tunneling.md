@@ -70,7 +70,6 @@ A successful **DEEP#DOOR** infection can have severe consequences:
 
 ## Sources
 - [New Python Backdoor Uses Tunneling Service to Steal Browser and Cloud Credentials](https://thehackernews.com/2026/04/new-python-backdoor-uses-tunneling.html) — The Hacker News (2026-04-30)
-- [April 2026 Cybersecurity News](https://www.cimetrics.com/blog-posts/2026/04/29/april-2026-cybersecurity-news) — Cimetrics (2026-04-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/stealthy-python-backdoor-deepdoor-steals-credentials-via-tunneling/

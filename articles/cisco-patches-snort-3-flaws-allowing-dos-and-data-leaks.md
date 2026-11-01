@@ -70,11 +70,8 @@ Cisco has stated there are **no workarounds** for these vulnerabilities. Patchin
 **Tags:** Cisco, Snort, Vulnerability, Patch Management, Denial of Service, Information Disclosure, DCE/RPC
 
 ## Sources
-- [Cisco Snort 3 Security Flaws Threaten Network Inspection](https://www.esecurityplanet.com/networks/cisco-snort-3-vulnerabilities/) — eSecurityPlanet (2026-01-08)
 - [Cisco Snort 3 Detection Engine Vulnerability Exposes Sensitive Data](https://www.cyberpress.com/cisco-snort-3-detection-engine-vulnerability-exposes-sensitive-data-cve-2026-20026-cve-2026-20027/) — Cyberpress (2026-01-07)
-- [Cisco Snort 3 Vulnerability Leading to Sensitive Data Disclosure](https://gbhackers.com/cisco-snort-3-vulnerability/) — GBHackers on Security (2026-01-08)
 - [Multiple Cisco Products Snort 3 Distributed Computing Environment/Remote Procedure Call Vulnerabilities](https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-snort3-dcerpc-vulns-J9HNF4tH) — Cisco (2026-01-07)
-- [CISCO ISE Security Vulnerability Patched Post Public PoC Exploit Release](https://www.techrepublic.com/article/cisco-ise-vulnerability-patched/) — TechRepublic (2026-01-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisco-patches-snort-3-flaws-allowing-dos-and-data-leaks/

@@ -55,7 +55,6 @@ General observables for detecting ransomware activity include:
 **Tags:** DevMan, Ransomware, Financial Services, Data Leak, Cyber Extortion, Double Extortion
 
 ## Sources
-- [DevMan Ransomware Attack on Sharinc Inc. - DeXpose](https://www.dexpose.io/post/devman-ransomware-attack-on-sharinc-inc) — DeXpose (2025-12-28)
 - [DevMan Ransomware Targets Sharinc Inc.](https://www.example-threat-intel-2.com/devman-sharinc-attack) — Example Threat Intel 2 (2025-12-28)
 
 ---

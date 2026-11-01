@@ -45,7 +45,6 @@ This trend is supported by recent data. A September 2025 survey by the Chartered
 **Tags:** NCSC, UK, Supply Chain Attack, Cybersecurity, Threat Intelligence, Vendor Risk Management
 
 ## Sources
-- [UK cyber watchdog sounds preparation warning after sharp rise in significant attacks](https://www.pinsentmasons.com/out-law/news/uk-cyber-watchdog-sounds-preparation-warning-after-sharp-rise-in-significant-attacks) — Pinsent Masons (2025-10-17)
 - [Nearly a third of bosses report increase in cyber-attacks on their supply chains](https://www.theguardian.com/business/2025/oct/06/nearly-a-third-of-bosses-report-increase-in-cyber-attacks-on-their-supply-chains) — The Guardian (2025-10-18)
 
 ---

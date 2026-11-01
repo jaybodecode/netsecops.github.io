@@ -48,9 +48,7 @@ PDFSIDER provides a stealthy and persistent foothold into a target network. Its 
 **Tags:** backdoor, DLL side-loading, EDR evasion, Qilin, PDFSIDER, Resecurity
 
 ## Sources
-- [Researchers Uncover PDFSIDER Malware Built for Long-Term, Covert System Access](https://www.infosecurity-magazine.com/news/researchers-uncover-pdfsider/) — Infosecurity Magazine (2026-01-19)
 - [PDFSIDER Malware - Exploitation of DLL Side-Loading for AV and EDR Evasion](https://www.resecurity.com/blog/article/pdfsider-malware-exploitation-of-dll-side-loading-for-av-and-edr-evasion) — Resecurity (2026-01-18)
-- [Weekly Recap: Fortinet Exploits, RedLine Clipjack, NTLM Crack, Copilot Attack & More](https://thehackernews.com/2026/01/weekly-recap-fortinet-exploits.html) — The Hacker News (2026-01-19)
 - [New Windows backdoor emerges in ransomware attack](https://www.techzine.eu/news/security/123398/new-windows-backdoor-emerges-in-ransomware-attack/) — Techzine Global (2026-01-20)
 - [PDFSIDER Malware Actively Used by Threat Actors to Bypass Antivirus and EDR Defenses](https://www.gbhackers.com/pdfsider-malware/) — GBHackers on Security (2026-01-19)
 

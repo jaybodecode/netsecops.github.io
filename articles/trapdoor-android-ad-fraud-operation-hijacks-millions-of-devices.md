@@ -71,8 +71,6 @@ On a mobile device, security teams or users can look for the following:
 - [Weekly Cyber Threat Bulletin: 22 May 2026](https://medium.com/@marcelle.lee/weekly-cyber-threat-bulletin-22-may-2026-62118ffb4d24) — Medium (2026-05-23)
 - [Trapdoor Android Ad Fraud Operation Uses 455 Malicious Apps to Generate Fake Clicks](https://www.cybersecuritynews.com/trapdoor-android-ad-fraud/) — Cybersecurity News (2026-05-20)
 - [Trapdoor Android Ad Fraud Scheme Hit 659 Million Daily Bid Requests Using 455 Apps](https://thehackernews.com/2026/05/trapdoor-android-ad-fraud-scheme-hit.html) — The Hacker News (2026-05-19)
-- [Trapdoor Infected Millions of Android Devices Through Hundreds of Apps on Google Play](https://www.hackread.com/trapdoor-android-malware-apps-google-play/) — HackRead (2026-05-20)
-- [455 Malicious Android Apps Linked To Trapdoor Fake-Click Ad Fraud Operation](https://latesthackingnews.com/2026/05/20/455-malicious-android-apps-linked-to-trapdoor-fake-click-ad-fraud-operation/) — Latest Hacking News (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/trapdoor-android-ad-fraud-operation-hijacks-millions-of-devices/

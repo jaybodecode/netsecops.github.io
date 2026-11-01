@@ -42,7 +42,6 @@ Organizations working with AI should take the following steps:
 
 ## Sources
 - [NIST Publishes Preliminary Draft of Cybersecurity Framework Profile for Artificial Intelligence for Public Comment](https://www.cov.com/en/global-policy-watch/2026/01/nist-publishes-preliminary-draft-of-cybersecurity-framework-profile-for-artificial-intelligence-for-public-comment) — Covington & Burling (2026-01-06)
-- [NIST Drafts Guidance for Managing Cybersecurity Risks of AI Systems](https://www.nist.gov/news-events/news/2026/01/nist-drafts-guidance-managing-cybersecurity-risks-ai-systems) — NIST (2026-01-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/nist-releases-draft-cybersecurity-framework-profile-for-artificial-intelligence/

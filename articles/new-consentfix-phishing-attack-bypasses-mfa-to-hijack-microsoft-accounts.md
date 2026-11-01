@@ -62,10 +62,7 @@ Detecting **ConsentFix** requires focusing on identity and browser-level events:
 **Tags:** ConsentFix, Phishing, OAuth, MFA Bypass, Account Takeover, Azure CLI, Microsoft Entra ID, Push Security, Social Engineering
 
 ## Sources
-- [ConsentFix: Browser-native ClickFix hijacks OAuth grants](https://www.pushsecurity.com/blog/consentfix-browser-native-clickfix-hijacks-oauth-grants) — Push Security (2025-12-11)
 - [New ConsentFix attack hijacks Microsoft accounts via Azure CLI](https://www.bleepingcomputer.com/news/security/new-consentfix-attack-hijacks-microsoft-accounts-via-azure-cli/) — BleepingComputer (2025-12-11)
-- [Azure CLI Trust Abused in ConsentFix Account Takeovers](https://www.esecurityplanet.com/threats/azure-cli-abuse-consentfix-account-takeovers/) — eSecurity Planet (2025-12-16)
-- [Meet ConsentFix, a new twist on the ClickFix phishing attack](https://www.csoonline.com/article/2099303/meet-consentfix-a-new-twist-on-the-clickfix-phishing-attack.html) — CSO Online (2025-12-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-consentfix-phishing-attack-bypasses-mfa-to-hijack-microsoft-accounts/

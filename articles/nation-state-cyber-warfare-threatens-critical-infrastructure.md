@@ -51,7 +51,6 @@ Detecting these stealthy actors requires a proactive, threat-hunting-focused app
 ## Sources
 - [Cyber Insights 2026: Cyberwar and Rising Nation State Threats](https://www.securityweek.com/cyber-insights-2026-cyberwar-and-rising-nation-state-threats/) — SecurityWeek (2026-02-12)
 - [The New Cyber Battlefield: Nation-State Cyber Attacks Every Business Must Prepare for in 2026](https://www.redsen.com.au/the-new-cyber-battlefield-nation-state-cyber-attacks-every-business-must-prepare-for-in-2026/) — redsen.com.au (2026-02-12)
-- [Mossad/Not-Mossad: Preparing for Nation-State Cyber Threats](https://redmondmag.com/articles/2026/03/17/mossad-not-mossad.aspx) — Redmond Magazine (2026-02-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/nation-state-cyber-warfare-threatens-critical-infrastructure/

@@ -54,7 +54,6 @@ Detecting groups like **[Qilin](https://malpedia.caad.fkie.fraunhofer.de/actor/q
 
 ## Sources
 - [Bank3 Data Breach Exposes Clients' SSNs and Financial Information](https://claimdepot.org/data-breach/bank3-data-breach-exposes-clients-ssns-and-financial-information/) (2026-04-16)
-- [Qilin Ransomware - Threat Actor](https://www.fortinet.com/fortiguard/threat-intelligence/threat-research-briefs/qilin-ransomware) — Fortinet (2026-04-15)
 - [The State Of Ransomware 2026](https://www.blackfog.com/the-state-of-ransomware-2026/) — BlackFog (2026-04-16)
 
 ---

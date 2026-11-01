@@ -319,10 +319,7 @@ Defending against a sophisticated actor like **TGR-STA-1030** requires a mature 
 
 ## Sources
 - [Cyberspy Group Hacked Governments and Critical Infrastructure in 37 Countries](https://www.securityweek.com/cyberspy-group-hacked-governments-and-critical-infrastructure-in-37-countries/) — SecurityWeek (2026-02-05)
-- ['Shadow Campaign': Advanced Chinese APT Compromises 70+ Orgs Worldwide](https://thehackernews.com/2026/02/shadow-campaign-apt.html) — The Hacker News (2026-02-05)
-- [New APT group breached gov and critical infrastructure orgs in 37 countries](https://www.csoonline.com/article/1311090/new-apt-group-breached-gov-and-critical-infrastructure-orgs-in-37-countries.html) — csoonline.com (2026-02-05)
 - [Unit 42 identifies TGR-STA-1030 cyber espionage group targeting critical infrastructure, government networks](https://industrialcyber.co/government/unit-42-identifies-tgr-sta-1030-cyber-espionage-group-targeting-critical-infrastructure-government-networks/) — industrialcyber.co (2026-02-06)
-- [Asian government's espionage campaign breached critical infrastructure in 37 countries](https://www.recordedfuture.com/news/asian-governments-espionage-campaign-breached-critical-infrastructure-in-37-countries) — recordedfuture.com (2026-02-05)
 - [The Shadow Campaigns: Uncovering Global Espionage](https://unit42.paloaltonetworks.com/shadow-campaigns-uncovering-global-espionage/) — Unit 42 (2026-02-05)
 
 ---

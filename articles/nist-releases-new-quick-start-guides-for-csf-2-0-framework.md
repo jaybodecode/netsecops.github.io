@@ -49,7 +49,6 @@ Organizations should use these new resources as follows:
 ## Sources
 - [NIST expands CSF 2.0 toolkit with quick-start guides aligning cyber risk, risk management, workforce strategy](https://industrialcyber.co/management-strategy/nist-expands-csf-2-0-toolkit-with-quick-start-guides-aligning-cyber-risk-risk-management-workforce-strategy/) — Industrial Cyber (2026-03-25)
 - [NIST Releases Two New CSF 2.0 Quick-Start Guides](https://csrc.nist.gov/news/2026/nist-releases-two-new-csf-2-0-quick-start-guides) — NIST (2026-03-23)
-- [NIST Releases Two New CSF 2.0 Quick-Start Guides](https://content.govdelivery.com/accounts/USNIST/bulletins/3d7c35f) — NIST (2026-03-23)
 - [NIST Releases Quick-Start Guide Linking Cybersecurity, Enterprise Risk, and Workforce Management](https://gbhackers.com/nist-releases-quick-start-guide/) — GBHackers (2026-03-24)
 
 ---

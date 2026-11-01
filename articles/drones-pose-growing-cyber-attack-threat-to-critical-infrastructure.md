@@ -68,8 +68,8 @@ Detecting this threat requires a combination of physical and cybersecurity monit
 **Tags:** Drone, Cyberattack, Critical Infrastructure, Cisco, Physical Security, Wireless Security, WIDS
 
 ## Sources
-- [New research warns drones could launch devastating cyber attacks on critical infrastructure](https://capacitymedia.com/article/2d8t97g4y4qf8k0k0v8s6/news/new-research-warns-drones-could-launch-devastating-cyber-attacks-on-critical-infrastructure) — Capacity Media (2026-01-21)
-- [New research warns drones could launch devastating cyber attacks on critical infrastructure](https://www.canberra.edu.au/about-uc/media/media-releases/2026/january/new-research-warns-drones-could-launch-devastating-cyber-attacks-on-critical-infrastructure) — University of Canberra (2026-01-21)
+- [Capacity Media](https://capacitymedia.com/) — Capacity Media (2026-01-21)
+- [University of Canberra](https://www.canberra.edu.au/) — University of Canberra (2026-01-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/drones-pose-growing-cyber-attack-threat-to-critical-infrastructure/

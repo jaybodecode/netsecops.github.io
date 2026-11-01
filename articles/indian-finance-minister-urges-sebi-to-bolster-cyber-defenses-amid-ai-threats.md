@@ -67,10 +67,7 @@ Financial institutions in India should take the following tactical steps:
 **Tags:** India, SEBI, AI, Deepfake, Cybersecurity Policy, Finance, Regulatory
 
 ## Sources
-- [Single successful cyberattack could disrupt markets at national scale, shake public confidence: FM](https://www.thehindu.com/business/markets/single-successful-cyberattack-could-disrupt-markets-at-national-scale-shake-public-confidence-fm/article68108169.ece) — The Hindu (2026-04-25)
 - [FM Sitharaman urges Sebi, regulated entities to stay vigilant on cybersecurity](https://www.fortuneindia.com/amp/story/fm-sitharaman-urges-sebi-regulated-entities-to-stay-vigilant-on-cybersecurity/117260) — Fortune India (2026-04-25)
-- [Nirmala Sitharaman Lauds Sebi Success, Launches 'Jagrook' Campaign to Combat Cybersecurity Risks](https://www.outlookmoney.com/investing/nirmala-sitharaman-lauds-sebi-success-launches-jagrook-campaign-to-combat-cybersecurity-risks-9343) — Outlook Money (2026-04-25)
-- [SEBI Launches Mission Jagrook and Strengthens Cyber Resilience Framework](https://www.thepolicyedge.com/policy-bites/sebi-launches-mission-jagrook-and-strengthens-cyber-resilience-framework) — The Policy Edge (2026-04-25)
 - [Nirmala Sitharaman urges SEBI to strengthen cybersecurity](https://www.financialexpress.com/business/investing-abroad-nirmala-sitharaman-urges-sebi-to-strengthen-cybersecurity-3467615/) — Financial Express (2026-04-25)
 
 ---

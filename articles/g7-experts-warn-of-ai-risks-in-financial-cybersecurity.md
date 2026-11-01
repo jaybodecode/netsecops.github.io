@@ -51,8 +51,8 @@ As the statement is non-binding, there are no direct penalties for non-complianc
 **Tags:** Artificial Intelligence, AI Security, G7, Financial Sector, Regulation, Policy
 
 ## Sources
-- [Financial Regulation Weekly Bulletin - 9 October 2025](https://www.slaughterandmay.com/perspectives-and-events/events/financial-regulation-weekly-bulletin-9-october-2025/) — Slaughter and May (2025-10-09)
-- [G7 Cyber Expert Group statement on Artificial Intelligence and Cybersecurity: September 2025](https://www.gov.uk/government/publications/g7-cyber-expert-group-statement-on-artificial-intelligence-and-cybersecurity-september-2025) — GOV.UK (2025-10-06)
+- [Slaughter and May](https://www.slaughterandmay.com/) — Slaughter and May (2025-10-09)
+- [GOV.UK](https://www.gov.uk/) — GOV.UK (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/g7-experts-warn-of-ai-risks-in-financial-cybersecurity/

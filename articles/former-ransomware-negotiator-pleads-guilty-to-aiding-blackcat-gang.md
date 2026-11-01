@@ -62,7 +62,6 @@ Detecting this type of insider threat is extremely difficult and relies more on 
 **Tags:** ALPHV, BlackCat, Cybercrime, DOJ, Insider Threat, Ransomware
 
 ## Sources
-- [Former Ransomware Negotiator Pleads Guilty to Working For BlackCat Cyber Gang](https://www.infosecurity-magazine.com/news/former-ransomware-negotiator-guilty/) (2026-04-22)
 - [Ransomware negotiator admits role in attacks he was hired to resolve](https://www.helpnetsecurity.com/2026/04/21/ransomware-negotiator-blackcat/) (2026-04-21)
 
 ---

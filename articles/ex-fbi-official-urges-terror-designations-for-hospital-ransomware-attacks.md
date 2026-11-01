@@ -53,7 +53,6 @@ For healthcare organizations, this proposal reinforces the critical importance o
 
 ## Sources
 - [Former FBI official proposes terror designations for ransomware hackers targeting hospitals](https://www.nextgov.com/cybersecurity/2026/04/former-fbi-official-proposes-terror-designations-ransomware-hackers-targeting-hospitals/395940/) — Nextgov (2026-04-21)
-- [How the Kremlin provides a safe harbor for ransomware](https://www.hindustantimes.com/world-news/how-the-kremlin-provides-a-safe-harbor-for-ransomware-101618585145719.html) — Hindustan Times (2021-04-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/ex-fbi-official-urges-terror-designations-for-hospital-ransomware-attacks/

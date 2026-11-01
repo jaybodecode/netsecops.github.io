@@ -33,7 +33,6 @@ The company's entry into the EMEA market will increase competition among MDR pro
 **Tags:** AI, MDR, cybersecurity industry, funding, EMEA, Tenex
 
 ## Sources
-- [Sarasota cybersecurity company to open office in Europe](https://www.businessobserverfl.com/news/2025/dec/02/sarasota-cybersecurity-company-to-open-office-in-europe/) — Business Observer (2025-12-02)
 - [DTCP Growth Backs TENEX.AI's EMEA Expansion With Additional Series A Funding](https://www.dtcp.com/news/dtcp-growth-backs-tenex-ais-emea-expansion-with-additional-series-a-funding) — DTCP (2025-12-02)
 
 ---

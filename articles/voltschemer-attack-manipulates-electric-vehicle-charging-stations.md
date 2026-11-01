@@ -42,7 +42,6 @@ The potential impact of **VoltSchemer** is multi-layered:
 
 ## Sources
 - [UTSA researchers reveal ‘VoltSchemer’ attack on electric vehicle charging](https://www.utsa.edu/today/2026/02/story/voltschemer-ev-charging-attack.html) — UTSA Today (2026-02-23)
-- [“VoltSchemer” attack can remotely disrupt fast-charging EVs](https://arstechnica.com/cars/2026/02/new-voltschemer-attack-can-disrupt-ev-fast-charging/) — Ars Technica (2026-02-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/voltschemer-attack-manipulates-electric-vehicle-charging-stations/

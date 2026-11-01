@@ -54,17 +54,9 @@ To detect similar attacks, organizations should monitor for:
 
 ## Sources
 - [Gym operator Basic-fit data breach exposes details of a million gym members](https://www.reuters.com/technology/cybersecurity/gym-operator-basic-fit-data-breach-exposes-details-million-gym-members-2026-04-13/) (2026-04-13)
-- [Basic-Fit hit by hack affecting members across multiple countries, including 200,000 in the Netherlands](https://thenextweb.com/news/basic-fit-hit-by-hack-affecting-members-across-multiple-countries) (2026-04-13)
-- [Basic-Fit Data Breach Exposes Millions of Users Across Multiple Countries](https://www.indiatimes.com/technology/news/basic-fit-data-breach-exposes-millions-of-users-across-multiple-countries-630006.html) (2026-04-13)
-- [Basic-Fit Suffers Data Breach Affecting Millions Across Multiple Nations](https://gbhackers.com/basic-fit-data-breach/) (2026-04-13)
-- [One of Europe's biggest Gym chain Basic-Fit hacked, data of lakhs of members leaked: What members need to do urgently](https://timesofindia.indiatimes.com/gadgets-news/one-of-europes-biggest-gym-chain-basic-fit-hacked-data-of-lakhs-of-members-leaked-what-members-need-to-do-urgently/articleshow/109269557.cms) (2026-04-13)
 - [Basic-Fit hit by major hack, much customer data leaked](https://www.newsbrainport.com/2026/04/13/basic-fit-hit-by-major-hack-much-customer-data-leaked/) (2026-04-13)
-- [Hackers gained access to customer data from both Basic-Fit and Booking.com](https://belganewsagency.eu/hackers-gained-access-to-customer-data-from-both-basic-fit-and-booking-com) (2026-04-13)
-- [Gym giant Basic-Fit confirms data on a million members stolen in cyberattack](https://www.theregister.com/2026/04/13/basicfit_data_breach_1m/) (2026-04-13)
 - [Europe's Largest Gym Chain Says Data Breach Impacts 1 Million Members](https://www.securityweek.com/europes-largest-gym-chain-says-data-breach-impacts-1-million-members/) (2026-04-14)
 - [Basic-Fit hack compromises data of up to 1 million members](https://www.helpnetsecurity.com/2026/04/14/basic-fit-data-breach/) (2026-04-14)
-- [Basic-Fit breach exposes bank details of 1 million members](https://www.cybernews.com/news/basic-fit-gym-data-breach-1-million-members/) (2026-04-14)
-- [Hackers gained access to customer data from both Basic-Fit and Booking.com](https://belganewsagency.eu/hackers-gained-access-to-customer-data-from-both-basic-fit-and-booking-com) (2026-04-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/basic-fit-data-breach-exposes-member-personal-and-financial-details/

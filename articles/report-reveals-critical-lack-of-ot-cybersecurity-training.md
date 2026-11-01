@@ -50,7 +50,6 @@ By investing in tailored and continuous OT security training, critical infrastru
 
 ## Sources
 - [Secolve report finds OT cybersecurity training falling short across critical infrastructure](https://www.industrialcybersecuritypulse.com/threats-vulnerabilities/secolve-report-finds-ot-cybersecurity-training-falling-short-across-critical-infrastructure) — Industrial Cybersecurity Pulse (2025-12-11)
-- [Secolve Report: The State of OT Cybersecurity Training in Critical Infrastructure](https://secolve.com/report-ot-cybersecurity-training-in-critical-infrastructure/) — Secolve (2025-12-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/report-reveals-critical-lack-of-ot-cybersecurity-training/

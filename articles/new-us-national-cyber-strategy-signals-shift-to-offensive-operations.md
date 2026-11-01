@@ -40,7 +40,6 @@ The strategy was announced on February 12, 2026. Implementation will be an ongoi
 
 ## Sources
 - [President Trump Issues a “Cyber Strategy for America” and an Executive Order on Combating Cyber-Enabled Crime](https://www.wilsonsonsini.com/en/insights/president-trump-issues-a-cyber-strategy-for-america-and-an-executive-order-on-combating-cyber-enabled-crime.html) — Wilson Sonsini (2026-02-13)
-- [White House Unveils New Cyber Strategy to Reduce Regulation and Go On the Offense Against Cybercriminals](https://www.fisherphillips.com/news-and-insights/white-house-unveils-new-cyber-strategy-to-reduce-regulation-and-go-on-the-offense-against-cybercriminals.html) — Fisher Phillips (2026-02-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-us-national-cyber-strategy-signals-shift-to-offensive-operations/

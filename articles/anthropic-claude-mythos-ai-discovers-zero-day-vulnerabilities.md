@@ -79,10 +79,8 @@ The existence of tools like Claude Mythos makes proactive and rapid security mea
 
 ## Sources
 - [Anthropic's Claude Mythos Finds Thousands of Zero-Day Flaws Across Major Systems](https://thehackernews.com/2026/04/anthropics-claude-mythos-finds.html) — The Hacker News (2026-04-08)
-- [Anthropic Glasswing: AI Vulnerability Detection Has Crossed a Threshold](https://www.the-sequence.com/p/anthropic-glasswing-ai-vulnerability) — The Sequence (2026-04-08)
 - [Anthropic Opens New AI Cybersecurity Model to Big Tech Firms Under Project Glasswing](https://www.cbronline.com/news/anthropic-project-glasswing) — CBR Online (2026-04-08)
 - [Anthropic's Project Glasswing May Not Be Enough to Prevent Model Abuse - AI Business](https://aibusinesstopics.com/posts/anthropics-project-glasswing-may-not-be-enough-to-prevent-model-abuse) — AI Business Topics (2026-04-08)
-- [Anthropic's new AI model finds and exploits zero-days across every major OS and browser](https://www.pcworld.com/article/2288339/anthropics-new-ai-model-finds-and-exploits-zero-days-across-every-major-os-and-browser.html) — PCWorld (2026-04-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/anthropic-claude-mythos-ai-discovers-zero-day-vulnerabilities/

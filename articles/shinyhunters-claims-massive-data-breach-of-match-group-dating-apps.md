@@ -62,7 +62,6 @@ Since this is a claimed breach of a third party, internal detection observables 
 **Tags:** ShinyHunters, Match Group, data breach, Hinge, OkCupid, supply chain attack, AppsFlyer
 
 ## Sources
-- [Match Group Suffers Data Breach of 10 Million Records](https://globaldatinginsights.com/news/match-group-suffers-data-breach-of-10-million-records/) — Global Dating Insights (2026-01-28)
 - [NEWS ROUNDUP - 28th January 2026](https://www.digitalforensicsmagazine.com/index.php?option=com_content&view=article&id=2026-01-28-news-roundup&catid=16&Itemid=121) — Digital Forensics Magazine (2026-01-28)
 
 ---

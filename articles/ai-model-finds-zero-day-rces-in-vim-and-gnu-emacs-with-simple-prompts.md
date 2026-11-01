@@ -60,10 +60,10 @@ For the specific Vim vulnerability, detection is now a matter of version checkin
 **Tags:** AI, Vulnerability, Zero-Day, Vim, Emacs, RCE, Anthropic, CVE-2026-34714
 
 ## Sources
-- [Vim and GNU Emacs: Claude Code helpfully found zero-day exploits for both](https://www.csoonline.com/article/2099303/vim-and-gnu-emacs-claude-code-helpfully-found-zero-day-exploits-for-both.html) — CSO Online (2026-04-06)
-- [AI Finds Zero-Days in Vim, Emacs, Sparks Debate](https://www.securityweek.com/ai-finds-zero-days-in-vim-emacs-sparks-debate/) — SecurityWeek (2026-04-07)
-- [Researcher uses AI to find RCE zero-days in Vim and Emacs](https://www.bleepingcomputer.com/news/security/researcher-uses-ai-to-find-rce-zero-days-in-vim-and-emacs/) — BleepingComputer (2026-04-06)
-- [Just by asking, AI uncovers zero-day bugs in venerable code editors](https://arstechnica.com/security/2026/04/just-by-asking-ai-uncovers-zero-day-bugs-in-venerable-code-editors/) — Ars Technica (2026-04-07)
+- [CSO Online](https://www.csoonline.com/) — CSO Online (2026-04-06)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-04-07)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-04-06)
+- [Ars Technica](https://arstechnica.com/) — Ars Technica (2026-04-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-model-finds-zero-day-rces-in-vim-and-gnu-emacs-with-simple-prompts/

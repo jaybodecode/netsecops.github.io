@@ -50,7 +50,6 @@ This is a devastating breach with far-reaching consequences. For the 20 million 
 **Tags:** Data Breach, Supply Chain Attack, ShinyHunters, GlobalPay, Credit Card, Financial
 
 ## Sources
-- [Payment giant GlobalPay discloses massive data breach affecting 20 million users](https://techcrunch.com/2026/02/23/globalpay-data-breach-20-million/) — TechCrunch (2026-02-23)
 - [GlobalPay Breach Exposes Millions of Credit Cards, Hacker Group Claims Attack](https://www.wsj.com/articles/globalpay-breach-exposes-millions-of-credit-cards-shinyhunters-claims-attack) — The Wall Street Journal (2026-02-23)
 
 ---

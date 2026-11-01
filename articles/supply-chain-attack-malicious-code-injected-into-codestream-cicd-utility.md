@@ -68,8 +68,8 @@ No specific Indicators of Compromise (e.g., file hashes, C2 domains) were mentio
 **Tags:** supply chain attack, ci/cd, devsecops, open source, credential theft, github
 
 ## Sources
-- [CodeStream CI/CD tool hit by supply chain attack, malicious version steals dev secrets](https://www.theregister.com/2026/07/01/codestream_cicd_supply_chain_attack/) — The Register (2026-07-01)
-- [Popular CI/CD utility CodeStream compromised in a supply-chain attack](https://securityaffairs.co/wordpress/158394/malware/codestream-supply-chain-attack.html) — Security Affairs (2026-07-01)
+- [The Register](https://www.theregister.com/) — The Register (2026-07-01)
+- [Security Affairs](https://securityaffairs.co/) — Security Affairs (2026-07-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/supply-chain-attack-malicious-code-injected-into-codestream-cicd-utility/

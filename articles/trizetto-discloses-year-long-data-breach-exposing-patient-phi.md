@@ -62,8 +62,8 @@ TriZetto discovered the breach on October 2, 2025, and immediately took action t
 **Tags:** Healthcare Breach, PHI, Dwell Time, TriZetto, Cognizant, HIPAA
 
 ## Sources
-- [TriZetto Provider Solutions Notifies Healthcare Provider Clients About Data Breach](https://www.hipaajournal.com/trizetto-provider-solutions-notifies-healthcare-provider-clients-about-data-breach/) — HIPAA Journal (2025-12-11)
-- [TriZetto Discloses Year-Long Data Breach Impacting Patient Information](https://www.securityweek.com/trizetto-discloses-year-long-data-breach-impacting-patient-information/) — SecurityWeek (2025-12-12)
+- [HIPAA Journal](https://www.hipaajournal.com/) — HIPAA Journal (2025-12-11)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2025-12-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/trizetto-discloses-year-long-data-breach-exposing-patient-phi/

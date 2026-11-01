@@ -48,7 +48,6 @@ Organizations should take the following steps to align with the new NSA guidance
 - [NSA releases Zero Trust implementation guidelines, launches Primer and Discovery Phase aligned with DoW framework](https://industrialcyber.co/management-strategy/nsa-releases-zero-trust-implementation-guidelines-launches-primer-and-discovery-phase-aligned-with-dow-framework/) — Industrial Cyber (2026-01-16)
 - [NSA Releases First in Series of Zero Trust Implementation Guidelines](https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/3645398/nsa-releases-first-in-series-of-zero-trust-implementation-guidelines/) — NSA (2026-01-14)
 - [NSA Unveils Zero Trust Implementation Guidance](https://www.meritalk.com/articles/nsa-unveils-zero-trust-implementation-guidance/) — MeriTalk (2026-01-15)
-- [NSA Releases Zero Trust Implementation Guidelines](https://cyberpress.com/nsa-releases-zero-trust-implementation-guidelines-20260116/) — Cyberpress (2026-01-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/nsa-releases-foundational-guidelines-for-zero-trust-implementation/

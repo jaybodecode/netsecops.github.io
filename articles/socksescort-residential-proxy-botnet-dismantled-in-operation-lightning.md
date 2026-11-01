@@ -43,10 +43,7 @@ Preventing router compromise is key to stopping these botnets from growing.
 **Tags:** Botnet, Proxy Service, Takedown, Cybercrime, IoT Security, Router Security, FBI, Europol
 
 ## Sources
-- [SocksEscort fraud-enabling proxy service taken down](https://www.theregister.com/2026/03/12/socksescort_proxy_takedown/) — The Register (2026-03-12)
 - [Authorities dismantle SocksEscort proxy network behind millions in fraud](https://www.helpnetsecurity.com/2026/03/13/socksescort-proxy-network/) — Help Net Security (2026-03-13)
-- [Law Enforcement Dismantles SocksEscort Proxy Network in Operation Lightning](https://www.infosecurity-magazine.com/news/law-enforcement-dismantles/) — Infosecurity Magazine (2026-03-13)
-- [Feds Takes Down SocksEscort Proxy Network Used in Global Fraud Schemes](https://www.hackread.com/feds-takedown-socksescort-proxy-network-fraud/) — HackRead (2026-03-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/socksescort-residential-proxy-botnet-dismantled-in-operation-lightning/

@@ -51,8 +51,8 @@ This is a classic example of abusing dual-use tools. The attacker leverages the 
 **Tags:** RMM, Living off the Land, LoTL, Screensaver, Dropper, Windows
 
 ## Sources
-- [Latest Cyber Security Attack News Today – Cyber Threat Post](https://www.varutra.com/blog/latest-cyber-security-attack-news-today-cyber-threat-post/) — Varutra (2026-02-06)
-- [Malicious .SCR files are delivering ScreenConnect for remote access](https://www.techrepublic.com/article/malicious-scr-files-screenconnect/) — TechRepublic (2026-02-07)
+- [Varutra](https://www.varutra.com/) — Varutra (2026-02-06)
+- [TechRepublic](https://www.techrepublic.com/) — TechRepublic (2026-02-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/threat-actors-deploy-rmm-tools-using-windows-screensaver-files/

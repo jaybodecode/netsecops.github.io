@@ -51,7 +51,6 @@ Applying these updates in a timely manner is the most effective way to protect a
 
 ## Sources
 - [The Hacker News | #1 Trusted Source for Cybersecurity News](https://thehackernews.com/) — The Hacker News (2026-01-14)
-- [U.S. CISA adds a flaw in Microsoft Windows to its Known Exploited Vulnerabilities catalog](https://securityaffairs.co/wordpress/157299/hacking/cisa-adds-windows-flaw-to-kev.html) — Security Affairs (2026-01-14)
 - [BleepingComputer | Cybersecurity, Technology News and Support](https://www.bleepingcomputer.com/) — BleepingComputer (2026-01-14)
 
 ---

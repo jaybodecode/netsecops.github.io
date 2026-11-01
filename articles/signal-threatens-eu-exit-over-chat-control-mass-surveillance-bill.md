@@ -53,9 +53,9 @@ This is a landmark legislative battle, pitting the stated goal of protecting chi
 **Tags:** Encryption, Privacy, EU, Regulation, Chat Control, Signal
 
 ## Sources
-- [Signal calls on Germany to vote against 'Chat Control,' saying it would leave EU market](https://therecord.media/signal-calls-on-germany-to-vote-against-chat-control) — The Record (2025-10-06)
-- [Chat Control is "like a malware on your device" – Signal slams the EU proposal to scan your private chats](https://www.techradar.com/pro/security/chat-control-is-like-a-malware-on-your-device-signal-slams-the-eu-proposal-to-scan-your-private-chats) — TechRadar Pro (2025-10-06)
-- [Potential EU law sparks global concerns over end-to-end encryption for messaging apps](https://fedscoop.com/potential-eu-law-sparks-global-concerns-over-end-to-end-encryption-for-messaging-apps/) — FedScoop (2025-10-06)
+- [The Record](https://therecord.media/) — The Record (2025-10-06)
+- [TechRadar Pro](https://www.techradar.com/) — TechRadar Pro (2025-10-06)
+- [FedScoop](https://fedscoop.com/) — FedScoop (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/signal-threatens-eu-exit-over-chat-control-mass-surveillance-bill/

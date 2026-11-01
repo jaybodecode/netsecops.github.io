@@ -51,7 +51,6 @@ Combating AiTM phishing requires moving to even stronger forms of authentication
 
 ## Sources
 - [Monthly Threat Report: Stay Ahead of Cybersecurity Trends (March 2026)](https://www.hornetsecurity.com/threat-research/monthly-threat-report-march-2026/) — Hornetsecurity (2026-03-04)
-- [SpyCloud’s 2026 Identity Exposure Report Reveals Explosion of Non-Human Identity Theft](https://www.spycloud.com/press/spyclouds-2026-identity-exposure-report-reveals-explosion-of-non-human-identity-theft/) — SpyCloud (2026-03-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/international-operation-disrupts-tycoon-2fa-phishing-as-a-service-platform/

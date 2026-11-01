@@ -51,7 +51,6 @@ The primary objective of this campaign is cyber-espionage. The impact on the tar
 **Tags:** MuddyWater, APT, Iran, Phoenix, cyber-espionage, phishing, macros, MENA
 
 ## Sources
-- [Unmasking MuddyWater's New Malware Toolkit Driving International Espionage](https://www.group-ib.com/blog/muddywater-phoenix/) — Group-IB (2025-10-22)
 - [MuddyWater Targets 100+ Gov Entities in MEA with Phoenix Backdoor](https://www.darkreading.com/cyberattacks-data-breaches/muddywater-100-gov-entites-mea-phoenix-backdoor) — Dark Reading (2025-10-22)
 - [Iranian government-sponsored hackers target government, commercial networks using MuddyWater malware](https://iranian-government-sponsored-hackers-target-government-commercial-networks-using-muddywater-malware.industrialcyber.co/) — Industrial Cyber (2025-10-22)
 

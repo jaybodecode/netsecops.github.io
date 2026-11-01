@@ -57,8 +57,6 @@ Defenders should hunt for TTPs associated with The Gentlemen and similar RaaS gr
 
 ## Sources
 - [The Gentlemen Strikes Chase Asia in Devastating Ransomware Attack](https://dexpose.io/the-gentlemen-strikes-chase-asia-in-devastating-ransomware-attack/) — Dexpose
-- [Victim: Chase Asia](https://ransomware.live/victim/chase-asia/) — Ransomware.live
-- [Ransomware Affiliate Exposes Details of 'The Gentlemen' Operation](https://www.infosecurity-magazine.com/news/affiliate-exposes-the-gentlemen/) — Infosecurity Magazine
 - [The Gentlemen ransomware gang's inner workings leaked](https://www.scmagazine.com/brief/the-gentlemen-ransomware-gangs-inner-workings-leaked) — SC Magazine
 
 ---

@@ -64,7 +64,6 @@ To combat agentic speed, defense must also become agentic. This means embracing 
 **Tags:** Artificial Intelligence, AI, Agentic Attacks, SOAR, Automation, Remediation, MTTR, Exposure Management
 
 ## Sources
-- [Agentic Attacks Arrived Over a Year Ago. Your Remediation Hasn't Caught Up.](https://thehackernews.com/2026/05/agentic-attacks-arrived-over-year-ago.html) — The Hacker News
 - [Check Point Software Technologies Reports Fourth Quarter and Full Year 2025 Results](https://www.checkpoint.com/press/releases/check-point-software-technologies-reports-fourth-quarter-and-full-year-2025-results/) — Check Point
 
 ---

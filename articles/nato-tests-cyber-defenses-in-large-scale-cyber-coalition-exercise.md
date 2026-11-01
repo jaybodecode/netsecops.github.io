@@ -47,8 +47,8 @@ The exercise itself is a form of mitigation, falling under the category of **[D3
 **Tags:** NATO, Cyber Exercise, Cyber Coalition, Hybrid Warfare, Critical Infrastructure, Estonia
 
 ## Sources
-- [Crisis in Icebergen: How NATO crafts stories to sharpen cyber skills](https://www.theregister.com/2025/12/10/nato_cyber_coalition_exercise/) — The Register (2025-12-10)
-- [NATO’s largest cyber defence exercise Cyber Coalition concludes in Estonia](https://www.nato.int/cps/en/natohq/news_240751.htm) — NATO (2025-12-10)
+- [The Register](https://www.theregister.com/) — The Register (2025-12-10)
+- [NATO](https://www.nato.int/) — NATO (2025-12-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/nato-tests-cyber-defenses-in-large-scale-cyber-coalition-exercise/

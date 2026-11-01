@@ -64,8 +64,8 @@ To prevent future deserialization vulnerabilities, development teams should:
 **Tags:** vulnerability, RCE, ZenithJS, JavaScript, open source, patch management, insecure deserialization
 
 ## Sources
-- [ZenithJS framework hit with critical RCE flaw, emergency patch issued](https://sdtimes.com/security/zenithjs-framework-hit-with-critical-rce-flaw-emergency-patch-issued/) — SD Times (2026-02-16)
-- [Devs scramble to patch critical RCE vulnerability in popular ZenithJS framework](https://www.theregister.com/2026/02/16/zenithjs_rce_vulnerability/) — The Register (2026-02-16)
+- [SD Times](https://sdtimes.com/) — SD Times (2026-02-16)
+- [The Register](https://www.theregister.com/) — The Register (2026-02-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/zenithjs-framework-emergency-patch-for-critical-rce-flaw/

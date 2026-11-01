@@ -61,7 +61,6 @@ For the affected Israeli agencies, the path forward involves a significant overh
 **Tags:** israel, cybersecurity, government, vulnerability, audit, national security
 
 ## Sources
-- [Cybersecurity gaps leave Israeli emergency agencies exposed, state comptroller warns](https://www.jns.org/cybersecurity-gaps-leave-israeli-emergency-agencies-exposed-state-comptroller-warns/) — Jewish News Syndicate (2026-05-27)
 - [MODA warns of cybersecurity risks in Chinese-made apps](https://focustaiwan.tw/sci-tech/202605270014) — Focus Taiwan (2026-05-27)
 
 ---

@@ -49,9 +49,9 @@ The financial and reputational impact of this campaign is significant. Guests wh
 **Tags:** Phishing, Malware, PureRAT, Booking.com, Hospitality, Social Engineering
 
 ## Sources
-- [Phishing Campaign “I Paid Twice” Targets Booking.com Hotels and Guests](https://gbhackers.com/i-paid-twice-phishing-campaign/) — GBHackers on Security (2025-11-07)
-- [“I Paid Twice” Phishing Campaign Targets Booking.com](https://www.infosecurity-magazine.com/news/i-paid-twice-phishing-booking/) — Infosecurity Magazine (2025-11-06)
-- [Hotel’s Compromised Booking.com Account Sparks Phishing Campaign Against Travelers](https://cybersecuritynews.com/booking-com-phishing-campaign/) — Cybersecurity News (2025-11-07)
+- [GBHackers on Security](https://gbhackers.com/) — GBHackers on Security (2025-11-07)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-11-06)
+- [Cybersecurity News](https://cybersecuritynews.com/) — Cybersecurity News (2025-11-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/i-paid-twice-phishing-campaign-targets-booking-com-hotels-and-guests/

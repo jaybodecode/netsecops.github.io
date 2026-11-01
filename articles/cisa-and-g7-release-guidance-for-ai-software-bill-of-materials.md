@@ -39,9 +39,6 @@ While adoption is voluntary, organizations should begin preparing for a future w
 
 ## Sources
 - [CISA and Partners Release New Software Bill of Materials for AI Guidance](https://www.hstoday.us/subject-matter-areas/cybersecurity/cisa-and-partners-release-new-software-bill-of-materials-for-ai-guidance/) — Homeland Security Today (2026-05-12)
-- [Global Cyber Agencies Issue New SBOMs for AI Guidance to Tackle AI Supply Chain Risks](https://www.infosecurity-magazine.com/news/g7-cisa-sbom-ai-guidance-supply/) — Infosecurity Magazine (2026-05-13)
-- [Major world economies spell out key elements of AI ‘ingredients list’](https://cyberscoop.com/g7-cisa-sbom-ai-guidance/) — CyberScoop (2026-05-12)
-- [CISA's AI SBOM guidance pushes software supply-chain oversight into new territory](https://www.csoonline.com/article/2126583/cisas-ai-sbom-guidance-pushes-software-supply-chain-oversight-into-new-territory.html) — CSO Online (2026-05-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-and-g7-release-guidance-for-ai-software-bill-of-materials/

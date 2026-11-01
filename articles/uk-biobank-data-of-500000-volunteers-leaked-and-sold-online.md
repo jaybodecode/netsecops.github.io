@@ -83,8 +83,6 @@ Detection in this case was external, with the data being found for sale online. 
 ## Sources
 - [Details of 500,000 UK Biobank volunteers hacked and offered for sale](https://www.itv.com/news/2026-04-23/details-of-500000-uk-biobank-volunteers-hacked-and-offered-for-sale) — ITV News (2026-04-23)
 - [Half a million UK Biobank volunteers' medical information leaked](https://www.thenational.scot/news/24298135.half-million-uk-biobank-volunteers-medical-information-leaked/) — The National (2026-04-23)
-- [UK Biobank suspends access after massive data breach](https://www.researchprofessionalnews.com/rr-news-uk-policy-2026-4-uk-biobank-suspends-access-after-massive-data-breach/) — Research Professional News (2026-04-23)
-- [Private health records of half a million Britons offered for sale on Chinese website](https://www.theguardian.com/science/2026/apr/23/private-health-records-of-half-a-million-britons-offered-for-sale-on-chinese-website) — The Guardian (2026-04-23)
 - [Health data of 500,000 members of a UK project offered for sale online in China](https://www.washingtonpost.com/business/2026/04/23/health-data-of-500000-members-of-a-uk-project-offered-for-sale-online-in-china/) — The Washington Post (2026-04-23)
 
 ---

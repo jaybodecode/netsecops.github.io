@@ -46,7 +46,7 @@ Organizations can learn from this incident and implement the following strategic
 **Tags:** cyberattack, Hasbro, data breach, incident response, SEC
 
 ## Sources
-- [Hasbro Confirms Cyberattack with Weeks-Long Recovery Expected](https://mlq.ai/cybersecurity-tech/hasbro-confirms-cyberattack-with-weeks-long-recovery-expected/) — MLQ.ai (2026-04-01)
+- [MLQ.ai](https://mlq.ai/) — MLQ.ai (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/toy-giant-hasbro-hit-by-cyberattack-recovery-to-take-weeks/

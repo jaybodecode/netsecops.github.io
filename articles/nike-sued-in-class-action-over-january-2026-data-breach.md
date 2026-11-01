@@ -52,7 +52,6 @@ For organizations managing customer data, this incident serves as a reminder of 
 
 ## Sources
 - [Nike Hit With Suit Over January Data Breach Affecting Thousands](https://news.bloomberglaw.com/privacy-and-data-security/nike-hit-with-suit-over-january-data-breach-affecting-thousands) — Bloomberg Law (2026-03-25)
-- [Nike Hit With Class Action Over Data Breach](https://www.law360.com/articles/2026139/nike-hit-with-class-action-over-data-breach) — Law360 (2026-03-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/nike-sued-in-class-action-over-january-2026-data-breach/

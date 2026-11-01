@@ -59,7 +59,6 @@ Given the targeting of healthcare and financial services, the potential for sens
 
 ## Sources
 - [Microsoft Details Phishing Campaign Targeting 35,000 Users Across 26 Countries](https://thehackernews.com/2026/05/microsoft-details-phishing-campaign.html) (2026-05-05)
-- [Navigating the email threat landscape: Insights from the first quarter of 2026](https://www.microsoft.com/en-us/security/blog/2026/05/05/navigating-the-email-threat-landscape-insights-from-the-first-quarter-of-2026/) (2026-05-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-details-large-scale-phishing-campaign-targeting-35000-users/

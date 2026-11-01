@@ -73,8 +73,6 @@ Security teams should hunt for signs of this activity within their networks.
 - [Government, Scientific Entities Hit via Daemon Tools Supply Chain Attack](https://www.securityweek.com/government-scientific-entities-hit-via-daemon-tools-supply-chain-attack/) — SecurityWeek (2026-05-06)
 - [DAEMON Tools Supply Chain Attack Compromises Official Installers with Malware](https://thehackernews.com/2026/05/daemon-tools-supply-chain-attack.html) — The Hacker News (2026-05-05)
 - [Supply chain attack via DAEMON Tools](https://usa.kaspersky.com/blog/daemon-tools-supply-chain/25299/) — Kaspersky (2026-05-05)
-- [Risky Bulletin: Extremely targeted supply chain attack hits DAEMON Tools](https://risky.biz/bulletin/risky-bulletin-extremely-targeted-supply-chain-attack-hits-daemon-tools/) — Risky.biz (2026-05-06)
-- [Hackers Abuse DAEMON Tools Distribution Channel to Deliver Malicious Payloads](https://socradar.io/hackers-abuse-daemon-tools-distribution-channel-to-deliver-malicious-payloads/) — SOCRadar (2026-05-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/daemon-tools-installers-compromised-in-major-supply-chain-attack/

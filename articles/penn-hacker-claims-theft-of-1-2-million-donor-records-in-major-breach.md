@@ -55,7 +55,6 @@ Security teams should proactively hunt for the following activity:
 **Tags:** Data Breach, Higher Education, SSO, PII, Salesforce, SAP, Insider Threat
 
 ## Sources
-- [Penn hacker claims to have stolen 1.2 million donor records in data breach](https://www.bleepingcomputer.com/news/security/penn-hacker-claims-to-have-stolen-12-million-donor-records-in-data-breach/) — BleepingComputer (2025-11-02)
 - [University of Pennsylvania says it wasn’t hacked after a vulgar email was sent to campus community. They were wrong.](https://www.databreaches.net/university-of-pennsylvania-says-it-wasnt-hacked-after-a-vulgar-email-was-sent-to-campus-community-they-were-wrong-1/) — DataBreaches.net (2025-11-02)
 - [Data Breach at University of Pennsylvania Exposes 1.2 Million Donor Records](https://news7h.com/data-breach-at-university-of-pennsylvania-exposes-1-2-million-donor-records/) — News 7h (2025-11-03)
 

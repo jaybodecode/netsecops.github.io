@@ -38,7 +38,7 @@ Organizations using ACR or similar technologies in IoT devices should take the f
 **Tags:** Samsung, Privacy, Smart TV, ACR, Texas, Settlement, Data Privacy
 
 ## Sources
-- [Samsung Settles Lawsuit Over Privacy Breach - UpGuard](https://www.upguard.com/blog/samsung-data-breach) — UpGuard (2026-03-01)
+- [UpGuard](https://www.upguard.com/) — UpGuard (2026-03-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/samsung-settles-with-texas-over-smart-tv-privacy-violations/

@@ -54,7 +54,6 @@ The report serves as a call to action for all organizations to strengthen their 
 
 ## Sources
 - [Ransomware keeps widening its reach](https://www.helpnetsecurity.com/2025/12/12/global-ransomware-trends-2025/) — Help Net Security (2025-12-12)
-- [Financial sector hit hard by breaches but ransomware seeks targets elsewhere](https://www.betanews.com/2025/12/12/finance-data-breach-trends-2025/) — BetaNews (2025-12-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-expands-to-new-regions-and-industries-report-finds/

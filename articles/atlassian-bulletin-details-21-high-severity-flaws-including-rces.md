@@ -49,8 +49,8 @@ Exploitation of these vulnerabilities could have severe consequences, particular
 **Tags:** Atlassian, Bamboo, Bitbucket, Vulnerability, RCE, Patch Management, Supply Chain
 
 ## Sources
-- [Security Bulletin - March 17 2026](https://confluence.atlassian.com/security/security-bulletin-march-17-2026-1369411911.html) — Atlassian (2026-03-17)
-- [Vulnerability Disclosure Portal](https://www.atlassian.com/trust/security/vulnerability-disclosure-portal) — Atlassian (2026-03-17)
+- [Atlassian](https://confluence.atlassian.com/) — Atlassian (2026-03-17)
+- [Atlassian](https://www.atlassian.com/) — Atlassian (2026-03-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/atlassian-bulletin-details-21-high-severity-flaws-including-rces/

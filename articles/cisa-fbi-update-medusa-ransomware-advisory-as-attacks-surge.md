@@ -61,7 +61,6 @@ Security teams may want to hunt for the following patterns which could indicate 
 
 ## Sources
 - [#StopRansomware: Medusa Ransomware](https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-071a)
-- [More than 200 victims of Medusa ransomware identified over the last year, CISA says](https://therecord.media/more-than-200-medusa- ransomware-victims-in-last-year-cisa)
 - [Medusa ransomware tallies hundreds of new victims, says updated advisory on group's tactics](https://cyberscoop.com/medusa-ransomware-tactics-cisa-advisory/)
 
 ---

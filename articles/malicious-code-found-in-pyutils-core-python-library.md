@@ -49,7 +49,6 @@ Protecting against supply chain attacks requires a shift in how organizations co
 **Tags:** supply chain attack, PyPI, Python, credential theft, open source security, DevSecOps
 
 ## Sources
-- [Malicious Python library 'PyUtils-Core' on PyPI caught stealing developer secrets](https://www.bleepingcomputer.com/news/security/malicious-python-library-pyutils-core-steals-developer-secrets/) — BleepingComputer (2026-02-15)
 - [Supply chain attack hits popular Python library – check your installs now!](https://nakedsecurity.sophos.com/2026/02/16/supply-chain-attack-hits-popular-python-library-check-your-installs/) — Naked Security (2026-02-16)
 
 ---

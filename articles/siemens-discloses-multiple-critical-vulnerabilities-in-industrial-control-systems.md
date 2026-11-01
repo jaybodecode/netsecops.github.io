@@ -63,9 +63,7 @@ Vulnerabilities in core industrial components like Siemens PLCs and networking g
 
 ## Sources
 - [ICS Patch Tuesday: New Security Advisories From Siemens, Schneider, CISA](https://www.securityweek.com/ics-patch-tuesday-new-security-advisories-from-siemens-schneider-cisa/) — SecurityWeek (2026-05-13)
-- [Critical-Severity XSS Flaws Uncovered in Siemens SIMATIC S7 Web Servers](https://dailycybersecurity.com/critical-severity-xss-flaws-uncovered-in-siemens-simatic-s7-web-servers/) — Daily Cybersecurity (2026-05-13)
 - [Latest Siemens Vulnerabilities](https://www.feedly.com/i/latest/vendors/Siemens) — Feedly (2026-05-13)
-- [Several Vulnerabilities Found in Siemens SIMATIC S7 PLCs](https://www.securityweek.com/several-vulnerabilities-found-in-siemens-simatic-s7-plcs-2/) — SecurityWeek (2026-05-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/siemens-discloses-multiple-critical-vulnerabilities-in-industrial-control-systems/

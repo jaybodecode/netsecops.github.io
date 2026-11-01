@@ -61,7 +61,6 @@ Detecting AI-specific attacks requires new approaches to monitoring.
 
 ## Sources
 - [The Growing Cybersecurity Risks To The Supply Chain In The AI Era](https://www.forbes.com/sites/chuckbrooks/2026/05/22/the-growing-cybersecurity-risks-to-the-supply-chain-in-the-ai-era/) (2026-05-22)
-- [JFrog report recaps a tumultuous year in supply chain security](https://thenewstack.io/jfrog-report-recaps-a-tumultuous-year-in-supply-chain-security/) (2026-05-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-exacerbates-cybersecurity-risks-in-global-supply-chains/

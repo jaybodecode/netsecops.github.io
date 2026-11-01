@@ -56,8 +56,6 @@ This case demonstrates that even when data is exfiltrated, recovery can sometime
 
 ## Sources
 - [INC ransomware opsec fail allowed data recovery for 12 US orgs](https://www.bleepingcomputer.com/news/security/inc-ransomware-opsec-fail-allowed-data-recovery-for-12-us-orgs/) — BleepingComputer (2026-01-22)
-- [Ransomware gang's slip-up led to data recovery for 12 US firms](https://www.csoonline.com/article/1309852/ransomware-gangs-slip-up-led-to-data-recovery-for-12-us-firms.html) — CSO Online (2026-01-22)
-- [When Ransomware Makes a Mistake: Inside INC Ransomware’s Backup Infrastructure](https://cybercentaurs.com/2026/01/22/when-ransomware-makes-a-mistake-inside-inc-ransomwares-backup-infrastructure/) — Cyber Centaurs (2026-01-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/inc-ransomware-opsec-fail-allows-data-recovery-for-12-us-firms/

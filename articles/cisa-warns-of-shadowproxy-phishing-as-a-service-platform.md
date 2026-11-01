@@ -93,8 +93,8 @@ The key to defeating AiTM attacks is to use MFA that is resistant to proxying.
 **Tags:** AiTM, CISA, FBI, MFA, PhaaS, Phishing, Session Hijacking, ShadowProxy
 
 ## Sources
-- [Joint Cybersecurity Advisory on ShadowProxy Phishing-as-a-Service](https://www.cisa.gov/news-events/alerts/2026/04/26/joint-advisory-on-shadowproxy-phaas) (2026-04-26)
-- ['ShadowProxy' Phishing Service Lets Anyone Bypass MFA](https://krebsonsecurity.com/2026/04/shadowproxy-phishing-service-bypasses-mfa/) (2026-04-26)
+- [cisa.gov](https://www.cisa.gov/) (2026-04-26)
+- [krebsonsecurity.com](https://krebsonsecurity.com/) (2026-04-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-warns-of-shadowproxy-phishing-as-a-service-platform/

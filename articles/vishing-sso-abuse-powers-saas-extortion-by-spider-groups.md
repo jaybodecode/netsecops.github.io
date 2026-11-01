@@ -72,10 +72,10 @@ Security teams may want to hunt for the following patterns to detect related act
 **Tags:** vishing, phishing, SaaS, SSO, extortion, Cordial Spider, Snarky Spider, The Com
 
 ## Sources
-- [Cybercrime Groups Using Vishing and SSO Abuse in Rapid SaaS Extortion Attacks](https://thehackernews.com/2026/05/cybercrime-groups-using-vishing-and.html) — The Hacker News (2026-05-01)
-- [2 threat groups linked to The Com target critical infrastructure with data theft](https://www.scmagazine.com/brief/threat-intelligence/2-threat-groups-linked-to-the-com-target-critical-infrastructure-with-data-theft) — SC Magazine (2026-05-01)
-- [Two new extortion crews are speedrunning the Scattered Spider playbook](https://cyberscoop.com/cordial-spider-snarky-spider-crowdstrike-saas-vishing/) — CyberScoop (2026-04-30)
-- [BlackFile Group Targets Retail and Hospitality with Vishing Attacks](https://www.infosecurity-magazine.com/news/blackfile-group-vishing-attacks/) — Infosecurity Magazine (2026-04-27)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-05-01)
+- [SC Magazine](https://www.scmagazine.com/) — SC Magazine (2026-05-01)
+- [CyberScoop](https://cyberscoop.com/) — CyberScoop (2026-04-30)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2026-04-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/vishing-sso-abuse-powers-saas-extortion-by-spider-groups/

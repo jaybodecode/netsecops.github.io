@@ -84,7 +84,7 @@ Preventing large-scale database exfiltration requires a combination of web appli
 **Tags:** HawkSec, Data Breach, TotalEnergies, Energy Sector, GDPR, PII
 
 ## Sources
-- [Attackers claim theft of 183M records from major oil company](https://cybernews.com/news/totalenergies-data-breach-claims/) — Cybernews (2026-01-16)
+- [Cybernews](https://cybernews.com/) — Cybernews (2026-01-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/hawksec-group-claims-massive-data-breach-at-totalenergies/

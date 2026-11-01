@@ -68,8 +68,8 @@ A successful compromise can have significant financial and operational consequen
 **Tags:** phishing, ai, social engineering, malware, infostealer, icedid, vidar, financial services
 
 ## Sources
-- [FinReact: AI-Powered Phishing Campaign Targets Financial Sector with Evasive 'GhostScript' Loader](https://www.proofpoint.com/us/blog/threat-research/finreact-ai-powered-phishing-targets-financial-sector) — Proofpoint (2026-07-01)
-- ['FinReact' Phishing Campaign Uses Convincing AI Lures to Breach Banks](https://threatpost.com/finreact-phishing-ai-lures-banks/178234/) — Threatpost (2026-07-01)
+- [Proofpoint](https://www.proofpoint.com/) — Proofpoint (2026-07-01)
+- [Threatpost](https://threatpost.com/) — Threatpost (2026-07-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/finreact-phishing-campaign-targets-financial-sector-with-ai-lures/

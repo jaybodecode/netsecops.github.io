@@ -60,7 +60,6 @@ Security teams can hunt for precursors to these types of attacks. The following 
 **Tags:** Ransomware, Nitrogen, Foxconn, Škoda Auto, Data Breach, Vulnerability, Manufacturing
 
 ## Sources
-- [May 2026 Data Breaches: List Major Incidents & Latest Updates](https://www.sharkstriker.com/blog/major-data-breaches-of-may-2026/) — SharkStriker (2026-05-22)
 - [Weekly Intelligence Report – 22 May 2026](https://cyfirma.com/weekly-intelligence-report-22-may-2026/) — Cyfirma (2026-05-22)
 
 ---

@@ -44,8 +44,8 @@ To prevent and mitigate similar incidents, financial institutions should focus o
 **Tags:** Data Breach, Financial Services, Incident Response, Dwell Time, Class Action
 
 ## Sources
-- [Columbia Bank Data Breach Reported, Lawsuit Possible](https://www.classaction.org/blog/columbia-bank-data-breach-reported-lawsuit-possible) — ClassAction.org (2026-04-20)
-- [Columbia Bank Discloses Extended Data Breach Affecting Customer Information](https://www.jdsupra.com/legalnews/columbia-bank-discloses-extended-data-9817263/) — JD Supra (2026-04-20)
+- [ClassAction.org](https://www.classaction.org/) — ClassAction.org (2026-04-20)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2026-04-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/columbia-bank-discloses-prolonged-data-breach/

@@ -59,9 +59,7 @@ The activities of **Phantom Taurus** pose a significant national security risk t
 **Tags:** APT, cyber-espionage, China, IIS, malware, threat actor
 
 ## Sources
-- [Phantom Taurus: China-Linked Hackers Target Global Governments](https://www.esecurityplanet.com/threats/phantom-taurus-china-hackers/) — eSecurityPlanet (2025-10-09)
 - [Weekly Intelligence Report – 10 October 2025](https://www.cyfirma.com/outofband/weekly-intelligence-report-10-october-2025/) — CYFIRMA (2025-10-10)
-- [China-linked APT Phantom Taurus uses Net-Star malware in espionage campaigns against key sectors](https://securityaffairs.co/169041/apt/china-apt-phantom-taurus.html) — Security Affairs (2025-10-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/phantom-taurus-chinese-apt-targets-global-geopolitical-intel/

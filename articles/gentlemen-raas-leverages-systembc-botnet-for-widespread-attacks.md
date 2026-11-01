@@ -78,7 +78,6 @@ Security teams can hunt for Gentlemen and SystemBC activity using these patterns
 **Tags:** Gentlemen, RaaS, SystemBC, ransomware, botnet, Cobalt Strike, ESXi, Check Point
 
 ## Sources
-- [Gentlemen RaaS Hits Windows, Linux, and ESXi With New C-Based Locker](https://gbhackers.com/gentlemen-raas-hits-windows-linux-and-esxi/) — GBHackers on Security (2026-04-21)
 - [SystemBC botnet linked to Gentlemen ransomware attacks | brief](https://www.scmagazine.com/brief/systembc-botnet-linked-to-gentlemen-ransomware-attacks) — SC Magazine (2026-04-21)
 
 ---

@@ -82,8 +82,8 @@ Security teams should hunt for signs of SaaS platform abuse:
 ## Sources
 - [ShinyHunters Leaks Charter Communications Data, Potentially Impacting 5 Million Customers](https://securityaffairs.com/192892/uncategorized/shinyhunters-leaks-charter-communications-data-potentially-impacting-5-million-customers.html) — Security Affairs (2026-05-30)
 - [Charter communications data breach affects 4.9 million accounts](https://www.bleepingcomputer.com/news/security/charter-communications-data-breach-affects-49-million-accounts/) — BleepingComputer (2026-05-29)
-- [ShinyHunters Alleges 42M Records Stolen from Charter Communications](https://www.esecurityplanet.com/threats/shinyhunters-charter-communications-data-breach/) — eSecurity Planet (2026-05-27)
-- [ShinyHunters Alleges 42M Records Stolen from Charter Communications](https://www.techrepublic.com/article/shinyhunters-alleges-charter-communications-breach/) — TechRepublic (2026-05-29)
+- [ShinyHunters Alleges 42M Records Stolen from Charter Communications](https://www.esecurityplanet.com/threats/shinyhunters-alleges-42m-records-stolen-from-charter-communications/) — eSecurity Planet (2026-05-27)
+- [ShinyHunters Alleges 42M Records Stolen from Charter Communications](https://www.techrepublic.com/article/news-charter-shinyhunters-cyber-incident/) — TechRepublic (2026-05-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-leaks-charter-communications-data-after-failed-extortion/

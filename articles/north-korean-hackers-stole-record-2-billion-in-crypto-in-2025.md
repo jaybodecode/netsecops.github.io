@@ -63,7 +63,6 @@ No specific wallet addresses or transaction hashes were provided in the source a
 
 ## Sources
 - [Threat Actors - | Cyber Security News Today | Articles on Cyber Security, Malware Attack updates | Cyware](https://www.cyware.com/news/topics/threat-actors) — Cyware (2025-10-11)
-- [Clop Ransomware group claims the hack of Harvard University (References other news from same day)](https://securityaffairs.com/175960/cyber-crime/clop-ransomware-group-claims-harvard-university-hack.html) — Security Affairs (2025-10-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/north-korean-hackers-stole-record-2-billion-in-crypto-in-2025/

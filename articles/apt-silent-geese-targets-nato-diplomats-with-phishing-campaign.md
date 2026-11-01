@@ -55,8 +55,8 @@ Defending against a sophisticated APT like Silent Geese requires both technical 
 **Tags:** APT, Silent Geese, cyber-espionage, phishing, NATO, backdoor, PoliGraph
 
 ## Sources
-- ['Silent Geese' APT Targets NATO Officials With New 'PoliGraph' Backdoor](https://thehackernews.com/2026/02/silent-geese-apt-targets-nato-officials.html) — The Hacker News (2026-02-16)
-- [The 'Silent Geese' Hackers Have a New Phishing Lure for NATO Diplomats](https://www.wired.com/story/silent-geese-apt-nato-phishing-campaign/) — Wired (2026-02-16)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-02-16)
+- [Wired](https://www.wired.com/) — Wired (2026-02-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/apt-silent-geese-targets-nato-diplomats-with-phishing-campaign/

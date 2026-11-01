@@ -54,7 +54,6 @@ Based on Omni's experience, the following mitigations are critical for organizat
 
 ## Sources
 - [A Year of Resilience: Omni Hotels Details Post-Breach Security Overhaul](https://www.hospitalitynet.org/news/4123456.html) — Hospitality Net (2026-07-01)
-- [Omni Hotels shares 'lessons learned' one year after $50M ransomware attack](https://www.csoonline.com/article/1307654/omni-hotels-shares-lessons-learned-one-year-after-50m-ransomware-attack.html) — CSO Online (2026-06-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/omni-hotels-recovery-one-year-after-2025-breach/

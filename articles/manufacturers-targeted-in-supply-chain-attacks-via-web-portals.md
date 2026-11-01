@@ -67,7 +67,6 @@ This attack trend has severe implications for the entire supply chain.
 **Tags:** Supply Chain, Manufacturing, SQL Injection, Bots, Web Security, Data Breach
 
 ## Sources
-- [The Supply Chain Attack Hiding in Your Supplier Portal](https://www.supplychainbrain.com/blogs/1-think-tank/post/39110-the-supply-chain-attack-hiding-in-your-supplier-portal) — SupplyChainBrain (2025-12-19)
 - [Disaster Recovery Planning: Learn from the Biggest Cyber Security Breaches of 2025](https://lbvhub.co.uk/disaster-recovery-planning-learn-from-the-biggest-cyber-security-breaches-of-2025/) — LBV Hub (2025-12-19)
 
 ---

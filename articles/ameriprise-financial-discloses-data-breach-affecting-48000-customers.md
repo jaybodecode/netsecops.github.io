@@ -81,7 +81,6 @@ Security teams may want to hunt for the following patterns to identify similar t
 ## Sources
 - [Ameriprise Financial Data Breach Exposes Personal Information of 48,000 Customers](https://cisowhisperer.com/ameriprise-financial-data-breach-exposes-personal-information-of-48000-customers/) — CISO Whisperer (2026-05-03)
 - [Ameriprise Discloses Second Data Breach in Less Than Six Months](https://www.advisorhub.com/ameriprise-discloses-second-data-breach-in-less-than-six-months/) — AdvisorHub (2026-04-21)
-- [Ameriprise Financial Data Breach Investigation](https://www.claimdepot.com/ameriprise-financial-data-breach-investigation) — Claim Depot (2026-04-18)
 - [Ameriprise Data Breach: Sensitive Personal Information of 47,876 People Exposed](https://breachclaim.com/ameriprise-data-breach-sensitive-personal-information-of-47876-people-exposed/) — BreachClaim (2026-04-18)
 
 ---

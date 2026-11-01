@@ -84,8 +84,8 @@ Securing ICS environments requires a combination of traditional IT security prac
 **Tags:** ICS, OT Security, SCADA, HMI, Critical Infrastructure, Ransomware, Cyble
 
 ## Sources
-- [Cyber Threat Actors Ramp Up Attacks on Industrial Environments](https://www.infosecurity-magazine.com/news/cyber-threat-actors-ramp-up-attacks/) — Infosecurity Magazine (2026-01-15)
-- [Cyber Threats Loom Over 2026 Winter Olympics](https://www.darkreading.com/cyberattacks-data-breaches/cyber-threats-loom-over-2026-winter-olympics) — Dark Reading (2026-01-15)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2026-01-15)
+- [Dark Reading](https://www.darkreading.com/) — Dark Reading (2026-01-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/industrial-control-systems-face-escalating-cyber-threats/

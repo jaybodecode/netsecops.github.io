@@ -55,7 +55,6 @@ While the final payload was not detailed, a successful intrusion of this type ca
 
 ## Sources
 - [New Vishing Attack Exploits Microsoft Teams and QuickAssist to Deploy .NET Malware](https://gbhackers.on-security/2025/12/new-vishing-attack-exploits-microsoft.html) — GBHackers (2025-12-09)
-- [Microsoft Teams and QuickAssist Exploited in New Vishing Attack to Spread .NET Malware](https://www.trustwave.com/en-us/resources/blogs/spiderlabs-blog/microsoft-teams-and-quickassist-exploited-in-vishing-attack/) — Trustwave (2025-12-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/vishing-campaign-abuses-microsoft-teams-and-quickassist/

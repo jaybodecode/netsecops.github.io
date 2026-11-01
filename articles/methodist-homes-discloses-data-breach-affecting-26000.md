@@ -58,8 +58,8 @@ No specific Indicators of Compromise were provided in the source articles.
 **Tags:** PHI, HIPAA, Healthcare, Incident Response, Delayed Disclosure
 
 ## Sources
-- [Almost 26,000 Individuals Affected by Data Breach at Methodist Homes of Alabama & Northwest Florida](https://www.hipaajournal.com/almost-26000-individuals-affected-by-data-breach-at-methodist-homes-of-alabama-northwest-florida/) — HIPAA Journal (2025-10-08)
-- [Methodist Homes of Alabama & Northwest Florida Discloses Recent Data Breach](https://www.jdsupra.com/legalnews/methodist-homes-of-alabama-northwest-9556858/) — JD Supra (2025-10-08)
+- [HIPAA Journal](https://www.hipaajournal.com/) — HIPAA Journal (2025-10-08)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2025-10-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/methodist-homes-discloses-data-breach-affecting-26000/

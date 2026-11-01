@@ -82,8 +82,8 @@ Remediation is straightforward: update the `cryptography` package to the patched
 **Tags:** Python, cryptography, CVE-2026-26007, Vulnerability, Private Key, ECDH, Information Leak
 
 ## Sources
-- [CVE-2026-26007 - Bellsoft Docs](https://docs.bell-sw.com/alpaquita-linux/security-advisory/cve-2026-26007/) — BellSoft (2026-02-14)
-- [Versa Cyber - Threat Intelligence Reports](https://versatrust.com/security/cyber-threat-intelligence-reports/february-14-2026) — VersaTrust (2026-02-14)
+- [BellSoft](https://docs.bell-sw.com/) — BellSoft (2026-02-14)
+- [VersaTrust](https://versatrust.com/) — VersaTrust (2026-02-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/python-cryptography-library-flaw-leaks-private-key-info/

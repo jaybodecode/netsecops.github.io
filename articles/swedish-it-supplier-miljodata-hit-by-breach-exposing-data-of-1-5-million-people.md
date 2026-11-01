@@ -73,10 +73,7 @@ Organizations can hunt for Datacarry activity using the following observables:
 
 ## Sources
 - [10th November – Threat Intelligence Report - Check Point Research](https://research.checkpoint.com/2025/10th-november-threat-intelligence-report/) — Check Point Research (2025-11-10)
-- [Data breach at major Swedish software supplier impacts 1.5 million - The IT Nerd](https://www.theitnerd.com/2025/11/05/data-breach-at-major-swedish-software-supplier-impacts-1-5-million/) — The IT Nerd (2025-11-05)
 - [Swedish IT systems supplier hack affects 1.5M individuals - SC Media](https://www.scmagazine.com/news/breach/swedish-it-systems-supplier-hack-affects-1-5m-individuals) — SC Media (2025-11-05)
-- [DataCarry Ransomware Group Breaches Swedish IT Company Miljödata, Steals Confidential Data - teiss](https://www.teiss.co.uk/datacarry-ransomware-group-breaches-swedish-it-company-miljodata/) — teiss (2025-10-02)
-- [Miljödata | Search the Data Breach](https://databreach.com/miljodata-data-breach/2025/09/18/) — DataBreach.com (2025-09-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/swedish-it-supplier-miljodata-hit-by-breach-exposing-data-of-1-5-million-people/

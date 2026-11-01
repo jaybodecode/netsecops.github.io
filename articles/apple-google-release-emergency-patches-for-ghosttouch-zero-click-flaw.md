@@ -62,8 +62,8 @@ Detecting a zero-click attack on a mobile device is extremely difficult for end-
 **Tags:** zero-click, RCE, vulnerability, iOS, Android, spyware, mobile security, CISA KEV
 
 ## Sources
-- [Apple and Google Rush Out Patches for a Zero-Click 'GhostTouch' Exploit](https://www.wired.com/story/apple-google-ghosttouch-zero-click-exploit-patch/) — WIRED (2026-01-26)
-- [GhostTouch: NSO Group Competitor Found Exploiting New Zero-Click Vulnerability](https://citizenlab.ca/2026/01/ghosttouch-nso-group-competitor-exploiting-zero-click-flaw/) — The Citizen Lab (2026-01-26)
+- [WIRED](https://www.wired.com/) — WIRED (2026-01-26)
+- [The Citizen Lab](https://citizenlab.ca/) — The Citizen Lab (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/apple-google-release-emergency-patches-for-ghosttouch-zero-click-flaw/

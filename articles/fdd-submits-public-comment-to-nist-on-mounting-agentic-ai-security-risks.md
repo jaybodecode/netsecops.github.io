@@ -37,7 +37,6 @@ This public comment serves as a critical input for U.S. policymakers and standar
 
 ## Sources
 - [Regarding Security Considerations for Artificial Intelligence Agents](https://www.fdd.org/analysis/2026/03/09/regarding-security-considerations-for-artificial-intelligence-agents/) — FDD (2026-03-09)
-- [NIST Calls for Public Comment on AI Agent Security – Comments Due March 9 2026](https://www.ubos.tech/nist-issues-rfi-on-ai-agent-security-public-comment-deadline-march-9-2026/) — UBOS.tech (2026-03-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/fdd-submits-public-comment-to-nist-on-mounting-agentic-ai-security-risks/

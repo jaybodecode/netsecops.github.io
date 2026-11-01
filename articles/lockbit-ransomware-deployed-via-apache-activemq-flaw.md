@@ -43,7 +43,6 @@ The successful deployment of ransomware leads to significant business disruption
 **Tags:** LockBit, Ransomware, Apache ActiveMQ, CVE-2023-46604, Persistence, Incident Response, RDP
 
 ## Sources
-- [Cyware Daily Threat Intelligence, February 25, 2026](https://www.cyware.com/cyware-alerts/daily-threat-intelligence-20260225) — Cyware (2026-02-25)
 - [February 2026 Cyber Threat Intelligence Roundup](https://www.cynet.com/cyber-threat-intelligence-hub/february-2026-cyber-threat-intelligence-roundup/) — Cynet (2026-02-25)
 
 ---

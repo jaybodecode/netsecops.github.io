@@ -67,7 +67,6 @@ This is a proactive security measure, so the focus is on identifying non-complia
 
 ## Sources
 - [Your Windows PC has a security deadline in June 2026](https://www.malwarebytes.com/blog/news/2026/05/your-windows-pc-has-a-security-deadline-in-june-2026) (2026-05-28)
-- [Your Windows PC is getting a vital security update - but it could cause problems for some](https://www.techradar.com/pro/security/your-windows-pc-is-getting-a-vital-security-update-but-it-could-cause-problems-for-some) (2026-05-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-secure-boot-update-may-cause-issues-for-older-pcs/

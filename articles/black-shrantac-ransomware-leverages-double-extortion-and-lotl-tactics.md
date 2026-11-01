@@ -42,7 +42,6 @@ For industrial environments, the impact is magnified. An attack that encrypts sy
 
 ## Sources
 - [Black Shrantac exposes industrial environments to stealth ransomware risk through LOTL, double extortion tactics](https://industrialcyber.co/attacks-and-vulnerabilities/black-shrantac-exposes-industrial-environments-to-stealth-ransomware-risk-through-lotl-double-extortion-tactics/) — Industrial Cyber
-- [Marlink report reveals evolving cyber risk driven by user credentials and human error](https://www.marlink.com/news/marlink-report-reveals-evolving-cyber-risk-driven-by-user-credentials-and-human-error/) — Marlink
 
 ---
 Source: https://cyber.netsecops.io/articles/black-shrantac-ransomware-leverages-double-extortion-and-lotl-tactics/

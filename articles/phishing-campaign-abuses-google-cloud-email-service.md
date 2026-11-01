@@ -56,7 +56,6 @@ This tactic forces security teams to look beyond simple sender verification and 
 **Tags:** Phishing, Google Cloud, Cloud Security, Email Security, DMARC, SPF, Living off the Land
 
 ## Sources
-- [Cybercriminals Abuse Google Cloud Email Feature in Multi-Stage Phishing Campaign](https://thehackernews.com/2026/01/cybercriminals-abuse-google-cloud-email-feature.html) — The Hacker News (2025-12-27)
 - [Abusing Google Cloud’s Application Integration for Phishing Campaigns](https://research.checkpoint.com/2026/01/abusing-google-cloud-for-phishing/) — Check Point Research (2025-12-27)
 
 ---

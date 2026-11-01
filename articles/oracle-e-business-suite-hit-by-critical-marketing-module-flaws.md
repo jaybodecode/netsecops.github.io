@@ -55,9 +55,7 @@ A successful exploit would be catastrophic for an organization's marketing opera
 **Tags:** CVE-2025-53072, CVE-2025-62481, Oracle, E-Business Suite, RCE, vulnerability, patch management
 
 ## Sources
-- [Critical Oracle E-Business Suite Flaw Grants Attackers Full System Access](https://cyberpress.com/critical-oracle-e-business-suite-flaw-grants-attackers-full-system-access-112652/) — Cyberpress (2025-10-22)
 - [Oracle Releases October 2025 Patches](https://www.securityweek.com/oracle-releases-october-2025-patches/) — SecurityWeek (2025-10-22)
-- [CVE-2025-53072: Easily exploitable vulnerability allows unauthenticated attacker with network access via HTTP to compromise Oracle Marketing.](https://radar.offseq.com/cve-2025-53072) — Offensive Security Radar (2025-10-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/oracle-e-business-suite-hit-by-critical-marketing-module-flaws/

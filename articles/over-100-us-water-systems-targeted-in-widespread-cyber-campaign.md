@@ -54,7 +54,7 @@ CISA and the FBI have provided clear guidance for the WWS sector:
 - [CISA: Over 100 Internet-Exposed Water Systems Targeted in July Cyberattacks](https://www.securityweek.com/cisa-over-100-internet-exposed-water-systems-targeted-in-july-cyberattacks/) (2026-08-26)
 - [CISA Says Over 100 U.S. Water Systems Were Targeted in July](https://nationalcioreview.com/articles-insights/extra-bytes/cisa-says-over-100-u-s-water-systems-were-targeted-in-july/) (2026-08-26)
 - [What we know so far about the hacking campaign against US water systems](https://www.cybersecuritydive.com/news/what-we-know-so-far-about-the-hacking-campaign-against-us-water-systems/828374/) (2026-08-20)
-- [CISA says over 100 US water systems were targeted in July 2026 alone](https.www.techradar.com/pro/security/cisa-says-over-100-us-water-systems-were-targeted-in-july-2026-alone) (2026-08-27)
+- [CISA says over 100 US water systems were targeted in July 2026 alone](https://www.techradar.com/pro/security/cisa-says-over-100-us-water-systems-were-targeted-in-july-2026-alone) (2026-08-27)
 - [2026 U.S. Water System Cyberattacks: 3 Lessons for Critical Infrastructure](https://www.cloudrangecyber.com/news/2026-us-water-system-cyberattacks) (2026-08-18)
 - [CISA still finds water system controls exposed online amid multistate hacks](https://www.nextgov.com/cybersecurity/2026/08/cisa-still-finds-water-system-controls-exposed-online-amid-multistate-hacks/415266/) (2026-08-06)
 

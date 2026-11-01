@@ -51,7 +51,6 @@ Organizations in Mozambique should take the following steps to prepare:
 - [Mozambique Parliament Approves Cybersecurity and Cybercrime Laws to Strengthen Digital Governance](https://techafricadaily.com/mozambique-parliament-approves-cybersecurity-and-cybercrime-laws-to-strengthen-digital-governance/) — TechAfrica Daily (2026-04-17)
 - [Mozambique: Cyber security law to protect the State](https://clubofmozambique.com/news/mozambique-cyber-security-law-to-protect-the-state-257639/) — Club of Mozambique (2026-04-16)
 - [Mozambique records 173,000 cyberattacks and 1,061 cybercrime cases in 2024, says minister](https://clubofmozambique.com/news/mozambique-records-173000-cyberattacks-and-1061-cybercrime-cases-in-2024-says-minister-257647/) — Club of Mozambique (2026-04-16)
-- [Mozambique Turns to EU Expertise to Boost Cyber Defense Capabilities](https://www.ecofinagency.com/public-policy/1604-45378-mozambique-turns-to-eu-expertise-to-boost-cyber-defense-capabilities) — Ecofin Agency (2026-04-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/mozambique-approves-new-national-cybersecurity-and-cybercrime-laws/

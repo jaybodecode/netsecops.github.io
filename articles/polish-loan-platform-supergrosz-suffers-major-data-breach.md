@@ -53,7 +53,6 @@ Security teams at similar financial institutions should hunt for:
 
 ## Sources
 - [Poland hit by another major cyberattack as hackers steal users' data from loan platform](https://polskieradio.pl/395/7790/Artykul/3451052,poland-hit-by-another-major-cyberattack-as-hackers-steal-users-data-from-loan-platform) — Polskie Radio (2025-11-02)
-- [Poland investigates major data breach at SuperGrosz loan company](https://www.bleepingcomputer.com/news/security/penn-hacker-claims-to-have-stolen-12-million-donor-records-in-data-breach/) — BleepingComputer (2025-11-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/polish-loan-platform-supergrosz-suffers-major-data-breach/

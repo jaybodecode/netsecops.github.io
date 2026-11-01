@@ -47,7 +47,6 @@ Organizations preparing for this shift should:
 
 ## Sources
 - [IBM, Turing Space push digital credentials forward](https://www.scmagazine.com/news/ibm-turing-space-push-digital-credentials-forward) — SC Magazine (2025-12-08)
-- [Verifiable credentials race accelerates as IBM, Turing Space launch solutions](https://www.biometricupdate.com/202512/ibm-turing-space-lead-new-era-of-digital-identity-verification) — Biometric Update (2025-12-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/ibm-and-turing-space-advance-digital-identity-solutions/

@@ -38,7 +38,6 @@ General mitigation strategies are applicable until more details emerge.
 **Tags:** Data Breach, Cyberattack, Vulnerability, Technology, PII
 
 ## Sources
-- [Breakthrough in Global Cybersecurity: Major Data Breach Exposes Millions of Users](https://bnnbreaking.com/tech/breakthrough-in-global-cybersecurity-major-data-breach-exposes-millions-of-users) — BNN Breaking (2025-12-01)
 - [Cybersecurity Alert: Unnamed Tech Giant Suffers Colossal Data Breach, Millions of Users at Risk](https://www.techtimes.com/articles/305123/20251201/cybersecurity-alert-unnamed-tech-giant-suffers-colossal-data-breach-millions-of-users-at-risk.htm) — Tech Times (2025-12-01)
 
 ---

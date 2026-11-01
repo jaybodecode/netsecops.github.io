@@ -88,9 +88,6 @@ The use of zero-days and rapid N-day exploitation means that any organization wi
 
 ## Sources
 - [Storm-1175 focuses gaze on vulnerable web-facing assets in high-tempo Medusa ransomware operations](https://www.microsoft.com/en-us/security/blog/2026/04/06/storm-1175-focuses-gaze-on-vulnerable-web-facing-assets-in-high-tempo-medusa-ransomware-operations/) — Microsoft Security Blog
-- [Medusa ransomware group using zero-days to launch attacks within 24 hours of breach, Microsoft says](https://therecord.media/medusa-ransomware-microsoft-research-zero-days) — The Record
-- [Microsoft says Medusa-linked Storm-1175 is speeding ransomware attacks](https://www.csoonline.com/article/2068991/microsoft-says-medusa-linked-storm-1175-is-speeding-ransomware-attacks.html) — CSO Online
-- [Storm-1175 Exploits Flaws in High-Velocity Medusa Attacks](https://www.infosecurity-magazine.com/news/storm-1175-exploits-flaws-medusa/) — Infosecurity Magazine
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-details-high-tempo-medusa-ransomware-operations/

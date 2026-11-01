@@ -39,9 +39,6 @@ The direct impact is the exposure of personal information for 21,000 Nissan cust
 
 ## Sources
 - [Nissan says thousands of customers exposed in Red Hat breach](https://www.bleepingcomputer.com/news/security/nissan-says-thousands-of-customers-exposed-in-red-hat-breach/) — BleepingComputer (2025-12-22)
-- [Nissan Discloses Data Breach Linked to Compromised Red Hat Infrastructure](https://gbhackers.com/nissan-data-breach-red-hat/) — GBHackers on Security (2025-12-22)
-- [Nissan Confirms Data Breach Following Unauthorized Access to Red Hat Servers](https://www.certpro.io/nissan-confirms-data-breach-following-unauthorized-access-to-red-hat-servers/) — CertPro (2025-12-22)
-- [Threat Advisory December 2025](https://dsci.in/sites/default/files/Threat-Advisory-December-2025.pdf) — Data Security Council of India (DSCI) (2025-12-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/nissan-discloses-breach-of-21000-customers-via-compromised-red-hat-server/

@@ -47,7 +47,6 @@ This stolen information can be sold on dark web markets, used for corporate espi
 
 ## Sources
 - [Top 5 Cybersecurity News Stories March 13, 2026](https://www.diesec.com/blog/top-5-cybersecurity-news-stories-march-13-2026) — DieSec (2026-03-13)
-- [Malicious AI Assistant Extensions Harvest LLM Chat Histories](https://www.microsoft.com/en-us/security/blog/2026/03/13/malicious-ai-assistant-extensions-harvest-llm-chat-histories/) — Microsoft Security (2026-03-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-ai-browser-extensions-harvest-user-data-and-llm-prompts/

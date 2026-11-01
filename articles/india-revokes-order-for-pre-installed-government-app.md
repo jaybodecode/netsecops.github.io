@@ -40,10 +40,7 @@ The withdrawal of the order is seen as a victory for digital privacy rights in I
 **Tags:** India, privacy, surveillance, government, Apple, Google, Sanchar Saathi
 
 ## Sources
-- [India orders Apple to pre-install an undeletable state security app on iPhones](https://9to5mac.com/2025/12/01/india-orders-apple-to-pre-install-an-undeletable-state-security-app-on-iphones/) — 9to5Mac (2025-12-01)
 - [India orders pre-installation of government 'cybersecurity' app on all smartphones](https://english.alarabiya.net/business/technology/2025/12/02/India-orders-pre-installation-of-government-cybersecurity-app-on-all-smartphones) — Al Arabiya (2025-12-02)
-- [India revokes order for smartphone makers to install government security app amid uproar over privacy](https://www.cbsnews.com/news/india-sanchar-saathi-app-preinstall-order-revoked-apple-samsung/) — CBS News (2025-12-03)
-- [India revokes order to preload smartphones with state-owned security app](https://www.theguardian.com/world/2025/dec/03/india-revokes-order-to-preload-smartphones-with-state-owned-security-app) — The Guardian (2025-12-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/india-revokes-order-for-pre-installed-government-app/

@@ -76,9 +76,6 @@ Security teams can hunt for Mustang Panda activity by looking for:
 **Tags:** APT, DLL side-loading, India, Korea, LotusLite, Mustang Panda, TA416, espionage, phishing
 
 ## Sources
-- [Chinese APT Targets Indian Banks, Korean Policy Circles](https://www.darkreading.com/apt-groups/chinese-apt-targets-indian-banks-korean-policy-circles) (2026-04-21)
-- [Mustang Panda's Attack Chain](https://www.acronis.com/en-us/blog/posts/mustang-panda-attack-chain) (2026-04-21)
-- [Mustang Panda Hits India and S. Korea with Updated LOTUSLITE Backdoor](https://www.hackread.com/mustang-panda-india-south-korea-lotuslite-backdoor/) (2026-04-22)
 - [Same packet, different magic: Mustang Panda hits India's banking sector and Korea geopolitics](https://www.acronis.com/en-us/blog/posts/same-packet-different-magic-mustang-panda-hits-indias-banking-sector-and-korea-geopolitics) (2026-04-21)
 - [Mustang Panda Deploys Updated LOTUSLITE Malware Against Indian Banks and South Korean Policy Targets](https://securityboulevard.com/2026/04/mustang-panda-deploys-updated-lotuslite-malware-against-indian-banks-and-south-korean-policy-targets/) (2026-04-24)
 

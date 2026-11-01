@@ -54,7 +54,7 @@ Detecting this attack requires correlating events across the IdP and the SaaS ap
 **Tags:** Vishing, Phishing, ShinyHunters, Scattered Spider, Okta, MFA, SaaS
 
 ## Sources
-- [Behind the breach: ShinyHunters' 2026 voice phishing campaign](https://www.obsidian.io/blog/behind-the-breach-shinyhunters-2026-voice-phishing-campaign/) — Obsidian Security (2026-03-11)
+- [Obsidian Security](https://www.obsidian.io/) — Obsidian Security (2026-03-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-linked-to-voice-phishing-campaign-targeting-okta-and-saas-data/

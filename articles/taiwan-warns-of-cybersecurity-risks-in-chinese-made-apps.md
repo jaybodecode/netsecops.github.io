@@ -62,7 +62,6 @@ The following patterns may help identify risky applications on mobile devices:
 
 ## Sources
 - [MODA warns of cybersecurity risks in Chinese-made apps](https://focustaiwan.tw/sci-tech/202605270014) — Focus Taiwan (2026-05-27)
-- [Cybersecurity gaps leave Israeli emergency agencies exposed, state comptroller warns](https://www.jns.org/cybersecurity-gaps-leave-israeli-emergency-agencies-exposed-state-comptroller-warns/) — Jewish News Syndicate (2026-05-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/taiwan-warns-of-cybersecurity-risks-in-chinese-made-apps/

@@ -42,8 +42,8 @@ The potential impact on Association OCACIA is twofold. First, the encryption of 
 **Tags:** ransomware, double extortion, data leak, RaaS
 
 ## Sources
-- [NightSpire Ransomware Targets French Organization Association OCACIA - DeXpose](https://www.dexpose.io/nightspire-ransomware-targets-association-ocacia-ocacia-org/) — DeXpose (2026-04-04)
-- [Cyber Security News 03 April 2026](https://www.vlrstories.com/2026/04/cyber-security-news-03-april-2026.html) — VLR Stories (2026-04-03)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-04-04)
+- [VLR Stories](https://www.vlrstories.com/) — VLR Stories (2026-04-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/nightspire-ransomware-group-claims-attack-on-french-organization-ocacia/

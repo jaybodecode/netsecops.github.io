@@ -86,8 +86,8 @@ To detect this type of threat, security teams should monitor their development a
 **Tags:** npm, typosquatting, supply chain attack, developer security, credential theft, AWS
 
 ## Sources
-- [Typosquatted npm packages used to steal cloud and CI/CD secrets](https://www.microsoft.com/en-us/security/blog/2026/05/29/typosquatted-npm-packages-used-to-steal-cloud-and-ci-cd-secrets/) — Microsoft Security Blog (2026-05-29)
-- [Stop downloading shady npm packages, you credential-leaking devs](https://www.theregister.com/2026/05/29/npm_typosquatting_secrets/) — The Register (2026-05-29)
+- [Microsoft Security Blog](https://www.microsoft.com/) — Microsoft Security Blog (2026-05-29)
+- [The Register](https://www.theregister.com/) — The Register (2026-05-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/npm-typosquatting-campaign-steals-cloud-cicd-secrets/

@@ -49,7 +49,6 @@ For customers, detection of such an event is difficult as it originates within t
 ## Sources
 - [Top 10 Cybersecurity News (Feb. 16, 2026): Microsoft 365 Admin Center Outage Investigated as Security Event, CISA Adds Multiple Exploited Vulnerabilities to KEV Catalog, Trojanized 7-Zip Installer Spreads Proxy Malware, and More](https://www.innovatecybersecurity.com/post/top-10-cybersecurity-news-feb-16-2026-microsoft-365-admin-center-outage-investigated-as-security-event-cisa-adds-multiple-exploited-vulnerabilities-to-kev-catalog-trojanized-7-zip-installer-spreads-proxy-malware-and-more) — Innovate Cybersecurity
 - [Microsoft 365 outage takes down admin center in North America](https://www.bleepingcomputer.com/news/microsoft/microsoft-365-outage-takes-down-admin-center-in-north-america/) — BleepingComputer
-- [Another Microsoft 365 Outage Leaves Thousands Without Admin Access](https://www.techrepublic.com/article/microsoft-365-outage-admin-access-feb-2026/) — TechRepublic
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-365-admin-center-outage-investigated-as-security-event/

@@ -46,7 +46,6 @@ Once inside the network, the attackers would have performed reconnaissance to lo
 **Tags:** ransomware, municipal government, data breach, public sector, ransom payment
 
 ## Sources
-- [The State of Ransomware: October 2025](https://www.blackfog.com/the-state-of-ransomware-in-2025/) — BlackFog (2025-10-31)
 - [Gloversville hit by ransomware attack](https://www.youtube.com/watch?v=video_id) — WTEN (2025-10-27)
 
 ---

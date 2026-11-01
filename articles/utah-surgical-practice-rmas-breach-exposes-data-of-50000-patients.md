@@ -60,7 +60,6 @@ Hunting for this activity involves looking for signs of database compromise and 
 **Tags:** Ransomware, Data Breach, PEAR, Healthcare, HIPAA, PII, PHI, Extortion
 
 ## Sources
-- [Data Breach at Rocky Mountain Associated Physicians Affects 50,000 Patients](https://www.hipaajournal.com/data-breach-at-rocky-mountain-associated-physicians-affects-50000-patients/) — HIPAA Journal (2026-04-14)
 - [PEAR Ransomware Group Leaks Utah Clinic PHI After Failed Extortion Attempt](https://healthitsecurity.com/news/pear-ransomware-group-leaks-utah-clinic-phi-after-failed-extortion-attempt) — HealthITSecurity (2026-04-14)
 
 ---

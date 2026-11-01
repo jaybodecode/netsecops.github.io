@@ -67,7 +67,7 @@ Defending against sophisticated groups like Clop requires a multi-layered securi
 **Tags:** Clop, ransomware, double extortion, data leak, TA505
 
 ## Sources
-- [Clop Ransomware Strikes Canadian Company CMHHELI.COM](https://www.dexpose.io/blog/clop-ransomware-strikes-canadian-company-cmhhelicom) — DExpose (2026-01-29)
+- [DExpose](https://www.dexpose.io/) — DExpose (2026-01-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/clop-ransomware-claims-attack-on-canadian-company-cmhheli/

@@ -44,9 +44,7 @@ Healthcare organizations remain a prime target and must prioritize security.
 **Tags:** Ransomware, Rhysida, Healthcare, Data Breach, HIPAA, Double Extortion
 
 ## Sources
-- [Cookeville Medical Center Notifies Patients After July 2025 Ransomware Attack](https://www.infosecurity-magazine.com/news/cookeville-medical-center-notifies/) — Infosecurity Magazine (2026-04-19)
 - [Data Breach at Tennessee Hospital Affects 337,000](https://www.securityweek.com/data-breach-at-tennessee-hospital-affects-337000/) — SecurityWeek (2026-04-19)
-- [337K exposed in ransomware attack on Tennessee's Cookeville Regional Medical Center](https://cybernews.com/news/337k-exposed-rhysida-ransomware-attack-tennessee-cookeville-regional-medical-center/) — Cybernews (2026-04-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/tennessee-hospital-notifies-337000-of-breach-after-rhysida-ransomware-attack/

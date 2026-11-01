@@ -36,8 +36,8 @@ Organizations and individuals interested in participating in or supporting the C
 **Tags:** Cyber Civil Defense, Policy, Community, Public-Private Partnership, Cybersecurity
 
 ## Sources
-- [The UC Berkeley Center for Long-Term Cybersecurity Announces Three Regional Cyber Civil Defense Summits in 2026](https://cltc.berkeley.edu/2026/02/17/uc-berkeley-center-for-long-term-cybersecurity-announces-three-regional-cyber-civil-defense-summits-in-2026/) — UC Berkeley CLTC (2026-02-17)
-- [UC Berkeley plans regional summits to boost 'cyber civil defense'](https://statescoop.com/uc-berkeley-cyber-civil-defense-summits-2026/) — StateScoop (2026-02-17)
+- [UC Berkeley CLTC](https://cltc.berkeley.edu/) — UC Berkeley CLTC (2026-02-17)
+- [StateScoop](https://statescoop.com/) — StateScoop (2026-02-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/uc-berkeley-announces-regional-summits-for-cyber-civil-defense/

@@ -71,7 +71,7 @@ To prevent similar breaches, online service providers must implement robust data
 **Tags:** data breach, SoundCloud, PII, email leak, credential stuffing, phishing
 
 ## Sources
-- [Massive SoundCloud Data Breach Exposes Personal Details of 29.8 Million Users](https://cyberpress.com/massive-soundcloud-data-breach-exposes-personal-details-of-29-8-million-users/) — Cybernews (2026-01-28)
+- [Cybernews](https://cyberpress.com/) — Cybernews (2026-01-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/soundcloud-data-breach-exposes-29-million-users/

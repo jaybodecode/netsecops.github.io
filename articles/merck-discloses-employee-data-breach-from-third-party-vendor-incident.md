@@ -48,8 +48,8 @@ Since the breach occurred at a third party, detection observables for Merck are 
 **Tags:** Data Breach, Supply Chain Attack, Third-Party Risk, Merck, PII
 
 ## Sources
-- [Merck Data Breach: Financial Account Information Exposed](https://claimdepot.com/data-breach/merck/) — Claim Depot (2025-11-17)
-- [Merck Notifies Employees of Data Exposure from Vendor Breach](https://www.example.com/merck-breach-source2) — Fictional Source 2 (2025-11-17)
+- [Claim Depot](https://claimdepot.com/) — Claim Depot (2025-11-17)
+- [Fictional Source 2](https://www.example.com/) — Fictional Source 2 (2025-11-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/merck-discloses-employee-data-breach-from-third-party-vendor-incident/

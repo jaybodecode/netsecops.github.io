@@ -56,11 +56,8 @@ Preventing similar attacks requires both platform-level hardening and institutio
 
 ## Sources
 - [Canvas Breach Disrupts Schools & Colleges Nationwide](https://krebsonsecurity.com/2026/05/canvas-breach-disrupts-schools-colleges-nationwide/) — Krebs on Security (2026-05-08)
-- [Canvas system is online after a cyberattack disrupted thousands of schools](https://www.ksat.com/news/national/2026/05/08/canvas-system-is-online-after-a-cyberattack-disrupted-thousands-of-schools/) — KSAT (2026-05-08)
 - [2026 Canvas security incident](https://en.wikipedia.org/wiki/2026_Canvas_security_incident) — Wikipedia (2026-05-08)
-- [Canvas back online after major breach, but some California campuses locked amid ongoing threat](https://www.latimes.com/california/story/2026-05-07/canvas-down-uc-cal-state-usc-stanford-colleges-outage) — Los Angeles Times (2026-05-08)
 - [Update: Canvas cybersecurity incident](https://www.tilburguniversity.edu/current/news/more-news/update-canvas-cybersecurity-incident) — Tilburg University (2026-05-08)
-- [Northeastern says no sign so far that accounts compromised in Canvas cyberattack](https://news.northeastern.edu/2026/05/09/canvas-cyber-attack/) — Northeastern Global News (2026-05-09)
 - [Canvas returns after ShinyHunters ransomware attack on Instructure](https://www.themercercluster.com/article/2026/05/canvas-returns-after-shinyhunters-ransomware-attack-on-instructure) — The Mercer Cluster (2026-05-08)
 - [Canvas service restored as hacker group removes demands against Instructure](https://www.easternecho.com/article/2026/05/canvas-service-restored-as-hacker-group-removes-demands-against-instructure) — The Eastern Echo (2026-05-08)
 - [What to Know About the Canvas Cyberattack That's Affected Thousands of Schools](https://time.com/6174786/canvas-cyberattack-shinyhunters/) — TIME (2026-05-08)

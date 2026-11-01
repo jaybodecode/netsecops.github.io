@@ -54,8 +54,6 @@ Given the destructive nature of Anubis, preventative and recovery-focused mitiga
 
 ## Sources
 - [Dark Web Profile: Anubis Ransomware](https://socradar.io/dark-web-profile-anubis-ransomware/) — SOCRadar (2026-01-22)
-- [Anubis: A Closer Look at an Emerging Ransomware with Built-in Wiper](https://www.trendmicro.com/en_us/research/25/f/anubis-a-closer-look-at-an-emerging-ransomware-with-built-in-wiper.html) — Trend Micro (2025-01-13)
-- [Wipe, leak, extort: The crazy hybrid playbook of Anubis ransomware](https://blog.barracuda.com/2025/07/11/wipe-leak-extort-the-crazy-hybrid-playbook-of-anubis-ransomware/) — Barracuda (2025-07-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/anubis-raas-offers-destructive-wipe-mode-for-extortion/

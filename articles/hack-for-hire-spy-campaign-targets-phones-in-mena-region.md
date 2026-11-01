@@ -53,7 +53,6 @@ For individuals, detection can be difficult, but there are signs to watch for.
 **Tags:** Hack-for-Hire, BITTER APT, Cyber Espionage, Phishing, MENA, Journalists, Activists, Mobile Security
 
 ## Sources
-- [Global phishing war targets smartphones in massive hack-for-hire espionage campaign](https://www.itworldcanada.com/post/global-phishing-war-targets-smartphones-in-massive-hack-for-hire-espionage-campaign) — IT World Canada (2026-04-14)
 - [13th April – Threat Intelligence Report](https://research.checkpoint.com/2026/04/13/13th-april-threat-intelligence-report/) — Check Point Research (2026-04-13)
 - [Bitter-Linked Hack-for-Hire Campaign Targets Journalists Across MENA Region](https://thehackernews.com/2026/04/bitter-linked-hack-for-hire-campaign.html) — The Hacker News (2026-04-09)
 - [Bitter-Linked Campaign Targets Journalists in MENA](https://www.cybertpi.com/2026/04/10/bitter-linked-campaign-targets-journalists-in-mena/) — Cyber TPI (2026-04-10)

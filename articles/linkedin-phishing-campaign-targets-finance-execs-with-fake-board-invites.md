@@ -73,8 +73,6 @@ If successful, this attack provides threat actors with powerful access:
 - [New LinkedIn phishing campaign targets finance executives](https://www.scmagazine.com/news/phishing/new-linkedin-phishing-campaign-targets-finance-executives) — SC Media (2025-10-31)
 - [LinkedIn phishing targets finance execs with fake board invites](https://www.bleepingcomputer.com/news/security/linkedin-phishing-targets-finance-execs-with-fake-board-invites/) — BleepingComputer (2025-10-30)
 - [LinkedIn phishers target executives with fake board invitations](https://www.computing.co.uk/news/4252579/linkedin-phishers-target-executives-fake-board-invitations) — Computing UK (2025-10-31)
-- [New LinkedIn phishing scam targets executives with fake board positions](https://www.techradar.com/pro/security/new-linkedin-phishing-scam-targets-executives-with-fake-board-positions) — TechRadar (2025-10-31)
-- [Push Security Sees Increase in Sophisticated LinkedIn-based Phishing Campaigns](https://www.pushsecurity.com/blog/push-security-sees-increase-in-sophisticated-linkedin-based-phishing-campaigns) — Push Security (2025-10-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/linkedin-phishing-campaign-targets-finance-execs-with-fake-board-invites/

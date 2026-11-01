@@ -63,7 +63,6 @@ Security teams should hunt for TTPs associated with Inc Ransom and similar ranso
 
 ## Sources
 - [Ransomware Attack Disrupts Local Emergency Alert System Across US](https://www.securityweek.com/ransomware-attack-disrupts-local-emergency-alert-system-across-us/) — SecurityWeek (2025-11-26)
-- [Emergency alerts go dark after cyberattack on OnSolve CodeRED](https://securityaffairs.co/171542/hacking/cyberattack-on-onsolve-codered.html) — Security Affairs (2025-11-26)
 - [Cyberattack disables Onsolve Code Red emergency alert system across St. Louis region](https://www.databreaches.net/cyberattack-disables-onsolve-code-red-emergency-alert-system-across-st-louis-region/) — DataBreaches.net (2025-11-22)
 - [Nationwide CodeRED Emergency Alert System Compromised: INC Ransom Attack Leaves Thousands Without Critical Communication](https://www.breached.co/nationwide-codered-emergency-alert-system-compromised-inc-ransom-attack-leaves-thousands-without-critical-communication/) — Breached (2025-11-23)
 

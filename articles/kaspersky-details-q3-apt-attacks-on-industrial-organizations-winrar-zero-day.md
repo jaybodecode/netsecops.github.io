@@ -51,7 +51,6 @@ No specific IOCs were provided in the summary articles. The full Kaspersky repor
 
 ## Sources
 - [APT and financial attacks on industrial organizations in Q3 2025](https://ics-cert.kaspersky.com/reports/2025/12/01/apt-and-financial-attacks-on-industrial-organizations-in-q3-2025/) — Kaspersky ICS CERT (2025-12-01)
-- [December 1, 2025 Cyber Threat Intelligence Briefing](https://www.kroll.com/en/insights/publications/cyber/dec-1-2025-cyber-threat-intelligence-briefing) — Kroll (2025-12-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/kaspersky-details-q3-apt-attacks-on-industrial-organizations-winrar-zero-day/

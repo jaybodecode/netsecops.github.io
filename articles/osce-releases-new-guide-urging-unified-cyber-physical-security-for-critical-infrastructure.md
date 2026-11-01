@@ -56,9 +56,6 @@ To align with the OSCE's recommendations, critical infrastructure operators shou
 
 ## Sources
 - [OSCE Technical Guide urges unified physical and cyber defenses for critical infrastructure security](https://www.industrialcyber.co/regulation-standards-and-compliance/osce-technical-guide-urges-unified-physical-and-cyber-defenses-for-critical-infrastructure-security/) — Industrial Cyber (2025-11-10)
-- [OSCE launches new technical guide on enhancing critical infrastructure physical security from terrorist attacks](: ) — OSCE (2025-11-06)
-- [Technical Guide on Physical Security Considerations for Protecting Critical Infrastructure from Terrorist Attacks | OSCE](https://www.osce.org/projects/protect-technical-guide-on-physical-security-considerations-for-protecting-critical-infrastructure) — OSCE
-- [Protecting critical infrastructure and vulnerable targets against terrorist attacks - OSCE](https://www.osce.org/projects/protecting-critical-infrastructure-and-vulnerable-targets-from-terrorist-attacks) — OSCE
 
 ---
 Source: https://cyber.netsecops.io/articles/osce-releases-new-guide-urging-unified-cyber-physical-security-for-critical-infrastructure/

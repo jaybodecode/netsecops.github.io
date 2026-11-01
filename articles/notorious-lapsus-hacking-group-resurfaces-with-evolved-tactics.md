@@ -46,7 +46,6 @@ The resurgence of an advanced group like **Lapsus$** poses a significant threat.
 
 ## Sources
 - [Resurgence Of Scattered Lapsus$ Hunters Presents An Evolving Threat](https://www.cybersecurityintelligence.com/blog-resurgence-of-scattered-lapsus-hunters-presents-an-evolving-threat-6893.html) — Cybersecurity Intelligence (2026-01-07)
-- [Lapsus$ is back and has evolved, warns analyst](https://www.continuitycentral.com/index.php/news/technology/9187-lapsus-is-back-and-has-evolved-warns-analyst) — Continuity Central (2026-01-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/notorious-lapsus-hacking-group-resurfaces-with-evolved-tactics/

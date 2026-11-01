@@ -52,7 +52,6 @@ A successful Uragan ransomware attack can lead to severe consequences:
 
 ## Sources
 - [Weekly Intelligence Report – 27 March 2026](https://www.cyfirma.com/outofband/weekly-intelligence-report-27-march-2026/) — CYFIRMA (2026-03-27)
-- [Weekly Intelligence Report – 27 March 2026 Part 2](https://www.cyfirma.com/research/threat-scape-bulletin/weekly-intelligence-report-27-march-2026-part-2/) — CYFIRMA (2026-03-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-uragan-ransomware-strain-emerges-with-double-extortion-tactics/

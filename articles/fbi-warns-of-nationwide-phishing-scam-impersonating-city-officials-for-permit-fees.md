@@ -44,7 +44,6 @@ The primary impact is financial loss for individuals and businesses, which can r
 **Tags:** Phishing, Scam, FBI, IC3, Social Engineering, Government Impersonation
 
 ## Sources
-- [Criminals Impersonating City and County Officials in Phishing Emails for Planning and Zoning Permits](https://www.ic3.gov/Media/Y2026/PSA260309) — FBI Internet Crime Complaint Center (2026-03-09)
 - [FBI warns of phishing scams impersonating city officials for permit fees | brief](https://www.scmagazine.com/brief/fbi-warns-of-phishing-scams-impersonating-city-officials-for-permit-fees) — SC Media (2026-03-10)
 
 ---

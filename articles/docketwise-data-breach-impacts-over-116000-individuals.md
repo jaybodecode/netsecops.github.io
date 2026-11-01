@@ -45,7 +45,6 @@ For DocketWise and its law firm customers, the breach results in massive reputat
 **Tags:** PII, supply chain, third-party risk, legal tech, GDPR, identity theft
 
 ## Sources
-- [DocketWise Data Breach Affects 116K, Lawsuit Possible - Class Action](https://www.classaction.org/news/docketwise-data-breach-affects-116k-lawsuit-possible) — ClassAction.org (2026-04-06)
 - [250,000 Affected by Data Breach at Nacogdoches Memorial Hospital](https://www.securityweek.com/250000-affected-by-data-breach-at-nacogdoches-memorial-hospital/) — SecurityWeek (2026-04-03)
 
 ---

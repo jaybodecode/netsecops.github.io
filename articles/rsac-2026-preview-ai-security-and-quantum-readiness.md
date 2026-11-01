@@ -33,7 +33,6 @@ Underlying both the AI and quantum themes is a broader strategic shift towards *
 
 ## Sources
 - [RSAC 2026: What to Expect From This Year's Event](https://biztechmagazine.com/article/2026/03/rsac-2026-what-expect-years-event) — BizTech Magazine
-- [Key Themes for RSA Conference 2026: Navigating the Next Wave of Cyber Threats](https://www.securityweek.com/key-themes-for-rsa-conference-2026-navigating-the-next-wave-of-cyber-threats/) — SecurityWeek
 
 ---
 Source: https://cyber.netsecops.io/articles/rsac-2026-preview-ai-security-and-quantum-readiness/

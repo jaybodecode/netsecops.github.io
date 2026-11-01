@@ -89,9 +89,7 @@ The following patterns may help identify vulnerable or compromised systems:
 **Tags:** ICS, OT, SCADA, critical infrastructure, firmware, hardcoded credentials
 
 ## Sources
-- [ICSA-26-149-01 Jinan USR-W610](https://www.cisa.gov/news-events/ics-advisories/icsa-26-149-01) — CISA (2026-05-28)
 - [9 Advisories and 2 Updates Published – 5-28-26](https://www.dailysmack.com/2026/05/29/9-advisories-and-2-updates-published-5-28-26/) — The Daily Smack (2026-05-29)
-- [ICSA-26-149-02 ABB EIBPORT](https://www.cisa.gov/news-events/ics-advisories/icsa-26-149-02) — CISA (2026-05-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-warns-of-critical-ics-ot-vulnerabilities/

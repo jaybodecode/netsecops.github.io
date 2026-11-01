@@ -56,7 +56,6 @@ The following domains associated with the RedVDS service were taken down and are
 **Tags:** RedVDS, Microsoft, Cybercrime-as-a-Service, CaaS, Takedown, Phishing, BEC, Storm-2470
 
 ## Sources
-- [Microsoft takes down cybercrime subscription service RedVDS](https://www.scmagazine.com/news/microsoft-takes-down-cybercrime-subscription-service-redvds) — SC Magazine (2026-01-15)
 - [Microsoft Legal Action Disrupts RedVDS Cybercrime Infrastructure Used for Online Fraud](https://thehackernews.com/2026/01/microsoft-legal-action-disrupts-redvds.html) — The Hacker News (2026-01-15)
 - [Microsoft Knocks Offline RedVDS Cybercrime Marketplace Linked to $40M in Fraud](https://redmondmag.com/articles/2026/01/15/microsoft-knocks-offline-redvds-cybercrime-marketplace.aspx) — Redmond Magazine (2026-01-15)
 - [RedVDS Cybercrime Service Disrupted by Microsoft and Law Enforcement](https://www.securityweek.com/redvds-cybercrime-service-disrupted-by-microsoft-and-law-enforcement/) — SecurityWeek (2026-01-14)

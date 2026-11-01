@@ -57,7 +57,7 @@ To hunt for this type of threat, security teams in development organizations sho
 **Tags:** trojan, malware, visual studio, supply chain attack, devsecops, msbuild
 
 ## Sources
-- [New Trojan Turns Visual Studio Projects Into a Software Supply Chain Attack Vector](https://cybersecuritynews.com/new-trojan-turns-visual-studio-projects-into-a-software-supply-chain-attack-vector/) — Cybersecurity News (2026-07-11)
+- [Cybersecurity News](https://cybersecuritynews.com/) — Cybersecurity News (2026-07-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-trojan-targets-visual-studio-projects-supply-chain-attack/

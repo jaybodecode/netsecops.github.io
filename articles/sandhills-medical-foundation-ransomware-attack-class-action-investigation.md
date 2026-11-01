@@ -87,8 +87,6 @@ To prevent similar attacks, healthcare organizations should prioritize:
 
 ## Sources
 - [Sandhills Medical Foundation Ransomware Breach Draws Class Action Investigation Nearly a Year Later](https://securityboulevard.com/2026/05/sandhills-medical-foundation-ransomware-breach-draws-class-action-investigation-nearly-a-year-later/) — Security Boulevard (2026-05-04)
-- [PRIVACY ALERT: Sandhills Medical Foundation, Inc. Under Investigation for Data Breach of Over 169,000 Patient Records](https://www.prnewswire.com/news-releases/privacy-alert-sandhills-medical-foundation-inc-under-investigation-for-data-breach-of-over-169-000-patient-records-302134958.html) — PR Newswire (2026-05-04)
-- [Sandhills Medical Foundation, Inc., d/b/a Sandhills Medical Data Breach: Edelson Lechtzin LLP Launches Investigation into Exposure of Personal Information](https://www.prnewswire.com/news-releases/sandhills-medical-foundation-inc-dba-sandhills-medical-data-breach-edelson-lechtzin-llp-launches-investigation-into-exposure-of-personal-information-302134560.html) — PR Newswire (2026-05-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/sandhills-medical-foundation-ransomware-attack-class-action-investigation/

@@ -50,8 +50,8 @@ To prevent similar breaches, organizations must strengthen their defenses agains
 **Tags:** data breach, FinTech, phishing, credential theft, MFA bypass, privacy
 
 ## Sources
-- [FinTech app PaySphere discloses data breach affecting 4 million users](https://techcrunch.com/2026/02/15/paysphere-data-breach-4-million-users/) — TechCrunch (2026-02-15)
-- [PaySphere confirms breach exposing user data and transaction history after credential theft](https://www.zdnet.com/article/paysphere-confirms-breach-exposing-user-data-and-transaction-history/) — ZDNet (2026-02-16)
+- [TechCrunch](https://techcrunch.com/) — TechCrunch (2026-02-15)
+- [ZDNet](https://www.zdnet.com/) — ZDNet (2026-02-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/fintech-app-paysphere-breach-exposes-4-million-users-data/

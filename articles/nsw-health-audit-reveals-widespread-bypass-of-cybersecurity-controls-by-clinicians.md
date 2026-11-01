@@ -54,8 +54,8 @@ Addressing this issue requires a multi-pronged approach that focuses on people, 
 **Tags:** Healthcare, Compliance, Insider Risk, Password Sharing, Security Culture, Australia
 
 ## Sources
-- [Critical Australian Cyber Threats: React2Shell RCE, Healthcare Ransomware & Data Breaches](https://www.leansecurity.com.au/blog/daily-threat-briefing-australia-20-december-2025) — Lean Security (2025-12-20)
-- [NSW health staff share passwords and sensitive patient data, audit finds](https://www.theguardian.com/australia-news/2023/dec/19/nsw-health-system-cyber-security-audit-staff-sharing-passwords) — The Guardian (2025-12-20)
+- [Lean Security](https://www.leansecurity.com.au/) — Lean Security (2025-12-20)
+- [The Guardian](https://www.theguardian.com/) — The Guardian (2025-12-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/nsw-health-audit-reveals-widespread-bypass-of-cybersecurity-controls-by-clinicians/

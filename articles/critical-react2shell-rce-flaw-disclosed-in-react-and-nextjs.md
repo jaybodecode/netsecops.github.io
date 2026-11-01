@@ -66,7 +66,6 @@ Security teams should hunt for exploitation attempts by monitoring web server lo
 ## Sources
 - [Critical RSC Bugs in React and Next.js Allow Unauthenticated Remote Code Execution](https://thehackernews.com/2025/12/critical-rsc-bugs-in-react-and-nextjs.html) — The Hacker News (2025-12-03)
 - [NVD - CVE-2025-55182](https://nvd.nist.gov/vuln/detail/CVE-2025-55182) — NIST NVD (2025-12-03)
-- [Critical Security Vulnerability in React Server Components](https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-) — React (2025-12-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-react2shell-rce-flaw-disclosed-in-react-and-nextjs/

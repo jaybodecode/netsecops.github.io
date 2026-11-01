@@ -44,7 +44,6 @@ While no direct financial data like credit card numbers was found, the combinati
 **Tags:** Data Breach, Hospitality, Chekin, Gastrodat, PII, Phishing, Cybernews
 
 ## Sources
-- [Hackers siphon data from 5M hotel guests, feeding it live onto Telegram](https://cybernews.com/security/hackers-siphon-data-from-5m-hotel-guests-feeding-it-live-onto-telegram/) — Cybernews
 - [Latest Security News | Cybernews](https://cybernews.com/security/) — Cybernews
 
 ---

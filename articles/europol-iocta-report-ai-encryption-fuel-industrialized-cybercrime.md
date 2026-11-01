@@ -56,7 +56,6 @@ The report implicitly calls for a more proactive and collaborative defense postu
 - [New 2026 'IOCTA' highlights sophisticated tactics and emerging challenges in the digital landscape](https://www.europol.europa.eu/media-press/newsroom/news/new-2026-iocta-highlights-sophisticated-tactics-and-emerging-challenges-in-digital-landscape) (2026-04-28)
 - [Europol published report on the latest trends in the cybercrime landscape](https://www.eucrim.eu/news/europol-published-report-latest-trends-cybercrime-landscape/) (2026-04-29)
 - [Europol IOCTA 2026 report flags shift to industrialised cybercrime powered by AI, ransomware and data theft](https://industrialcyber.co/management-strategy/europol-iocta-2026-report-flags-shift-to-industrialised-cybercrime-powered-by-ai-ransomware-and-data-theft/) (2026-04-29)
-- [AI, Encryption, and Crypto Power New Wave of Global Cybercrime: Europol Report](https://www.the420.in/2026/04/28/ai-encryption-and-crypto-power-new-wave-of-global-cybercrime-europol-report/) (2026-04-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/europol-iocta-report-ai-encryption-fuel-industrialized-cybercrime/

@@ -87,7 +87,6 @@ Security teams in healthcare can hunt for the following general patterns:
 
 ## Sources
 - [Data Breaches at Healthcare Organizations in Illinois and Texas Affect 600000](https://www.securityweek.com/data-breaches-at-healthcare-organizations-in-illinois-and-texas-affect-600000/) — SecurityWeek (2026-04-21)
-- [Three US healthcare orgs disclose size of data breaches](https://cybernews.com/news/three-us-healthcare-orgs-disclose-data-breaches/) — Cybernews (2026-04-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/healthcare-data-breaches-in-illinois-and-texas-impact-nearly-600000/

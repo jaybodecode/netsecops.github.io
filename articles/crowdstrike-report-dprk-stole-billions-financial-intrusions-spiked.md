@@ -44,8 +44,8 @@ The financial impact of these campaigns is staggering, with billions of dollars 
 **Tags:** CrowdStrike, DPRK, North Korea, PRESSURE CHOLLIMA, MUTANT SPIDER, Cryptocurrency, Financial Services, Threat Intelligence, Vishing
 
 ## Sources
-- [CrowdStrike 2026 Financial Services Threat Landscape Report Reveals DPRK-Nexus Adversaries Stole Billions, Industrialized Cybercrime with AI-Powered Deception](https://www.crowdstrike.com/press-releases/crowdstrike-2026-financial-services-threat-landscape-report-reveals-dprk-nexus-adversaries-stole-billions/) — CrowdStrike (2026-05-20)
-- [DPRK Hackers Stole Billions in Crypto and Used AI to Deceive Victims (Fictional)](https://www.infosecurity-magazine.com/news/dprk-hackers-stole-crypto-ai/) — Infosecurity Magazine (2026-05-20)
+- [CrowdStrike](https://www.crowdstrike.com/) — CrowdStrike (2026-05-20)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/crowdstrike-report-dprk-stole-billions-financial-intrusions-spiked/

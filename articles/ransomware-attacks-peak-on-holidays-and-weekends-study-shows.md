@@ -39,7 +39,7 @@ The report's findings have significant implications for security operations and 
 **Tags:** Ransomware, Security Operations, SOC, Incident Response, Semperis, Cybersecurity Report, Holiday Security
 
 ## Sources
-- [NEW Semperis Study Reveals that the Majority of Ransomware Attacks Continue to Occur During Holidays and Weekends](https://www.prnewswire.com/news-releases/new-semperis-study-reveals-that-the-majority-of-ransomware-attacks-continue-to-occur-during-holidays-and-weekends-302986427.html) — PR Newswire (2025-11-24)
+- [PR Newswire](https://www.prnewswire.com/) — PR Newswire (2025-11-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attacks-peak-on-holidays-and-weekends-study-shows/

@@ -49,9 +49,6 @@ Detecting this type of third-party compromise is challenging. However, organizat
 
 ## Sources
 - [Amtrak allegedly breached by ShinyHunters, massive data leak threatened](https://www.scmagazine.com/brief/amtrak-allegedly-breached-by-shinyhunters-massive-data-leak-threatened) (2026-04-15)
-- [Hackers threaten to leak over 9M Amtrak records, including personal info](https://cybernews.com/news/amtrak-data-leak-shinyhunters/) (2026-04-14)
-- [Amtrak named in alleged ShinyHunters cyberattack involving 9.4 million records](https://www.teiss.co.uk/shinyhunters-amtrak-cyber-attack/) (2026-04-15)
-- [ShinyHunters Breach National Railroad Passenger Corporation](https://www.dexpose.io/blog/shinyhunters-breach-national-railroad-passenger-corporation/) (2026-04-12)
 - [WASTED! GTA developer Rockstar Games confirms hack as ShinyHunters demands 'pay or leak'](https://www.cyberdaily.au/security/10708-wasted-gta-developer-rockstar-games-confirms-hack-as-shinyhunters-demands-pay-or-leak) (2026-04-13)
 
 ---

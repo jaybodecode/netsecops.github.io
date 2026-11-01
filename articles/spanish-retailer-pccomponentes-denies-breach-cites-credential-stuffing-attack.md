@@ -60,7 +60,6 @@ Users and organizations can take several steps to mitigate the risk of credentia
 **Tags:** Credential Stuffing, Account Takeover, 2FA, Password Reuse, E-commerce
 
 ## Sources
-- [Spanish e-retailer PcComponentes denies report it was hacked](https://www.csoonline.com/article/1309832/spanish-e-retailer-pccomponentes-denies-report-it-was-hacked.html) — CSO Online (2026-01-22)
 - [PcComponentes denies data breach, confirms credential stuffing attack](https://www.scmagazine.com/news/pccomponentes-denies-data-breach-confirms-credential-stuffing-attack) — SC Magazine (2026-01-22)
 - [Online retailer PcComponentes says data breach claims are fake](https://www.bleepingcomputer.com/news/security/online-retailer-pccomponentes-says-data-breach-claims-are-fake/) — BleepingComputer (2026-01-21)
 

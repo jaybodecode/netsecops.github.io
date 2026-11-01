@@ -53,7 +53,6 @@ For organizations in the financial sector, the immediate guidance is to closely 
 **Tags:** AI, Artificial Intelligence, Mythos, Financial Regulation, Systemic Risk, Anthropic
 
 ## Sources
-- [Anthropic to share Mythos cyber flaw findings with global finance watchdog](https://www.theguardian.com/technology/article/2026/may/18/anthropic-to-share-mythos-cyber-flaw-findings-with-global-finance-watchdog) — The Guardian (2026-05-18)
 - [Anthropic to brief global financial watchdog on cyber flaws exposed by Mythos, FT reports](https://www.business-standard.com/world-news/anthropic-to-brief-global-financial-watchdog-on-cyber-flaws-exposed-by-mythos-ft-reports-126051800049_1.html) — Business Standard (2026-05-18)
 - [Anthropic to brief global financial regulators on cyber flaws found by Claude Mythos](https://the-decoder.com/anthropic-to-brief-global-financial-regulators-on-cyber-flaws-found-by-claude-mythos/) — The Decoder (2026-05-18)
 

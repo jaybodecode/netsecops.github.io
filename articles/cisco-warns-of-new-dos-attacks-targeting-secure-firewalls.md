@@ -57,8 +57,6 @@ Customers should consult the official Cisco advisory for a complete list of affe
 
 ## Sources
 - [Cisco Warns of New Firewall Attack Exploiting CVE-2025-20333 and CVE-2025-20362](https://thehackernews.com/2025/11/cisco-warns-of-new-firewall-attack.html) — The Hacker News (2025-11-06)
-- [Cisco became aware of a new attack variant against Secure Firewall ASA and FTD devices](https://securityaffairs.com/153834/security/cisco-new-attack-variant-asa-ftd.html) — Security Affairs (2025-11-06)
-- [H-ISAC TLP White Vulnerability Advisory: New Attack Variant Targeting Cisco Secure Firewalls](https://www.aha.org/advisory/2025-11-06-h-isac-tlp-white-vulnerability-advisory-new-attack-variant-targeting-cisco-secure-firewalls) — American Hospital Association (2025-11-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisco-warns-of-new-dos-attacks-targeting-secure-firewalls/

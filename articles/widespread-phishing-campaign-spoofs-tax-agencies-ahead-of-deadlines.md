@@ -48,8 +48,8 @@ This campaign poses a significant risk of identity theft and financial fraud to 
 **Tags:** Phishing, Smishing, Scattered Spider, IRS, HMRC, CRA, Tax Scam
 
 ## Sources
-- [Tax Season Phishing Frenzy: Scattered Spider Impersonates IRS, HMRC, and CRA](https://www.proofpoint.com/us/blog/threat-insight/tax-season-phishing-frenzy-scattered-spider-impersonates-irs-hmrc-and-cra) — Proofpoint (2026-02-23)
-- [IRS Warns of Massive Tax Refund Phishing Scam](https://www.cbsnews.com/news/tax-refund-scam-irs-warning-phishing-2026-02-23/) — CBS News (2026-02-23)
+- [Proofpoint](https://www.proofpoint.com/) — Proofpoint (2026-02-23)
+- [CBS News](https://www.cbsnews.com/) — CBS News (2026-02-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/widespread-phishing-campaign-spoofs-tax-agencies-ahead-of-deadlines/

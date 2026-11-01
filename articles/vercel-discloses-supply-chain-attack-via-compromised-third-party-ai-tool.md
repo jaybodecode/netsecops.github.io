@@ -73,7 +73,6 @@ Security teams should hunt for the following activities:
 - [Vercel confirms breach as hackers claim to be selling stolen data](https://www.bleepingcomputer.com/news/security/vercel-confirms-breach-as-hackers-claim-to-be-selling-stolen-data/) — BleepingComputer (2026-04-17)
 - [Vercel Breach Tied to Context AI Hack Exposes Limited Customer Credentials](https://www.thehackernews.com/2026/04/vercel-breach-tied-to-context-ai-hack.html) — The Hacker News (2026-04-18)
 - ['We've identified a security incident': Vercel breach confirmed after hackers claim stolen data for sale online](https://www.techradar.com/pro/security/weve-identified-a-security-incident-vercel-breach-confirmed-after-hackers-claim-stolen-data-for-sale-online) — TechRadar (2026-04-18)
-- [Cloud deployment firm Vercel breached, advises secrets rotation](https://www.itnews.com.au/news/cloud-deployment-firm-vercel-breached-advises-secrets-rotation-606993) — iTnews (2026-04-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/vercel-discloses-supply-chain-attack-via-compromised-third-party-ai-tool/

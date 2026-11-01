@@ -42,11 +42,8 @@ When the system does roll out, users should carefully review the options and the
 **Tags:** Discord, Privacy, Data Security, Age Verification, Policy, Online Safety
 
 ## Sources
-- [Discord Postpones Age Verification Feature Amid Backlash](https://www.gamerevolution.com/news/963737-discord-postpones-age-verification-feature-amid-backlash) — GameRevolution (2026-02-26)
 - [Discord delays global age verification after backlash](https://unb.com.bd/category/Science-Technology/discord-delays-global-age-verification-after-backlash/132103) — United News of Bangladesh (2026-02-26)
-- [Discord postpones age verification rollout amid criticism, promises transparency](https://www.thehindu.com/sci-tech/technology/discord-postpones-age-verification-rollout-amid-criticism-over-privacy/article67890695.ece) — The Hindu (2026-02-26)
 - [Discord Delays Global Age Verification Rollout to Late 2026 Following User Backlash](https://www.pressroom.com.pk/discord-delays-global-age-verification-rollout-to-late-2026-following-user-backlash/) — PressRoom (2026-02-26)
-- [AI Compliance Tools Flood Market as MSPs Face Validation Gap](https://www.thebusinessof.tech/ai-compliance-tools-flood-market-as-msps-face-validation-gap/) — The Business of Tech (2026-02-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/discord-delays-global-age-verification-policy-after-backlash/

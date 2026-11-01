@@ -36,8 +36,8 @@ This incident offers critical lessons for organizations outsourcing critical fun
 **Tags:** Data Breach, Capita, UK Government, Pensions, ICO, GDPR, Insider Threat
 
 ## Sources
-- [PAC correspondence on CSPS transition reveals 'unacceptable' data breach](https://www.pensionsage.com/pa/PAC-correspondence-on-CSPS-transition-reveals-unacceptable-data-breach.php) — Pensions Age
-- [Civil Service Pension Scheme: Cabinet Office explains decision to outsource contract](https://www.civilserviceworld.com/professions/article/civil-service-pension-scheme-cabinet-office-explains-decision-to-outsource-contract) — Civil Service World
+- [Pensions Age](https://www.pensionsage.com/) — Pensions Age
+- [Civil Service World](https://www.civilserviceworld.com/) — Civil Service World
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-civil-service-pension-scheme-hit-by-data-breach-under-capita/

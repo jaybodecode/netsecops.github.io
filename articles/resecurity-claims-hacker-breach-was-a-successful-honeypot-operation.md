@@ -52,7 +52,6 @@ Based on **Resecurity's** account, the attack unfolded within their deception en
 **Tags:** Honeypot, Cyber Deception, Resecurity, Scattered Lapsus Hunters, Lapsus, ShinyHunters, Active Defense
 
 ## Sources
-- [Hackers claim to hack Resecurity, firm says it was a honeypot](https://www.bleepingcomputer.com/news/security/hackers-claim-to-hack-resecurity-firm-says-it-was-a-honeypot/) — BleepingComputer (2026-01-03)
 - [Resecurity denies ShinyHunters breach, claims hackers fell for honeypot](https://www.scmagazine.com/news/resecurity-denies-shinyhunters-breach-claims-hackers-fell-for-honeypot) — SC Magazine (2026-01-05)
 - [Synthetic Data: A New Frontier for Cyber Deception and Honeypots](https://resecurity.com/blog/article/synthetic-data-a-new-frontier-for-cyber-deception-and-honeypots) — Resecurity (2025-12-24)
 - [Scattered Lapsus$ Hunters Snared in Cyber Researcher Honeypot](https://www.darkreading.com/cyberattacks-data-breaches/scattered-lapsus-hunters-snared-in-cyber-researcher-honeypot) — Dark Reading (2026-01-06)

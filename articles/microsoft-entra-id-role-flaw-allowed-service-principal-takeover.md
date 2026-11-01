@@ -64,11 +64,7 @@ However, organizations should take the following steps as a matter of good secur
 **Tags:** Microsoft Entra ID, Azure AD, privilege escalation, service principal, identity management, cloud security, Microsoft
 
 ## Sources
-- [Microsoft Patches Entra ID Role Flaw That Enabled Service Principal Takeover](https://thehackernews.com/2026/04/microsoft-patched-entra-id-role-flaw.html) — The Hacker News (2026-04-28)
-- [Microsoft fixes Entra ID flaw enabling privilege escalation](https://securityaffairs.co/162386/hacking/microsoft-entra-id-flaw.html) — Security Affairs (2026-04-28)
 - [Microsoft Entra Agent ID Flaw Enabled Tenant Takeover via Privilege Escalation](https://www.hackread.com/microsoft-entra-agent-id-flaw-tenant-takeover/) — Hackread (2026-04-26)
-- [Microsoft patched an 'agent-only' role that was not](https://www.csoonline.com/article/2099303/microsoft-patched-an-agent-only-role-that-was-not.html) — CSO Online (2026-04-27)
-- [Vulnerability in Microsoft Entra Agent ID Could Lead to Privilege Escalation and Tenant Takeover](https://www.thaicert.or.th/news/12693/) — ThaiCERT (2026-04-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-entra-id-role-flaw-allowed-service-principal-takeover/

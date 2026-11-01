@@ -66,7 +66,6 @@ Strengthening defenses against supply chain attacks requires a multi-layered app
 
 ## Sources
 - [Korean Air Data Compromised in Oracle EBS Hack](https://www.securityweek.com/korean-air-data-compromised-in-oracle-ebs-hack/) — SecurityWeek (2025-12-30)
-- [Korean Air employee data stolen in third-party supplier breach](https://www.bleepingcomputer.com/news/security/korean-air-employee-data-stolen-in-third-party-supplier-breach/) — BleepingComputer (2025-12-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/korean-air-subsidiary-breach-exposes-30000-employee-records/

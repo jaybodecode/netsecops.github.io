@@ -57,7 +57,6 @@ The report suggests that stronger governance is key to reducing risk.
 **Tags:** private equity, cyber risk, compliance, GRC, third-party risk, penetration testing
 
 ## Sources
-- [Half of Portfolio Companies Face Elevated or High Cyber Risk, Benchmarking Report Finds](https://www.acaglobal.com/insights/half-portfolio-companies-face-elevated-or-high-cyber-risk-benchmarking-report-finds) — ACA Group (2026-03-03)
 - [MSP cybersecurity news digest, March 3, 2026](https://www.acronis.com/en-us/blog/posts/msp-cybersecurity-news-digest-march-3-2026) — Acronis (2026-03-03)
 
 ---

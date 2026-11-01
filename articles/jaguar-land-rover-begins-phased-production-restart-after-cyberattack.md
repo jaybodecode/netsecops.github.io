@@ -52,8 +52,6 @@ To prevent similar incidents, manufacturers like JLR should focus on strategic c
 **Tags:** Cyberattack, Incident Response, Manufacturing, JLR, Ransomware, Supply Chain
 
 ## Sources
-- [Jaguar Land Rover launches phased restart at factories after cyber-attack](https://www.theguardian.com/business/2025/oct/07/jaguar-land-rover-launches-phased-restart-at-factories-after-cyber-attack) — The Guardian (2025-10-07)
-- [Jaguar Land Rover aims to restart limited production after cyber-attack](https://www.theguardian.com/business/2025/oct/06/jaguar-land-rover-aims-to-restart-limited-production-after-cyber-attack) — The Guardian (2025-10-06)
 - [Jaguar Land Rover to restart manufacturing operations following cyber attack](https://www.itv.com/news/2025-10-08/jaguar-land-rover-to-restart-manufacturing-operations-following-cyber-attack) — ITV News (2025-10-07)
 
 ---

@@ -46,7 +46,6 @@ Hardening critical infrastructure like 911 centers is a national security priori
 **Tags:** 911, emergency services, critical infrastructure, cyberattack, Massachusetts, government
 
 ## Sources
-- [Massachusetts emergency communications system impacted by cyberattack](https://therecord.media/massachusetts-emergency-communications-system-impacted-by-cyberattack) — The Record
 - [Regional 911 dispatch center in Pepperell hit by cyberattack](https://www.wickedlocal.com/story/patriot-ledger/2026/04/03/regional-911-dispatch-center-in-pepperell-mass-hit-by-cyberattack/73216853007/) — The Patriot Ledger
 
 ---

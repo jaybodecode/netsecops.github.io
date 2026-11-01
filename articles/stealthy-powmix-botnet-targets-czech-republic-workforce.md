@@ -62,7 +62,6 @@ A successful PowMix infection provides the attacker with a persistent foothold i
 
 ## Sources
 - [Newly Discovered PowMix Botnet Hits Czech Workers Using Randomized C2 Traffic](https://thehackernews.com/2026/04/newly-discovered-powmix-botnet-hits.html) — The Hacker News (2026-04-16)
-- [PowMix botnet targets Czech workforce](https://blog.talosintelligence.com/powmix-botnet/) — Cisco Talos (2026-04-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/stealthy-powmix-botnet-targets-czech-republic-workforce/

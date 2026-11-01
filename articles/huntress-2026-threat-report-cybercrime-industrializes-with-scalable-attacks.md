@@ -54,7 +54,6 @@ The industrialization of cybercrime has several key impacts:
 
 ## Sources
 - [Cybercrime Goes Corporate: Huntress Report Reveals Rise of Scalable, Stealth-First Attacks](https://www.itsecurityguru.org/2026/02/18/cybercrime-goes-corporate-huntress-report-reveals-rise-of-scalable-stealth-first-attacks/) — IT Security Guru (2026-02-18)
-- [Cybercrime Is a Business, and Business Is Good, Huntress Report Finds](https://www.darkreading.com/cyber-risk/huntress-report-cybercrime-business-models) — Dark Reading (2026-02-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/huntress-2026-threat-report-cybercrime-industrializes-with-scalable-attacks/

@@ -58,7 +58,6 @@ Mitigating this vulnerability requires fundamental changes to how LLMs are train
 
 ## Sources
 - [Prompt Injection Through Poetry](https://www.schneier.com/blog/archives/2025/11/prompt-injection-through-poetry.html) — Schneier on Security (2025-11-28)
-- [Tageszusammenfassung - 28.11.2025](https://www.cert.at/de/aktuelles/2025/11/tageszusammenfassung-28112025) — CERT.at (2025-11-28)
 - [Schneier on Security](https://www.schneier.com/feed/) — Schneier on Security (2025-11-28)
 
 ---

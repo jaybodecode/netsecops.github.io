@@ -76,8 +76,6 @@ Preventing infection is key to defending against this type of botnet.
 **Tags:** Mirai, xlabs_v1, Botnet, DDoS, IoT, Android Debug Bridge, ADB, Tadashi, Minecraft
 
 ## Sources
-- [Mirai-Based xlabs_v1 Botnet Exploits ADB to Hijack IoT Devices for DDoS Attacks](https://thehackernews.com/2026/05/mirai-based-xlabs-v1-botnet-exploits-adb-to-hijack-iot-devices-for-ddos-attacks.html) — The Hacker News (2026-05-06)
-- [Botnet Hijacks ADB-Exposed Android Devices to Target Minecraft Servers](https://gbhackers.com/botnet-hijacks-adb-exposed-android-devices-to-target-minecraft-servers/) — GBHackers on Security (2026-05-04)
 - [From Android TVs to routers: the xlabs_v1 Mirai-based botnet built for DDoS attacks](https://blog.hunt.io/xlabs_v1-botnet-analysis-ddos-for-hire-minecraft/) — Hunt.io (2026-05-07)
 - [New xlabs_v1 Botnet Targets Minecraft Servers Through ADB-Exposed Android Devices](https://techgenix.com/new-xlabs_v1-botnet-targets-minecraft-servers/) — TechGenix (2026-05-04)
 - [Mirai-Based xlabs_v1 Botnet Exploits ADB to Hijack IoT Devices for DDoS Attacks](https://www.reddit.com/r/SecOpsDaily/comments/1ckw2lq/miraibased_xlabs_v1_botnet_exploits_adb_to/) — Reddit (2026-05-06)

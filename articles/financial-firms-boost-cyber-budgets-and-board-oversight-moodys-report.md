@@ -48,7 +48,6 @@ There are no direct penalties associated with this report. However, regulators l
 
 ## Sources
 - [Cyber risk a growing priority among insurance and asset management firms](https://www.cybersecuritydive.com/news/cyber-risk-insurance-asset-management-moodys/730073/) — Cybersecurity Dive (2025-10-09)
-- [Black Arrow Cyber Threat Intelligence Briefing 10 October 2025 [references Moody's report findings]](https://www.blackarrowcyber.com/briefings/black-arrow-cyber-threat-intelligence-briefing-10-october-2025/) — Black Arrow Cyber (2025-10-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/financial-firms-boost-cyber-budgets-and-board-oversight-moodys-report/

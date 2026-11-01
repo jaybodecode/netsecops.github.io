@@ -48,7 +48,6 @@ The most critical defense against wiper malware is a robust and resilient backup
 - [Top 5 Cybersecurity News Stories March 06, 2026](https://www.diesec.com/blog/top-5-cybersecurity-news-stories-march-06-2026) — DIESEC (2026-03-06)
 - [Iran-linked cyberattack prompts Microsoft Intune warnings](https://www.americanbanker.com/news/iran-linked-cyberattack-prompts-microsoft-intune-warnings) — American Banker (2026-03-06)
 - [Justice Department Disrupts Iranian Cyber Enabled Psychological Operations](https://www.justice.gov/opa/pr/justice-department-disrupts-iranian-cyber-enabled-psychological-operations) — Department of Justice (2026-03-06)
-- [FBI update on Iran-linked hackers who brought down machines of America's largest medical device company Stryker; says: Iran thought they could hide behind …](https://timesofindia.indiatimes.com/gadgets-news/fbi-update-on-iran-linked-hackers-who-brought-down-machines-of-americas-largest-medical-device-company-stryker-says-iran-thought-they-could-hide-behind/articleshow/108638361.cms) — The Times of India (2026-03-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/iranian-groups-launch-great-epic-wiper-attack-campaign/

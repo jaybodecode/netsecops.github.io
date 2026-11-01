@@ -49,7 +49,6 @@ FinCEN Director Andrea Gacki's statement underscores the value of this reporting
 ## Sources
 - [FinCEN Issues Financial Trend Analysis on Ransomware](https://www.fincen.gov/news/news-releases/fincen-issues-financial-trend-analysis-ransomware) — FinCEN (2025-12-04)
 - [FinCEN analysis shows scope of ransomware problem](https://bankingjournal.aba.com/2025/12/fincen-analysis-shows-scope-of-ransomware-problem/) — ABA Banking Journal (2025-12-04)
-- [FinCEN Combats Ransomware](https://www.fincen.gov/resources/reports/fincen-combats-ransomware) — FinCEN (2025-12-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/fincen-report-reveals-2-1-billion-in-ransomware-payments-since-2022/

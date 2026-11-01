@@ -31,7 +31,6 @@ This experience in managing technology for large, multinational public companies
 ## Sources
 - [Darktrace Appoints Terry Doyle as Chief Information Officer](https://www.darktrace.com/news/darktrace-appoints-terry-doyle-as-chief-information-officer) — Darktrace (2026-01-13)
 - [Endpoint Security and Network Monitoring News for the Week of January 16th: Asimily, OneSpan, Infoblox, and More](https://www.solutionsreview.com/endpoint-security/endpoint-security-and-network-monitoring-news-for-the-week-of-january-16th-asimily-onespan-infoblox-and-more/) — Solutions Review (2026-01-16)
-- [Darktrace just hired its first chief information officer | ChannelPro - ITPro](https://www.itpro.com/news/cybersecurity-vendor-darktrace-just-hired-its-first-chief-information-officer) — ITPro (2026-01-14)
 - [Darktrace Announces Appointment of Terry Doyle as Chief Information Officer](https://www.marketscreener.com/quote/stock/DARKTRACE-PLC-123403213/news/Darktrace-Announces-Appointment-of-Terry-Doyle-as-Chief-Information-Officer-45731670/) — MarketScreener (2026-01-13)
 
 ---

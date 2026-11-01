@@ -65,7 +65,6 @@ Detection requires moving beyond IP/domain blocking and focusing on behavioral a
 ## Sources
 - [GopherWhisper: A burrow full of malware](https://www.welivesecurity.com/en/eset-research/gopherwhisper-burrow-full-malware/) — WeLiveSecurity (2026-04-23)
 - [China-Linked GopherWhisper Infects 12 Mongolian Government Systems with Go Backdoors](https://thehackernews.com/2026/04/china-linked-gopherwhisper-infects-12.html) — The Hacker News (2026-04-23)
-- [China-linked hackers targeted Mongolian government using Slack, Discord for covert communications](https://therecord.media/china-linked-gopherwhisper-apt-mongolia-slack-discord) — The Record (2026-04-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-gopherwhisper-apt-group-targets-mongolian-government/

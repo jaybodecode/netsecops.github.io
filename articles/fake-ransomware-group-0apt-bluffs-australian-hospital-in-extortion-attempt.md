@@ -63,9 +63,7 @@ Mitigation against bluff attacks is primarily about preparedness and resilience.
 
 ## Sources
 - [Exclusive: Epworth HealthCare finds no evidence of data breach as hackers allege 920GB stolen in ransomware attack](https://www.cyberdaily.au/security/10188-exclusive-epworth-healthcare-finds-no-evidence-of-data-breach-as-hackers-allege-920gb-stolen-in-ransomware-attack) — CyberDaily.au (2026-02-08)
-- [0apt Ransomware Attack on Epworth Private Healthcare in Australia](https://www.dexpose.io/blog/0apt-ransomware-attack-on-epworth-private-healthcare-in-australia-2026-02-05) — DEXPOSE (2026-02-08)
 - [9th February 2026 Cyber Update: Fake Ransomware Group Targets Epworth HealthCare in Data Extortion Bluff](https://www.cybernewscentre.com/9th-february-2026-cyber-update-fake-ransomware-group-targets-epworth-healthcare-in-data-extortion-bluff/) — Cyber News Centre (2026-02-09)
-- [Australia Cyber Security: DeepSeek AI Ban, Epworth Ransomware & Critical Exploits](https://aisecuritywire.com/australia-cyber-security-deepseek-ai-ban-epworth-ransomware-critical-exploits/) — AI Security Wire (2026-02-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/fake-ransomware-group-0apt-bluffs-australian-hospital-in-extortion-attempt/

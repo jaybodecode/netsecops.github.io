@@ -52,8 +52,6 @@ Security teams should hunt for the following types of activity to detect similar
 
 ## Sources
 - [Coupang's massive data breach undercuts national security certification](https://www.koreajoongangdaily.co.kr/2025/11/30/opinion/editorial/Coupangs-massive-data-breach-undercuts-national-security-certification/2115160.html) — Korea JoongAng Daily (2025-11-30)
-- [South Korea's Coupang admits breach exposed 33.7M users](https://www.theregister.com/2025/12/01/coupang_data_breach_korea/) — The Register (2025-12-01)
-- [Coupang falls after disclosing a major data breach (CPNG:NYSE)](https://seekingalpha.com/news/4160459-coupang-falls-after-disclosing-a-major-data-breach) — Seeking Alpha (2025-12-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/coupang-discloses-massive-data-breach-affecting-33-7-million-users/

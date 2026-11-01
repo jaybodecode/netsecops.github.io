@@ -72,8 +72,8 @@ Security teams may want to hunt for the following patterns to identify potential
 **Tags:** Supply Chain Attack, Laravel, PHP, Packagist, Credential Stealing
 
 ## Sources
-- [Supply Chain Attack Targets Laravel-Lang Packages with Credential Stealer](https://socket.dev/blog/laravel-lang-supply-chain-attack) — Socket
-- [New Supply Chain Attack on Laravel-Lang Packages Deploys Credential Stealer](https://thehackernews.com/2026/05/laravel-lang-supply-chain-attack.html) — The Hacker News
+- [Socket](https://socket.dev/) — Socket
+- [The Hacker News](https://thehackernews.com/) — The Hacker News
 
 ---
 Source: https://cyber.netsecops.io/articles/laravel-lang-supply-chain-attack-compromises-over-200-package-versions/

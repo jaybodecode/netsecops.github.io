@@ -76,7 +76,6 @@ Security teams may want to hunt for activity related to the **Nitrogen** ransomw
 
 ## Sources
 - [Foxconn Attack Highlights Manufacturing's Cyber Crisis](https://www.darkreading.com/cyber-risk/foxconn-attack-highlights-manufacturings-cyber-crisis) — Dark Reading (2026-05-14)
-- [Major tech manufacturer Foxconn confirms cyberattack hit North American factories](https://statescoop.com/major-tech-manufacturer-foxconn-confirms-cyberattack-hit-north-american-factories/) — StateScoop (2026-05-14)
 - [Ransomware attacks on West Pharmaceutical and Foxconn highlight growing cyber risks to manufacturing sector](https://industrialcyber.co/news/ransomware-attacks-on-west-pharmaceutical-and-foxconn-highlight-growing-cyber-risks-to-manufacturing-sector/) — Industrial Cyber (2026-05-14)
 - [Foxconn confirms cyberattack affecting some North American facilities](https://www.cybersecuritydive.com/news/foxconn-cyberattack-north-american-facilities/716183/) — Cybersecurity Dive (2026-05-14)
 

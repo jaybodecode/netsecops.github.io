@@ -51,8 +51,6 @@ No specific technical indicators of compromise (IPs, hashes, domains) were provi
 **Tags:** data breach, bomco, pii, phi, ssn, aerospace
 
 ## Sources
-- [Bomco Data Breach Exposes Social Security Numbers and Health Information](https://www.jdsupra.com/legalnews/bomco-data-breach-exposes-social-1344460/) — JD Supra (2026-05-26)
-- [Bomco Data Breach Exposes Social Security Numbers and Health Information](https://www.securityinfowatch.com/security-executives/news/53096645/bomco-data-breach-exposes-social-security-numbers-and-health-information) — SecurityInfoWatch (2026-05-26)
 - [Bomco Data Breach Lawsuit Investigation](https://claimdepot.org/investigations/bomco-data-breach-lawsuit-investigation/) — ClaimDepot.org (2026-05-26)
 
 ---

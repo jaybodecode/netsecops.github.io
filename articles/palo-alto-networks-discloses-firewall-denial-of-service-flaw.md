@@ -78,9 +78,7 @@ Given that the vulnerability requires a URL proxy or decrypt policy, organizatio
 **Tags:** Palo Alto Networks, PAN-OS, firewall, vulnerability, denial-of-service, DoS, CVE-2025-4619
 
 ## Sources
-- [Palo Alto PAN-OS Vulnerability Allows Attackers to Reboot Firewalls via Malicious Packets](https://www.hackread.com/palo-alto-pan-os-vulnerability-reboot-firewalls/) — HackRead (2025-11-13)
 - [Palo Alto PAN-OS Flaw Lets Attackers Force Firewall Reboots via Malicious Packets](https://gbhackers.com/palo-alto-pan-os-flaw/) — GBHackers (2025-11-14)
-- [Palo Alto PAN-OS Firewall Vulnerability Let Attackers Reboot Firewall by Sending Malicious Packet - Cyber Security News](https://www.hackread.com/palo-alto-pan-os-firewall-vulnerability-cve-2025-4619/) — HackRead (2025-11-13)
 - [CVE-2025-4619 PAN-OS: Firewall Denial of Service (DoS) Using Specially Crafted Packets](https://security.paloaltonetworks.com/CVE-2025-4619) — Palo Alto Networks (2025-11-14)
 - [CVE-2025-4619 - PAN-OS: Firewall Denial of Service (DoS) Using Specially Crafted Packets (Severity - SecAlerts](https://secalerts.co/vulnerability/cve-2025-4619) — SecAlerts (2025-11-14)
 

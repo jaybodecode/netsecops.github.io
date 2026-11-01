@@ -44,7 +44,6 @@ This approach aligns with the MITRE ATT&CK Mitigation [`M1017 - User Training`](
 **Tags:** AI, security awareness, phishing, behavioral AI, RSAC, email security
 
 ## Sources
-- [Darktrace Introduces Darktrace / Adaptive Human Defense, a New Generation of Personalized, Real-Time Security Training and Protection](https://www.darktrace.com/press/2026/324a) — Darktrace (2026-03-25)
 - [Darktrace introduces Adaptive Human Defense to personalize security training and protection across organizations](https://industrialcyber.co/news/darktrace-introduces-adaptive-human-defense-to-personalize-security-training-and-protection-across-organizations/) — Industrial Cyber (2026-03-25)
 - [RSAC 2026 Conference Announcements Summary (Day 2)](https://www.securityweek.com/rsac-2026-conference-announcements-summary-day-2/) — SecurityWeek (2026-03-25)
 

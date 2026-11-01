@@ -58,7 +58,6 @@ Preventing insider threats requires a combination of technical controls, adminis
 
 ## Sources
 - [Two Americans Plead Guilty to Targeting Multiple U.S. Victims Using ALPHV BlackCat Ransomware](https://www.justice.gov/opa/pr/two-americans-plead-guilty-targeting-multiple-us-victims-using-alphv-blackcat-ransomware) — Department of Justice (2025-12-30)
-- [Ransomware responders plead guilty to using ALPHV in attacks on US organizations](https://therecord.media/ransomware-responders-plead-guilty-alphv-us-orgs) — The Record (2025-12-30)
 - [Guilty Pleas in Ransomware Attacks](https://www.isssource.com/guilty-pleas-in-ransomware-attacks/) — ISSSource (2025-12-30)
 
 ---

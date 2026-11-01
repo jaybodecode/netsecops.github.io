@@ -48,7 +48,6 @@ For organizations that are clients of SitusAMC or similar vendors:
 
 ## Sources
 - [Data Breach - Past Updates - SitusAMC](https://www.situsamc.com/data-breach-past-updates) — SitusAMC
-- [Data Breach - SitusAMC](https://www.situsamc.com/data-breach) — SitusAMC
 - [SitusAMC Breach Exposes Data From 100+ Financial Institutions](https://www.esecurityplanet.com/news/situsamc-breach-exposes-data-from-100-financial-institutions/) — eSecurity Planet
 - [Initial Guidance on Responding to the SitusAMC Data Breach](https://www.ropesgray.com/en/insights/alerts/2025/11/initial-guidance-on-responding-to-the-situsamc-data-breach) — Ropes & Gray LLP
 

@@ -70,7 +70,6 @@ Immediate and strategic actions are required to mitigate these risks.
 **Tags:** ICS, OT, SCADA, CISA, Buffer Overflow, Authentication Bypass, Critical Infrastructure
 
 ## Sources
-- [CISA Releases Five Industrial Control Systems Advisories](https://www.cisa.gov/news-events/cybersecurity-advisories/icsa-25-308-01) — CISA (2025-11-04)
 - [Critical flaws in Fuji Electric, Delta Electronics, Survision, Radiometrics, IDIS systems raise security concerns for industrial sector](https://industrialcyber.co/critical-infrastructure/critical-flaws-in-fuji-electric-delta-electronics-survision-radiometrics-idis-systems-raise-security-concerns-for-industrial-sector/) — Industrial Cyber (2025-11-05)
 
 ---

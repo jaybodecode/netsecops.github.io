@@ -61,7 +61,6 @@ Preventing data exfiltration is critical.
 ## Sources
 - [Nike Probing Potential Security Incident as Hackers Threaten to Leak Data](https://www.securityweek.com/nike-probing-potential-security-incident-as-hackers-threaten-to-leak-data/) — SecurityWeek (2026-01-24)
 - [Ransomware Victims Daily Report 1/24/2026](https://www.purpleops.io/blog/ransomware-victims-daily-report-1-24-2026) — Purple Ops (2026-01-24)
-- [Critical TP-Link VIGI camera flaw allowed remote takeover of surveillance systems](https://securityaffairs.co/157833/cyber-crime/tp-link-vigi-camera-flaw.html) — Security Affairs (2026-01-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/nike-investigates-data-breach-claim-from-worldleaks-extortion-group/

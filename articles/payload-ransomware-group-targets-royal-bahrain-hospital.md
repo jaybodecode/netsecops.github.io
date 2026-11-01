@@ -50,10 +50,7 @@ A multi-layered defense is required to protect against ransomware.
 **Tags:** Double Extortion, Healthcare, Dark Web, Patient Data, PHI
 
 ## Sources
-- [Payload Ransomware claims the hack of Royal Bahrain Hospital](https://securityaffairs.co/160351/cyber-crime/payload-ransomware-royal-bahrain-hospital.html) — Security Affairs (2026-03-15)
 - [Payload Ransomware claims the hack of Royal Bahrain Hospital](https://ground.news/article/payload-ransomware-claims-the-hack-of-royal-bahrain-hospital) — Ground News (2026-03-15)
-- [Payload Ransomware Strikes Royal Bahrain Hospital](https://www.dexpose.io/breach/payload-ransomware-strikes-royal-bahrain-hospital-17793) — DEXPOSE (2026-03-15)
-- [Ransomware Group Claims Breach of Bahrain Hospital, Threatens Data Leak](https://the420.in/2026/03/16/ransomware-group-claims-breach-of-bahrain-hospital-threatens-data-leak/) — The420.in (2026-03-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/payload-ransomware-group-targets-royal-bahrain-hospital/

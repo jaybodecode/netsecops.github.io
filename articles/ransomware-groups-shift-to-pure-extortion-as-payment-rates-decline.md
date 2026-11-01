@@ -47,7 +47,6 @@ Defending against pure extortion requires a focus on preventing the initial brea
 
 ## Sources
 - [Cyber Daily News for May 24, 2026](https://www.youtube.com/watch?v=xxxxxxxxxx) — YouTube (2026-05-24)
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) — DeXpose (2026-05-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-groups-shift-to-pure-extortion-as-payment-rates-decline/

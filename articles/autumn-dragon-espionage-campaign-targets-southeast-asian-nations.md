@@ -68,7 +68,7 @@ The primary impact of the Autumn Dragon campaign is espionage. The compromise of
 **Tags:** Autumn Dragon, APT, Cyber Espionage, China, Southeast Asia, WinRAR, CVE-2025-8088, Spearphishing
 
 ## Sources
-- [Cybersecurity Threat Research Feed – Latest Intelligence Updates](https://www.securonix.com/blog/securonix-threat-research-feed/) — Securonix (2025-11-24)
+- [Securonix](https://www.securonix.com/) — Securonix (2025-11-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/autumn-dragon-espionage-campaign-targets-southeast-asian-nations/

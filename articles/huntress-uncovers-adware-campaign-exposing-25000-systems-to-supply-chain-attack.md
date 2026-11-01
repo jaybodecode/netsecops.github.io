@@ -48,9 +48,6 @@ A successful supply chain hijack could have led to widespread ransomware deploym
 
 ## Sources
 - [$10 Domain Could Have Handed Hackers 25k Endpoints, Including in OT and Gov Networks](https://www.securityweek.com/10-domain-could-have-handed-hackers-25k-endpoints-including-in-ot-and-gov-networks/) — SecurityWeek
-- [When PUPs Grow Fangs: Dragon Boss Solutions' $10 Supply Chain Risk](https://www.huntress.com/blog/pups-grow-fangs-dragon-boss-solutions-supply-chain-risk) — Huntress
-- [Trusted adware app left 25,000+ systems open to a $10 supply-chain hijack](https://cybernews.com/security/trusted-adware-app-left-25000-systems-open-to-a-10-supply-chain-hijack/) — Cybernews
-- [Adware Campaign Exposes 25,000 Endpoints to Supply Chain Hijack](https://www.infosecurity-magazine.com/news/adware-exposes-25000-endpoints/) — Infosecurity Magazine
 
 ---
 Source: https://cyber.netsecops.io/articles/huntress-uncovers-adware-campaign-exposing-25000-systems-to-supply-chain-attack/

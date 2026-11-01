@@ -50,7 +50,7 @@ Detecting this activity requires looking for anomalies in legitimate traffic:
 **Tags:** APT, C2, China, Discord, Microsoft Graph API, Threat Actor, Webworm
 
 ## Sources
-- [Webworm Deploys EchoCreep and GraphWorm Backdoors Using Discord and MS Graph API](https://thehackernews.com/2026/05/webworm-deploys-echocreep-and.html) (2026-05-20)
+- [thehackernews.com](https://thehackernews.com/) (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/china-aligned-webworm-apt-deploys-new-backdoors-using-discord-and-ms-graph/

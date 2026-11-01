@@ -56,7 +56,6 @@ No specific technical indicators of compromise (IPs, hashes, domains) were provi
 - [25th May – Threat Intelligence Report](https://research.checkpoint.com/2026/25th-may-threat-intelligence-report/) — Check Point Research (2026-05-25)
 - [Personal information of 185000 people exposed after cyberattack on 7-Eleven](https://securityboulevard.com/2026/05/personal-information-of-185000-people-exposed-after-cyberattack-on-7-eleven/) — Security Boulevard (2026-05-26)
 - [Threat Intel: ShinyHunters Leaks 9.4GB Database of 7-Eleven Franchisee Systems Post-Extortion Refusal](https://www.reddit.com/r/netsec/comments/1d0r3j2/threat_intel_shinyhunters_leaks_94gb_database_of/) — Reddit /r/netsec (2026-05-25)
-- [7-Eleven Data Breach Hits 185,000 People](https://www.bitdefender.com/blog/hotforsecurity/7-eleven-data-breach-hits-185000-people/) — Bitdefender (2026-05-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/7-eleven-confirms-franchisee-data-breach-after-shinyhunters-claim/

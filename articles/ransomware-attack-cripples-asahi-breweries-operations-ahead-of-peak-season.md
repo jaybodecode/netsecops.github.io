@@ -57,7 +57,6 @@ To prevent such attacks, organizations must adopt a defense-in-depth strategy:
 **Tags:** Ransomware, Asahi, Japan, Supply Chain, Manufacturing, Cyberattack
 
 ## Sources
-- [Cyberattack Cripples Asahi Operations, Lifts Rival Brewers](https://www.insurancejournal.com/news/international/2025/11/12/820796.htm) — Insurance Journal
 - [Cyberattack on Japan's Top Brewer Asahi Disrupts Beer Supply](https://www.bloomberg.com/news/articles/2025-11-12/cyberattack-cripples-asahi-operations-lifts-rival-brewers) — Bloomberg
 
 ---

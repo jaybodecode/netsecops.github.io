@@ -45,8 +45,8 @@ Mitigating third-party risk requires a programmatic approach to vendor managemen
 **Tags:** data breach, supply chain attack, third-party risk, Hims & Hers, Zendesk, telehealth, privacy
 
 ## Sources
-- [Data Breach Alert: Edelson Lechtzin LLP Investigates Hims & Hers, Inc. Data Breach](https://www.prnewswire.com/news-releases/data-breach-alert-edelson-lechtzin-llp-investigates-hims--hers-inc-data-breach-302107921.html) — PR Newswire
-- [Data Breach Alert: Edelson Lechtzin LLP Investigates Hims & Hers, Inc. Data Breach](https://www.jaicob.com/data-breach-alert-edelson-lechtzin-llp-investigates-hims-hers-inc-data-breach/) — Jaicob
+- [PR Newswire](https://www.prnewswire.com/) — PR Newswire
+- [Jaicob](https://www.jaicob.com/) — Jaicob
 
 ---
 Source: https://cyber.netsecops.io/articles/hims-hers-data-breach-investigated-after-zendesk-compromise/

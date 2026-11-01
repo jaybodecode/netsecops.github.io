@@ -62,7 +62,6 @@ The targeting of the maritime sector is particularly concerning. A compromised D
 ## Sources
 - [New 'Broadside' Botnet Poses Risk to Shipping Companies](https://www.securityweek.com/new-broadside-botnet-poses-risk-to-shipping-companies/) — SecurityWeek (2025-12-09)
 - [Broadside - a new variant of the Mirai botnet targeting maritime](https://www.cydome.io/blog/broadside-a-new-variant-of-the-mirai-botnet-targeting-maritime/) — Cydome (2025-12-09)
-- [New Variant of Mirai Botnet 'Broadside' Launches Active Attacks on Users](https://gbhackers.com/mirai-botnet-broadside/) — GBHackers (2025-12-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/broadside-botnet-targets-maritime-sector-via-dvr-flaw/

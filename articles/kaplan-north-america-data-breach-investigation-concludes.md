@@ -48,9 +48,9 @@ The lengthy dwell time suggests potential gaps in detection capabilities. Organi
 **Tags:** Kaplan, Data Breach, PII, SSN, Identity Theft, Education
 
 ## Sources
-- [Kaplan North America Data Breach Likely Affects Millions of Americans](https://www.claimdepot.com/kaplan-north-america-data-breach-likely-affects-millions-of-americans) — Claim Depot (2026-03-18)
-- [Cyber attack on Kaplan systems impacted about 20000 individuals](https://www.teiss.co.uk/cyber-attack-on-kaplan-systems-impacted-about-20000-individuals/) — teiss (2026-03-18)
-- [Kaplan Data Breach: Lawsuit Investigation](https://www.classaction.org/blog/kaplan-data-breach-lawsuit-investigation) — ClassAction.org (2026-03-18)
+- [Claim Depot](https://www.claimdepot.com/) — Claim Depot (2026-03-18)
+- [teiss](https://www.teiss.co.uk/) — teiss (2026-03-18)
+- [ClassAction.org](https://www.classaction.org/) — ClassAction.org (2026-03-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/kaplan-north-america-data-breach-investigation-concludes/

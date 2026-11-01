@@ -53,8 +53,6 @@ The NCSC's message is a clear directive for organizations to move beyond reactiv
 **Tags:** NCSC, UK, Threat Report, State-Sponsored Hacking, Ransomware, Policy
 
 ## Sources
-- [UK experiencing four 'nationally significant' cyber attacks every week](https://www.ncsc.gov.uk/news/annual-review-2025-cyber-threats-escalate) — National Cyber Security Centre (2025-10-06)
-- [Cyber-attacks rise by 50% in past year, UK security agency says](https://www.theguardian.com/technology/2025/oct/06/cyber-attacks-rise-by-50-in-past-year-uk-security-agency-says) — The Guardian (2025-10-06)
 - [Company bosses warned cyber attacks are 'not a question of if but when'](https://www.itv.com/news/2025-10-06/company-bosses-warned-cyber-attacks-are-not-a-question-of-if-but-when) — ITV News (2025-10-06)
 
 ---

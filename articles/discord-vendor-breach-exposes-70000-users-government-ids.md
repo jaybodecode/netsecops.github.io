@@ -62,9 +62,9 @@ For organizations, detecting such a breach requires robust monitoring of third-p
 **Tags:** Discord, 5CA, Data Breach, Supply Chain Attack, PII, Identity Theft, Extortion
 
 ## Sources
-- [Discord Data Breach 2025 - What the Third-Party Leak Reveals](https://www.cypherleap.com/2025/10/13/discord-data-breach-2025/) — Cypherleap (2025-10-13)
-- [Discord Data Breach Investigation: IDs, Payment Card Info Exposed](https://www.classaction.org/discord-data-breach) — ClassAction.org (2025-10-13)
-- [CyberWatch Weekly: Top 3 Cybersecurity News from October 2nd Week 2025](https://www.infosecurity-magazine.com/news/discord-data-breach-vendor-5ca/) — Infosecurity Magazine (2025-10-13)
+- [Cypherleap](https://www.cypherleap.com/) — Cypherleap (2025-10-13)
+- [ClassAction.org](https://www.classaction.org/) — ClassAction.org (2025-10-13)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-10-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/discord-vendor-breach-exposes-70000-users-government-ids/

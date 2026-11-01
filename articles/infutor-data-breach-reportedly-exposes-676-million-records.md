@@ -53,7 +53,7 @@ Prevention is key for this type of incident:
 **Tags:** Data Breach, Cloud Security, Elasticsearch, Misconfiguration, PII, SSN
 
 ## Sources
-- [Infutor Data Breach Reportedly Exposes 676M Records, Including SSNs](https://www.classaction.org/news/infutor-data-breach-reportedly-exposes-676m-records-including-ssns) — ClassAction.org (2026-03-09)
+- [ClassAction.org](https://www.classaction.org/) — ClassAction.org (2026-03-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/infutor-data-breach-reportedly-exposes-676-million-records/

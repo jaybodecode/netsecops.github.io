@@ -68,7 +68,6 @@ To address the risks highlighted in the report, organizations must adopt a strat
 **Tags:** SANS, OT Security, ICS Security, Critical Infrastructure, Ransomware, Threat Report
 
 ## Sources
-- [SANS Institute 2025 survey finds OT cybersecurity incidents rising as ransomware and remote access risks grow](https://industrialcyber.co/sans-institute-2025-survey-finds-ot-cybersecurity-incidents-rising-as-ransomware-and-remote-access-risks-grow/) — Industrial Cyber (2025-11-20)
 - [New OPSWAT-Sponsored SANS Report Reveals 21.5% of Organizations Experienced an ICS/OT Cyber Incident in the Past Year](https://www.mbtmag.com/cybersecurity/news/22906103/new-opswatsponsored-sans-report-reveals-215-of-organizations-experienced-an-icsot-cyber-incident-in-the-past-year) — Manufacturing Business Technology (2025-11-20)
 
 ---

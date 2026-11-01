@@ -41,7 +41,7 @@ While these are not yet compliance requirements, organizations can and should be
 ## Sources
 - [NIST outlines 10 design tenets to strengthen AI agent identity and access management, proposes safeguards](https://industrialcyber.co/nist/nist-outlines-10-design-tenets-to-strengthen-ai-agent-identity-and-access-management-proposes-safeguards/) — Industrial Cyber
 - [NIST proposes design tenets for managing AI-agent identities and access](https://adviseiso.com/nist-proposes-design-tenets-for-managing-ai-agent-identities-and-access/) — AdviseISO
-- [Initial Design Tenets for Agent Identity Management Systems](https://www.nist.gov/blogs/cybersecurity-insights/design-tenets-for-agent-identity-management-systems) — NIST
+- [Initial Design Tenets for Agent Identity Management Systems](https://www.nist.gov/blogs/cybersecurity-insights/design-tenets-agent-identity-management-systems) — NIST
 
 ---
 Source: https://cyber.netsecops.io/articles/nist-proposes-10-design-tenets-to-secure-ai-agent-identities/

@@ -52,7 +52,6 @@ For organizations, the lessons are clear:
 
 ## Sources
 - [Top 5 Cybersecurity News Stories February 13, 2026](https://diesec.com/blog/top-5-cybersecurity-news-stories-february-13-2026) — Diesec (2026-02-13)
-- [Texas Attorney General Investigates 25M+ Conduent Business Services Data Breach](https://www.hipaajournal.com/texas-attorney-general-investigates-25m-conduent-business-services-data-breach/) — HIPAA Journal (2026-02-13)
 - [Cybersecurity News: Hackers abuse Gemini, Apple patches ancient bug, CISA criticizes shutdown](https://cisoseries.com/cybersecurity-news-hackers-abuse-gemini-apple-patches-old-bug-cisa-eyes-shutdown/) — CISO Series (2026-02-13)
 
 ---

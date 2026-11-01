@@ -49,8 +49,6 @@ The attack chain leverages the user's trust in the AI assistant's ecosystem and 
 ## Sources
 - [ClawHub hosts supply chain attacks through AI agent skills](https://www.cryptopolitan.com/clawhub-hosts-supply-chain-attacks/) — Cryptopolitan (2026-02-09)
 - [Cybersecurity News: OpenClaw targets ClawHub users, Notepad++ update delivers malware, APT28 attackers abuse Microsoft Office zero-day](https://www.cisoseries.com/cybersecurity-news-openclaw-targets-clawhub-users-notepad-update-delivers-malware-apt28-attackers-abuse-microsoft-office-zero-day/) — CISO Series (2026-02-09)
-- [Cybersecurity News](https://www.wiu.edu/cbt/cybersecurity/news.php) — WIU Cybersecurity (2026-02-09)
-- [OpenClaw AI Agent Skills Abused by Threat Actors to Distribute Malware](https://gbhackers.com/openclaw-ai-agent-skills-abused/) — GBHackers on Security (2026-02-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-ai-skills-proliferate-on-clawhub-marketplace/

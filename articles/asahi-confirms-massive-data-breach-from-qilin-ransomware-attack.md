@@ -50,11 +50,7 @@ Security teams can hunt for Qilin-related activity by looking for the following 
 **Tags:** ransomware, qilin, data breach, japan, manufacturing, pii
 
 ## Sources
-- [Asahi Group Reveals Findings of Cyberattack](https://www.datamation.com/security/asahi-group-reveals-findings-of-cyberattack/) — Datamation (2025-11-28)
 - [Asahi Data Breach Impacts 2 Million Individuals](https://www.securityweek.com/asahi-data-breach-impacts-2-million-individuals/) — SecurityWeek (2025-11-27)
-- [Asahi admits ransomware gang may have spilled almost 2M people's data](https://www.theregister.com/2025/11/27/asahi_ransomware_data_breach/) — The Register (2025-11-27)
-- [Asahi Confirms 1.5 Million Customers Affected in Major Cyber-Attack](https://www.infosecurity-magazine.com/news/asahi-1-5m-customers-databreach/) — Infosecurity Magazine (2025-11-27)
-- [Japanese beer giant Asahi says ransomware attack may have exposed data of 1.5 million people](https://therecord.media/asahi-data-breach-customers-employees-ransomware) — The Record (2025-11-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/asahi-confirms-massive-data-breach-from-qilin-ransomware-attack/

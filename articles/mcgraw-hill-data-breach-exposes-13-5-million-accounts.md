@@ -63,7 +63,6 @@ Preventing similar breaches requires a robust cloud security program.
 ## Sources
 - [Data breach at edtech giant McGraw Hill affects 13.5 million accounts](https://www.bleepingcomputer.com/news/security/data-breach-at-edtech-giant-mcgraw-hill-affects-135-million-accounts/) — BleepingComputer (2026-04-16)
 - [13.5 Million Accounts Affected in Latest ShinyHunters Campaign](https://www.nationalcioreview.com/news-stories/13-5-million-accounts-affected-in-latest-shinyhunters-campaign/) — National CIO Review (2026-04-16)
-- [McGraw Hill Data Breach](https://haveibeenpwned.com/Breaches/McGraw-Hill) — Have I Been Pwned (2026-04-16)
 - [In Other News: Satellite Cybersecurity Act, $90K Chrome Flaw, Teen Hacker Arrested](https://www.securityweek.com/in-other-news-satellite-cybersecurity-act-90k-chrome-flaw-teen-hacker-arrested/) — SecurityWeek (2026-04-17)
 
 ---

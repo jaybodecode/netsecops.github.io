@@ -50,7 +50,6 @@ Detecting AitM phishing requires looking beyond the initial email.
 ## Sources
 - [Top 5 Cybersecurity News Stories March 13, 2026](https://www.diesec.com/blog/top-5-cybersecurity-news-stories-march-13-2026) — DieSec (2026-03-13)
 - [Global phishing-as-a-service platform taken down in coordinated public-private action](https://www.europol.europa.eu/media-press/newsroom/news/global-phishing-service-platform-taken-down-in-coordinated-public-private-action) — Europol (2026-03-13)
-- [Tycoon 2FA Takedown](https://blog.cloudflare.com/tycoon-2fa-takedown/) — Cloudflare (2026-03-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/tycoon-2fa-phishing-as-a-service-platform-disrupted-in-global-takedown/

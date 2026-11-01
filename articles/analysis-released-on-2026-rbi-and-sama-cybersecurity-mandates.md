@@ -58,7 +58,6 @@ Foresiet's analysis likely provides a detailed action plan, but general best pra
 
 ## Sources
 - [Foresiet: AI-Powered Cybersecurity & Digital Risk Protection](https://foresiet.com/blog) — Foresiet (2026-02-14)
-- [Versa Cyber - Threat Intelligence Reports](https://versatrust.com/security/cyber-threat-intelligence-reports/february-14-2026) — VersaTrust (2026-02-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/analysis-released-on-2026-rbi-and-sama-cybersecurity-mandates/

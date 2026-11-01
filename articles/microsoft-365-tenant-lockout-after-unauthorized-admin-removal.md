@@ -54,8 +54,8 @@ Detection must be real-time, as the attack can be executed in minutes.
 **Tags:** Microsoft 365, Entra ID, Azure AD, Tenant Lockout, Cloud Security, Incident Response, Global Administrator
 
 ## Sources
-- [Security Incident – Global Administrator Access Compromised / Removed](https://learn.microsoft.com/en-us/answers/questions/1709403/security-incident-global-administrator-access-com) — Microsoft Learn (2026-04-13)
-- [Microsoft 365 admins locked out of tenants after all Global Admins removed](https://www.bleepingcomputer.com/news/microsoft/microsoft-365-admins-locked-out-of-tenants-after-all-global-admins-removed/) — BleepingComputer (2026-04-14)
+- [Microsoft Learn](https://learn.microsoft.com/) — Microsoft Learn (2026-04-13)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-04-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-365-tenant-lockout-after-unauthorized-admin-removal/

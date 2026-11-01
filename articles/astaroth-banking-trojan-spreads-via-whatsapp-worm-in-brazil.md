@@ -44,7 +44,6 @@ The use of WhatsApp as a vector is particularly concerning because users tend to
 **Tags:** Astaroth, Banking Trojan, WhatsApp, Malware, Phishing, Brazil, STAC3150
 
 ## Sources
-- [Weekly Recap: USB Malware, React2Shell, WhatsApp Worms, AI IDE Bugs & More](https://thehackernews.com/2025/12/08/weekly-recap-usb-malware-react2shell-whatsapp-worms-ai-ide-bugs-more.html) — The Hacker News (2025-12-08)
 - [STAC3150: WhatsApp Worm Delivers Astaroth Trojan to Brazilian Banking Customers](https://news.sophos.com/en-us/2025/12/07/stac3150-whatsapp-worm-delivers-astaroth-trojan/) — Sophos News (2025-12-07)
 
 ---

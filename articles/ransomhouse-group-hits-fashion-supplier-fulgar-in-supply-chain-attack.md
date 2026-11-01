@@ -61,7 +61,6 @@ No specific Indicators of Compromise were provided in the source articles.
 
 ## Sources
 - [Unraveling Threads: Cyber Attack Hits H&M and Adidas Fabric Supplier Fulgar](https://medium.com/@zacyber/unraveling-threads-cyber-attack-hits-h-m-and-adidas-fabric-supplier-fulgar-a2e6f47732a3) — Medium (2025-11-17)
-- [Italian textile supplier for H&M and Adidas hit by ransomware attack, leaking heaps of sensitive data](https://www.techradar.com/pro/security/italian-textile-supplier-for-hm-and-adidas-hit-by-ransomware-attack-leaking-heaps-of-sensitive-data) — TechRadar Pro (2025-11-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomhouse-group-hits-fashion-supplier-fulgar-in-supply-chain-attack/

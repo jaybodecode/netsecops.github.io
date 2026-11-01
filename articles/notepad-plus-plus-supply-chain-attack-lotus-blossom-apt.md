@@ -65,9 +65,6 @@ Security teams should proactively hunt for signs of this activity.
 - [Notepad++ Updates Hijacked By Suspected Chinese Hackers - Grand Pinnacle Tribune](https://www.grandpinnacletribune.com/news/notepad-updates-hijacked-by-suspected-chinese-hackers) — Grand Pinnacle Tribune (2026-02-02)
 - [The Notepad++ supply chain attack – unnoticed execution chains and new IoCs](https://securelist.com/the-notepad-supply-chain-attack-unnoticed-execution-chains-and-new-iocs/111835) — Kaspersky Securelist (2026-02-03)
 - [Notepad++ supply chain attack: Researchers reveal details, IoCs, targets](https://www.helpnetsecurity.com/2026/02/03/notepad-supply-chain-attack-targets/) — Help Net Security (2026-02-03)
-- [The Chrysalis Backdoor: A Deep Dive into Lotus Blossom's toolkit - Rapid7](https://www.rapid7.com/blog/post/2026/02/02/the-chrysalis-backdoor-a-deep-dive-into-lotus-blossoms-toolkit/) — Rapid7 (2026-02-02)
-- [Notepad++ infrastructure hijacked by Chinese APT in sophisticated supply chain attack](https://www.csoonline.com/article/1297893/notepad-infrastructure-hijacked-by-chinese-apt-in-sophisticated-supply-chain-attack.html) — CSO Online (2026-02-03)
-- [China-based espionage group compromised Notepad++ for six - CyberScoop](https://cyberscoop.com/china-apt-lotus-blossom-notepad-plus-plus/) — CyberScoop (2026-02-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/notepad-plus-plus-supply-chain-attack-lotus-blossom-apt/

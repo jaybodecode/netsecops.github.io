@@ -66,7 +66,6 @@ To align with the trends in the Chubb report, CISOs and risk managers should:
 
 ## Sources
 - [US Cyber Breach Costs Hit Record $10.2 Million as AI Accelerates Attack Timelines](https://www.riskandinsurance.com/us-cyber-breach-costs-hit-record-10-2-million-as-ai-accelerates-attack-timelines/) — Risk & Insurance (2026-04-08)
-- [Chubb's 2026 Cyber Claims Report](https://www.chubb.com/us-en/business-insurance/cyber-insurance.html) — Chubb (2026-04-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/chubb-report-ai-and-supply-chain-attacks-drive-us-data-breach-costs-to-10-2m/

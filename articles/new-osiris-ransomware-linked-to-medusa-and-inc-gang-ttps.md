@@ -62,8 +62,8 @@ An attack by the Osiris group can be devastating, resulting in:
 **Tags:** Ransomware, BYOVD, Kernel Driver, Defense Evasion, Double Extortion, Medusa, Inc
 
 ## Sources
-- [Osiris: New Ransomware, Experienced Attackers?](https://security-com.translate.goog/2026/01/22/osiris-new-ransomware-experienced-attackers/?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp) — Security.com (2026-01-22)
-- [新たなOsirisランサムウェア、攻撃でLiving off the Landとデュアルユースツールを悪用 (New Osiris Ransomware Abuses Living-off-the-Land and Dual-Use Tools in Attacks)](https://www.trendmicro.com/ja_jp/research/26/a/new-osiris-ransomware-uses-living-off-the-land-and-dual-use-too.html) — Trend Micro (2026-01-22)
+- [Security.com](https://security-com.translate.goog/) — Security.com (2026-01-22)
+- [Trend Micro](https://www.trendmicro.com/) — Trend Micro (2026-01-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-osiris-ransomware-linked-to-medusa-and-inc-gang-ttps/

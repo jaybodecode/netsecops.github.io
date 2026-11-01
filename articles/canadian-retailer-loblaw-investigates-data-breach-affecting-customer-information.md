@@ -48,7 +48,7 @@ Loblaw's security team detected "suspicious activity" on its network, which trig
 **Tags:** Data Breach, Retail, Canada, PII
 
 ## Sources
-- [Loblaw Notifies Customers of a Low-Level Data Breach](https://www.newswire.ca/news-releases/loblaw-notifies-customers-of-a-low-level-data-breach-838633890.html) — Cision (2026-03-10)
+- [Cision](https://www.newswire.ca/) — Cision (2026-03-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/canadian-retailer-loblaw-investigates-data-breach-affecting-customer-information/

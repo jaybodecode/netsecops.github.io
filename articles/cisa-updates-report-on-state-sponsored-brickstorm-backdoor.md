@@ -55,8 +55,6 @@ The updated CISA report includes new Indicators of Compromise (IOCs) and detecti
 **Tags:** BRICKSTORM, APT, State-Sponsored, CISA, NSA, VMware, vSphere, Backdoor
 
 ## Sources
-- [CISA and Partners Release Update to Malware Analysis Report BRICKSTORM Backdoor](https://www.cisa.gov/news-events/cybersecurity-advisories/update-malware-analysis-report-brickstorm-backdoor) — CISA (2025-12-27)
-- [Cyber Attack News – Risk Roundup – Top Stories for December 2025](https://www.xage.com/blog/cyber-attack-news-risk-roundup-december-2025/) — Xage Security (2025-12-28)
 - [Dec 2025: Biggest Cyber Attacks, Ransomware Attacks and Data Breaches](https://www.cybermanagementalliance.com/dec-2025-biggest-cyber-attacks-ransomware-attacks-and-data-breaches/) — Cyber Management Alliance (2025-12-28)
 
 ---

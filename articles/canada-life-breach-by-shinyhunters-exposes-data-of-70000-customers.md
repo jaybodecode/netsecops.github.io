@@ -80,8 +80,8 @@ Security teams can hunt for signs of a similar breach by looking for:
 **Tags:** Canada Life, MFA, ShinyHunters, compromised account, data breach, extortion, insurance
 
 ## Sources
-- [Canada Life breach exposes data of up to 70000 people – mostly customers](https://www.insurancebusinessmag.com/ca/news/cyber/canada-life-breach-exposes-data-of-up-to-70000-people--mostly-customers-486603.aspx) (2026-04-21)
-- [Canada Life recently identified a cyber incident](https://www.canadalife.com/newsroom/news-releases/canada-life-recently-identified-a-cyber-incident.html) (2026-04-20)
+- [insurancebusinessmag.com](https://www.insurancebusinessmag.com/) (2026-04-21)
+- [canadalife.com](https://www.canadalife.com/) (2026-04-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/canada-life-breach-by-shinyhunters-exposes-data-of-70000-customers/

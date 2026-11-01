@@ -36,7 +36,6 @@ The attack chain facilitated by TAG-150's MaaS offering follows a common pattern
 **Tags:** maas, malware-as-a-service, rat, loader, tag-150, cybercrime
 
 ## Sources
-- [Cybersecurity Threat Research Feed – Latest Intelligence Updates](https://www.securonix.com/blog/securonix-threat-research-feed) — Securonix (2025-11-29)
 - [Cyber Threat Intelligence Reports | Risk Research | Out of Band](https://www.cyfirma.com/outofband/) — CYFIRMA (2025-11-29)
 
 ---

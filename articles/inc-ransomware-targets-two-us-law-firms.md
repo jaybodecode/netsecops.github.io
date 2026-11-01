@@ -53,7 +53,7 @@ The consequences of a ransomware attack on a law firm are particularly severe:
 **Tags:** ransomware, INC ransomware, legal, data breach, attorney-client privilege
 
 ## Sources
-- [Top data breaches of February 2026 (so far) (updated daily) - SharkStriker](https://www.sharkstriker.com/blog/top-data-breaches-of-february-2026-so-far-updated-daily) — SharkStriker (2026-02-02)
+- [SharkStriker](https://www.sharkstriker.com/) — SharkStriker (2026-02-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/inc-ransomware-targets-two-us-law-firms/

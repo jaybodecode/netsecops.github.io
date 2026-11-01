@@ -67,8 +67,7 @@ A successful code-to-cloud attack can be catastrophic, as it bridges the gap bet
 **Tags:** DevSecOps, GitHub, Cloud Security, CI/CD, Personal Access Token, PAT, Supply Chain
 
 ## Sources
-- [Code to Cloud Attacks: From Github PAT to Cloud Control Plane](https://www.wiz.io/blog/code-to-cloud-attacks-github-pat-to-cloud-control-plane) — Wiz (2025-12-09)
-- [State of Code Security in 2025 | Wiz](https://www.wiz.io/resource/state-of-code-security-2025) — Wiz (2025-12-09)
+- [Wiz](https://www.wiz.io/) — Wiz (2025-12-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/code-to-cloud-attack-vector-abuses-github-pats/

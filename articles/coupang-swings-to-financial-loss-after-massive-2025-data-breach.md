@@ -80,7 +80,6 @@ In either case, the core failure was an inability to properly secure and monitor
 
 ## Sources
 - [Coupang Q4 loss: Data breach fallout hits revenue](https://ciso.economictimes.indiatimes.com/news/data-breaches/coupang-q4-loss-data-breach-fallout-hits-revenue/107050085) — The Economic Times (2026-02-28)
-- [PRO: This Week in Visuals](https://www.appeconomyinsights.com/p/pro-this-week-in-visuals-feb-28-2026) — App Economy Insights (2026-02-28)
 - [Techmeme](https://www.techmeme.com/260228/p23) — Techmeme (2026-02-28)
 
 ---

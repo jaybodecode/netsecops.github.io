@@ -58,7 +58,6 @@ IBM X-Force provides several high-level recommendations:
 
 ## Sources
 - [2026 Threat Intelligence Index: Ransomware, AI, & Emerging TTP Risks](https://www.youtube.com/watch?v=F07gB5dE9AM) — IBM (2026-02-26)
-- [IBM X-Force Threat Intelligence Index 2026](https://newsroom.ibm.com/2026-X-Force-Threat-Intelligence-Index) — IBM Newsroom (2026-02-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/ibm-x-force-report-ai-powered-ransomware-on-the-rise/

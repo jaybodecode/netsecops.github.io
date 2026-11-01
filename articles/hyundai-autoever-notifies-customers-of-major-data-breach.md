@@ -52,7 +52,6 @@ While the specific cause is unknown, general best practices for protecting PII i
 **Tags:** data breach, automotive, PII, SSN, Hyundai
 
 ## Sources
-- [Hyundai Data Breach May Have Leaked Drivers' Personal Information](https://www.caranddriver.com/news/a62888209/hyundai-data-breach-drivers-personal-information/) — Car and Driver (2025-11-11)
 - [10th November – Threat Intelligence Report](https://research.checkpoint.com/2025/10th-november-threat-intelligence-report/) — Check Point Research (2025-11-10)
 
 ---

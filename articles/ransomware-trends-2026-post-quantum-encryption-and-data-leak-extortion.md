@@ -72,10 +72,10 @@ Security teams may want to hunt for the following patterns related to these new 
 **Tags:** BYOVD, EDR Evasion, Encryptionless Extortion, Kaspersky, PQC, Post-Quantum Cryptography, Ransomware, ShinyHunters
 
 ## Sources
-- [Reviewing the trends in ransomware attacks in 2026](https://securelist.com/reviewing-the-trends-in-ransomware-attacks-in-2026/112674/) (2026-05-12)
-- [AI and Phishing-as-a-Service Drive Increase in Email Attacks, Barracuda Reports](https://www.barracuda.com/news-release/ai-and-phishing-as-a-service-drive-increase-in-email-attacks-barracuda-reports) (2026-05-12)
-- [Ransomware in 2026: EDR Killers, Post-Quantum Crypto, and Encryption-Less Extortion](https://www.csoonline.com/article/2099354/ransomware-in-2026-edr-killers-post-quantum-crypto-and-encryption-less-extortion.html) (2026-05-22)
-- [Kaspersky Report Details Alarming Ransomware Trends for 2026](https://www.techrepublic.com/article/kaspersky-report-ransomware-trends-2026/) (2026-05-22)
+- [securelist.com](https://securelist.com/) (2026-05-12)
+- [barracuda.com](https://www.barracuda.com/) (2026-05-12)
+- [csoonline.com](https://www.csoonline.com/) (2026-05-22)
+- [techrepublic.com](https://www.techrepublic.com/) (2026-05-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-trends-2026-post-quantum-encryption-and-data-leak-extortion/

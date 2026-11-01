@@ -69,9 +69,7 @@ DIB companies should take the following steps immediately:
 ## Sources
 - [Government Shutdown Ends Soon, But Cybersecurity Risks Live On - Forbes](https://www.forbes.com/sites/emilsayegh/2025/11/10/government-shutdown-ends-soon-but-cybersecurity-risks-live-on/) — Forbes (2025-11-10)
 - [DOD Begins Rollout of CMMC on Nov. 10: Here’s What You Need to Know - MeriTalk](https://www.meritalk.com/articles/dod-begins-rollout-of-cmmc-on-nov-10-heres-what-you-need-to-know/) — MeriTalk (2025-11-06)
-- [CMMC Enforcement Starting November 10, 2025: An Update on the Latest 48 CFR Rulemaking Milestone](https://www.summit7.us/blog/cmmc-enforcement-starting-november-10-2025-an-update-on-the-latest-48-cfr-rulemaking-milestone) — Summit 7 (2025-09-09)
 - [Finally, the CMMC Final Rule: DoD Completes CMMC Rulemaking, Ushering in New Era in DoD Cybersecurity | Crowell & Moring LLP](https://www.crowell.com/en/insights/client-alerts/finally-the-cmmc-final-rule-dod-completes-cmmc-rulemaking-ushering-in-new-era-in-dod-cybersecurity) — Crowell & Moring (2025-09-10)
-- [Pentagon Announces Final Rule Implementing CMMC, Effective November 10, 2025](https://www.bassberry.com/experience-posts/pentagon-announces-final-rule-implementing-cmmc-effective-november-10-2025/) — Bass, Berry & Sims (2025-09-18)
 - [About CMMC - DoD CIO - War.gov](https://www.war.gov/cio/cmmc/about/) — DoD CIO
 
 ---

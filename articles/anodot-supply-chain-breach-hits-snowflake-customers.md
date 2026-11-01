@@ -62,7 +62,6 @@ Preventing such attacks requires a robust third-party risk management strategy.
 
 ## Sources
 - [Active Data Theft Campaign Targeting Snowflake Customers via Anodot Third-Party SaaS Integration Breach](https://rhisac.org/cyber-security-articles/active-data-theft-campaign-targeting-snowflake-customers-via-anodot-third-party-saas-integration-breach/) (2026-04-09)
-- [ShinyHunters Claims Rockstar Games Snowflake Breach via Anodot](https://www.hackread.com/shinyhunters-claims-rockstar-games-snowflake-breach-anodot/) (2026-04-09)
 - [ShinyHunters claims Rockstar Games data breach](https://www.computing.co.uk/news/4214539/shinyhunters-claims-rockstar-games-data-breach) (2026-04-10)
 - [Rockstar Games receives “pay or leak” warning after cyberattack](https://www.helpnetsecurity.com/2026/04/13/rockstar-games-data-breach/) (2026-04-10)
 - [GTA 6 Rockstar Data Breach: Rockstar Games Confirms Limited Data Exposure, ShinyHunters Allegedly Exploit & Demand Ransom with April 14 Deadline](https://www.sundayguardianlive.com/business/gta-6-rockstar-data-breach-rockstar-games-confirms-limited-data-exposure-shinyhunters-allegedly-exploit-demand-ransom-april-14-deadline) (2026-04-12)

@@ -58,7 +58,6 @@ Security teams should analyze the full list of victims, if it becomes available,
 
 ## Sources
 - [Ransomware group 'The Gentlemen' suffers internal breach, exposing operations](https://www.scmagazine.com/brief/ransomware-group-the-gentlemen-suffers-internal-breach-exposing-operations) — SC Media
-- [Not So Gentle: Ransomware Gang Hacked; Chats, Victims' Data Leaked](https://www.hackread.com/gentlemen-ransomware-gang-hacked-leaking-data/) — HackRead
 
 ---
 Source: https://cyber.netsecops.io/articles/the-gentlemen-ransomware-group-suffers-internal-breach/

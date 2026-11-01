@@ -57,8 +57,8 @@ Healthcare organizations can hunt for pre-ransomware activity:
 **Tags:** Ransomware, Healthcare, Wisconsin, Data Breach, HIPAA, Cyberattack
 
 ## Sources
-- [Cyberattacks Announced by Florida Physician Specialists & Mile Bluff Medical Center](https://www.hipaajournal.com/cyberattacks-announced-by-florida-physician-specialists-mile-bluff-medical-center/) — HIPAA Journal (2026-04-27)
-- [Data Breaches That Have Happened This Year (2026 Update)](https://www.breachsense.com/breaches/2026/) — BreachSense (2026-04-27)
+- [HIPAA Journal](https://www.hipaajournal.com/) — HIPAA Journal (2026-04-27)
+- [BreachSense](https://www.breachsense.com/) — BreachSense (2026-04-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/mile-bluff-medical-center-hit-by-ransomware-attack/

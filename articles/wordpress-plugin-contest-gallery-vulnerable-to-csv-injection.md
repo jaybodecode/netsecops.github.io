@@ -50,8 +50,8 @@ This type of vulnerability requires user interaction (the victim must download a
 **Tags:** WordPress, Vulnerability, CSV Injection, CVE-2025-11254, Contest Gallery
 
 ## Sources
-- [CVE-2025-11254 Impact, Exploitability, and Mitigation Steps - Wiz](https://www.wiz.io/blog/cve-2025-11254-impact-exploitability-and-mitigation-steps) — Wiz (2025-10-11)
-- [CVE-2025-11371: Unpatched zero-day in Gladinet CentreStack, Triofox under attack](https://securityaffairs.com/175955/hacking/unpatched-zero-day-in-gladinet-centrestack-triofox.html) — Security Affairs (2025-10-11)
+- [Wiz](https://www.wiz.io/) — Wiz (2025-10-11)
+- [Security Affairs](https://securityaffairs.com/) — Security Affairs (2025-10-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/wordpress-plugin-contest-gallery-vulnerable-to-csv-injection/

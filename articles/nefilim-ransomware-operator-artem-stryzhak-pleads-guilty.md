@@ -54,7 +54,6 @@ The Nefilim group was responsible for millions of dollars in losses, stemming fr
 **Tags:** Double Extortion, Big Game Hunting, Cybercrime, DOJ, Extradition
 
 ## Sources
-- [Ukrainian national pleads guilty to Nefilim ransomware attacks](https://cyberscoop.com/ukrainian-national-pleads-guilty-nefilim-ransomware-attacks/) — CyberScoop (2025-12-19)
 - [Ukrainian pleads guilty over targeting US companies with ransomware | MEXC News](https://www.mexcu.com/en-US/blog/198305886616421) — MEXC News (2025-12-20)
 
 ---

@@ -52,8 +52,6 @@ Security teams may want to hunt for:
 
 ## Sources
 - [Krybit Ransomware Strikes Smile Siam Printing Service](https://www.dexpose.io/krybit-ransomware-strikes-smile-siam-printing-service/) — DeXpose (2026-05-28)
-- [Krybit Ransomware Strikes Smile Siam Printing Service](https://www.dexpose.io/incidents/krybit-ransomware-strikes-smile-siam-printing-service/) — DeXpose (2026-05-28)
-- [Latest Cyber Security Ransomware News Today 2026](https://www.dexpose.io/ransomware/) — DeXpose (2026-05-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/krybit-ransomware-group-targets-thai-printing-company/

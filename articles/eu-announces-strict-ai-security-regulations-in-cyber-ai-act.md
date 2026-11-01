@@ -64,7 +64,6 @@ Organizations should not wait until the transition period begins to act. Proacti
 
 ## Sources
 - [EU announces 'CYBER-AI Act' with hefty fines for insecure AI systems](https://www.reuters.com/technology/eu-announces-cyber-ai-act-with-hefty-fines-for-insecure-ai-2026-07-01/) — Reuters (2026-07-01)
-- [EU Introduces 'CYBER-AI Act,' Mandating Secure Development for High-Risk Systems](https://iapp.org/news/a/eu-introduces-cyber-ai-act-mandating-secure-development-for-high-risk-systems) — IAPP (2026-07-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/eu-announces-strict-ai-security-regulations-in-cyber-ai-act/

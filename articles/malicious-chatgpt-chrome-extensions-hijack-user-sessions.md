@@ -43,7 +43,6 @@ The impact of a hijacked ChatGPT session can be severe. Many users input sensiti
 
 ## Sources
 - [2nd February – Threat Intelligence Report](https://research.checkpoint.com/2026/02/02/2nd-february-threat-intelligence-report/) — Check Point Research (2026-02-02)
-- [Malwarebytes Makes ChatGPT Smarter About Scams, Malware and Online Risk](https://www.malwarebytes.com/blog/news/2026/02/malwarebytes-makes-chatgpt-smarter-about-scams-malware-and-online-risk) — Malwarebytes (2026-02-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-chatgpt-chrome-extensions-hijack-user-sessions/

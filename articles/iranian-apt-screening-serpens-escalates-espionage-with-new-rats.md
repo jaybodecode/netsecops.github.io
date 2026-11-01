@@ -61,10 +61,7 @@ Security teams can hunt for **Screening Serpens** activity. The following patter
 **Tags:** APT, Cyber Espionage, Iran, MiniJunk V2, MiniUpdate, Screening Serpens, UNC1549, Unit 42
 
 ## Sources
-- [Tracking Iranian APT Screening Serpens’ 2026 Espionage Campaigns](https://unit42.paloaltonetworks.com/screening-serpens-apt-espionage/) (2026-05-22)
 - [Iranian APT Group ‘Screening Serpens’ Unleashes New RATs in Targeted Attacks](https://www.cyber-security-news.com/2026/05/22/iranian-apt-group-screening-serpens-unleashes-new-rats-in-targeted-attacks/) (2026-05-22)
-- [Tracking Iranian APT Screening Serpens’ 2026 Espionage Campaigns](https://unit42.paloaltonetworks.com/screening-serpens-apt-espionage-campaigns/)
-- [Iran-Linked APT 'Screening Serpens' Deploys New RATs in Espionage Attacks](https://www.securityweek.com/iran-linked-apt-screening-serpens-deploys-new-rats-espionage-attacks)
 
 ---
 Source: https://cyber.netsecops.io/articles/iranian-apt-screening-serpens-escalates-espionage-with-new-rats/

@@ -57,8 +57,8 @@ Detecting this activity is challenging and requires deep network analysis:
 **Tags:** PlushDaemon, EdgeStepper, APT, China, Malware, Adversary-in-the-Middle, AitM
 
 ## Sources
-- [PlushDaemon compromises network devices for adversary-in-the-middle attacks](https://www.welivesecurity.com/en/eset-research/plushdaemon-compromises-network-devices-adversary-in-the-middle-attacks/) — WeLiveSecurity (2025-11-19)
-- [The Week in Breach News: November 19, 2025](https://www.kaseya.com/resource/the-week-in-breach-news-november-19-2025/) — Kaseya (2025-11-19)
+- [WeLiveSecurity](https://www.welivesecurity.com/) — WeLiveSecurity (2025-11-19)
+- [Kaseya](https://www.kaseya.com/) — Kaseya (2025-11-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/china-aligned-apt-plushdaemon-deploys-edgestepper-network-implant/

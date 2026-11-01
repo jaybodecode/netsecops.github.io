@@ -47,8 +47,8 @@ Defending against AI-powered threats requires a shift in strategy:
 **Tags:** Artificial Intelligence, Generative AI, Social Engineering, Phishing, Deepfake, ISACA, Cyber Threat
 
 ## Sources
-- [AI-Driven Social Engineering Top Cyber Threat for 2026, ISACA Survey Reveals](https://www.infosecurity-magazine.com/news/ai-social-engineering-top-threat-2026/) — Infosecurity Magazine (2025-10-20)
-- [Top 15 Most Dangerous Malware Threats In 2025](https://www.cyble.com/blog/top-15-most-dangerous-malware-threats-in-2025/) — Cyble (2025-08-08)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-10-20)
+- [Cyble](https://www.cyble.com/) — Cyble (2025-08-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-driven-social-engineering-top-cyber-threat-for-2026/

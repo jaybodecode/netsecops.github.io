@@ -52,7 +52,6 @@ A multi-layered defense is essential to counter these evolving threats.
 **Tags:** Social Engineering, Phishing, PureRAT, Phantom Stealer, InfoStealer, HP, Threat Intelligence
 
 ## Sources
-- [Malware in Motion: Animated Lures Trick Users into Infecting Their PCs | HP® Official Site](https://press.hp.com/us/en/press-releases/2025/hp-threat-insights-report-december-2025.html) — HP (2025-12-11)
 - [Report Surfaces Multiple Novel Social Engineering Tactics and Techniques](https://securityboulevard.com/2025/12/report-surfaces-multiple-novel-social-engineering-tactics-and-techniques/) — Security Boulevard (2025-12-11)
 
 ---

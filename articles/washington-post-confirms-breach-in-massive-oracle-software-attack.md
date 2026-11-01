@@ -62,7 +62,6 @@ Security teams should proactively hunt for signs of compromise related to Oracle
 **Tags:** Clop, Ransomware, Oracle, E-Business Suite, Data Breach, Extortion, TA505
 
 ## Sources
-- [Washington Post Confirms Data Breach Via Oracle E-Business Suite Vulnerabilities](https://zephyrnet.com/washington-post-confirms-data-breach-via-oracle-e-business-suite-vulnerabilities/) — ZephyrNet (2025-11-08)
 - [Pete Recommends – Weekly highlights on cyber security issues, November 8, 2025](https://www.llrx.com/2025/11/pete-recommends-weekly-highlights-on-cyber-security-issues-november-8-2025/) — LLRX.com (2025-11-08)
 
 ---

@@ -65,11 +65,7 @@ This incident highlights a risk that organizations should hunt for within their 
 **Tags:** ClickUp, API key, data leak, hardcoded credentials, Split.io, phishing
 
 ## Sources
-- [ClickUp Data Leak Exposes Enterprise Emails for Over a Year](https://www.esecurityplanet.com/data-security/clickup-data-leak-api-key/) — eSecurity Planet (2026-04-28)
-- [ClickUp vulnerability exposed 893 customer email addresses and one token](https://www.cybernews.com/security/clickup-vulnerability-exposed-emails-token/) — Cybernews (2026-04-28)
 - [ClickUp API Key Leak Exposes Almost 1,000 Corporate Emails](https://www.technadu.com/clickup-hardcoded-api-key-exposes-almost-1000-customer-emails/421114/) — TechNadu (2026-04-28)
-- [ClickUp API Key Leak Exposes 959 Enterprise Emails](https://cybertechinsights.com/clickup-api-key-leak-exposes-959-enterprise-emails/) — Cyber Technology Insights (2026-04-28)
-- [ClickUp Data Leak Exposes Enterprise Emails for Over a Year](https://www.techrepublic.com/article/clickup-api-key-breach-saas-security/) — TechRepublic (2026-04-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/clickup-api-key-leak-exposes-corporate-and-government-emails/

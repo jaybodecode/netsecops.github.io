@@ -62,8 +62,8 @@ While this article is about an attacker's failure, it provides valuable lessons 
 **Tags:** APT, North Korea, OPSEC, Infostealer, LummaC2, Threat Intelligence, Bybit
 
 ## Sources
-- [Beyond the Malware: Inside the Digital Empire of a North Korean Threat Actor](https://www.flashpoint-intel.com/blog/dprk-threat-actor-trevor-greer-analysis/) — Flashpoint (2025-12-10)
-- [New EtherRAT backdoor surfaces in React2Shell attacks tied to North Korea](https://securityaffairs.co/163820/apt/etherrat-react2shell-attacks-north-korea.html) — Security Affairs (2025-12-10)
+- [Flashpoint](https://www.flashpoint-intel.com/) — Flashpoint (2025-12-10)
+- [Security Affairs](https://securityaffairs.co/) — Security Affairs (2025-12-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/north-korean-apt-operator-trevor-greer-unmasked-by-opsec-fail/

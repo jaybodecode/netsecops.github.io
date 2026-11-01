@@ -61,8 +61,8 @@ The vulnerabilities in Adobe Commerce and Magento are also high-risk. Exploitati
 **Tags:** Adobe, Patch Tuesday, Vulnerability, RCE, XSS, Adobe Connect
 
 ## Sources
-- [Adobe Patches Critical Vulnerability in Connect Collaboration Suite](https://www.securityweek.com/adobe-patches-critical-vulnerability-in-connect-collaboration-suite/) — SecurityWeek (2025-10-15)
-- [Adobe Patches Over 35 Flaws Including Critical Bug in Connect](https://www.infosecurity-magazine.com/news/adobe-patches-35-flaws-critical/) — Infosecurity Magazine (2025-10-15)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2025-10-15)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-10-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/adobe-october-2025-patch-tuesday-fixes-critical-connect-flaw/

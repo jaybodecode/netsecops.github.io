@@ -52,7 +52,6 @@ Preventing ransomware requires a defense-in-depth strategy:
 
 ## Sources
 - [BlackFog Report Reveals 36% Increase in Q3 Ransomware Attacks YoY](https://www.blackfog.com/newsroom/blackfog-report-reveals-36-increase-in-q3-ransomware-attacks-yoy/) — BlackFog (2025-10-16)
-- [Zero Day Vulnerabilities: Top 2025 Exploits and Mitigation Guide](https://www.rsisecurity.com/blog/zero-day-vulnerabilities-top-2025-exploits-and-mitigation-guide) — RSI Security (2025-10-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attacks-surged-36-percent-in-q3-2025/

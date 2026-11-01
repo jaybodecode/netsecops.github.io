@@ -71,7 +71,6 @@ ENISA's report implicitly calls for a defense-in-depth strategy:
 ## Sources
 - [ENISA report reveals surge in DDoS and data breaches against EU public administration](https://www.industrialcyber.co/attacks-vulnerabilities/enisa-report-reveals-surge-in-ddos-and-data-breaches-against-eu-public-administration/) — Industrial Cyber (2025-11-10)
 - [Public administration increasingly targeted by DDoS attacks - ENISA — European Union Agency for Cybersecurity](https://www.enisa.europa.eu/news/public-administration-increasingly-targeted-by-ddos-attacks) — ENISA (2025-11-06)
-- [Hacktivist-Driven DDoS Dominates Attacks on Public Sector - Infosecurity Magazine](https://www.infosecurity-magazine.com/news/hacktivist-ddos-public-sector/) — Infosecurity Magazine (2025-11-06)
 - [ENISA Sectorial Threat Landscape - Public Administration](https://www.enisa.europa.eu/publications/enisa-sectorial-threat-landscape-public-administration) — ENISA (2025-11-06)
 
 ---

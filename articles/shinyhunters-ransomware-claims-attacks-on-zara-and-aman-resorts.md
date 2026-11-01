@@ -57,8 +57,7 @@ No specific IOCs were provided in the source articles.
 **Tags:** Shinyhunters, Ransomware, Data Breach, Salesforce, BigQuery, Extortion
 
 ## Sources
-- [Victim: Aman Resorts (aman.com)](https://ransomware.live/victim/aman-com/) — Ransomware.live (2026-04-19)
-- [Victim: Zara (zara.com)](https://ransomware.live/victim/zara-com/) — Ransomware.live (2026-04-19)
+- [Ransomware.live](https://ransomware.live/) — Ransomware.live (2026-04-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/shinyhunters-ransomware-claims-attacks-on-zara-and-aman-resorts/

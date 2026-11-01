@@ -62,7 +62,6 @@ Organizations using Citrix appliances should hunt for signs of compromise relate
 
 ## Sources
 - [Pennsylvania Attorney General Confirms Data Breach After Ransomware Attack](https://www.securityweek.com/pennsylvania-attorney-general-confirms-data-breach-after-ransomware-attack/) — SecurityWeek (2025-11-18)
-- [19th November 2025 Cyber Update: State AG Office Confirms Major Data Breach by Ransomware Group](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFiNQ085O1OZR_Uszr8tVIlg749rGlZWVvUWkZU1l9zRbymFMpjwdRXx-Gxy24ntRTZCrcZhmUtEWvoMMbvedGEISkbu6iaajBSH-lCrM_fASskvhhlWMHa-v1-F3B3NbKSAsH0nzPgKVMinSLBSqBWYZQPqIY9N8TfpDMWbXXo1wOfQ3r4mCCwjqdifaahoE4Mzn9heqAoHfY_9FZHG5d4i5571cfHeGkDl0CEkqwobZLnCkQycGJWlg==) — Google (2025-11-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/pennsylvania-attorney-general-confirms-major-data-breach-by-inc-ransomware/

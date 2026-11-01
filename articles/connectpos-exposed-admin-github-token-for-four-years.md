@@ -48,7 +48,6 @@ ConnectPOS took the correct immediate step by revoking the leaked token on the s
 
 ## Sources
 - [Magecart Hits Continue: Stripe Spoofing, Supply Chain Risks](https://bankinfosecurity.com/magecart-hits-continue-stripe-spoofing-supply-chain-risks-a-24095) — BankInfoSecurity (2026-01-13)
-- [ConnectPOS leaked Github secrets for years](https://sansec.io/blog/connectpos-leaked-github-secrets-for-years) — Sansec (2026-01-13)
 - [ConnectPOS devconnectpos - GitHub](https://github.com/devconnectpos) — GitHub (2026-01-14)
 
 ---

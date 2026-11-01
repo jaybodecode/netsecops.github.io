@@ -46,7 +46,6 @@ This action signals the European Commission's serious intent to enforce the DSA 
 **Tags:** EU, Digital Services Act, DSA, Meta, TikTok, Regulation, Transparency, Dark Patterns
 
 ## Sources
-- [EU preliminarily finds Meta, TikTok in breach of transparency obligations](https://www.thehindu.com/news/international/eu-preliminarily-finds-meta-tiktok-in-breach-of-transparency-obligations/article69012345.ece) — The Hindu
 - [Commission preliminarily finds TikTok and Meta in breach of their transparency obligations under the Digital Services Act](https://www.kurzy.cz/zpravy/795383-commission-preliminarily-finds-tiktok-and-meta-in-breach-of-their-transparency-obligations-under/) — Kurzy.cz
 
 ---

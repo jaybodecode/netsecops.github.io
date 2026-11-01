@@ -52,7 +52,6 @@ The compromise of over 900,000 users represents a significant data breach with f
 
 ## Sources
 - [Malicious Chrome Extension Exposed for Stealing ChatGPT and DeepSeek Chats from 900,000 Users](https://www.cyberpress.com/malicious-chrome-extension-exposed-for-stealing-chatgpt-and-deepseek-chats-from-900000-users) — CyberPress (2025-12-29)
-- [900K Users Compromised: Chrome Extensions Steal ChatGPT and DeepSeek Conversations](https://www.ox.security/blog/900k-users-compromised-chrome-extensions-steal-chatgpt-and-deepseek-conversations) — OX Security (2025-12-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-chrome-extensions-steal-ai-chat-data-from-900k-users/

@@ -73,7 +73,6 @@ The use of a signed kernel-mode rootkit represents a significant escalation in M
 **Tags:** Mustang Panda, APT, Rootkit, Kernel-mode, TONESHELL, China, Espionage, Kaspersky
 
 ## Sources
-- [Mustang Panda Uses Signed Kernel-Mode Rootkit to Load TONESHELL Backdoor](https://thehackernews.com/2025/12/mustang-panda-uses-signed-kernel-mode.html) — The Hacker News (2025-12-30)
 - [Chinese APT Mustang Panda Caught Using Kernel-Mode Rootkit](https://www.securityweek.com/chinese-apt-mustang-panda-caught-using-kernel-mode-rootkit/) — SecurityWeek (2025-12-30)
 
 ---

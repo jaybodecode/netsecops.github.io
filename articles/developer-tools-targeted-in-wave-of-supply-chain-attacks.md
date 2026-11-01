@@ -66,7 +66,6 @@ Securing the software supply chain requires a multi-layered approach.
 **Tags:** supply chain attack, open source, axios, trivy, npm, ci/cd security, sandclock
 
 ## Sources
-- [Two different attackers poisoned popular open source tools](https://www.theregister.com/2026/04/11/axios_trivy_supply_chain/) — The Register (2026-04-09)
 - [Our response to the Axios developer tool compromise](https://openai.com/blog/our-response-to-the-axios-developer-tool-compromise) — OpenAI (2026-04-10)
 - [OpenAI Revokes macOS App Certificate After Malicious Axios Supply Chain Incident](https://thehackernews.com/2026/04/openai-revokes-macos-app-certificate.html) — The Hacker News (2026-04-10)
 - [Advisory on Securing the Software Supply Chain and Development Workflows](https://www.csa.gov.sg/alerts-and-advisories/advisories/ad-2026-003) — Cyber Security Agency of Singapore (CSA) (2026-04-09)

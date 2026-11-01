@@ -58,8 +58,8 @@ The Georgia Tech researchers proposed a new system that securely encodes provena
 **Tags:** Threat Intelligence, Supply Chain, Georgia Tech, Security Research, Information Sharing
 
 ## Sources
-- [Threat intelligence supply chain is full of weak links, researchers find](https://www.theregister.com/2026/02/25/threat_intelligence_supply_chain/) — The Register (2026-02-25)
-- [Threat intelligence supply chain is full of weak links, researchers find](https://reg.cx/2S2c) — The Register (2026-02-25)
+- [The Register](https://www.theregister.com/) — The Register (2026-02-25)
+- [The Register](https://reg.cx/) — The Register (2026-02-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/georgia-tech-research-exposes-weaknesses-in-threat-intelligence-supply-chain/

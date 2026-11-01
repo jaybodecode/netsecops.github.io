@@ -41,7 +41,6 @@ To address the challenges raised by the CrowdStrike report, organizations should
 
 ## Sources
 - [76 Percent of Organizations Struggle to Match the Speed of AI-Powered Attacks, Finds CrowdStrike State of Ransomware Survey](https://ir.crowdstrike.com/news-releases/news-release-details/76-percent-organizations-struggle-match-speed-ai-powered-attacks) — CrowdStrike (2025-10-21)
-- [Ransomware Reality: Business Confidence Is High, Preparedness Is Low](https://www.crowdstrike.com/blog/state-of-ransomware-report/) — CrowdStrike (2025-10-21)
 - [AI-Powered Attacks Outpace Global Cyber Defenses, CrowdStrike Warns in 2025 Ransomware Report](https://zoombanglanews.com/2025/10/21/ai-powered-attacks-outpace-global-cyber-defenses-crowdstrike-warns-in-2025-ransomware-report/) — Zooombla News (2025-10-21)
 - [76 Percent of Organizations Struggle to Match the Speed of AI-Powered Attacks, Finds CrowdStrike State of Ransomware Survey](https://www.marketwatch.com/press-release/76-percent-of-organizations-struggle-to-match-the-speed-of-ai-powered-attacks-finds-crowdstrike-state-of-ransomware-survey-45952d7e) — MarketWatch (2025-10-21)
 

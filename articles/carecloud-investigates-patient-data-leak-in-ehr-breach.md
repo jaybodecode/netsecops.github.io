@@ -77,7 +77,6 @@ CareCloud appears to be following standard incident response procedures by isola
 
 ## Sources
 - [Healthcare IT Platform CareCloud Probing Potential Data Breach](https://www.securityweek.com/healthcare-it-platform-carecloud-probing-potential-data-breach/) — SecurityWeek
-- [Healthcare Software Company Announces Breach of its Electronic Health Record Environment](https://www.hipaajournal.com/carecloud-notifies-sec-about-security-incident-at-its-electronic-health-record-environment/) — The HIPAA Journal
 - [Healthcare tech firm CareCloud says hackers stole patient data](https://www.bleepingcomputer.com/news/security/healthcare-tech-firm-carecloud-says-hackers-stole-patient-data/) — BleepingComputer
 - [CareCloud reports EHR breach](https://www.healthleadersmedia.com/technology/carecloud-reports-ehr-breach) — HealthLeaders
 

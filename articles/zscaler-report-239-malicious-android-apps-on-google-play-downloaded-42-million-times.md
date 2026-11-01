@@ -71,9 +71,7 @@ Specific names or hashes of the 239 malicious applications were not provided in 
 **Tags:** Android, Malware, Google Play, Threat Intelligence, Zscaler, OT Security, ICS
 
 ## Sources
-- [Industry Attacks Surge, Mobile Malware Spreads: The ThreatLabz 2025 Mobile, IoT & OT Report](https://www.zscaler.com/blogs/security-research/industry-attacks-surge-mobile-malware-spreads-threatlabz-2025-mobile-iot-ot-report) — Zscaler (2025-11-05)
 - [Report finds 67% surge in Android malware attacks](https://www.mobileworldlive.com/featured-content/home-banner/report-finds-67-surge-in-android-malware-attacks/) — Mobile World Live (2025-11-05)
-- [Hundreds of Malware-Laden Apps Downloaded 42 Million Times From Google Play](https://www.infosecurity-magazine.com/news/malware-apps-downloaded-42m-google/) — Infosecurity Magazine (2025-11-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/zscaler-report-239-malicious-android-apps-on-google-play-downloaded-42-million-times/

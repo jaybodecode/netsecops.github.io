@@ -56,7 +56,6 @@ To detect ransomware precursors, security teams should hunt for:
 
 ## Sources
 - [February 2026: Recent Cyber Attacks, Data Breaches, Ransomware Attacks](https://www.cybermanagementalliance.com/hub/february-2026-recent-cyber-attacks-data-breaches-ransomware-attacks/) — Cyber Management Alliance
-- [2026 Data Breaches: Cybersecurity Incidents Explained](https://www.pkware.com/blog/2026-data-breaches-cybersecurity-incidents-explained/) — PKWARE
 
 ---
 Source: https://cyber.netsecops.io/articles/university-of-mississippi-medical-center-hit-by-crippling-ransomware-attack/

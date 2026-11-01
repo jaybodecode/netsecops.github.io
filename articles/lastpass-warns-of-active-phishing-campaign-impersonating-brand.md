@@ -65,7 +65,6 @@ This would lead to a catastrophic personal data breach for the victim, enabling 
 
 ## Sources
 - [October 13 Phishing Campaign Leveraging LastPass Branding](https://blog.lastpass.com/2025/10/phishing-campaign-leveraging-lastpass-branding-detected-october-13-2025/) — LastPass (2025-10-13)
-- [LastPass warns of new phishing attack claiming they were hacked](https://www.bleepingcomputer.com/news/security/lastpass-warns-of-phishing-attack-claiming-they-were-hacked/) — BleepingComputer (2025-10-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/lastpass-warns-of-active-phishing-campaign-impersonating-brand/

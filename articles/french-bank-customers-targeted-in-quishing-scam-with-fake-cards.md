@@ -51,7 +51,6 @@ Education is the primary mitigation strategy.
 **Tags:** Quishing, QR Code, Social Engineering, Bank Fraud, France, Phishing
 
 ## Sources
-- [RadioCSIRT English Edition – Your Cybersecurity News for Sunday, January 11, 2026 (Ep. 67)](https://www.radiocsirt.com/p/radiocsirt-english-edition-your-cybersecurity-11012026-ep-67) — RadioCSIRT (2026-01-11)
 - [bet365 Reacts to Surge in Reported Scam Using Fake Bank Cards in France](https://www.toyotawhittier.com/news/bet365-reacts-to-surge-in-reported-scam-using-fake-bank-cards-in-france/) (2026-01-11)
 
 ---

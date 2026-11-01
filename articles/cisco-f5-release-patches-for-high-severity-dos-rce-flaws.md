@@ -63,7 +63,6 @@ The primary remediation for all listed vulnerabilities is to apply the security 
 
 ## Sources
 - [Cisco, F5 Patch High-Severity Vulnerabilities](https://www.securityweek.com/cisco-f5-patch-high-severity-vulnerabilities/) — SecurityWeek (2026-02-05)
-- [F5 and Cisco release fixes for critical product vulnerabilities](https://www.bleepingcomputer.com/news/security/f5-and-cisco-release-fixes-for-critical-product-vulnerabilities/) — BleepingComputer (2026-02-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisco-f5-release-patches-for-high-severity-dos-rce-flaws/

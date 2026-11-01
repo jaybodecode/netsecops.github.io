@@ -45,10 +45,7 @@ No specific IOCs have been released to the public.
 
 ## Sources
 - [South Korean giant Kyowon confirms data theft in ransomware attack](https://www.bleepingcomputer.com/news/security/south-korean-giant-kyowon-confirms-data-theft-in-ransomware-attack/) — BleepingComputer (2026-01-14)
-- [A ransomware attack disrupted operations at South Korean conglomerate Kyowon](https://securityaffairs.com/157677/cyber-crime/ransomware-attack-kyowon.html) — Security Affairs (2026-01-15)
-- [Suspected ransomware attack threatens one of South Korea's largest companies](https://www.recordedfuture.com/news/suspected-ransomware-attack-threatens-one-of-south-koreas-largest-companies) — The Record by Recorded Future (2026-01-13)
 - [Over 9M estimated to be impacted by Kyowon Group hack](https://www.scmagazine.com/news/over-9m-estimated-to-be-impacted-by-kyowon-group-hack) — SC Media (2026-01-14)
-- [Kyowon Confirms Ransomware Incident and Data Exfiltration](https://www.thaicert.or.th/news/2026-01-16-01.html) — ThaiCERT (2026-01-16)
 - [19th January – Threat Intelligence Report](https://research.checkpoint.com/2026/19th-january-threat-intelligence-report/) — Check Point Research (2026-01-19)
 
 ---

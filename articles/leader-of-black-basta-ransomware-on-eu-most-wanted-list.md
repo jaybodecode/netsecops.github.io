@@ -62,7 +62,6 @@ Preventing a ransomware attack is key.
 
 ## Sources
 - [Ransomware 'Most Wanted': Cops Seek Head of Black Basta](https://www.databreachtoday.com/ransomware-most-wanted-cops-seek-head-black-basta-a-24105) — DataBreachToday (2026-01-19)
-- [Black Basta Ransomware Leader Added to EU Most Wanted and INTERPOL Red Notice](https://thehackernews.com/2026/01/19/black-basta-leader-eu-most-wanted.html) — The Hacker News (2026-01-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/leader-of-black-basta-ransomware-on-eu-most-wanted-list/

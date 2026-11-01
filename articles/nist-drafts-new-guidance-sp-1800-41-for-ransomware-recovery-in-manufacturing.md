@@ -48,7 +48,6 @@ To align with SP 1800-41, manufacturers should take the following tactical steps
 
 ## Sources
 - [NIST publishes SP 1800-41 draft to focus on ransomware response, operational recovery in manufacturing networks](https://industrialcyber.co/news/nist-publishes-sp-1800-41-draft-to-focus-on-ransomware-response-operational-recovery-in-manufacturing-networks/) — Industrial Cyber (2026-05-25)
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) — DeXpose (2026-05-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/nist-drafts-new-guidance-sp-1800-41-for-ransomware-recovery-in-manufacturing/

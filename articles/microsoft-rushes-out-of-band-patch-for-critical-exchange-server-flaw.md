@@ -45,7 +45,6 @@ A vulnerability that allows for escalation to Domain Admin is one of the most cr
 
 ## Sources
 - [CVE-2026-21445 - Microsoft Exchange Server Privilege Escalation Vulnerability](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21445) — Microsoft Security Response Center (2026-02-22)
-- [Microsoft releases emergency patch for critical Exchange Server vulnerability](https://www.zdnet.com/article/microsoft-releases-emergency-patch-for-critical-exchange-server-vulnerability/) — ZDNet (2026-02-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-rushes-out-of-band-patch-for-critical-exchange-server-flaw/

@@ -57,9 +57,9 @@ Exploiting **CVE-2020-12812** grants an attacker full access to the VPN, effecti
 **Tags:** CVE-2020-12812, Fortinet, FortiGate, Vulnerability, 2FA Bypass, KEV, Patch Management, Actively Exploited
 
 ## Sources
-- [Over 10K Fortinet firewalls exposed to actively exploited 2FA bypass](https://www.bleepingcomputer.com/news/security/over-10k-fortinet-firewalls-exposed-to-actively-exploited-2fa-bypass/) — BleepingComputer (2026-01-02)
-- [A Forgotten Bug with Dangerous Consequences: Fortinet 2FA Bypass Still Active](https://industrywired.com/a-forgotten-bug-with-dangerous-consequences-fortinet-2fa-bypass-still-active/) — IndustryWired (2026-01-03)
-- [Analysis of FG-IR-19-283](https://www.fortinet.com/blog/psirt-blogs/fg-ir-19-283-fortigate-ldap-2fa-bypass) — Fortinet (2025-12-25)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-01-02)
+- [IndustryWired](https://industrywired.com/) — IndustryWired (2026-01-03)
+- [Fortinet](https://www.fortinet.com/) — Fortinet (2025-12-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/10000-fortinet-firewalls-exposed-to-critical-2fa-bypass-flaw/

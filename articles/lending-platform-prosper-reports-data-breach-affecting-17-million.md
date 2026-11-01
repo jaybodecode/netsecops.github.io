@@ -45,7 +45,6 @@ The business impact on Prosper includes significant reputational damage, potenti
 ## Sources
 - [Top 5 Cybersecurity News Stories October 17, 2025](https://diesec.com/blog/top-5-cybersecurity-news-stories-october-17-2025) — DieSec (2025-10-17)
 - [In Other News: CrowdStrike Vulnerabilities, CISA Layoffs, Mango Data Breach](https://www.securityweek.com/in-other-news-crowdstrike-vulnerabilities-cisa-layoffs-mango-data-breach/) — SecurityWeek (2025-10-17)
-- [H-ISAC TLP White: Daily Cyber Headlines - October 17, 2025 | AHA](https://www.aha.org/h-isac-tlp-white-daily-cyber-headlines/2025-10-17/h-isac-tlp-white-daily-cyber-headlines-october-17-2025) — American Hospital Association (2025-10-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/lending-platform-prosper-reports-data-breach-affecting-17-million/

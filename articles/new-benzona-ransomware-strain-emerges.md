@@ -47,7 +47,6 @@ Standard ransomware defenses are the most effective mitigation against **Benzona
 
 ## Sources
 - [Weekly Intelligence Report – 05 December 2025](https://www.cyfirma.com/outofband/weekly-intelligence-report-05-december-2025/) — CYFIRMA (2025-12-05)
-- [New Benzona Ransomware Strain Surfaces](https://www.securityweek.com/new-ransomware-strain-benzona-discovered/) — SecurityWeek (2025-12-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-benzona-ransomware-strain-emerges/

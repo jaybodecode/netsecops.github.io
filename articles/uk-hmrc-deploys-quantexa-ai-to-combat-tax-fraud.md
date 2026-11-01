@@ -48,7 +48,6 @@ For small businesses and individual taxpayers in the UK, this development unders
 **Tags:** AI, Tax Fraud, HMRC, Quantexa, UK, Government, FinTech
 
 ## Sources
-- [This Week's Top Five Stories in Cyber](https://cybermagazine.com/cyber-attacks-and-data-breaches/this-weeks-top-five-stories-in-cyber) — Cyber Magazine (2026-05-16)
 - [X pledges to act quicker on hate and terror content, Space X's Starlink hikes prices](https://www.techdigest.tv/2026/05/x-pledges-to-act-quicker-on-hate-and-terror-content-space-xs-starlink-hikes-prices.html) — Tech Digest (2026-05-17)
 - [Ken Murphy Tesco Pay Rise: Boss Bags Record £10.8m Package After £1m Boost](https://www.uk-small-business-blog.co.uk/news/ken-murphy-tesco-pay-rise/) — UK Small Business Blog (2026-05-16)
 

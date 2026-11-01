@@ -81,7 +81,6 @@ Standard ransomware defenses are effective against new groups like **Sicarii**.
 
 ## Sources
 - [Weekly Intelligence Report – 30 January 2026](https://www.cyfirma.com/outofband/weekly-intelligence-report-30-january-2026/) — CYFIRMA (2026-01-30)
-- [New Sicarii ransomware ramps up attacks in January](https://www.bleepingcomputer.com/news/security/new-sicarii-ransomware-ramps-up-in-january/) — BleepingComputer (2026-01-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-sicarii-ransomware-raas-operation-identified-in-the-wild/

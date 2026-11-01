@@ -45,7 +45,6 @@ This is a trend report and does not contain specific IOCs.
 
 ## Sources
 - [Hacktivists and cybercriminals expand attacks on ICS, OT, and AI systems across critical infrastructure](https://industrialcyber.com/news/hacktivists-and-cybercriminals-expand-attacks-on-ics-ot-and-ai-systems-across-critical-infrastructure/) — Industrial Cyber (2026-01-20)
-- [UK NCSC warns of Russia-linked hacktivists DDoS attacks](https://securityaffairs.com/157833/hacktivism/uk-ncsc-warns-russia-linked-hacktivists-ddos-attacks.html) — Security Affairs (2026-01-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/hacktivists-and-cybercriminals-expand-attacks-on-ics-and-ai-systems/

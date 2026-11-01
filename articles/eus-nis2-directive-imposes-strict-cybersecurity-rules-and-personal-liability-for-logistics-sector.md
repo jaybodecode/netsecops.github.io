@@ -64,8 +64,8 @@ Non-compliance with NIS2 carries severe penalties:
 **Tags:** NIS2, EU, Regulation, Compliance, Logistics, Transportation, Supply Chain, Liability
 
 ## Sources
-- [Cyber resilience in Logistics 4.0: The NIS2 Directive as a new benchmark for liability](https://www.noerr.com/en/insights/cyber-resilience-in-logistics-40-the-nis2-directive-as-a-new-benchmark-for-liability) — Noerr (2026-05-14)
-- [The NIS2 Directive: A New Era of Cybersecurity and Liability in the EU](https://www.jdsupra.com/legalnews/the-nis2-directive-a-new-era-of-cyber-7359112/) — JDSupra (2026-05-13)
+- [Noerr](https://www.noerr.com/) — Noerr (2026-05-14)
+- [JDSupra](https://www.jdsupra.com/) — JDSupra (2026-05-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/eus-nis2-directive-imposes-strict-cybersecurity-rules-and-personal-liability-for-logistics-sector/

@@ -93,7 +93,6 @@ Mitigation requires a multi-step approach:
 ## Sources
 - [FIRESTARTER Backdoor Hit Federal Cisco Firepower Device, Survives Security Patches](https://thehackernews.com/2026/04/firestarter-backdoor-hit-federal-cisco.html) — The Hacker News (2026-04-24)
 - [US Federal Agency’s Cisco Firewall Infected With ‘Firestarter’ Backdoor](https://www.securityweek.com/us-federal-agencys-cisco-firewall-infected-with-firestarter-backdoor/) — SecurityWeek (2026-04-24)
-- [CISA: US agency breached through Cisco vulnerability, FIRESTARTER backdoor allowed access through March](https://therecord.media/cisa-us-agency-breached-cisco-vulnerability-firestarter) — The Record (2026-04-24)
 - [Continued Evolution of Persistence Mechanism Against Cisco Secure Firewall Adaptive Security Appliance and Secure Firewall Threat Defense](https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-asaftd-persist-CISAED25-03) — Cisco (2026-04-24)
 
 ---

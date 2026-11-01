@@ -39,8 +39,8 @@ Specific Indicators of Compromise (IOCs) for LockBit 5.0 have not yet been widel
 **Tags:** LockBit, Ransomware, RaaS, Malware, ETW, ESXi, Cybercrime
 
 ## Sources
-- [Bitdefender Threat Debrief | October 2025](https://www.bitdefender.com/blog/business/bitdefender-threat-debrief-october-2025/) — Bitdefender (2025-10-14)
-- [Chapter 01: Countering the cyber threat](https://www.ncsc.gov.uk/report/annual-review-2025/chapter-01) — NCSC (2025-10-14)
+- [Bitdefender](https://www.bitdefender.com/) — Bitdefender (2025-10-14)
+- [NCSC](https://www.ncsc.gov.uk/) — NCSC (2025-10-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/lockbit-ransomware-returns-with-upgraded-version-5-0/

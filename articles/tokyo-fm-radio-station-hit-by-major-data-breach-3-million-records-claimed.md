@@ -59,10 +59,7 @@ If the claims are true, the impact on **Tokyo FM** will be multi-faceted and sev
 **Tags:** Data Breach, Tokyo FM, Japan, PII, APPI, Hacker, Media
 
 ## Sources
-- [Tokyo FM Data Breach: Hacker Claims Over 3 Million Records Stolen](https://www.hackread.com/tokyo-fm-data-breach-hacker-claims-records-stolen/) — HackRead (2026-01-02)
-- [Tokyo FM Broadcasting systems reportedly breached, millions of records potentially stolen](https://www.scmagazine.com/news/tokyo-fm-broadcasting-systems-reportedly-breached-millions-of-records-potentially-stolen) — SC Magazine (2026-01-05)
 - [Tokyo FM Data Breach: Hacker Claims Over 3 Million Records Stolen](https://socdefenders.com/soc-news/tokyo-fm-data-breach-hacker-claims-over-3-million-records-stolen) — SOCDefenders (2026-01-02)
-- [Brinztech Alert: The Alleged Database of Tokyo FM is on Sale](https://brinztech.com/blog/brinztech-alert-the-alleged-database-of-tokyo-fm-is-on-sale/) — Brinztech (2026-01-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/tokyo-fm-radio-station-hit-by-major-data-breach-3-million-records-claimed/

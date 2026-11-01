@@ -79,7 +79,6 @@ Security teams should hunt for the following indicators of a Qilin attack:
 **Tags:** Qilin, ransomware, EDR, BYOVD, kernel, defense evasion, Cisco Talos, DLL side-loading
 
 ## Sources
-- [Qilin EDR killer infection chain](https://blog.talosintelligence.com/qilin-edr-killer-infection-chain/) — Cisco Talos (2026-04-02)
 - [Qilin Ransomware Uses Malicious DLL to Kill Almost Every Vendor’s EDR Solutions](https://cybersecuritynews.co.uk/qilin-ransomware-uses-malicious-dll-to-kill-almost-every-vendors-edr-solutions/) — Cybersecurity News (2026-04-02)
 
 ---

@@ -58,7 +58,6 @@ This series of updates serves as a crucial reminder for the need for robust and 
 
 ## Sources
 - [IBM security advisory (AV25-811)](https://cyber.gc.ca/en/alerts-advisories/ibm-security-advisory-av25-811) — Canadian Centre for Cyber Security (2025-12-08)
-- [IBM Security Bulletins - IBM Support](https://www.ibm.com/support/security/bulletins) — IBM (2025-12-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/ibm-issues-critical-security-updates-for-enterprise-products/

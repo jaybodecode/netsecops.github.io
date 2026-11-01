@@ -45,7 +45,6 @@ For financial institutions, the key takeaway is to review and update their incid
 
 ## Sources
 - [G7 Cyber Expert Group Publishes Fundamental Elements of Collective Cyber Incident Response and Recovery in the Financial Sector](https://home.treasury.gov/news/press-releases/jy2776) — U.S. Department of the Treasury (2025-12-03)
-- [Milestone for cybersecurity](https://www.bafin.de/SharedDocs/Veroeffentlichungen/EN/Aktuelles/en_2025_12_03_G7_CEG_en.html) — BaFin (2025-12-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/g7-publishes-framework-for-coordinated-cyber-response-in-financial-sector/

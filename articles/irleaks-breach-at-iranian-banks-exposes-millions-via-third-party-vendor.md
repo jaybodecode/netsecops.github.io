@@ -54,8 +54,8 @@ The source articles mention that specific IP addresses and phishing domains were
 **Tags:** Data Breach, Supply Chain Attack, Third-Party Risk, Financial Services, Iran, IRLeaks
 
 ## Sources
-- [IRLeaks Data Breach: What Happened, Impact, and Lessons](https://www.huntress.com/blog/irleaks-data-breach) — Huntress (2025-12-17)
-- [IRLeaks Attack on Iranian Banks Data Breach Explained](https://thecyberexpress.com/irleaks-iranian-banks-data-breach/) — The Cyber Express (2025-12-17)
+- [Huntress](https://www.huntress.com/) — Huntress (2025-12-17)
+- [The Cyber Express](https://thecyberexpress.com/) — The Cyber Express (2025-12-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/irleaks-breach-at-iranian-banks-exposes-millions-via-third-party-vendor/

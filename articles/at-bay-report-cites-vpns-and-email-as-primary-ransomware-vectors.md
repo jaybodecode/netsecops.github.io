@@ -48,9 +48,7 @@ The report, from an insurer's perspective, directly ties these threat vectors to
 **Tags:** VPN, remote access, ransomware, cyber insurance, MDR, email security
 
 ## Sources
-- [VPNs from Cisco and Citrix Riskiest Products for Ransomware: At-Bay Rankings Report](https://www.at-bay.com/resources/blog/vpns-from-cisco-and-citrix-riskiest-products-for-ransomware-at-bay-insursec-rankings-report/) — At-Bay (2025-10-28)
 - [VPNs from Cisco and Citrix Riskiest Products for Ransomware: At-Bay InsurSec Rankings Report](https://www.businesswire.com/news/home/20251028365406/en/VPNs-from-Cisco-and-Citrix-Riskiest-Products-for-Ransomware-At-Bay-InsurSec-Rankings-Report) — Business Wire (2025-10-28)
-- [Old threats, new consequences: 90% of cyber claims stem from email and remote access](https://cybermagazine.com/cyber-risk/old-threats-new-consequences-90-of-cyber-claims-stem-from-email-and-remote-access/) — Cyber Magazine (2025-10-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/at-bay-report-cites-vpns-and-email-as-primary-ransomware-vectors/

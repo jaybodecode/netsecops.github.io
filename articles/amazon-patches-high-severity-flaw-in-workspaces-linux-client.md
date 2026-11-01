@@ -43,7 +43,6 @@ The risk is highest in environments where users with different privilege levels 
 
 ## Sources
 - [Amazon Confirms WorkSpaces Linux Client Authentication Issue](https://www.forbes.com/sites/daveywinder/2025/11/07/amazon-confirms-workspaces-linux-client-authentication-issue/) — Forbes (2025-11-07)
-- [AWS fixed a high-severity flaw in WorkSpaces Linux client](https://securityaffairs.com/158732/security/amazon-workspaces-linux-client-flaw.html) — Security Affairs (2025-11-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/amazon-patches-high-severity-flaw-in-workspaces-linux-client/

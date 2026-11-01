@@ -58,7 +58,6 @@ At the time of disclosure, ConnectWise stated it had no evidence that `CVE-2026-
 
 ## Sources
 - [Unpatched ScreenConnect servers open to attack (CVE-2026-3564)](https://www.helpnetsecurity.com/2026/03/20/unpatched-screenconnect-servers-open-to-attack-cve-2026-3564/) — Help Net Security
-- [900K Records Exposed](https://www.esecurityplanet.com/data-security/900k-records-exposed/) — eSecurity Planet
 - [ScreenConnect Vulnerability Allows Hackers to Extract Unique Machine Keys and Hijack Sessions](https://cybersecuritynews.com/screenconnect-vulnerability/) — Cybersecurity News
 
 ---

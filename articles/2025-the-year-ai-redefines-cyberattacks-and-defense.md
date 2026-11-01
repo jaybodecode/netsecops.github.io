@@ -37,7 +37,6 @@ On the defensive side, AI is being used to automate threat detection, correlate 
 **Tags:** AI, artificial intelligence, generative AI, LLM, threat landscape, phishing, deepfake
 
 ## Sources
-- [2025: The Year Cybersecurity Crossed the AI Rubicon](https://govtech.com/security/2025-the-year-cybersecurity-crossed-the-ai-rubicon) — GovTech (2025-12-14)
 - [2026 Will Be the Year of AI-based Cyberattacks – How Can Organizations Prepare?](https://securityboulevard.com/2025/12/2026-will-be-the-year-of-ai-based-cyberattacks-how-can-organizations-prepare/) — Security Boulevard (2025-12-14)
 - [Week in review: 40 open-source tools securing the stack, invisible IT to be the next workplace priority](https://www.helpnetsecurity.com/2025/12/14/week-in-review-40-open-source-tools-securing-the-stack-invisible-it-to-be-the-next-workplace-priority/) — Help Net Security (2025-12-14)
 - [2025: The Year Cybersecurity Crossed the AI Rubicon](https://securityboulevard.com/2025/12/2025-the-year-cybersecurity-crossed-the-ai-rubicon/) — Security Boulevard (2025-12-14)

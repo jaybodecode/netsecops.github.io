@@ -56,7 +56,7 @@ The primary impact is political and strategic espionage. By targeting European g
 **Tags:** APT, Mustang Panda, TA416, China, espionage, PlugX, MSBuild
 
 ## Sources
-- [Chinese Hackers Target European Governments in Espionage Campaigns](https://www.infosecurity-magazine.com/news/chinese-hackers-target-european/) — Infosecurity Magazine (2026-04-01)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/chinese-apt-mustang-panda-renews-espionage-campaign-against-european-governments/

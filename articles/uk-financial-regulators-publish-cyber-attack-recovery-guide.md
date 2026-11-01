@@ -40,7 +40,6 @@ For financial firms, implementing these practices will require significant inves
 **Tags:** UK, Finance, Regulatory, Compliance, BankOfEngland, FCA, PRA, IncidentResponse
 
 ## Sources
-- [Effective practices: Cyber response and recovery capabilities](https://www.bankofengland.co.uk/news/2025/october/effective-practices-cyber-response-and-recovery-capabilities) — Bank of England (2025-10-20)
 - [BoE, FCA and PRA joint publication - Effective practices: Cyber response and recovery capabilities](https://www.globalregulationtomorrow.com/2025/10/20/boe-fca-and-pra-joint-publication-effective-practices-cyber-response-and-recovery-capabilities/) — Global Regulation Tomorrow (2025-10-20)
 
 ---

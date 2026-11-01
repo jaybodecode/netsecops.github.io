@@ -87,8 +87,8 @@ Preventing this type of data breach requires adherence to fundamental security b
 **Tags:** Data Leak, Data Breach, MongoDB, Misconfiguration, Cloud Security, LinkedIn
 
 ## Sources
-- [4B+ records, including numerous LinkedIn profiles, exposed in one of the largest lead-generation datasets ever found open](https://cybernews.com/security/4b-records-linkedin-profiles-exposed-lead-generation-dataset/) — Cybernews (2025-12-10)
-- [2025 in cybersecurity: Major incidents of the year](https://www.siliconrepublic.com/enterprise/2025-cybersecurity-major-incidents-data-breaches-qantas-m-s-harrods) — Silicon Republic (2025-12-10)
+- [Cybernews](https://cybernews.com/) — Cybernews (2025-12-10)
+- [Silicon Republic](https://www.siliconrepublic.com/) — Silicon Republic (2025-12-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/unprotected-mongodb-database-exposes-4-3-billion-professional-records/

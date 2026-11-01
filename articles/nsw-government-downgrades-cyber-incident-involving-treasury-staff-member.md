@@ -62,11 +62,8 @@ To mitigate the risk of insider threats, organizations should:
 **Tags:** Insider Threat, NSW Government, Data Breach, Government, Security Operations
 
 ## Sources
-- [Significant cyber incident downgraded](https://www.nsw.gov.au/media-releases/significant-cyber-incident-downgraded) — NSW Government (2026-05-04)
 - [NSW Treasury cyber incident downgraded](https://www.insidestategovernment.com.au/nsw-treasury-cyber-incident-downgraded/) — Inside State Government (2026-05-04)
-- [NSW Treasury Breach Triggers Whole-of-Government Cyber Response](https://www.rimpa.com.au/ri-magazine-article/nsw-treasury-breach-triggers-whole-of-government-cyber-response/) — RIMPA Global (2026-04-29)
 - [NSW Government declares significant cyber incident after alleged Treasury data breach](https://australiancybersecuritymagazine.com.au/nsw-government-declares-significant-cyber-incident-after-alleged-treasury-data-breach/) — Australian Cyber Security Magazine (2026-04-23)
-- [Cyber Incident](https://www.nsw.gov.au/media-releases/cyber-incident) — NSW Government (2026-04-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/nsw-government-downgrades-cyber-incident-involving-treasury-staff-member/

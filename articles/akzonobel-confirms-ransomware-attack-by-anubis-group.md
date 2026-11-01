@@ -42,7 +42,6 @@ The breach at **AkzoNobel** has significant business consequences:
 **Tags:** Anubis, Ransomware, AkzoNobel, Data Leak, Manufacturing, RaaS, Double Extortion
 
 ## Sources
-- [Paints manufacturer AkzoNobel targeted by Anubis ransomware operators](https://www.teiss.co.uk/paints-manufacturer-akzonobel-targeted-by-anubis-ransomware-operators/) — teiss (2026-03-06)
 - [Top 5 Cybersecurity News Stories March 06, 2026](https://www.diesec.com/blog/top-5-cybersecurity-news-stories-march-06-2026) — DIESEC (2026-03-06)
 
 ---

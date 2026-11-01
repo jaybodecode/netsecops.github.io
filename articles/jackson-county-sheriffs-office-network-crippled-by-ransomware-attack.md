@@ -38,7 +38,6 @@ This incident provides critical lessons for other local government and public se
 **Tags:** Ransomware, Local Government, Indiana, Phishing, Cyberattack
 
 ## Sources
-- [Ransomware attack crashes Jackson County Sheriff's Office computer systems](https://www.idsnews.com/article/2026/03/ransomware-attack-jackson-county-sheriffs-office-computer-systems) — Indiana Daily Student (2026-03-27)
 - [Jackson County Sheriff’s Office Hit By Ransomware](https://www.databreaches.net/jackson-county-sheriffs-office-hit-by-ransomware/) — DataBreaches.net (2026-03-27)
 
 ---

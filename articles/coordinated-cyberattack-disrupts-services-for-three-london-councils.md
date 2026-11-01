@@ -50,7 +50,6 @@ Detecting this type of attack requires comprehensive monitoring of both network 
 
 ## Sources
 - [Multiple London councils' IT systems disrupted by cyberattack](https://www.bleepingcomputer.com/news/security/multiple-london-councils-it-systems-disrupted-by-cyberattack/) — BleepingComputer (2025-11-26)
-- [Multiple London councils faced a cyberattack](https://securityaffairs.com/177063/cyber-crime/multiple-london-councils-cyberattack.html) — Security Affairs (2025-11-26)
 - [Multiple London Councils Responding to Cyberattack](https://www.bankinfosecurity.com/multiple-london-councils-responding-to-cyberattack-a-27159) — BankInfoSecurity (2025-11-26)
 - [NEWS ROUNDUP – 26th November 2025](https://www.digitalforensicsmagazine.com/news-main/news-roundup-26th-november-2025/) — Digital Forensics Magazine (2025-11-26)
 

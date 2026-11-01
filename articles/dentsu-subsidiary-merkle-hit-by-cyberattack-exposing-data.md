@@ -50,7 +50,6 @@ Preventing such attacks requires a defense-in-depth strategy, particularly for h
 **Tags:** Dentsu, Merkle, Cyberattack, Data Breach, CXM, Advertising, Supply Chain Attack, Incident Response
 
 ## Sources
-- [Dentsu’s US subsidiary Merkle hit by cyberattack, staff and client data exposed](https://securityaffairs.co/178051/data-breach/dentsu-merkle-cyber-attack.html) — Security Affairs (2025-10-30)
 - [Latest Cyber Security Attack News Today – Cyber Threat Post](https://varutra.com/blog/) — Varutra Consulting (2025-10-29)
 
 ---

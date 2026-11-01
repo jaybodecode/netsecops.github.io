@@ -68,8 +68,6 @@ MSPs in the UK should begin preparing now, even before the bill is passed.
 
 ## Sources
 - [Modernising UK Cyber Regulation: Implications of the Cyber Security and Resilience Bill](https://www.darktrace.com/blog/modernising-uk-cyber-regulation-implications-of-the-cyber-security-and-resilience-bill) — Darktrace (2026-01-23)
-- [Five major changes to the regulation of cybersecurity in the UK under the Cyber Security and Resilience Bill](https://www.globalpolicywatch.com/2026/01/five-major-changes-to-the-regulation-of-cybersecurity-in-the-uk-under-the-cyber-security-and-resilience-bill/) — Global Policy Watch (2026-01-23)
-- [Cybersecurity, Data Protection & Cyber Resilience](https://www.regulatorydecoded.com/2025/10/how-the-cyber-resilience-act-and-nis2-reshape-product-compliance/) — Regulatory Decoded (2026-01-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-proposes-cyber-security-and-resilience-bill-to-regulate-msps/

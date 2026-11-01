@@ -46,9 +46,7 @@ To prevent similar incidents, healthcare organizations must implement a multi-la
 **Tags:** Data Breach, Healthcare, HIPAA, Springfield Hospital, Phishing, PII, SSN
 
 ## Sources
-- [Springfield Hospital Data Breach Reported; Attorneys Investigating](https://www.classaction.org/springfield-hospital-data-breach) — ClassAction.org
 - [Springfield Hospital Data Breach Investigation](https://claimdepot.org/shamim-gentile-investigating-springfield-hospital-data-breach/) — Claim Depot
-- [Data Breach Lawsuit List | Class Action Settlements, Investigations](https://www.classaction.org/data-breach-lawsuit-list) — ClassAction.org
 - [Springfield Hospital Data Breach Exposes SSNs and Medical Information](https://claimdepot.org/springfield-hospital-data-breach-exposes-ssns-and-medical-information/) — Claim Depot
 
 ---

@@ -34,7 +34,6 @@ This incident provides critical lessons for organizations, especially those acti
 
 ## Sources
 - [Cognizant Hit With Multiple US Class-Action Lawsuits Following TriZetto Data Breach](https://siembiot.com/cognizant-hit-with-multiple-us-class-action-lawsuits-following-trizetto-data-breach/) — SIEMBiot (2026-01-03)
-- [Class Action Lawsuit Filed Against Cognizant over TriZetto Data Breach](https://www.hipaajournal.com/class-action-lawsuit-filed-against-cognizant-over-trizetto-data-breach/) — HIPAA Journal (2026-01-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/cognizant-faces-class-action-lawsuits-over-trizetto-data-breach/

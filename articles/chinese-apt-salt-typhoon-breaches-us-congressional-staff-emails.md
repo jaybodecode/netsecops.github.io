@@ -88,11 +88,9 @@ No specific Indicators of Compromise have been publicly released.
 **Tags:** Salt Typhoon, China, APT, Cyberespionage, US Government, Congress, Email Breach
 
 ## Sources
-- [Salt Typhoon reportedly breaches US congressional committee staff emails](https://www.scmagazine.com/news/salt-typhoon-reportedly-breaches-u-s-congressional-committee-staff-emails) — SC Magazine (2026-01-09)
 - [Salt Typhoon Hackers Hit Congressional Emails in New Breach](https://www.bankinfosecurity.com/salt-typhoon-hackers-hit-congressional-emails-in-new-breach-a-24058) — BankInfoSecurity (2026-01-09)
 - [In Other News: 8000 Ransomware Attacks, China Hacked US Gov Emails, IDHS Breach Impacts 700k](https://www.securityweek.com/in-other-news-8000-ransomware-attacks-china-hacked-us-gov-emails-idhs-breach-impacts-700k/) — SecurityWeek (2026-01-09)
 - [Congressional staff emails hacked as part of Salt Typhoon campaign](https://www.techradar.com/pro/security/congressional-staff-emails-hacked-as-part-of-salt-typhoon-campaign) — TechRadar Pro (2026-01-08)
-- [Report: Chinese hackers breach US House emails](https://www.jpost.com/international/article-781308) — The Jerusalem Post (2026-01-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/chinese-apt-salt-typhoon-breaches-us-congressional-staff-emails/

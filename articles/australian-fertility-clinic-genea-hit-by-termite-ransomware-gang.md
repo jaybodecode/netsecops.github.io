@@ -61,7 +61,6 @@ While no specific IOCs were provided, security teams can hunt for behaviors asso
 **Tags:** Termite, Ransomware, Data Breach, Healthcare, Australia, Genea, Babuk
 
 ## Sources
-- [Critical Australian Cyber Threats: React2Shell RCE, Healthcare Ransomware & Data Breaches](https://www.leansecurity.com.au/blog/daily-threat-briefing-australia-20-december-2025) — Lean Security (2025-12-20)
 - [Threat Intelligence Report](https://www.fujitsu.com/global/services/security/threat-intelligence-report/) — Fujitsu (2025-12-20)
 
 ---

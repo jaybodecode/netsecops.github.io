@@ -43,7 +43,6 @@ The breach has significant operational and reputational implications for the Eur
 **Tags:** cloud security, AWS, API key, supply chain attack, GDPR, open-source security
 
 ## Sources
-- [EU cyber agency attributes major data breach to TeamPCP hacking group](https://therecord.media/eu-cyber-agency-data-breach-team-pcp) — The Record (2026-04-03)
 - [THE HACK: EU cyber team confirms group behind attack - Euractiv](https://www.euractiv.com/section/digital/news/the-hack-eu-cyber-team-confirms-group-behind-attack/) — Euractiv (2026-04-03)
 
 ---

@@ -58,8 +58,6 @@ These are general observables for detecting attacks exploiting firewall vulnerab
 ## Sources
 - [Marquis Data Breach Affects 672,000 Individuals](https://www.securityweek.com/marquis-data-breach-affects-672000-individuals/) — SecurityWeek (2026-03-19)
 - [Marquis breach toll surpasses 670K](https://www.scmagazine.com/brief/marquis-breach-toll-surpasses-670k) — SC Magazine (2026-03-19)
-- [2026 Data Breaches: Cybersecurity Incidents Explained](https://www.pkware.com/blog/2026-data-breaches-cybersecurity-incidents-explained/) — PKWARE (2026-03-19)
-- [InfoSec News Nuggets 03/19/2026](https://aboutdfir.com/2026-03-19-infosec-news-nuggets/) — AboutDFIR (2026-03-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/marquis-revises-data-breach-impact-down-to-672000-individuals/

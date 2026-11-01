@@ -62,7 +62,6 @@ This incident serves as a reminder for all organizations that handle PII, especi
 ## Sources
 - [$2.5M Panera data breach class action settlement](https://topclassactions.com/lawsuit-settlements/legal-news/panera-data-breach-class-action-settlement/) — Top Class Actions (2025-10-18)
 - [$2.5million Panera Bread pot over data breach settlement - Apply Now](https://thousandcankers.com/2-5million-panera-bread-pot-over-data-breach-settlement-apply-now/) — Thousand Cankers (2025-10-18)
-- [Panera Bread $2.5M Data Breach Class Action Settlement](https://dapeer.com/panera-bread-data-breach-class-action-settlement/) — Dapeer (2025-10-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/panera-bread-2-5-million-settlement-2024-data-breach/

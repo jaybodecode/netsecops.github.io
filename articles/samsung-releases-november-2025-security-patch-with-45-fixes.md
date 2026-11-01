@@ -65,8 +65,6 @@ To verify remediation, check the device's security patch level.
 
 ## Sources
 - [Firmware Updates](https://security.samsungmobile.com/securityUpdate.smsb) — Samsung Mobile Security (2025-11-02)
-- [Samsung November 2025 One UI update delivers 45 security improvements](https://www.sammyfans.com/2025/11/03/samsung-november-2025-one-ui-update-delivers-45-security-improvements/) — SammyFans (2025-11-02)
-- [Samsung monthly updates: November 2025 security patch details](https://www.sammobile.com/news/samsung-galaxy-november-2025-security-patch-details/) — SamMobile (2025-11-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/samsung-releases-november-2025-security-patch-with-45-fixes/

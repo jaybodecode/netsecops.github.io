@@ -40,9 +40,6 @@ For financial institutions and businesses, this action creates new compliance ob
 ## Sources
 - [US launches sweeping crackdown on Southeast Asia cyberscams and sanctions Cambodian senator](https://www.macaudailytimes.com.mo/us-launches-sweeping-crackdown-on-southeast-asia-cyberscams-and-sanctions-cambodian-senator.html) — Macau Daily Times (2026-04-27)
 - [U.S. launches sweeping crackdown on Southeast Asia cyberscams and sanctions Cambodian senator](https://www.pbs.org/newshour/world/u-s-launches-sweeping-crackdown-on-southeast-asia-cyberscams-and-sanctions-cambodian-senator) — PBS NewsHour (2026-04-26)
-- [US launches sweeping crackdown on Southeast Asia cyberscams and sanctions Cambodian senator](https://www.newsday.com/news/nation/us-crackdown-southeast-asia-cyberscams-t4k9z1qj) — Newsday (2026-04-26)
-- [US launches sweeping crackdown on Southeast Asia cyberscams and sanctions Cambodian senator](https://www.manisteenews.com/news/article/us-launches-sweeping-crackdown-on-southeast-asia-19427382.php) — Manistee News Advocate (2026-04-26)
-- [US launches sweeping crackdown on Southeast Asia cyberscams and sanctions Cambodian senator](https://www.beaumontenterprise.com/news/article/us-launches-sweeping-crackdown-on-southeast-asia-19427382.php) — Beaumont Enterprise (2026-04-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/us-launches-crackdown-on-southeast-asia-cyberscam-operations/

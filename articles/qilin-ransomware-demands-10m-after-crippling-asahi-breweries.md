@@ -56,8 +56,6 @@ While no specific IOCs were provided, security teams can hunt for generic Qilin 
 **Tags:** Ransomware, Qilin, Double Extortion, Manufacturing, Japan
 
 ## Sources
-- [The Week in Breach News: October 8, 2025](https://www.kaseya.com/widgets/the-week-in-breach-news-october-8-2025/) — Kaseya (2025-10-06)
-- [Qilin Ransomware announced new victims](https://securityaffairs.co/wordpress/169847/security/qilin-ransomware-new-victims.html) — Security Affairs (2025-10-06)
 - [Is Cybercrime The Biggest Threat To Global Business In 2025?](https://cybersecurityventures.com/is-cybercrime-the-biggest-threat-to-global-business-in-2025/) — Cybercrime Magazine (2025-10-05)
 
 ---

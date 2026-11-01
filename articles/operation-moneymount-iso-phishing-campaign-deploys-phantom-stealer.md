@@ -61,7 +61,6 @@ A successful infection with **Phantom Stealer** can have severe consequences for
 
 ## Sources
 - [Russian Phishing Campaign Delivers Phantom Stealer Via ISO Files](https://www.infosecurity-magazine.com/news/russian-phishing-phantom-stealer/) — Infosecurity Magazine (2025-12-15)
-- [Phantom Stealer Uses ISO Files to Breach Windows Systems](https://www.esecurityplanet.com/threats/phantom-stealer-iso-files-windows/) — eSecurity Planet (2025-12-15)
 - [Phantom Stealer Spread by ISO Phishing Emails Hitting Russian Finance Sector](https://thehackernews.com/2025/12/phantom-stealer-spread-by-iso-phishing.html) — The Hacker News (2025-12-15)
 - [Illicit ISO files facilitate Phantom Stealer deployment](https://www.scmagazine.com/news/illicit-iso-files-facilitate-phantom-stealer-deployment) — SC Magazine (2025-12-16)
 

@@ -68,8 +68,6 @@ Mitigating supply chain risk requires a shift in how organizations manage softwa
 **Tags:** Supply Chain, Data Breach, Trivy, TeamPCP, ShinyHunters, AWS, Cloud Security, European Commission
 
 ## Sources
-- [EU cyber agency attributes major data breach to TeamPCP hacking group](https://www.recordedfuture.com/news/eu-cyber-agency-attributes-major-data-breach-to-teampcp-hacking-group) — The Record from Recorded Future News (2026-04-06)
-- [European Commission Data Breach Linked to Trivy Supply Chain Attack](https://www.securityweek.com/european-commission-data-breach-linked-to-trivy-supply-chain-attack/) — SecurityWeek (2026-04-06)
 - [EU Commission Breach Traced to Trivy Supply Chain Attack](https://www.darkreading.com/cloud-security/eu-commission-breach-traced-to-trivy-supply-chain-attack) — Dark Reading (2026-04-07)
 - [EU cyber agency blames TeamPCP hackers for Commission data breach](https://www.euractiv.com/section/cybersecurity/news/eu-cyber-agency-blames-teampcp-hackers-for-commission-data-breach/) — EURACTIV (2026-04-06)
 

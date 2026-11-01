@@ -86,7 +86,6 @@ This trend signifies a maturation in the cybercrime ecosystem, where specialized
 **Tags:** Storm-0249, IAB, Ransomware, DLL Side-loading, ClickFix, PowerShell
 
 ## Sources
-- [Storm-0249 Escalates Ransomware Attacks with ClickFix, Fileless PowerShell, and DLL Sideloading](https://thehackernews.com/2025/12/storm-0249-escalates-ransomware.html) — The Hacker News (2025-12-09)
 - [Ivanti warns of critical Endpoint Manager code execution flaw](https://www.bleepingcomputer.com/news/security/ivanti-warns-of-critical-endpoint-manager-code-execution-flaw/) — BleepingComputer (2025-12-09)
 
 ---

@@ -48,7 +48,6 @@ The attack chain is straightforward and relies on tricking the user into executi
 
 ## Sources
 - [Bloody Wolf Targets Uzbekistan, Russia Using NetSupport RAT in Spear-Phishing Campaign](https://thehackernews.com/2026/02/bloody-wolf-targets-uzbekistan-russia.html) — The Hacker News (2026-02-09)
-- [Cybersecurity News](https://www.wiu.edu/cbt/cybersecurity/news.php) — WIU Cybersecurity (2026-02-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/bloody-wolf-apt-targets-russia-and-uzbekistan-with-netsupport-rat/

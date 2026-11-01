@@ -61,8 +61,8 @@ Standard defenses against ransomware are the most effective mitigations:
 **Tags:** Clop, Ransomware, Dartmouth College, Education, Data Breach, Threat Actor
 
 ## Sources
-- [Clop Strikes Dartmouth College in Ransomware Attack](https://dexpose.io/blog/clop-strikes-dartmouth-college-in-ransomware-attack-7164/) — DeXpose
-- [Clop ransomware claims attack on Ivy League school Dartmouth College](https://www.bleepingcomputer.com/news/security/clop-ransomware-claims-attack-on-dartmouth-college/) — BleepingComputer
+- [DeXpose](https://dexpose.io/) — DeXpose
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
 
 ---
 Source: https://cyber.netsecops.io/articles/clop-ransomware-gang-claims-attack-on-dartmouth-college/

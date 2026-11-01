@@ -87,7 +87,6 @@ Security teams should hunt for TTPs associated with rapid lateral movement and d
 ## Sources
 - [The Gentlemen ransomware combines advanced encryption with self-propagation, targeting critical sectors](https://industrialcyber.co/ransomware/the-gentlemen-ransomware-combines-advanced-encryption-with-self-propagation-targeting-critical-sectors/) (2026-06-01)
 - [The Gentlemen ransomware: Dissecting a self-propagating Go encryptor](https://www.microsoft.com/en-us/security/blog/2026/05/28/the-gentlemen-ransomware-dissecting-a-self-propagating-go-encryptor/) (2026-05-28)
-- [Ransomware Uses SYSTEM Scheduled Task to Encrypt Local Drives With Elevated Privileges](https://www.thecyberexpress.com/2026/05/29/the-gentlemen-ransomware-go-based/) (2026-05-29)
 - [The Gentlemen Ransomware: A Rapidly Scaling RaaS Threat](https://www.hive-pro.com/threat-advisory/the-gentlemen-ransomware-a-rapidly-scaling-raas-threat/) (2026-05-29)
 
 ---

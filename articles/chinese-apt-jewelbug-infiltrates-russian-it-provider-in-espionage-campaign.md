@@ -68,7 +68,6 @@ Security teams should hunt for the following TTPs:
 
 ## Sources
 - [Jewelbug: Chinese APT Group Widens Reach to Russia](https://security-com.cdn.ampproject.org/c/s/security.com/news/jewelbug-chinese-apt-group-widens-reach-to-russia/) — Security.com (2025-10-15)
-- [Researchers report rare intrusion by suspected Chinese hackers into Russian tech firm](https://www.therecord.media/chinese-hackers-jewelbug-russian-tech-firm-symantec) — The Record (2025-10-15)
 - [Chinese APT Group IT Service Provider Leveraging Microsoft Console Debugger to Exfiltrate Data](https://www.cybersecuritynews.com/chinese-apt-group-it-service-provider/) — Cyber Security News (2025-10-15)
 - [China's Jewelbug APT Breaches Russian IT Provider for 5 Months, Using Yandex Cloud and Graph API C2](https://dailycybersec.com/2025/10/16/chinas-jewelbug-apt-breaches-russian-it-provider-for-5-months-using-yandex-cloud-and-graph-api-c2/) — Daily Cybersec (2025-10-16)
 

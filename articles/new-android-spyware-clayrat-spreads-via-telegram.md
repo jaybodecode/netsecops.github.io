@@ -60,7 +60,6 @@ The impact on a victim is severe, leading to a complete loss of privacy and secu
 
 ## Sources
 - [13th October – Threat Intelligence Report](https://research.checkpoint.com/2025/13th-october-threat-intelligence-report/) — Check Point Research (2025-10-13)
-- [CyberWatch Weekly: Top 3 Cybersecurity News from October 2nd Week 2025](https://www.infosecurity-magazine.com/news/discord-data-breach-vendor-5ca/) — Infosecurity Magazine (2025-10-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-android-spyware-clayrat-spreads-via-telegram/

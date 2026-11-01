@@ -60,8 +60,6 @@ This incident provides critical lessons for any organization managing sensitive 
 **Tags:** Data Breach, Companies House, UK, Vulnerability, PII, IDOR
 
 ## Sources
-- [Gov.Uk Suffers Data Leak](https://www.upguard.com/news/gov.uk-data-leak) — UpGuard
-- [Flaw in UK's corporate registry let directors rummage through rival records](https://www.theregister.com/2026/03/16/companies_house_webfiling_flaw/) — The Register
 - [Update on Companies House WebFiling security issue](https://www.gov.uk/government/news/update-on-companies-house-webfiling-security-issue) — GOV.UK
 - [UK’s Companies House confirms security flaw exposed business data](https://www.bleepingcomputer.com/news/security/uks-companies-house-confirms-security-flaw-exposed-business-data/) — BleepingComputer
 

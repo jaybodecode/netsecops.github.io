@@ -46,8 +46,8 @@ This incident serves as a critical lesson in supply chain risk management and GD
 **Tags:** Data Breach, GDPR, Sweden, IMY, Supply Chain Attack, PII
 
 ## Sources
-- [Data Breach at Swedish IT Firm Exposes Personal Information of 1.5 Million Users](https://gbhackers.com/data-breach-at-swedish-it-firm/) — GBHackers on Security (2025-11-05)
-- [IMY initiates inspections following major data leak](https://www.imy.se/en/news/imy-initiates-inspections-following-major-data-leak/) — Swedish Authority for Privacy Protection (2025-11-05)
+- [GBHackers on Security](https://gbhackers.com/) — GBHackers on Security (2025-11-05)
+- [Swedish Authority for Privacy Protection](https://www.imy.se/) — Swedish Authority for Privacy Protection (2025-11-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/swedish-it-firm-miljodata-breach-exposes-1-5-million/

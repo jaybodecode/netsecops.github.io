@@ -54,7 +54,6 @@ Using **Purple Knight** enhances an organization's detection and response capabi
 **Tags:** Semperis, Purple Knight, Active Directory, Entra ID, GCC High, identity security, security assessment, CISA
 
 ## Sources
-- [Purple Knight Now Delivers Comprehensive Identity Security Assessments for Microsoft GCC High Environments](https://www.prnewswire.com/news-releases/purple-knight-now-delivers-comprehensive-identity-security-assessments-for-microsoft-gcc-high-environments-302122173.html) — PR Newswire (2026-04-21)
 - [Emergency Communications Org Closes AD Security Gaps with Purple Knight](https://www.semperis.com/resources/webinars/emergency-communications-org-closes-ad-security-gaps-with-purple-knight/) — Semperis (2026-04-21)
 
 ---

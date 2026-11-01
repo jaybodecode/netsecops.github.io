@@ -50,8 +50,8 @@ Protecting sensitive client data is paramount for any accounting or professional
 **Tags:** accounting, professional services, PII, sensitive data, identity theft
 
 ## Sources
-- [Data Breaches That Have Happened This Year (2026 Update)](https://tech.co/news/data-breaches-this-year) — Tech.co (2026-02-28)
-- [Legacy Professionals Informs 215,000 People of Data Breach](https://www.securityweek.com/legacy-professionals-informs-215000-people-of-data-breach/) — SecurityWeek (2026-02-28)
+- [Tech.co](https://tech.co/) — Tech.co (2026-02-28)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-02-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/legacy-professionals-llp-reports-data-breach-affecting-215000/

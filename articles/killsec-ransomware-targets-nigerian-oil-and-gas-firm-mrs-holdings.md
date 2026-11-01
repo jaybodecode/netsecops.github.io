@@ -53,7 +53,6 @@ No specific technical Indicators of Compromise (IOCs) were mentioned in the sour
 
 ## Sources
 - [KillSec Ransomware Attack on MRS Holdings](https://dexpose.com/killsec-ransomware-attack-on-mrs-holdings/) — DEXPOSE (2026-05-09)
-- [Victim: mrs holdings - Ransomware.live](https://ransomware.live/victim/mrs-holdings/) — Ransomware.live (2026-05-09)
 - [Security Check-in Quick Hits: May 10, 2026 – Supply Chain Compromises, Hosting Patches, and Cert Authority Hiccup](https://www.rodsblog.net/p/security-check-in-quick-hits-may-10-2026) — Rod's Blog (2026-05-10)
 
 ---

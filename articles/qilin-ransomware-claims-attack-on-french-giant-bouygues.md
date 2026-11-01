@@ -51,7 +51,6 @@ Protecting against ransomware groups like Qilin requires robust, layered defense
 
 ## Sources
 - [Security Check-in Quick Hits: Ransomware Rampage, Data Deluge, Malware Masquerade, Quantum Quandary, Warfare Warnings](https://rd.net/security-check-in-quick-hits-ransomware-rampage-data-deluge-malware-masquerade-quantum-quandary-warfare-warnings/) (2026-01-11)
-- [Victim: Bouygues Energies & Services](https://ransomware.live/victim/bouygues-energies-services/) — Ransomware.live (2026-01-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/qilin-ransomware-claims-attack-on-french-giant-bouygues/

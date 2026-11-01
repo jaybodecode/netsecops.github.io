@@ -46,8 +46,6 @@ The primary value of Noction IRP v4.3 is its ability to provide an integrated, r
 ## Sources
 - [Noction Releases IRP v4.3 with Automatic Anomaly Detection and Enhanced Bandwidth Control Capabilities](https://www.businesswire.com/news/home/20260113005086/en/Noction-Releases-IRP-v4.3-with-Automatic-Anomaly-Detection-and-Enhanced-Bandwidth-Control-Capabilities) — Business Wire (2026-01-13)
 - [New infosec products of the week: January 16, 2026](https://www.helpnetsecurity.com/2026/01/16/new-infosec-products-of-the-week-january-16-2026/) — Help Net Security (2026-01-16)
-- [Noction adds automatic anomaly detection to IRP v4.3 for faster DDoS mitigation](https://www.helpnetsecurity.com/2026/01/13/noction-irp-4-3/) — Help Net Security (2026-01-13)
-- [Automatic Anomaly Detection (AAD) in Noction IRP - Deep Dive](https://www.noction.com/blog/automatic-anomaly-detection-in-noction-irp) — Noction (2026-01-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/noction-irp-v4-3-introduces-automated-ddos-detection-and-mitigation/

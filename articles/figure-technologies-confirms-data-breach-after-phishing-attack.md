@@ -76,10 +76,10 @@ Security teams can hunt for similar activity by monitoring for:
 **Tags:** ShinyHunters, Data Breach, Phishing, Social Engineering, Fintech, PII, Credential Compromise
 
 ## Sources
-- [Fintech firm Figure disclosed data breach after employee phishing attack](https://securityaffairs.com/159079/data-breach/figure-data-breach.html) — Security Affairs (2026-02-14)
-- [Cybersecurity News](https://www.upguard.com/blog/cybersecurity-news) — UpGuard (2026-02-15)
-- [List of Recent Data Breaches in 2026](https://www.brightdefense.com/blog/data-breaches-2026/) — BrightDefense (2026-02-14)
-- [Figure Technology Data Breach Lawyer & Investigation | 1M Records](https://woodslaw.com/services/data-breach-lawyer/figure-technology-data-breach-lawyer/) — Woods Lonergan (2026-02-15)
+- [Security Affairs](https://securityaffairs.com/) — Security Affairs (2026-02-14)
+- [UpGuard](https://www.upguard.com/) — UpGuard (2026-02-15)
+- [BrightDefense](https://www.brightdefense.com/) — BrightDefense (2026-02-14)
+- [Woods Lonergan](https://woodslaw.com/) — Woods Lonergan (2026-02-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/figure-technologies-confirms-data-breach-after-phishing-attack/

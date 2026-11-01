@@ -61,7 +61,6 @@ This report will likely fuel calls for greater regulation of the data broker and
 **Tags:** Surveillance, Privacy, Citizen Lab, Cobwebs Technologies, Webloc, Data Broker, Ad Tech
 
 ## Sources
-- [Cybersecurity News - Western Illinois University](https://www.wiu.edu/cbt/cybersecurity_center/cybersecurity_news.php) — Western Illinois University (2026-04-11)
 - [The Hacker News | #1 Trusted Source for Cybersecurity News (article appears on main page)](https://thehackernews.com/) — The Hacker News (2026-04-11)
 
 ---

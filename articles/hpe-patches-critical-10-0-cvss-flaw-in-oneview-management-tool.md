@@ -70,8 +70,8 @@ Since there is no known exploit, detection focuses on identifying vulnerable sys
 **Tags:** HPE, OneView, RCE, Vulnerability, CVSS 10, Patch Management, Infrastructure
 
 ## Sources
-- [HPE tells customers to patch fast as OneView RCE bug scores a perfect 10](https://www.theregister.com/2025/12/19/hpe_oneview_rce/) — The Register (2025-12-19)
-- [SANS Stormcast Friday, December 19th, 2025: Less Vulnerabie Devices; Critical OneView Vulnerablity; Trufflehog finds JWTs](https://isc.sans.edu/podcast/2025/12/19) — SANS Internet Storm Center (2025-12-19)
+- [The Register](https://www.theregister.com/) — The Register (2025-12-19)
+- [SANS Internet Storm Center](https://isc.sans.edu/) — SANS Internet Storm Center (2025-12-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/hpe-patches-critical-10-0-cvss-flaw-in-oneview-management-tool/

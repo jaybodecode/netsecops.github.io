@@ -57,7 +57,6 @@ In response, Nikkei implemented a company-wide password reset, revoked compromis
 **Tags:** data breach, infostealer, Slack, credential theft, media, session hijacking
 
 ## Sources
-- [Nikkei data breach exposes personal data of over 17,000 staff](https://www.computerweekly.com/news/366622435/Nikkei-data-breach-exposes-personal-data-of-over-17000-staff) — ComputerWeekly (2025-11-10)
 - [Japanese Media Giant Nikkei Suffers Slack Breach Through Infostealer Malware: 17,000 Users Exposed](https://breached.vc/Thread-Japanese-Media-Giant-Nikkei-Suffers-Slack-Breach-Through-Infostealer-Malware) — Breached.vc (2025-11-10)
 
 ---

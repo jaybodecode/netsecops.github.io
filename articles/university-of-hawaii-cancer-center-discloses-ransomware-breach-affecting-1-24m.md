@@ -91,8 +91,6 @@ No specific Indicators of Compromise (IOCs) were provided in the source articles
 
 ## Sources
 - [Notice of UH Cancer Center cyberattack affecting personal information](https://mauinow.com/2026/02/28/notice-of-uh-cancer-center-cyberattack-affecting-personal-information/) — Maui Now (2026-02-28)
-- [Data breach reported by University of Hawaiʻi Cancer Center](https://www.upguard.com/breaches/university-of-hawaii-cancer-center-data-breach) — UpGuard (2026-02-28)
-- [University of Hawaiʻi Cancer Center Security Rating, Vendor Risk Report, and Data Breaches](https://www.upguard.com/security-report/uhcancercenter.org) — UpGuard (2026-02-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/university-of-hawaii-cancer-center-discloses-ransomware-breach-affecting-1-24m/

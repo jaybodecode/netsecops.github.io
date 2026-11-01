@@ -60,10 +60,8 @@ To prevent and mitigate similar attacks, government agencies and other high-valu
 **Tags:** Data Breach, Government, France, APT28, Credential Compromise, MFA, Email Security, Nation-State
 
 ## Sources
-- [French Interior Ministry confirms cyberattack on email servers](https://www.bleepingcomputer.com/news/security/french-interior-ministry-confirms-cyberattack-on-email-servers/) — BleepingComputer (2025-12-15)
 - [French interior ministry targeted in major cyberattack](https://www.euractiv.com/section/tech/news/french-interior-ministry-targeted-in-major-cyberattack/) — Euractiv (2025-12-17)
 - [French government hit by cyberattack - Interior Ministry confirms email systems hit](https://www.techradar.com/pro/security/french-government-hit-by-cyberattack-interior-ministry-confirms-email-systems-hit) — TechRadar Pro (2025-12-16)
-- [French Interior Minister says hackers breached its email servers](https://securityaffairs.com/177934/hacking/french-interior-minister-breached-email-servers.html) — Security Affairs (2025-12-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/french-interior-ministry-confirms-cyberattack-on-email-servers/

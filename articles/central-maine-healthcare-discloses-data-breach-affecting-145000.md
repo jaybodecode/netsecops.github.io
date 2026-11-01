@@ -55,8 +55,6 @@ To detect similar intrusions, security teams in healthcare organizations should 
 ## Sources
 - [Central Maine Healthcare Data Breach Impacts 145,000 Individuals](https://www.securityweek.com/central-maine-healthcare-data-breach-impacts-145000-individuals/) — SecurityWeek (2026-01-15)
 - [Central Maine Healthcare data breach affects over 145,000 individuals](https://www.scmagazine.com/news/central-maine-healthcare-data-breach-affects-over-145000-individuals) — SC Magazine (2026-01-14)
-- [Central Maine Healthcare data breach exposed information of more than 145,000 people](https://www.mainepublic.org/health/2026-01-14/central-maine-healthcare-data-breach-exposed-information-of-more-than-145-000-people) — Maine Public (2026-01-14)
-- [Central Maine Healthcare data breach affected more than 145K](https://www.bangordailynews.com/2026/01/15/news/lewiston-aubern/central-maine-healthcare-data-breach-affected-more-than-145k-joam40zk0w/) — Bangor Daily News (2026-01-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/central-maine-healthcare-discloses-data-breach-affecting-145000/

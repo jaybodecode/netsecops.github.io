@@ -41,8 +41,8 @@ While this is a law enforcement success story, it highlights the threats that or
 **Tags:** dark web, takedown, law enforcement, cybercrime, Europol, FBI
 
 ## Sources
-- [Operation Echidna Dismantles 'Crimson Market' Dark Web Platform](https://www.europol.europa.eu/media-press/newsroom/news/operation-echidna-dismantles-crimson-market-dark-web-platform) — Europol (2026-01-26)
-- [International Operation Takes Down Major Dark Web Marketplace 'Crimson Market'](https://www.justice.gov/opa/pr/international-operation-takes-down-major-dark-web-market) — U.S. Department of Justice (2026-01-26)
+- [Europol](https://www.europol.europa.eu/) — Europol (2026-01-26)
+- [U.S. Department of Justice](https://www.justice.gov/) — U.S. Department of Justice (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/operation-echidna-dismantles-crimson-market-dark-web-hub/

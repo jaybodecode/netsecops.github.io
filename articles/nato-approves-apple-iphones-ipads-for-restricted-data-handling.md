@@ -53,7 +53,6 @@ For government agencies within NATO looking to leverage this certification:
 **Tags:** NATO, Apple, iOS, iPadOS, Mobile Security, Government, Certification, Policy, Compliance
 
 ## Sources
-- [iPhone and iPad Are First Consumer Devices Cleared for NATO Classified Data](https://www.macrumors.com/2026/02/26/iphone-and-ipad-nato-classified-data/) — MacRumors (2026-02-26)
 - [Apple Says iPhone and iPad Are Approved to Handle Some Classified Data](https://gizmodo.com/apple-says-iphone-and-ipad-are-approved-to-handle-som-1851289133) — Gizmodo (2026-02-26)
 - [iPhone and iPad Become First and Only Consumer Devices Approved for Classified NATO Information](https://www.iclarified.com/93072/iphone-and-ipad-become-first-and-only-consumer-devices-approved-for-classified-nato-information) — iClarified (2026-02-26)
 - [NATO certifies iPhone and iPad for restricted information](https://betanews.com/2026/02/26/nato-certifies-iphone-and-ipad-for-restricted-information/) — BetaNews (2026-02-26)

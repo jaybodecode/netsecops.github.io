@@ -42,7 +42,6 @@ Educational institutions must prioritize cybersecurity despite budget constraint
 
 ## Sources
 - [Ransomware attacks against education sector slow worldwide](https://www.k12dive.com/news/ransomware-attacks-education-sector-slow-worldwide/642155/) — K-12 Dive (2026-02-06)
-- [Ransomware attacks on US schools and colleges: 2025 report](https://www.comparitech.com/blog/information-security/ransomware-attacks-schools-colleges-universities/) — Comparitech (2026-02-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attacks-on-education-sector-slowed-in-2025-says-report/

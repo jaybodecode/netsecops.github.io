@@ -71,7 +71,6 @@ Organizations should hunt for signs of similar cloud misconfigurations and breac
 **Tags:** data breach, cloud security, aws, s3 bucket, misconfiguration, pii, phi, hipaa
 
 ## Sources
-- [HealthNet Insurance discloses massive data breach affecting 11 million patients](https://techcrunch.com/2026/07/01/healthnet-insurance-data-breach-11-million/) — TechCrunch (2026-07-01)
 - [HealthNet Breach Leaks PII, PHI for 11M Patients Via Misconfigured S3 Bucket](https://www.darkreading.com/cloud/healthnet-breach-leaks-pii-phi-for-11m-patients-via-misconfigured-s3-bucket) — Dark Reading (2026-06-30)
 
 ---

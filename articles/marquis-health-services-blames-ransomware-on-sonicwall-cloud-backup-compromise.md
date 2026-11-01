@@ -66,8 +66,8 @@ The impact on a healthcare provider like Marquis Health Services is severe:
 **Tags:** Ransomware, Healthcare, Data Breach, Supply Chain Attack, SonicWall, Cloud Security, Backup
 
 ## Sources
-- [Marquis Health Services Reports Ransomware Attack Following SonicWall Backup Compromise](https://www.hipaajournal.com/marquis-health-services-ransomware-attack/) — HIPAA Journal (2026-02-10)
-- [2026 Data Breaches: Cybersecurity Incidents Explained](https://www.pkware.com/blog/2026-data-breaches-cybersecurity-incidents-explained/) — PKWARE (2026-02-11)
+- [HIPAA Journal](https://www.hipaajournal.com/) — HIPAA Journal (2026-02-10)
+- [PKWARE](https://www.pkware.com/) — PKWARE (2026-02-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/marquis-health-services-blames-ransomware-on-sonicwall-cloud-backup-compromise/

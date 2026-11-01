@@ -55,9 +55,7 @@ SonicWall is urging all affected customers to take immediate action:
 **Tags:** Data Breach, SonicWall, Supply Chain Attack, Cloud Security, Firewall
 
 ## Sources
-- [The Week in Breach News: October 15, 2025](https://www.kaseya.com/widgets/the-week-in-breach-news-october-15-2025/) — Kaseya (2025-10-06)
 - [October 11, 2025 - Red Dot Security](https://reddotsec.com/2025/10/05/weekly-threat-briefing/) — Red Dot Security (2025-10-05)
-- [List of Recent Data Breaches in 2025](https://www.brightdefense.com/blog/data-breaches-2025/) — Bright Defense (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/sonicwall-breach-escalates-100-percent-of-cloud-backups-stolen/

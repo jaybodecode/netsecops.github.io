@@ -39,8 +39,8 @@ While law enforcement works to dismantle the group, organizations must maintain 
 **Tags:** BlackCat, ALPHV, Ransomware, Rewards for Justice, US Department of State, Cybercrime, Bounty
 
 ## Sources
-- [US offers $10 million for info on BlackCat ransomware leaders](https://www.bleepingcomputer.com/news/security/us-offers-10-million-for-info-on-blackcat-ransomware-leaders/) — BleepingComputer
-- [US Offers $10 Million for Information on BlackCat Ransomware Gang Leaders](https://www.securityweek.com/us-offers-10-million-for-information-on-blackcat-ransomware-gang-leaders/) — SecurityWeek
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek
 
 ---
 Source: https://cyber.netsecops.io/articles/us-government-offers-10-million-reward-for-blackcat-ransomware-leaders/

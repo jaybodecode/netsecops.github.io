@@ -57,7 +57,6 @@ Based on the threats identified by Taiwan's government, the following mitigation
 
 ## Sources
 - [Agencies report 726 cybersecurity incidents last year](https://www.taipeitimes.com/News/taiwan/archives/2026/05/25/2003818451) — Taipei Times (2026-05-25)
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) — DeXpose (2026-05-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/taiwan-government-reports-726-cybersecurity-incidents-in-2025/

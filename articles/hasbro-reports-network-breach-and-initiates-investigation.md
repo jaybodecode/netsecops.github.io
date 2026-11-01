@@ -60,8 +60,6 @@ General recommendations for large enterprises like Hasbro include a defense-in-d
 
 ## Sources
 - [Hasbro reports cybersecurity incident, initiates investigation and response](https://www.investing.com/news/stock-market-news/hasbro-reports-cybersecurity-incident-initiates-investigation-and-response-3363024) — Investing.com (2026-04-01)
-- [Hasbro discloses cybersecurity incident impact | HAS 8-K Filing](https://stocktitan.net/news/HAS/hasbro-discloses-cybersecurity-incident-impact-has-8-k-t4frz1v7n152.html) — Stock Titan (2026-04-01)
-- [Hasbro investigating cybersecurity incident](https://www.wftv.com/news/trending/hasbro-investigating-cybersecurity-incident/X6X4L5ZJDBBF5PZ3Z3Q4X7X4XI/) — WFTV (2026-04-01)
 - [Hasbro (HAS) Reports Cybersecurity Incident: Investigation and M](https://www.gurufocus.com/news/2583854/hasbro-has-reports-cybersecurity-incident-investigation-and-mitigation-measures-underway) — GuruFocus (2026-04-01)
 - [Hasbro reports network breach, containment measures and possible operational delays](https://news.tradingview.com/en/hasbro-reports-network-breach-containment-measures-and-possible-operational-delays/) — TradingView (2026-04-01)
 

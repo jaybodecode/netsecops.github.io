@@ -67,9 +67,7 @@ Mitigating social engineering requires a combination of technical controls and h
 **Tags:** Betterment, ShinyHunters, vishing, social engineering, Okta, cryptocurrency scam
 
 ## Sources
-- [Betterment breach scope pegged at 1.4M users](https://www.theregister.com/2026/02/05/betterment_breach_hibp/) — The Register (2026-02-05)
 - [Data breach at fintech firm Betterment exposes 1.4 million accounts](https://www.bleepingcomputer.com/news/security/data-breach-at-fintech-firm-betterment-exposes-14-million-accounts/) — BleepingComputer (2026-02-05)
-- [Update on unauthorized crypto message](https://www.betterment.com/security/unauthorized-crypto-message) — Betterment (2026-02-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/betterment-data-breach-exposes-1-4-million-customers-after-social-engineering-attack/

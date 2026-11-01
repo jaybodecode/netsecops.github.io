@@ -78,7 +78,6 @@ Preventing such incidents requires a robust Third-Party Risk Management (TPRM) p
 **Tags:** SitusAMC, Data Breach, Supply Chain Attack, JPMorgan Chase, Citigroup, Morgan Stanley, Financial Services, FBI
 
 ## Sources
-- [Data Breach](https://www.situsamc.com/data-breach-notification-2025-11-22) — SitusAMC (2025-11-22)
 - [Hackers Hit ‘Necessary Plumbing’ of Big Bank Mortgage Operations](https://www.pymnts.com/cybersecurity/2025/hackers-hit-necessary-plumbing-of-big-bank-mortgage-operations/) — PYMNTS.com (2025-11-21)
 - [SitusAMC Cyberattack May Expose Client Data of Major Banks](https://www.phemex.com/news/situsamc-cyberattack-may-expose-client-data-of-major-banks) — Phemex (2025-11-22)
 - [Major Banks Alerted by SitusAMC to Potential Data Breach](https://www.binance.com/en/square/post/2025-11-22-major-banks-alerted-by-situsamc-to-potential-data-breach-436321453123) — Binance (2025-11-22)

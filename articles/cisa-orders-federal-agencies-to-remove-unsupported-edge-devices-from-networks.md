@@ -71,7 +71,6 @@ Organizations seeking to align with BOD 26-02 should take the following steps:
 
 ## Sources
 - [CISA Orders Federal Agencies to Strengthen Edge Device Security Amid Rising Cyber Threats](https://www.cisa.gov/news-events/news/cisa-orders-federal-agencies-strengthen-edge-device-security-amid-rising-cyber-threats) — CISA (2026-02-05)
-- [Risky Bulletin: Denmark recruits hackers for offensive cyber operations](https://riskybiznews.substack.com/p/risky-bulletin-denmark-recruits-hackers) — Risky Business News (2026-02-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-orders-federal-agencies-to-remove-unsupported-edge-devices-from-networks/

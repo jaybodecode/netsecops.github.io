@@ -56,8 +56,8 @@ Organizations should take the following steps to mitigate the risk of similar at
 **Tags:** supply chain attack, cloud security, AWS, data breach, vulnerability scanner, TeamPCP, ShinyHunters, European Union
 
 ## Sources
-- [EU cyber agency attributes major data breach to TeamPCP hacking group](https://www.therecord.media/cert-eu-attributes-major-data-breach-to-teampcp-hacking-group) — The Record
-- [CERT-EU blames Trivy supply chain attack for Europa.eu data breach](https://www.csoonline.com/article/2126244/cert-eu-blames-trivy-supply-chain-attack-for-europa-eu-data-breach.html) — CSO Online
+- [The Record](https://www.therecord.media/) — The Record
+- [CSO Online](https://www.csoonline.com/) — CSO Online
 
 ---
 Source: https://cyber.netsecops.io/articles/eu-commission-breach-traced-to-trivy-supply-chain-attack/

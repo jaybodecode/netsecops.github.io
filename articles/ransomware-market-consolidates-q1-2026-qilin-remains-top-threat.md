@@ -60,7 +60,6 @@ No specific Indicators of Compromise were provided in the source articles.
 
 ## Sources
 - [The State of Ransomware - Q1 2026](https://research.checkpoint.com/2026/05/the-state-of-ransomware-q1-2026/) — Check Point Research (2026-05-11)
-- [Qilin remains the top ransomware threat as market consolidates](https://www.bleepingcomputer.com/news/security/qilin-remains-the-top-ransomware-threat-as-market-consolidates/) — BleepingComputer (2026-05-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-market-consolidates-q1-2026-qilin-remains-top-threat/

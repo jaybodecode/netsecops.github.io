@@ -47,10 +47,7 @@ No specific technical Indicators of Compromise (e.g., IP addresses, domains, fil
 **Tags:** Data Breach, Odido, ShinyHunters, Netherlands, Telecommunications, PII, GDPR, Social Engineering, Phishing
 
 ## Sources
-- [Dutch mobile phone giant Odido announces data breach](https://therecord.media/odido-dutch-telecom-data-breach) — The Record
 - [Odido data breach exposes personal info of 6.2 million customers](https://www.bleepingcomputer.com/news/security/odido-data-breach-exposes-personal-info-of-62-million-customers/) — BleepingComputer
-- [Odido data breach escalates into criminal probe​](https://cybernews.com/news/odido-data-breach-criminal-investigation/) — Cybernews
-- [Odido Breach Exposes 6.2M Customer Data](https://brightdefense.com/blog/odido-breach-exposes-6-2m-customer-data/) — Bright Defense
 
 ---
 Source: https://cyber.netsecops.io/articles/dutch-telecom-giant-odido-suffers-major-data-breach-affecting-6-2-million-customers/

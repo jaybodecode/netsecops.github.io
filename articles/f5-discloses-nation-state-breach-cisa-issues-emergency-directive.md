@@ -64,8 +64,6 @@ Organizations using F5 products should act immediately:
 **Tags:** Nation-State, APT, Source Code Leak, CISA, Emergency Directive, BIG-IP
 
 ## Sources
-- [F5 discloses breach tied to nation-state threat actor](https://www.cyberscoop.com/f5-discloses-breach-tied-to-nation-state-threat-actor/) — CyberScoop (2025-10-15)
-- [Nation-state hackers breached sensitive F5 systems, stole customer data](https://www.therecord.media/nation-state-hackers-breached-f5-stole-customer-data) — The Record (2025-10-15)
 - [F5 Breach Exposes BIG-IP Source Code — Nation-State Hackers Behind Massive Intrusion](https://thehackernews.com/2025/10/f5-breach-exposes-big-ip-source-code.html) — The Hacker News (2025-10-15)
 - [CISA orders government to patch F5 products after ‘nation-state’ cyber intrusion](https://www.washingtontechnology.com/cybersecurity/2025/10/cisa-orders-government-patch-f5-products-after-nation-state-cyber-intrusion/398327/) — Washington Technology (2025-10-15)
 

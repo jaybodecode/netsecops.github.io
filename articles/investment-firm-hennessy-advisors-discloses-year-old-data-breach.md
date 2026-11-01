@@ -35,8 +35,8 @@ Standard cybersecurity best practices are key to preventing such breaches:
 **Tags:** delayed notification, investment firm, financial data, PII, incident response
 
 ## Sources
-- [The Week in Breach News: March 4, 2026](https://www.kaseya.com/blog/2026/03/04/the-week-in-breach-news-march-4-2026/) — Kaseya (2026-03-04)
-- [Hennessy Advisors Data Breach Investigation](https://www.classlawdc.com/2026/02/25/hennessy-advisors-data-breach-investigation/) — ClassAction.org (2026-02-25)
+- [Kaseya](https://www.kaseya.com/) — Kaseya (2026-03-04)
+- [ClassAction.org](https://www.classlawdc.com/) — ClassAction.org (2026-02-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/investment-firm-hennessy-advisors-discloses-year-old-data-breach/

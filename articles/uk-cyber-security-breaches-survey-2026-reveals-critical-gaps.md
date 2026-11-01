@@ -40,9 +40,7 @@ Based on the survey's findings, UK organizations should prioritize the following
 
 ## Sources
 - [Cyber security breaches survey 2025/2026](https://www.gov.uk/government/statistics/cyber-security-breaches-survey-20252026) — GOV.UK (2026-04-30)
-- [News Reaction: UK Cyber Security Breaches Survey 2025/2026 Shows Persistent Risk and Gaps in Readiness](https://www.nccgroup.com/uk/our-research/news-reaction-uk-cyber-security-breaches-survey-2025-2026/) — NCC Group (2026-05-01)
 - [UK cyber survey criticised over AI threat blindness](https://www.itbrief.co.uk/story/uk-cyber-survey-criticised-over-ai-threat-blindness) — IT Brief (2026-04-30)
-- [Cyber Security Breaches Survey 2025/2026: Why UK Logistics Operators Must Treat Cyber as Operational Risk](https://www.theloadstar.com/cyber-security-breaches-survey-2025-2026-why-uk-logistics-operators-must-treat-cyber-as-operational-risk/) — The Loadstar (2026-04-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-cyber-security-breaches-survey-2026-reveals-critical-gaps/

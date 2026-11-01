@@ -53,7 +53,6 @@ If the claims are validated, the impact on Brightspeed and its customers would b
 **Tags:** Data Breach, Extortion, Crimson Collective, Brightspeed, Cloud Security, AWS
 
 ## Sources
-- [1M Customer Records Allegedly Stolen in Brightspeed Breach](https://www.esecurityplanet.com/threat-intelligence/brightspeed-breach-claim-crimson-collective/) — eSecurity Planet (2026-01-07)
 - [US broadband provider Brightspeed investigates breach claims](https://www.bleepingcomputer.com/news/security/us-broadband-provider-brightspeed-investigates-breach-claims/) — BleepingComputer (2026-01-05)
 - [Brightspeed investigates cyberattack claims by Crimson Collective](https://www.scmagazine.com/brief/breaches/brightspeed-investigates-cyberattack-claims-by-crimson-collective) — SC Magazine (2026-01-06)
 

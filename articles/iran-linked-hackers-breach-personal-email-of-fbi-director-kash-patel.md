@@ -56,7 +56,6 @@ This incident provides critical security lessons for all high-profile individual
 
 ## Sources
 - [Iran-linked hackers breach FBI Director Kash Patel's email, leak personal data: Sources](https://www.devdiscourse.com/article/law-order/2869153-iran-linked-hackers-breach-fbi-director-kash-patels-email-leak-personal-data-sources) — Devdiscourse (2026-03-28)
-- [Iran-linked group Handala hacked FBI Director Kash Patel’s personal email account](https://securityaffairs.co/161094/intelligence/handala-hacked-fbi-director-kash-patel.html) — Security Affairs (2026-03-28)
 - [Cybersecurity Incidents and Alerts March 27-28, 2026 A Snapshot of Recent Threats](https://www.kcnet-global.com/2026/03/28/cybersecurity-incidents-and-alerts-march-27-28-2026-a-snapshot-of-recent-threats/) — KCNET Global (2026-03-28)
 
 ---

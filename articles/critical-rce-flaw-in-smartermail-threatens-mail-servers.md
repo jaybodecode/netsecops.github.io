@@ -62,7 +62,6 @@ Given that mail servers are inherently internet-facing, the risk of exploitation
 
 ## Sources
 - [Warning: Critical unauthenticated arbitrary file upload vulnerability in SmarterMail server, Patch Immediately!](https://safeonweb.be/en/news/warning-critical-unauthenticated-arbitrary-file-upload-vulnerability-smartermail-server-patch) — Centre for Cybersecurity Belgium (2025-12-29)
-- [Vulnerability in SmarterTools Software](https://www.csa.gov.sg/alerts-advisories/alerts/vulnerability-in-smartertools-software) — Cyber Security Agency of Singapore (2025-12-29)
 - [CSA Issues Alert on Critical SmarterMail Bug Allowing Remote Code Execution](https://thehackernews.com/2025/12/csa-issues-alert-on-critical.html) — The Hacker News (2025-12-30)
 
 ---

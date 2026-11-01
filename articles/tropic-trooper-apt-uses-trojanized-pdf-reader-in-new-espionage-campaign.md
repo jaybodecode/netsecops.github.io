@@ -61,8 +61,6 @@ Security teams may want to hunt for the following patterns to detect this activi
 
 ## Sources
 - [Tropic Trooper Uses Trojanized SumatraPDF and GitHub to Deploy AdaptixC2](https://thehackernews.com/2026/04/tropic-trooper-uses-trojanized.html) — The Hacker News (2026-04-24)
-- [Tropic Trooper: AdaptixC2 + Custom Beacon | ThreatLabz](https://www.zscaler.com/blogs/security-research/tropic-trooper-apt-takes-aim-home-routers-japanese-targets) — Zscaler (2026-04-22)
-- [Tropic Trooper Deploys Custom Beacon and VS Code Tunnels in Fresh APT Assault](https://cyberpress.com/tropic-trooper-deploys-custom-beacon-and-vs-code-tunnels-in-fresh-apt-assault/) — Cyberpress (2026-04-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/tropic-trooper-apt-uses-trojanized-pdf-reader-in-new-espionage-campaign/

@@ -51,8 +51,6 @@ For detecting similar corporate network breaches, security teams should hunt for
 **Tags:** Itron, Cyberattack, SEC, Critical Infrastructure, Utilities, Data Breach, Incident Response
 
 ## Sources
-- [U.S. utility giant Itron discloses a security breach](https://securityaffairs.com/162353/data-breach/itron-security-breach.html) — Security Affairs (2026-04-27)
-- [American utility firm Itron discloses breach of internal IT network](https://www.bleepingcomputer.com/news/security/utility-giant-itron-discloses-breach-of-internal-it-network/) — BleepingComputer (2026-04-26)
 - [Energy and Water Management Firm Itron Hacked](https://www.securityweek.com/energy-and-water-management-firm-itron-hacked/) — SecurityWeek (2026-04-27)
 - [Utilities Tech Supplier Itron Discloses Cyber-Attack](https://www.infosecurity-magazine.com/news/utilities-tech-supplier-itron/) — Infosecurity Magazine (2026-04-27)
 - [Utility giant Itron confirms cyberattack, says internal systems were accessed](https://www.techradar.com/pro/security/utility-giant-itron-confirms-cyberattack-says-internal-systems-were-accessed) — TechRadar Pro (2026-04-27)

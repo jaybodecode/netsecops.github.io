@@ -45,8 +45,7 @@ Higher education institutions considering or using Nuventive's services should:
 **Tags:** Nuventive, SOC 2, Compliance, Audit, Higher Education, Data Security
 
 ## Sources
-- [News Release | Nuventive](https://www.nuventive.com/news-release-soc-2-compliance-2026/) — Nuventive
-- [News Release - Nuventive](https://www.nuventive.com/wp-content/uploads/2025/03/Nuventive-SOC-2-Type-II-Press-Release.pdf) — Nuventive
+- [Nuventive](https://www.nuventive.com/) — Nuventive
 
 ---
 Source: https://cyber.netsecops.io/articles/nuventive-announces-soc-2-type-ii-compliance/

@@ -55,7 +55,6 @@ Detection is very challenging and shifts the focus from the network to the endpo
 
 ## Sources
 - [Daily Cybersecurity News – February 17, 2026](https://cyber-recaps.com/daily-cybersecurity-news-february-17-2026/) — Cyber Recaps
-- [Threat Alert: Malware Using AI Assistants (Copilot, Grok) as Covert C2 Channels](https://www.proarch.com/security/blog/bridgepay-ransomware-attack-prevent-payment-outages-and-disruption) — ProArch
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-in-the-middle-attack-abuses-ai-assistants-for-c2/

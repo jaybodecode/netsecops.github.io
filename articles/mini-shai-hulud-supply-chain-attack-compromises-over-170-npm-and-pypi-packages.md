@@ -58,10 +58,8 @@ Security teams and developers should hunt for the following patterns:
 **Tags:** Supply Chain Attack, Mini Shai-Hulud, TeamPCP, NPM, PyPI, GitHub Actions, SLSA, Malware, Credential Theft
 
 ## Sources
-- [Hackers Abuse GitHub Actions And SLSA Signing To Spread Malware Across Open Source Ecosystems](https://www.analyst1.com/hackers-abuse-github-actions-and-slsa-signing-to-spread-malware-across-open-source-ecosystems/) — Analyst1 (2026-05-14)
 - [Shai-Hulud Malware Exposes Future Supply Chain Risks](https://izoolgic.com/shai-hulud-malware-exposes-future-supply-chain-risks/) — Izoologic (2026-05-14)
 - [Inside a Tor Backed Supply Chain Worm](https://cloudsek.com/blog/inside-a-tor-backed-supply-chain-worm/) — CloudSEK (2026-05-14)
-- [BreachForums & TeamPCP Promote Supply Chain Competition as Cybercrime Gets Gamified](https://socradar.io/breachforums-teampcp-promote-supply-chain-competition-as-cybercrime-gets-gamified/) — SOCRadar (2026-05-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/mini-shai-hulud-supply-chain-attack-compromises-over-170-npm-and-pypi-packages/

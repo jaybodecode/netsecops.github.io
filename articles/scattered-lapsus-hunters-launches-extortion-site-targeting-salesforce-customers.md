@@ -53,10 +53,8 @@ Defending against this requires a focus on identity security and employee awaren
 **Tags:** Extortion, Data Leak, Salesforce, Scattered Spider, Lapsus$, Vishing, Social Engineering
 
 ## Sources
-- [Hackers launch data leak site to extort 39 victims, or Salesforce](https://www.helpnetsecurity.com/2025/10/06/scattered-lapsus-hunters-data-leak-site-salesforce/) — Help Net Security (2025-10-06)
 - [Scattered Lapsus$ Hunters Extorts Victims, Demands Salesforce Negotiate](https://securityboulevard.com/2025/10/scattered-lapsus-hunters-extorts-victims-demands-salesforce-negotiate/) — Security Boulevard (2025-10-06)
 - [New Scattered Lapsus$ Hunters escalates Salesforce extortion](https://www.scmagazine.com/news/new-scattered-lapsus-hunters-escalates-salesforce-extortion) — SC Magazine (2025-10-06)
-- [Salesforce Data Breach](https://www.wilshirelawfirm.com/data-breach/salesforce/) — Wilshire Law Firm (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/scattered-lapsus-hunters-launches-extortion-site-targeting-salesforce-customers/

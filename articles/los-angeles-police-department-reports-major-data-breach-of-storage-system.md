@@ -45,7 +45,6 @@ No specific Indicators of Compromise (IOCs) have been provided.
 
 ## Sources
 - [13th April – Threat Intelligence Report](https://research.checkpoint.com/2026/04/13/13th-april-threat-intelligence-report/) — Check Point Research (2026-04-13)
-- [LAPD data breach exposes sensitive personnel files, internal affairs records](https://www.latimes.com/california/story/2026-04-13/lapd-data-breach-city-attorney) — Los Angeles Times (2026-04-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/los-angeles-police-department-reports-major-data-breach-of-storage-system/

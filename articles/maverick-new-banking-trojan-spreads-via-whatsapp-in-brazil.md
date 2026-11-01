@@ -51,8 +51,8 @@ Detection focuses on the infection vector and in-memory execution.
 **Tags:** Malware, Banking Trojan, Maverick, WhatsApp, Fileless, Phishing, Brazil
 
 ## Sources
-- [Maverick: a new banking Trojan abusing WhatsApp in a mass-scale distribution](https://securelist.com/maverick-brazilian-banking-trojan/112453/) — Securelist (2025-10-05)
-- [New Maverick banking trojan spreads itself via WhatsApp messages](https://www.bleepingcomputer.com/news/security/new-maverick-banking-trojan-spreads-itself-via-whatsapp-messages/) — BleepingComputer (2025-10-06)
+- [Securelist](https://securelist.com/) — Securelist (2025-10-05)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/maverick-new-banking-trojan-spreads-via-whatsapp-in-brazil/

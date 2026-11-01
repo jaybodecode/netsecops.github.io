@@ -53,7 +53,6 @@ Protecting critical infrastructure from DDoS attacks requires a proactive, defen
 **Tags:** DDoS, Russia, Critical Infrastructure, Food Supply Chain, Cyberattack
 
 ## Sources
-- [Russian Rosselkhoznadzor hit by DDoS attack, food shipments across Russia delayed](https://securityaffairs.co/165783/security/rosselkhoznadzor-ddos-attack.html) — Security Affairs (2025-10-25)
 - [Cybersecurity in UK Supply Chains - Learning from the Rosselkhoznadzor Attack](https://fundingscoop.com/cybersecurity-in-uk-supply-chains-learning-from-the-rosselkhoznadzor-attack/) — Funding Scoop (2025-10-25)
 - [Russian Rosselkhoznadzor hit by DDoS attack, food shipments across Russia delayed](https://axxum.com/2025/10/25/russian-rosselkhoznadzor-hit-by-ddos-attack-food-shipments-across-russia-delayed/) — AXXUM (2025-10-25)
 

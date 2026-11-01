@@ -44,7 +44,6 @@ To prevent a similar fate, organizations must invest in foundational security co
 **Tags:** business impact, financial loss, retail, CEO, accountability, case study
 
 ## Sources
-- [Co-op boss quits after year marked by cyber-attack and claims of 'toxic' culture](https://www.theguardian.com/business/2026/mar/26/co-op-boss-quits-after-year-marked-by-cyber-attack-and-claims-of-toxic-culture) — The Guardian (2026-03-26)
 - [Co-op plunges to loss after cyberattack as CEO steps aside](https://www.thegrocer.co.uk/co-op/co-op-ceo-shirine-khoury-haq-quits-as-retailer-plunges-to-loss-after-cyber-attack/689531.article) — The Grocer (2026-03-26)
 - [Co-op chief executive steps down as c-store specialist swings to a loss](https://www.retail-week.com/people/co-op-chief-executive-steps-down-as-c-store-specialist-swings-to-a-loss/7046889.article) — Retail Week (2026-03-26)
 

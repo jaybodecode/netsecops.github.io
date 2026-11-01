@@ -36,9 +36,7 @@ Organizations must evolve their risk management programs to account for this new
 **Tags:** Supply Chain Attack, SaaS, Cloud Security, Third-Party Risk, API Security
 
 ## Sources
-- [Supply Chain Cyberattack Puts Enterprise Trade Secrets at Risk](https://www.pymnts.com/cybersecurity/2026/supply-chain-cyberattack-puts-enterprise-trade-secrets-at-risk/) — PYMNTS.com (2026-01-22)
 - [Report warns of rising cyber threats in retail and wholesale supply chains](https://www.technewsday.com/2026/01/22/) — TechNewsDay (2026-01-22)
-- [Obsidian Security Announces End-to-End SaaS Supply Chain Protection as Agentic AI Adoption Accelerates](https://www.obsidiansecurity.com/press/obsidian-security-announces-end-to-end-saas-supply-chain-protection-as-agentic-ai-adoption-accelerates/) — Obsidian Security (2026-01-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/reports-highlight-growing-threat-of-saas-and-digital-supply-chain-attacks/

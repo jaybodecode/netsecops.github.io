@@ -59,7 +59,6 @@ For victims, detection is unfortunately simple: the sudden disappearance of fund
 ## Sources
 - [LastPass 2022 Breach Led to Years-Long Cryptocurrency Thefts, TRM Labs Finds](https://thehackernews.com/2025/12/lastpass-2022-breach-led-to-years-long.html) — The Hacker News (2025-12-29)
 - [TRM Traces Stolen Crypto from 2022 LastPass Breach — On-chain Indicators Suggest Russian Cybercriminal Involvement](https://www.trmlabs.com/post/trm-traces-stolen-crypto-from-2022-lastpass-breach-on-chain-indicators-suggest-russian-cybercriminal-involvement) — TRM Labs (2025-12-29)
-- [The 2022 LastPass Data Breach Continues to Fuel Crypto Theft Through 2025](https://thaicert.or.th/en/paper/2025/12/30/The-2022-LastPass-Data-Breach-Continues-to-Fuel-Crypto-Theft-Through-2025.html) — ThaiCERT (2025-12-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/crypto-worth-over-35m-stolen-using-data-from-2022-lastpass-breach/

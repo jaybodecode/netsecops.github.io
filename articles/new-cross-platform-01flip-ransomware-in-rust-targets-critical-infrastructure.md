@@ -65,7 +65,7 @@ No specific Indicators of Compromise for 01flip ransomware were provided in the 
 **Tags:** 01flip, Ransomware, Rust, Sliver C2, Cross-Platform, Critical Infrastructure, APAC
 
 ## Sources
-- [Jenkins DoS Freezes Pipelines - eSecurity Planet](https://www.esecurityplanet.com/cyber-security-insider/jenkins-dos-freezes-pipelines/) — eSecurity Planet (2025-12-15)
+- [eSecurity Planet](https://www.esecurityplanet.com/) — eSecurity Planet (2025-12-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-cross-platform-01flip-ransomware-in-rust-targets-critical-infrastructure/

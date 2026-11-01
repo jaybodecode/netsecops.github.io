@@ -42,10 +42,7 @@ Federal agencies looking to leverage Xshield should:
 **Tags:** ColorTokens, Xshield, FedRAMP, Zero Trust, Microsegmentation, Policy and Compliance, Cloud Security
 
 ## Sources
-- [ColorTokens Achieves FedRAMP® Moderate Authorization, Accelerating Secure Zero Trust Adoption Across Federal Agencies](https://www.prnewswire.com/news-releases/colortokens-achieves-fedramp-moderate-authorization-accelerating-secure-zero-trust-adoption-across-federal-agencies-302032488.html) — PR Newswire (2026-01-12)
 - [Endpoint Security and Network Monitoring News for the Week of January 16th: Asimily, OneSpan, Infoblox, and More](https://www.solutionsreview.com/endpoint-security/endpoint-security-and-network-monitoring-news-for-the-week-of-january-16th-asimily-onespan-infoblox-and-more/) — Solutions Review (2026-01-16)
-- [ColorTokens for Government | Carahsoft](https://carahsoft.com/colortokens-government) — Carahsoft (2026-01-16)
-- [ColorTokens Secures FedRAMP Moderate Authorization for Xshield](https://investorshangout.com/post/colortokens-secures-fedramp-moderate-authorization-for-xshield-337583/) — InvestorsHangout (2026-01-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/colortokens-xshield-platform-achieves-fedramp-moderate-authorization/

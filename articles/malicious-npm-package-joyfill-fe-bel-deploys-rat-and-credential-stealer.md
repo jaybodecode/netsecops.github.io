@@ -76,7 +76,6 @@ To detect similar supply chain attacks, security teams should hunt for:
 
 ## Sources
 - [Joyfill npm Supply-Chain Attack Deploys RAT and Developer Credential Stealer](https://gbhackers.com/cisa-urges-critical-infrastructure-operators-to-isolate-vital-ot-systems/) (2026-07-29)
-- [Malicious npm Package 'joyfill-fe-bel' Unleashes RAT and Credential Stealer](https://www.sonatype.com/blog/malicious-npm-package-joyfill-fe-bel-unleashes-rat-and-stealer) (2026-07-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-npm-package-joyfill-fe-bel-deploys-rat-and-credential-stealer/

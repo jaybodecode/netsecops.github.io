@@ -71,8 +71,8 @@ The primary impact of these campaigns is credential theft and the establishment 
 **Tags:** Phishing, Tax Season, ScreenConnect, QR Code, Quishing, Credential Theft, Microsoft
 
 ## Sources
-- [Tax Season Becomes Cyberattack Season: Phishing Campaigns Use IRS and W2 Lures](https://www.microsoft.com/en-us/security/blog/2026/02/10/tax-season-phishing-campaigns-screenconnect/) — Microsoft Security Blog (2026-02-10)
-- [Microsoft: Massive Tax Phishing Wave Tries to Install ScreenConnect](https://threatpost.com/microsoft-tax-phishing-screenconnect/178345/) — Threatpost (2026-02-11)
+- [Microsoft Security Blog](https://www.microsoft.com/) — Microsoft Security Blog (2026-02-10)
+- [Threatpost](https://threatpost.com/) — Threatpost (2026-02-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-uncovers-large-scale-tax-themed-phishing-campaigns/

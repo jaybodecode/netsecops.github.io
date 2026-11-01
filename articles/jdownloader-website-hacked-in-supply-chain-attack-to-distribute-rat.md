@@ -69,7 +69,6 @@ Security teams can hunt for related activity using these patterns:
 
 ## Sources
 - [Official JDownloader site served malware to Windows and Linux users between May 6 and May 7](https://securityaffairs.co/wordpress/162985/malware/jdownloader-site-malware-supply-chain-attack.html) — Security Affairs (2026-05-10)
-- [JDownloader Website Supply Chain Attack: Installers Replaced with Python RAT Malware (May 2026)](https://rescana.com/blogs/jdownloader-website-supply-chain-attack-installers-replaced-with-python-rat-malware-may-2026) — Rescana (2026-05-10)
 - [Security Check-in Quick Hits: May 10, 2026 – Supply Chain Compromises, Hosting Patches, and Cert Authority Hiccup](https://www.rodsblog.net/p/security-check-in-quick-hits-may-10-2026) — Rod's Blog (2026-05-10)
 
 ---

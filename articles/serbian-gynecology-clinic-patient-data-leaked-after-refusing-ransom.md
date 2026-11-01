@@ -56,8 +56,8 @@ Preventing ransomware remains one of the highest priorities for any organization
 **Tags:** ransomware, healthcare, data breach, patient data, dark web, extortion
 
 ## Sources
-- [Data Breach Statistics 2025-2026](https://www.bitsight.com/blog/data-breach-statistics-2026) — BitSight Technologies
-- [Serbian Clinic's Patient Data Leaked After Refusing Ransom Demand](https://www.bleepingcomputer.com/news/security/serbian-clinic-data-leaked-after-ransom-demand-refused/) — BleepingComputer
+- [BitSight Technologies](https://www.bitsight.com/) — BitSight Technologies
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
 
 ---
 Source: https://cyber.netsecops.io/articles/serbian-gynecology-clinic-patient-data-leaked-after-refusing-ransom/

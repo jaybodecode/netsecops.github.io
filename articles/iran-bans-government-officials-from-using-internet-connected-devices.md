@@ -41,9 +41,7 @@ While few other nations would consider such a drastic measure, the Iranian direc
 **Tags:** Iran, OPSEC, Policy, Espionage, Geopolitics, Network Isolation
 
 ## Sources
-- [10 cyber incidents that shook the world in 2025: Cloudflare, Colt, Salesforce](https://www.capacitymedia.com/article/2d7e9k3l1v0x1f7z5w9o4/news/10-cyber-incidents-that-shook-the-world-in-2025-cloudflare-colt-salesforce) — Capacity Media (2025-12-05)
 - [Iran bans use of internet-connected devices by officials and security staff – Fars](https://www.iranintl.com/en/202506173003) — Iran International (2025-12-05)
-- [In Iran's ban on internet-connected devices, a reminder of Israel's Lebanon walkie-talkie, pager blasts](https://www.hindustantimes.com/world-news/in-irans-ban-on-internet-connected-devices-a-reminder-of-israels-lebanon-walkie-talkie-pager-blasts-101718617511018.html) — Hindustan Times (2025-12-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/iran-bans-government-officials-from-using-internet-connected-devices/

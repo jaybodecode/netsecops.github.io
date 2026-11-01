@@ -60,8 +60,8 @@ Preventing such leaks is a matter of fundamental security best practices.
 **Tags:** data leak, misconfiguration, MySQL, supply chain, government data, Malaysia
 
 ## Sources
-- [Data Breach Statistics 2025-2026](https://www.bitsight.com/blog/data-breach-statistics-2026) — BitSight Technologies
-- [Imej Parking data leak exposes government data](https://www.thestar.com.my/tech/tech-news/2026/03/29/imej-parking-data-leak-exposes-government-data) — The Star
+- [BitSight Technologies](https://www.bitsight.com/) — BitSight Technologies
+- [The Star](https://www.thestar.com.my/) — The Star
 
 ---
 Source: https://cyber.netsecops.io/articles/malaysian-car-park-operator-imej-parking-suffers-major-data-leak/

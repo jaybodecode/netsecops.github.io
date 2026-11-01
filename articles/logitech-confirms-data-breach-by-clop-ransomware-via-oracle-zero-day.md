@@ -55,7 +55,6 @@ Organizations using Oracle E-Business Suite should hunt for signs of compromise 
 
 ## Sources
 - [Logitech Confirms Data Breach Following Designation as Oracle Hack Victim](https://www.securityweek.com/logitech-confirms-data-breach-following-designation-as-oracle-hack-victim/) — SecurityWeek (2025-11-17)
-- [Logitech Confirms Data Breach Orchestrated by Clop Hackers Through Third-Party Software Vulnerability](https://www.thaicert.or.th/news/16035/) — ThaiCERT (2025-11-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/logitech-confirms-data-breach-by-clop-ransomware-via-oracle-zero-day/

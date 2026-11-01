@@ -58,7 +58,6 @@ This is a server-side vulnerability, so there is **no action the user can take**
 
 ## Sources
 - [NVD - CVE-2025-3653](https://nvd.nist.gov/vuln/detail/CVE-2025-3653) — NVD (2026-01-03)
-- [Petlibro API flaw lets hackers control any smart pet feeder](https://www.bleepingcomputer.com/news/security/petlibro-api-flaw-lets-hackers-control-any-smart-pet-feeder/) — BleepingComputer (2026-01-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/petlibro-smart-feeder-api-flaw-allows-unauthorized-control/

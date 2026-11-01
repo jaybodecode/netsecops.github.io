@@ -54,7 +54,6 @@ Securing ICS environments against such threats is paramount.
 
 ## Sources
 - [Cyber Security News Briefing March 28, 2026](https://www.youtube.com/watch?v=example-cybersec-news) — YouTube
-- [Cyberattack on Lithium Battery Storage Facilities Causes Physical Damage](https://www.powermag.com/cyberattack-on-lithium-battery-storage-facilities-causes-physical-damage/) — POWER Magazine
 
 ---
 Source: https://cyber.netsecops.io/articles/coordinated-cyberattack-targets-lithium-battery-storage-facilities/

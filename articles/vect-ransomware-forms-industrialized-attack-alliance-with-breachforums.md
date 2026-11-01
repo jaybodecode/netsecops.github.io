@@ -85,7 +85,6 @@ Security teams may want to hunt for activity related to the tools and tactics us
 
 ## Sources
 - [Vect formalizes BreachForums and TeamPCP alliance to push model for industrialized ransomware, scale RaaS operations](https://industrialcyber.co/news/vect-formalizes-breachforums-and-teampcp-alliance-to-push-model-for-industrialized-ransomware-scale-raas-operations/) — Industrial Cyber (2026-04-21)
-- [Cyber Intel Brief: Vect, BreachForums, and TeamPCP Converge](https://www.dataminr.com/blog/cyber-intel-brief-vect-breachforums-and-teampcp-converge) — Dataminr (2026-04-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/vect-ransomware-forms-industrialized-attack-alliance-with-breachforums/

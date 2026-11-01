@@ -58,7 +58,6 @@ Given the scale of this botnet, any organization with RDP exposed to the interne
 
 ## Sources
 - [Researchers warn of widespread RDP attacks by 100K-node botnet](https://securityaffairs.com/176964/hacking/widespread-rdp-attacks-botnet.html) — Security Affairs (2025-10-14)
-- [GreyNoise Tracks Large-Scale Botnet Targeting RDP Services](https://www.greynoise.io/blog/widespread-rdp-attacks-by-100k-node-botnet) — GreyNoise (2025-10-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/large-scale-botnet-targets-rdp-services-in-us/

@@ -58,9 +58,7 @@ To address the challenges outlined in the Palo Alto Networks report, organizatio
 
 ## Sources
 - [Palo Alto Networks Report Reveals AI Is Driving a Massive Cloud Attack Surface Expansion](https://www.paloaltonetworks.com/company/press/2025/palo-alto-networks-report-reveals-ai-is-driving-a-massive-cloud-attack-surface-expansion) — Palo Alto Networks (2025-12-16)
-- [Palo Alto Networks warns that AI is driving a surge in cloud security risks](https://siliconangle.com/2025/12/16/palo-alto-networks-warns-ai-driving-surge-cloud-security-risks/) — SiliconANGLE (2025-12-16)
 - [AI fuels escalating cloud security risks, Palo Alto Networks report reveals](https://www.scmagazine.com/news/ai-fuels-escalating-cloud-security-risks-palo-alto-networks-report-reveals) — SC Magazine (2025-12-17)
-- [Where Cloud Security Stands Today and Where AI Breaks It](https://www.paloaltonetworks.com/blog/2025/12/cloud-security-report-2025/) — Palo Alto Networks (2025-12-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/palo-alto-networks-report-ai-driving-massive-expansion-of-cloud-attack-surface/

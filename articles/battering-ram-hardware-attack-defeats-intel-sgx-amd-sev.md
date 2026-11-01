@@ -58,8 +58,8 @@ Since software patches are ineffective, mitigation is entirely procedural and st
 **Tags:** Hardware Attack, Confidential Computing, Intel SGX, AMD SEV, Side-channel Attack, Supply Chain Attack, Black Hat
 
 ## Sources
-- [Battering RAM hardware hack breaks secure CPU enclaves](https://www.csoonline.com/article/2099395/battering-ram-hardware-hack-breaks-secure-cpu-enclaves.html) — CSO Online (2025-12-11)
-- [‘Battering RAM’ Attack Bypasses Intel, AMD Memory Encryption](https://www.securityweek.com/battering-ram-attack-bypasses-intel-amd-memory-encryption/) — SecurityWeek (2025-12-11)
+- [CSO Online](https://www.csoonline.com/) — CSO Online (2025-12-11)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2025-12-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/battering-ram-hardware-attack-defeats-intel-sgx-amd-sev/

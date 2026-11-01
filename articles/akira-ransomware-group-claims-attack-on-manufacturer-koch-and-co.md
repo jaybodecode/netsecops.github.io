@@ -74,7 +74,7 @@ To hunt for Akira activity, security teams should look for the following:
 **Tags:** Akira, Ransomware, Data Breach, Manufacturing, Double Extortion
 
 ## Sources
-- [Akira Ransomware Attacks Koch & Co, Inc. - DeXpose](https://www.dexpose.io/blog/akira-ransomware-attacks-koch-co-inc) — DeXpose (2025-11-10)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2025-11-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/akira-ransomware-group-claims-attack-on-manufacturer-koch-and-co/

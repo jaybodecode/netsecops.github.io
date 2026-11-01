@@ -29,9 +29,7 @@ The acquisition is driven by several key market trends:
 
 ## Sources
 - [Wiz joins Google Cloud to boost multicloud security offering](https://www.fintech.global/2026/03/17/wiz-joins-google-cloud-to-boost-multicloud-security-offering/) — FinTech Global (2026-03-17)
-- [Google completes acquisition of Wiz](https://blog.google/products/google-cloud/google-completes-acquisition-of-wiz/) — Google Blog (2026-03-11)
 - [Welcoming Wiz to Google Cloud: Redefining security for the AI era](https://cloud.google.com/blog/products/security/welcoming-wiz-to-google-cloud) — Google Cloud Blog (2026-03-11)
-- [Google announces agreement to acquire Wiz](https://news.crunchbase.com/ai-robotics/google-announces-agreement-to-acquire-wiz/) — Crunchbase News (2025-03-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-finalizes-acquisition-of-cloud-security-firm-wiz/

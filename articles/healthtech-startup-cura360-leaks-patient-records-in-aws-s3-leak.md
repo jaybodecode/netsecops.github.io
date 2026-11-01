@@ -101,7 +101,6 @@ Preventing this type of breach is entirely achievable with basic cloud security 
 **Tags:** Data Leak, Data Breach, Cloud Security, AWS, S3, Misconfiguration, Cura360, HIPAA, PHI
 
 ## Sources
-- [HealthTech Startup Cura360 Leaks 250,000 Patient Records via Public S3 Bucket](https://www.infosecurity-magazine.com/news/cura360-startup-leaks-patient-data/) — Infosecurity Magazine (2026-04-25)
 - [Misconfigured S3 bucket at health-tech firm Cura360 exposes trove of patient data](https://portswigger.net/daily-swig/misconfigured-s3-bucket-at-cura360-exposes-sensitive-health-data) — PortSwigger Daily Swig (2026-04-25)
 
 ---

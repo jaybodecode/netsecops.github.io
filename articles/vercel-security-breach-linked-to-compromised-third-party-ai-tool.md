@@ -58,10 +58,8 @@ Mitigating supply chain attacks requires a defense-in-depth approach focusing on
 **Tags:** Supply Chain Attack, OAuth, Cloud Security, Data Breach, Environment Variables, Credential Rotation
 
 ## Sources
-- [Vercel April 2026 security incident](https://vercel.com/knowledge/security-incident-2026-04-19) — Vercel (2026-04-19)
 - [Vercel disclosed a security incident today (April 19, 2026) - what's confirmed, what's reported, what to rotate](https://www.reddit.com/r/cybersecurity/comments/1c8a5v1/vercel_disclosed_a_security_incident_today_april/) — Reddit (2026-04-19)
 - [Vercel Breach Tied to Context AI Hack Exposes Limited Customer Credentials](https://thehackernews.com/2026/04/vercel-breach-tied-to-context-ai-hack.html) — The Hacker News (2026-04-20)
-- [The Vercel Breach: OAuth Supply Chain Attack Exposes the Hidden Risk in Platform Environment Variables](https://www.trendmicro.com/en_us/research/26/d/the-vercel-breach-oauth-supply-chain-attack.html) — Trend Micro (2026-04-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/vercel-security-breach-linked-to-compromised-third-party-ai-tool/

@@ -74,7 +74,6 @@ Avarium is developing an emergency patch. Until it is available, CISA and OTDefe
 **Tags:** zero-day, SCADA, ICS, RCE, CISA, emergency directive, critical infrastructure
 
 ## Sources
-- [CISA Warns of 'IronBite' Zero-Day in Avarium SCADA Systems, Suspects Active Exploitation](https://www.securityweek.com/cisa-warns-ironbite-zero-day-in-avaraium-scada-systems-active-exploitation) — SecurityWeek (2026-02-16)
 - [Critical RCE Flaw CVE-2026-31501 Threatens Global Energy Sector](https://www.darkreading.com/ics-ot/critical-rce-flaw-cve-2026-31501-threatens-global-energy-sector) — Dark Reading (2026-02-16)
 
 ---

@@ -57,7 +57,6 @@ While the data is already exposed, this incident provides critical lessons for a
 **Tags:** AT&T, data breach, PII, SSN, dark web, identity theft
 
 ## Sources
-- [Data Breach Statistics 2025-2026](https://www.bitsight.com/blog/data-breach-statistics-2026) — BitSight Technologies
 - [AT&T investigates data leak impacting 70 million customers](https://www.reuters.com/business/media-telecom/att-investigates-data-leak-70-million-customers-2026-03-29/) — Reuters
 
 ---

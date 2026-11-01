@@ -41,7 +41,6 @@ Organizations can improve their defenses against similar ransomware attacks by f
 **Tags:** Ransomware, Autovista, Automotive, Cyberattack, Service Disruption, JD Power
 
 ## Sources
-- [Automotive data biz Autovista blames ransomware for service disruption](https://www.theregister.com/2026/04/15/autovista_ransomware_attack/) — The Register (2026-04-15)
 - [Autovista confirms ransomware attack](https://www.bodyshopmag.com/2026/news/autovista-confirms-ransomware-attack/) — Bodyshop Magazine (2026-04-15)
 - [Ransomware Hits Automotive Data Expert Autovista](https://www.securityweek.com/ransomware-hits-automotive-data-expert-autovista/) — SecurityWeek (2026-04-16)
 - [Autovista confirms ransomware attack affecting European and Australian systems | brief](https://www.scmagazine.com/brief/autovista-confirms-ransomware-attack-affecting-european-and-australian-systems) — SC Magazine (2026-04-16)

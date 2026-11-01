@@ -56,8 +56,7 @@ As there is no official patch available at the time of writing, mitigation focus
 **Tags:** LeRobot, Hugging Face, CVE-2026-25874, RCE, Deserialization, pickle, gRPC, AI Security, Vulnerability, Unpatched
 
 ## Sources
-- [Critical Unpatched Flaw Leaves Hugging Face LeRobot Open to Unauthenticated RCE](https://thehackernews.com/2026/04/critical-unpatched-flaw-leaves.html) — The Hacker News (2026-04-28)
-- [Critical Unpatched Flaw Leaves Hugging Face LeRobot Open to Unauthenticated RCE](https://thehackernews.com/2026/04/critical-unpatched-flaw-leaves.html?_m=3n.009a.2952.tu0ao47565.2g7i) — The Hacker News (2026-04-28)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-04-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-unpatched-rce-flaw-in-hugging-face-lerobot-ai-platform/

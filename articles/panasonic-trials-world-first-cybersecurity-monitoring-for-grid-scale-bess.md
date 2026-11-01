@@ -41,7 +41,6 @@ While this trial doesn't create new compliance rules, it offers a clear directio
 **Tags:** BESS, ICS security, OT security, critical infrastructure, Panasonic, energy grid
 
 ## Sources
-- [Panasonic Launches World's First*1 Cybersecurity Monitoring Trial for Grid-Scale Battery Energy Storage Systems (BESS)](https://news.panasonic.com/global/press/en/jn260319-1) — Panasonic Newsroom
 - [Top 10 Cybersecurity News (Feb. 16, 2026)](https://www.innovatecybersecurity.com/post/top-10-cybersecurity-news-feb-16-2026-microsoft-365-admin-center-outage-investigated-as-security-event-cisa-adds-multiple-exploited-vulnerabilities-to-kev-catalog-trojanized-7-zip-installer-spreads-proxy-malware-and-more) — Innovate Cybersecurity
 
 ---

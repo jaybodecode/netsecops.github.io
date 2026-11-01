@@ -92,10 +92,8 @@ Instructure has already begun mitigation by rotating API keys, which is a critic
 **Tags:** Canvas, Data Breach, Education, Extortion, Instructure, LMS, ShinyHunters
 
 ## Sources
-- [Edtech Firm Instructure Discloses Data Breach Amid Hacker Leak Threats](https://www.securityweek.com/edtech-firm-instructure-discloses-data-breach-amid-hacker-leak-threats/) (2026-05-04)
 - [Instructure confirms data breach, ShinyHunters claims attack](https://www.bleepingcomputer.com/news/security/instructure-confirms-data-breach-shinyhunters-claims-attack/) (2026-05-03)
 - [ShinyHunters claims Instructure breach, data from 275M users stolen](https://www.techzine.eu/online/131011/shinyhunters-claims-instructure-breach-data-from-275m-users-stolen/) (2026-05-04)
-- [Hackers threaten to leak Canvas messages and emails: 275M students at risk?](https://cybernews.com/news/shinyhunters-claim-canvas-lms-data-breach/) (2026-05-04)
 - [Instructure, Parent of Canvas, Confirms Data Breach](https://www.securitymagazine.com/articles/101036-instructure-parent-of-canvas-confirms-data-breach) (2026-05-04)
 - [ShinyHunters Claims Responsibility for Instructure Data Breach](https://asatu.asia/2026/05/04/shinyhunters-claims-responsibility-for-instructure-data-breach/) (2026-05-04)
 - [Instructure Confirms Canvas Breach as ShinyHunters Lists Stolen Data](https://sqportal.com/instructure-confirms-canvas-breach-as-shinyhunters-lists-stolen-data/) (2026-05-04)

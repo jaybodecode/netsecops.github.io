@@ -81,7 +81,6 @@ Mitigation is focused on preventing secrets from being hardcoded in the first pl
 ## Sources
 - [Public GitLab repositories exposed more than 17,000 secrets](https://www.bleepingcomputer.com/news/security/public-gitlab-repositories-exposed-more-than-17-000-secrets/) — BleepingComputer (2025-11-28)
 - [Massive GitLab scan finds 17,000+ valid secrets in public repositories](https://www.cyberinsider.org/massive-gitlab-scan-finds-17000-valid-secrets-in-public-repositories/) — Cyber Insider (2025-11-27)
-- [Security researcher uncovers 17,000 secrets in public GitLab repositories](https://www.techradar.com/pro/security/security-researcher-uncovers-17000-secrets-in-public-gitlab-repositories) — TechRadar Pro (2025-12-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/public-gitlab-repos-expose-over-17000-live-secrets/

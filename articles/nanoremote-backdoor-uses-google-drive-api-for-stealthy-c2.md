@@ -65,7 +65,6 @@ Detecting malware like **NANOREMOTE** requires shifting focus from traditional n
 **Tags:** NANOREMOTE, Backdoor, Malware, Google Drive, C2, Cloud Security, FINALDRAFT, Windows
 
 ## Sources
-- [NANOREMOTE, cousin of FINALDRAFT — Elastic Security Labs](https://www.elastic.co/security-labs/nanoremote-cousin-of-finaldraft) — Elastic Security Labs (2025-12-10)
 - [Top 5 Cybersecurity News Stories December 12, 2025](https://diesec.com/blog/top-5-cybersecurity-news-stories-december-12-2025) — DIESEC (2025-12-12)
 - [Newly emergent NANOREMOTE malware sets sights on Windows systems](https://www.scmagazine.com/news/newly-emergent-nanoremote-malware-sets-sights-on-windows-systems) — SC Media (2025-12-12)
 

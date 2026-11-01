@@ -57,8 +57,8 @@ To detect similar email account compromises, organizations should monitor for:
 **Tags:** Data Breach, Healthcare, St. Anthony Hospital, Phishing, PII, PHI, HIPAA
 
 ## Sources
-- [Data breach at St. Anthony Hospital might have exposed personal information of more than 6,600 patients and staff](https://www.cbsnews.com/chicago/news/st-anthony-hospital-data-breach/) — CBS Chicago (2025-11-19)
-- [The Week in Breach News: November 19, 2025](https://www.kaseya.com/resource/the-week-in-breach-news-november-19-2025/) — Kaseya (2025-11-19)
+- [CBS Chicago](https://www.cbsnews.com/) — CBS Chicago (2025-11-19)
+- [Kaseya](https://www.kaseya.com/) — Kaseya (2025-11-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/st-anthony-hospital-discloses-data-breach-affecting-6600-individuals/

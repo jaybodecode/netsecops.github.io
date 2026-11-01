@@ -66,8 +66,8 @@ For job seekers, detection is about vigilance and verification.
 **Tags:** Phishing, Scam, Social Engineering, Palo Alto Networks, Recruitment, LinkedIn
 
 ## Sources
-- [Phishing Campaign Impersonates Palo Alto Networks Recruiters](https://blog.knowbe4.com/phishing-campaign-impersonates-palo-alto-networks-recruiters) — KnowBe4 (2026-04-09)
-- [Unit 42 Exposes Recruitment Phishing Scam Targeting Senior Professionals](https://www.paloaltonetworks.com/blog/unit42/recruitment-phishing-scam/) — Unit 42 (2026-04-09)
+- [KnowBe4](https://blog.knowbe4.com/) — KnowBe4 (2026-04-09)
+- [Unit 42](https://www.paloaltonetworks.com/) — Unit 42 (2026-04-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/phishing-campaign-impersonates-palo-alto-networks-recruiters/

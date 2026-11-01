@@ -40,7 +40,6 @@ The exposure of Protected Health Information (PHI) carries severe consequences:
 
 ## Sources
 - [Data Breaches Announced by ModMed, LifeBridge Health & Right at Home](https://hipaajournal.com/data-breaches-announced-by-modmed-lifebridge-health-right-at-home/) — HIPAA Journal (2025-10-27)
-- [Healthcare Sector Hit by Multiple Vendor and Provider Breaches](https://www.example.com/second_source_healthcare_breach) — Example.com (2025-10-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/healthcare-data-breaches-affect-modmed-lifebridge-right-at-home/

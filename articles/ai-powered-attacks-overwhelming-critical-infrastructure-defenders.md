@@ -57,7 +57,6 @@ Defending critical infrastructure in the age of AI requires a paradigm shift fro
 ## Sources
 - [AI-powered cyber threats overwhelm human defenders, forcing critical infrastructure operators toward automated security](https://industrialcyber.co/news/ai-powered-cyber-threats-overwhelm-human-defenders-forcing-critical-infrastructure-operators-toward-automated-security/) — Industrial Cyber
 - [Cybersecurity Will Swallow Digital Policy in the AI Age](https://www.techpolicy.press/cybersecurity-will-swallow-digital-policy-in-the-ai-age/) — TechPolicy.Press
-- [Japan to Strengthen Cyber Defense for Critical Infrastructure](https://www.nippon.com/en/news/yjj2026051800762/) — nippon.com
 - [Plenary Priorities 18-21 May 2026](https://www.reneweuropegroup.eu/news/2026-05-18/plenary-priorities-18-21-may-2026) — Renew Europe
 
 ---

@@ -52,7 +52,6 @@ Healthcare organizations must adopt a more proactive and comprehensive security 
 
 ## Sources
 - [Healthcare breaches double as shadow AI, vendor risks proliferate](https://www.cybersecuritydive.com/news/healthcare-breaches-double-shadow-ai-vendor-risks/704511/) — Cybersecurity Dive (2026-01-19)
-- [Data Breaches 2025: Biggest Cybersecurity Incidents So Far](https://www.pkware.com/blog/data-breaches-2025-biggest-cybersecurity-incidents/) — PKWARE (2026-01-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/healthcare-breaches-double-amid-shadow-ai-and-vendor-risk/

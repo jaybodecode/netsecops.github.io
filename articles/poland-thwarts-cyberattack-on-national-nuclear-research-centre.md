@@ -49,9 +49,6 @@ Protecting critical infrastructure like a nuclear research facility requires a d
 ## Sources
 - [Hackers tried to breach Poland's nuclear research centre](https://www.helpnetsecurity.com/2026/03/16/poland-nuclear-centre-cyberattack/) — Help Net Security (2026-03-16)
 - [Poland blocks cyberattack that targeted nuclear research facility](https://www.techradar.com/pro/security/poland-blocks-cyberattack-that-targeted-nuclear-research-facility) — TechRadar Pro (2026-03-16)
-- [Why the cyberattack on Poland's Nuclear Research Centre could be a false flag operation](https://shieldworkz.com/why-the-cyberattack-on-polands-nuclear-research-centre-could-be-a-false-flag-operation/) — Shieldworkz (2026-03-16)
-- [Cyberattack Targets Poland’s Nuclear Research Center, Investigation Underway](https://gbhackers.com/polands-nuclear-research-center-cyberattack/) — GBHackers on Security (2026-03-16)
-- [Poland Nuclear Research Centre Cyberattack Blocked](https://safestate.com/blog/poland-nuclear-research-centre-cyberattack-blocked/) — Safestate (2026-03-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/poland-thwarts-cyberattack-on-national-nuclear-research-centre/

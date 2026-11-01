@@ -74,7 +74,6 @@ Security teams can hunt for exploitation attempts by looking for specific networ
 **Tags:** rce, vulnerability, unauthenticated, root access, network security, cve
 
 ## Sources
-- [Weekly Report: New Hacking Techniques and Critical CVEs 26 Dec - 31 Dec 2025](https://www.firecompass.com/blog/weekly-threat-report-dec-31-2025/) — FireCompass (2025-12-31)
 - [NVD - CVE-2025-54322](https://nvd.nist.gov/vuln/detail/CVE-2025-54322) — NIST (2025-12-30)
 
 ---

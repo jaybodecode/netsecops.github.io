@@ -69,9 +69,7 @@ To align with the principles of the new OWASP Top 10, organizations should:
 ## Sources
 - [OWASP Top Ten](https://owasp.org/Top10/) — OWASP Foundation
 - [owasp top 10: 2025 updates - noailabs](https://www.noailabs.com/post/owasp-top-10-2025-updates) — Noa Labs (2025-11-07)
-- [OWASP Top 10 2025 – The Complete Guide - Reflectiz](https://reflectiz.com/owasp-top-10-2025-the-complete-guide/) — Reflectiz (2025-11-07)
 - [OWASP Top 10: 2025 — The Evolved Battlefield of Web Application Security | by Aditya Bhatt | Nov, 2025 | Medium](https://medium.com/@adityabhatt/owasp-top-10-2025-the-evolved-battlefield-of-web-application-security-a9b0d8c2e6f9) — Medium (2025-11-08)
-- [OWASP Top 10:2025 RC1](https://owasp.org/Top10/2025/RC1/) — OWASP Foundation
 
 ---
 Source: https://cyber.netsecops.io/articles/owasp-top-10-for-2025-released-highlighting-supply-chain-and-design-flaws/

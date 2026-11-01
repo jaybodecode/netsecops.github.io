@@ -56,7 +56,6 @@ The attacker likely wrote a script to iterate through user IDs or other identifi
 
 ## Sources
 - [Hacker Claims Theft of 40 Million Condé Nast Records After Wired Data Leak](https://www.securityweek.com/hacker-claims-theft-of-40-million-conde-nast-records-after-wired-data-leak/) — SecurityWeek (2025-12-29)
-- [WIRED Data Leak Exposes 2.3M Users Amid Broader Claims](https://socradar.io/wired-data-leak-exposes-2-3m-users-amid-broader-claims/) — SOCRadar (2025-12-29)
 - [Hacker claims to leak WIRED database with 2.3 million records](https://www.bleepingcomputer.com/news/security/hacker-claims-to-leak-wired-database-with-23-million-records/) — BleepingComputer (2025-12-29)
 
 ---

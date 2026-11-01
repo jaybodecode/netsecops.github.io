@@ -70,7 +70,6 @@ Given the targeting of the fintech and crypto sectors, the primary motive is lik
 - ['Contagious Interview' Attack Now Delivers Backdoor Via VS Code](https://www.darkreading.com/application-security/contagious-interview-attack-backdoor-vs-code) — Dark Reading (2026-01-21)
 - [North Korean Hackers Target macOS Developers via Malicious VS Code Projects](https://www.securityweek.com/north-korean-hackers-target-macos-developers-via-malicious-vs-code-projects/) — SecurityWeek (2026-01-21)
 - [VS Code projects weaponized in developer-targeted Contagious Interview campaign](https://scmagazine.com/news/vs-code-projects-weaponized-in-developer-targeted-contagious-interview-campaign) — SC Magazine (2026-01-21)
-- [PurpleBravo's Targeting of the IT Software Supply Chain](https://www.recordedfuture.com/blog/purplebravos-targeting-of-the-it-software-supply-chain) — Recorded Future (2026-01-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/north-korean-contagious-interview-campaign-weaponizes-vs-code-projects/

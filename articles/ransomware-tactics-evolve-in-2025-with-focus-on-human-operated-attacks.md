@@ -49,8 +49,8 @@ The evolving sophistication of ransomware attacks means that organizations face 
 **Tags:** Ransomware, Qilin, ClickFix, ClearFake, Social Engineering, Threat Intelligence
 
 ## Sources
-- [Cyber attack methods evolve in November despite attack volume plateauing](https://www.nccgroup.com/uk/our-research/cyber-attack-methods-evolve-in-november-despite-attack-volume-plateauing/) — NCC Group (2025-12-17)
-- [Ransomware Attacks Plateau in November But Sophistication Grows](https://www.infosecurity-magazine.com/news/ransomware-attacks-plateau-november/) — Infosecurity Magazine (2025-12-17)
+- [NCC Group](https://www.nccgroup.com/) — NCC Group (2025-12-17)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-12-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-tactics-evolve-in-2025-with-focus-on-human-operated-attacks/

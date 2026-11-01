@@ -40,7 +40,6 @@ For organizations operating in Germany, particularly in the CNI sectors, this po
 **Tags:** Germany, Cyber Warfare, Offensive Security, National Security, Policy
 
 ## Sources
-- [Cyber News Roundup – February 13th 2026](https://www.integrity360.com/ie/blog/2026/02/13/cyber-news-roundup-february-13th-2026/) — Integrity360 (2026-02-13)
 - [AI-driven ransomware attacks surge, most go unreported](https://www.securitybrief.co.uk/story/ai-driven-ransomware-attacks-surge-most-go-unreported) — SecurityBrief (2026-02-13)
 
 ---

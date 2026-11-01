@@ -56,7 +56,6 @@ Defending against AI-driven attacks requires a corresponding evolution in securi
 - [Experian Forecast: AI-Driven Cyber Threats Will Dominate the Digital Battlefield in 2026](https://www.businesswire.com/news/home/20251202863777/en/Experian-Forecast-AI-Driven-Cyber-Threats-Will-Dominate-the-Digital-Battlefield-in-2026) — Business Wire (2026-01-13)
 - [Experian Forecast: AI-Driven Cyber Threats Will Dominate the Digital Battlefield](https://global.experian.com/blogs/insights/2025/12/experian-2026-data-breach-industry-forecast/) — Experian (2026-01-13)
 - [Experian forecasts advanced cyber threats for 2026](https://www.reinsurancene.ws/experian-forecasts-advanced-cyber-threats-for-2026/) — Reinsurance News (2026-01-13)
-- [Experian warns of AI-driven cyber risks in 2026 breach forecast](https://beinsure.com/experian-warns-of-ai-driven-cyber-risks-in-2026-breach-forecast/) — BeInCrypto (2026-01-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/experian-forecasts-ai-agents-to-become-top-cause-of-data-breaches/

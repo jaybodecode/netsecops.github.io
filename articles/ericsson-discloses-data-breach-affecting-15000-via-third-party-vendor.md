@@ -59,7 +59,6 @@ Ericsson has stated that the service provider has "strengthened its security con
 **Tags:** Data Breach, Supply Chain Attack, Third-Party Risk, PII, Telecommunications
 
 ## Sources
-- [Ericsson Data Breach Exposes Third-Party Service Risks](https://cybermagazine.com/data-security/ericsson-data-breach-exposes-third-party-service-risks) — Cyber Magazine (2026-03-10)
 - [Thousands Affected by Ericsson Data Breach](https://www.securityweek.com/thousands-affected-by-ericsson-data-breach/) — SecurityWeek (2026-03-10)
 
 ---

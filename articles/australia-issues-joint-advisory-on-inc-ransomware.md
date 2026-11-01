@@ -45,7 +45,6 @@ The joint advisory recommends several key mitigations:
 ## Sources
 - [INC Ransom Affiliate Model Enabling Targeting of Critical Networks](https://www.cyber.gov.au/about-us/view-all-content/advisories/inc-ransom-affiliate-model-enabling-targeting-of-critical-networks) — Australian Cyber Security Centre (2026-03-06)
 - [INC Ransom and Affiliate Network operating in Australia, New Zealand and the Pacific island states](https://www.cyber.gov.au/about-us/view-all-content/news-and-media-releases/inc-ransom-and-affiliate-network-operating-australia-new-zealand-and-pacific-island-states) — Australian Cyber Security Centre (2026-03-06)
-- [Authorities warn of INC Ransom impact on regional networks](https://www.insurancebusinessmag.com/au/news/cyber/authorities-warn-of-inc-ransom-impact-on-regional-networks-480643.aspx) — Insurance Business (2026-03-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/australia-issues-joint-advisory-on-inc-ransomware/

@@ -49,7 +49,7 @@ To detect similar breaches, healthcare security teams should hunt for:
 **Tags:** Data Breach, HIPAA, Healthcare, NYC, Protected Health Information
 
 ## Sources
-- [The Week in Breach News: May 20, 2026](https://www.kaseya.com/blog/2026/05/20/the-week-in-breach-news-may-20-2026/) (2026-05-20)
+- [kaseya.com](https://www.kaseya.com/) (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/nyc-health-hospitals-reports-massive-data-breach-affecting-1-8-million/

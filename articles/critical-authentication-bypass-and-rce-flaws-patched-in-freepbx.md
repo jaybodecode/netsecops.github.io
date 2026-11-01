@@ -70,8 +70,6 @@ A compromised FreePBX server poses a severe risk to an organization. Attackers c
 **Tags:** FreePBX, VoIP, Vulnerability, CVE-2025-66039, RCE, Authentication Bypass, SQL Injection
 
 ## Sources
-- [FreePBX fixes critical vulnerabilities that allow RCE attack](https://www.secnews.gr/165510/security/freepbx-fixes-critical-vulnerabilities-that-allow-rce-attack/) — SecNews.gr (2025-12-15)
-- [FreePBX Vulnerabilities Enable RCE via SQL Injection, Patched in 2025](https://webpronews.com/freepbx-vulnerabilities-enable-rce-via-sql-injection-patched-in-2025/) — WebProNews (2025-12-15)
 - [CVE-2025-66039: Critical Authentication Bypass in FreePBX Endpoint Manager’s ‘Webserver’ Mode](https://www.thehackerwire.com/2025/12/15/cve-2025-66039-critical-authentication-bypass-in-freepbx-endpoint-managers-webserver-mode/) — The Hacker Wire (2025-12-15)
 
 ---

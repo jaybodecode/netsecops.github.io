@@ -80,7 +80,6 @@ This settlement provides a clear roadmap for what regulators expect from compani
 
 ## Sources
 - [Your Breaches of the Week! Nov 24 to Nov 30, 2025](https://www.youtube.com/watch?v=example_video_id_for_nov30) — YouTube (2025-11-30)
-- [Comcast Settles with FCC over FBCS Vendor Breach](https://www.securitynews.com/comcast-fcc-settlement-nov-2025) — Security News (2025-11-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/comcast-fined-1-5m-by-fcc-over-vendor-data-breach/

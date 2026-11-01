@@ -55,7 +55,6 @@ Security teams should hunt for the following patterns to detect similar attacks:
 - [Manage My Health breach: 50% of affected patients contacted](https://www.1news.co.nz/2026/01/08/manage-my-health-breach-50-of-affected-patients-contacted/) — 1News (2026-01-08)
 - [NZ patient data stolen in Manage My Health breach](https://www.informationage.com.au/news/nz-patient-data-stolen-in-managemyhealth-breach-603875) — Information Age (2026-01-08)
 - [MMH Cyber Breach Update January 2026](https://www.managemyhealth.co.nz/mmh-cyber-breach-update-january-2026/) — ManageMyHealth (2026-01-02)
-- [ManageMyHealth Breach Exposes 126K Users](https://www.brightdefense.com/blog/managemyhealth-data-breach) — BrightDefense (2026-01-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-zealand-managemyhealth-patient-portal-data-breach-exposes-126k/

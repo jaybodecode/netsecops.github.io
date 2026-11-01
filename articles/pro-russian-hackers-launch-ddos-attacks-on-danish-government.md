@@ -54,9 +54,7 @@ The group coordinates its attacks and announces its 'successes' on its Telegram 
 
 ## Sources
 - [17th November – Threat Intelligence Report](https://research.checkpoint.com/2025/17th-november-threat-intelligence-report/) — Check Point Research (2025-11-17)
-- [Hacker group brings down The Copenhagen Post website ahead of local elections](https://cphpost.dk/2025-11-17/news/hacker-group-brings-down-the-copenhagen-post-website-ahead-of-local-elections/) — The Copenhagen Post (2025-11-17)
 - [DDoSia Targets Denmark: A Clear Look at the Threat](https://socradar.io/ddosia-targets-denmark-a-clear-look-at-the-threat/) — SOCRadar (2025-11-17)
-- [Danish political parties hit by cyberattack on election eve](https://www.newindianexpress.com/world/2025/Nov/17/danish-political-parties-hit-by-cyberattack-on-election-eve-315842.html) — The New Indian Express (2025-11-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/pro-russian-hackers-launch-ddos-attacks-on-danish-government/

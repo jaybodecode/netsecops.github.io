@@ -57,9 +57,6 @@ This is a classic example of [`T1566.002 - Spearphishing Link`](https://attack.m
 
 ## Sources
 - [Kaspersky Warns of a New Phishing Technique](https://www.itnewsafrica.com/2026/04/kaspersky-warns-of-a-new-phishing-technique/) — IT News Africa (2026-04-01)
-- [This popular app builder is being abused to trick users - here's what we know](https://www.techradar.com/pro/security/this-popular-app-builder-is-being-abused-to-trick-users-heres-what-we-know) — TechRadar Pro (2026-03-31)
-- [Bubble's role in phishing scams](https://www.kaspersky.com/blog/bubble-phishing-scams/49887/) — Kaspersky (2026-03-31)
-- [Risky Biz News: Russia to use custom crypto-algorithm for its 5G network](https://riskybiznews.substack.com/p/risky-biz-news-russia-to-use-custom) — Risky Biz News (2026-03-31)
 
 ---
 Source: https://cyber.netsecops.io/articles/kaspersky-uncovers-phishing-technique-abusing-no-code-platform-bubble/

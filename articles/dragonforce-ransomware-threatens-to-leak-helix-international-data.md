@@ -64,8 +64,7 @@ To prevent such attacks, MSPs and their clients should implement the following c
 **Tags:** DragonForce, Ransomware, HELIX INTERNATIONAL, MSP, Double Extortion, Data Leak
 
 ## Sources
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) — DeXpose (2026-05-25)
-- [Nightspire Targets Pat**** S.r.l in Confirmed Ransomware Incident](https://www.dexpose.io/blog/nightspire-targets-pat-s-r-l-in-confirmed-ransomware-incident) — DeXpose (2026-05-24)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-05-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/dragonforce-ransomware-threatens-to-leak-helix-international-data/

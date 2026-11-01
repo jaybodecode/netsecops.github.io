@@ -57,9 +57,6 @@ Violation of the FCC's order can result in significant penalties, including fine
 
 ## Sources
 - [FCC Ban on Foreign-Produced Routers Targets Chinese Firms Tied to Cybersecurity Risks](https://www.fdd.org/policy-brief/2026/03/25/fcc-ban-on-foreign-produced-routers-targets-chinese-firms-tied-to-cybersecurity-risks/) — FDD (2026-03-25)
-- [FCC Bans Wireless Router Imports, Citing Security Concerns](https://www.insurancejournal.com/news/national/2026/03/24/765792.htm) — Insurance Journal (2026-03-24)
-- [FCC bans foreign routers, putting enterprise network risk in focus](https://www.networkworld.com/article/2093556/fcc-bans-foreign-routers-putting-enterprise-network-risk-in-focus.html) — Network World (2026-03-24)
-- [FCC Bans New Routers Made Outside the US Over National Security Risks](https://www.securityweek.com/fcc-bans-new-routers-made-outside-the-us-over-national-security-risks/) — SecurityWeek (2026-03-25)
 - [FACT SHEET: FCC Updates Covered List to Include Foreign-Made Consumer Routers, Prohibiting Approval of New Models](https://docs.fcc.gov/public/attachments/DOC-401345A1.pdf) — FCC (2026-03-23)
 
 ---

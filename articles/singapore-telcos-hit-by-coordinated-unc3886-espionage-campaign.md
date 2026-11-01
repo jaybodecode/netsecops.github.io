@@ -48,8 +48,8 @@ UNC3886 is known for its focus on network devices and virtualization platforms, 
 **Tags:** UNC3886, APT, Zero-Day, Singapore, Telecommunications, Cyber Espionage, China
 
 ## Sources
-- [Singapore launches largest coordinated cyber defense operation after targeted attack on all major telcos](https://www.teiss.co.uk/singapore-telcos-cyber-attack-unc3886) — Teiss (2026-02-09)
-- [Singapore's four major telcos came under attack by cyber espionage group UNC3886](https://www.channelnewsasia.com/singapore/telcos-cyber-attack-unc3886-zero-day-vulnerability-38) — Channel NewsAsia (2026-02-09)
+- [Teiss](https://www.teiss.co.uk/) — Teiss (2026-02-09)
+- [Channel NewsAsia](https://www.channelnewsasia.com/) — Channel NewsAsia (2026-02-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/singapore-telcos-hit-by-coordinated-unc3886-espionage-campaign/

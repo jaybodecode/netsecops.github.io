@@ -43,7 +43,7 @@ The rapid, ungoverned adoption of AI has significant business and operational im
 **Tags:** AI, artificial intelligence, CISO, cybersecurity risk, data leakage, governance, RH-ISAC
 
 ## Sources
-- [CISO Benchmark Report Finds AI Driving New Era of Cybersecurity Risk and Investment in Retail and Hospitality](https://www.morningstar.com/news/pr-newswire/20260401ph81812/ciso-benchmark-report-finds-ai-driving-new-era-of-cybersecurity-risk-and-investment-in-retail-and-hospitality) — Morningstar (2026-04-01)
+- [Morningstar](https://www.morningstar.com/) — Morningstar (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-emerges-as-top-cybersecurity-risk-for-retail-and-hospitality/

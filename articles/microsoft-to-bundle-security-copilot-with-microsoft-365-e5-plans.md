@@ -47,7 +47,6 @@ While this is a product offering, it has implications for an organization's inte
 - [Notice: Security Copilot will be included as part of your Microsoft 365 E5 plan soon](https://m365admin.handsontek.net/notice-security-copilot-will-be-included-as-part-of-your-microsoft-365-e5-plan-soon/) — m365admin.handsontek.net (2026-03-31)
 - [April 2026 Microsoft 365 Updates: Key Changes at a Glance](https://www.reddit.com/r/msp/comments/1brd98x/april_2026_microsoft_365_updates_key_changes_at_a/) — Reddit (2026-04-01)
 - [Microsoft Cloud & Security Updates | April 2026](https://www.ascendtechnologies.com/blog/microsoft-cloud-security-updates-april-2026/) — Ascend Technologies (2026-03-31)
-- [Security Copilot Is Landing In Your Tenant Soon](https://theadversarylab.com/security-copilot-is-landing-in-your-tenant-soon/) — The Adversary Lab (2026-03-31)
 - [Security Copilot is about to become available to every Microsoft 365 E5 tenant.](https://www.reddit.com/r/microsoft/comments/1bq70x8/security_copilot_is_about_to_become_available_to/) — Reddit (2026-03-31)
 
 ---

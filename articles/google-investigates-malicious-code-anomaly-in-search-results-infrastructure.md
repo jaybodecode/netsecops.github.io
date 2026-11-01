@@ -44,8 +44,8 @@ While users cannot stop the injection on Google's side, standard security hygien
 **Tags:** Google, Search, Infrastructure Attack, Browser Exploit, Supply Chain Attack
 
 ## Sources
-- [Google Search Body Anomaly Sparks Investigation into Potential Cybersecurity Breach](https://www.barcelonaglobal.org/news/google-search-body-anomaly-sparks-investigation-into-potential-cybersecurity-breach/) — Barcelona Global (2025-12-17)
-- [Google probes security anomaly in its search infrastructure](https://securityaffairs.co/wordpress/142589/hacking/google-search-anomaly-investigation.html) — Security Affairs (2025-12-18)
+- [Barcelona Global](https://www.barcelonaglobal.org/) — Barcelona Global (2025-12-17)
+- [Security Affairs](https://securityaffairs.co/) — Security Affairs (2025-12-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-investigates-malicious-code-anomaly-in-search-results-infrastructure/

@@ -57,7 +57,6 @@ While no specific IOCs are provided, organizations can hunt for similar threats 
 **Tags:** Data Breach, Navia, Healthcare, PII, PHI, Social Security Number, Supply Chain Attack
 
 ## Sources
-- [Health plan information for over 2.6 million stolen from third-party admin Navia - The Record](https://therecord.media/navia-health-plan-data-breach) — The Record (2026-03-08)
 - [Navia Data Breach Impacts 2.7 Million - SecurityWeek](https://www.securityweek.com/navia-data-breach-impacts-2-7-million/) — SecurityWeek (2026-03-08)
 
 ---

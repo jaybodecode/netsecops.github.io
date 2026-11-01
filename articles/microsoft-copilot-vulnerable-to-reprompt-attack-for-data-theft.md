@@ -58,7 +58,6 @@ Detecting this specific attack post-patch is not relevant, but hunting for simil
 
 ## Sources
 - ["Reprompt" attack lets attackers steal data from Microsoft Copilot](https://blog.malwarebytes.com/ai/2026/01/reprompt-attack-lets-attackers-steal-data-from-microsoft-copilot/) — Malwarebytes Labs (2026-01-15)
-- [Reprompt: Hijacking Microsoft Copilot](https://www.hiddenlayer.com/research/reprompt-hijacking-copilot/) — HiddenLayer (2026-01-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-copilot-vulnerable-to-reprompt-attack-for-data-theft/

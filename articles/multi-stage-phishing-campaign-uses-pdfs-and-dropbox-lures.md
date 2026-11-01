@@ -61,8 +61,6 @@ The immediate impact is the loss of credentials for a critical cloud service. Th
 **Tags:** phishing, credential theft, Dropbox, Vercel, Telegram
 
 ## Sources
-- [Attackers Harvest Dropbox Logins Via Fake PDF Lures - Dark Reading](https://www.darkreading.com/cyberattacks-data-breaches/attackers-harvest-dropbox-logins-via-fake-pdf-lures) — Dark Reading (2026-02-02)
-- [New phishing attack leverages PDFs and Dropbox - CSO Online](https://www.csoonline.com/article/1297800/new-phishing-attack-leverages-pdfs-and-dropbox.html) — CSO Online (2026-02-03)
 - [PDF phishing attack leads to stolen Dropbox credentials | SC Media](https://www.scmagazine.com/brief/phishing/pdf-phishing-attack-leads-to-stolen-dropbox-credentials) — SC Magazine (2026-02-02)
 
 ---

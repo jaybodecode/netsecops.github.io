@@ -67,7 +67,6 @@ Defending against ransomware groups like Everest requires a defense-in-depth str
 
 ## Sources
 - [Weekly Intelligence Report – 06 February 2026](https://www.cyfirma.com/outofband/weekly-intelligence-report-06-february-2026/) — CYFIRMA (2026-02-06)
-- [Everest Ransomware Strikes Hosokawa Micron Group](https://www.dexpose.io/blog/everest-ransomware-strikes-hosokawa-micron-group) — DeXpose (2026-02-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/everest-ransomware-group-attacks-japanese-manufacturer-hosokawa-micron/

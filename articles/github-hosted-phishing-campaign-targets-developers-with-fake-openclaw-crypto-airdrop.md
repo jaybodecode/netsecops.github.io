@@ -57,8 +57,8 @@ The attack chain is a multi-step process designed to build credibility and evade
 **Tags:** Phishing, GitHub, Cryptocurrency, Scam, Wallet Drainer, Social Engineering, OpenClaw
 
 ## Sources
-- [OpenClaw Developers Targeted in Crypto-Wallet Phishing Attack - OX Security](https://www.ox.security/blog/openclaw-developers-targeted-in-crypto-wallet-phishing-attack) — OX Security (2026-03-08)
-- [What CISOs Should Know (And Do) About OpenClaw - Infosecurity Magazine](https://www.infosecurity-magazine.com/news/what-cisos-know-openclaw/) — Infosecurity Magazine (2026-03-08)
+- [OX Security](https://www.ox.security/) — OX Security (2026-03-08)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2026-03-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/github-hosted-phishing-campaign-targets-developers-with-fake-openclaw-crypto-airdrop/

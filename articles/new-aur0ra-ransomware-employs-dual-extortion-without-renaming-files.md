@@ -60,7 +60,6 @@ Security teams can hunt for **Aur0ra** and similar ransomware. The following pat
 
 ## Sources
 - [Weekly Intelligence Report – 22 May 2026](https://cyfirma.com/weekly-intelligence-report-22-may-2026/) (2026-05-22)
-- [New Aur0ra ransomware doesn't rename encrypted files](https://www.bleepingcomputer.com/news/security/new-aur0ra-ransomware-doesnt-rename-encrypted-files/) (2026-05-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-aur0ra-ransomware-employs-dual-extortion-without-renaming-files/

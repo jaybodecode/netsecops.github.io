@@ -49,7 +49,7 @@ Despite internal turmoil and even attempts to sell the operation in 2025, Pay2Ke
 **Tags:** Ransomware, Pay2Key, Iran, Healthcare, Cyberattack, Nation-State
 
 ## Sources
-- [Iran-linked ransomware gang targeted US healthcare org amid military conflict](https://therecord.media/iran-linked-ransomware-gang-targeted-us-healthcare-org-amid-military-conflict) — The Record (2026-03-24)
+- [The Record](https://therecord.media/) — The Record (2026-03-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/iran-linked-pay2key-ransomware-hit-us-healthcare-org-during-conflict/

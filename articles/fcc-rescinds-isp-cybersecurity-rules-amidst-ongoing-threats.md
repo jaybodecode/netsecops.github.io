@@ -47,7 +47,7 @@ For ISPs, the immediate compliance obligation related to the rescinded rules is 
 **Tags:** FCC, ISP, Cybersecurity Policy, Regulation, Salt Typhoon, CALEA, National Security, Government
 
 ## Sources
-- [FCC rolls back ISP cybersecurity rules despite looming threat from China-linked hackers](https://cybernews.com/news/fcc-rolls-back-isp-cybersecurity-rules/) — Cybernews (2025-11-24)
+- [Cybernews](https://cybernews.com/) — Cybernews (2025-11-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/fcc-rescinds-isp-cybersecurity-rules-amidst-ongoing-threats/

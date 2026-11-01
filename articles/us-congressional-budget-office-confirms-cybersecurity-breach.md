@@ -61,9 +61,7 @@ No specific Indicators of Compromise (IOCs) have been released to the public.
 **Tags:** Government, Data Breach, Cyberattack, Espionage, Nation-State, CBO
 
 ## Sources
-- [Agency that provides budget data to Congress hit with security incident](https://cyberscoop.com/congressional-budget-office-hack-foreign-government/) — CyberScoop (2025-11-06)
 - [Congressional Budget Office, which analyzes bills for Congress, was hacked](https://washingtonpost.com/national-security/2025/11/06/cbo-hacked-congress/) — The Washington Post (2025-11-06)
-- [Agency that provides budget data to Congress hit with security incident | CyberScoop](https://www.cyberscoop.com/congressional-budget-office-hack-foreign-government/) — CyberScoop (2025-11-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/us-congressional-budget-office-confirms-cybersecurity-breach/

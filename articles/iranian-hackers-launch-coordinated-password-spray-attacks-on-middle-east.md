@@ -55,7 +55,7 @@ The impact of this campaign extends beyond a typical data breach, given its conn
 **Tags:** password spray, Gray Sandstorm, Iran, APT, Microsoft 365, hybrid warfare
 
 ## Sources
-- [Risky Bulletin: Iranian password sprays came first, then came the missiles](https://risky.biz/bulletin-apr1-2026/) — Risky Business (2026-04-01)
+- [Risky Business](https://risky.biz/) — Risky Business (2026-04-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/iranian-hackers-launch-coordinated-password-spray-attacks-on-middle-east/

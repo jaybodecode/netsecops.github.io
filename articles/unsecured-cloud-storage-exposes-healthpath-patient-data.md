@@ -48,7 +48,6 @@ Preventing such exposures requires a combination of technology, process, and tra
 **Tags:** data exposure, cloud security, Amazon S3, misconfiguration, healthcare, HIPAA, PHI
 
 ## Sources
-- [HealthPath Telehealth Service Exposes 700,000 Patient Documents in S3 Bucket Leak](https://www.infosecurity-magazine.com/news/healthpath-telehealth-data-exposure/) — Infosecurity Magazine (2026-02-16)
 - [Unsecured S3 bucket at HealthPath exposes sensitive medical records of 150,000 patients](https://portswigger.net/daily-swig/unsecured-s3-bucket-at-healthpath-exposes-sensitive-medical-records) — The Daily Swig (2026-02-16)
 
 ---

@@ -55,7 +55,6 @@ Immediate action is required to mitigate the risk from these actively exploited 
 ## Sources
 - [Fortinet patches FortiGate Firewall vulnerabilities that allowed hackers to steal enterprise credentials](https://www.techradar.com/pro/security/fortinet-patches-fortigate-firewall-vulnerabilities-that-allowed-hackers-to-steal-enterprise-credentials) — TechRadar Pro (2026-03-16)
 - [Fortinet patches FortiGate Firewall vulnerabilities that allowed hackers to steal enterprise credentials](https://www.cybersecurity-review.com/news/fortinet-patches-fortigate-firewall-vulnerabilities-that-allowed-hackers-to-steal-enterprise-credentials/) — Cyber Security Review (2026-03-16)
-- [FortiGate Firewall Vulnerabilities Exploited in 2026 Intrusion Campaign](https://www.sentinelone.com/labs/fortigate-firewall-vulnerabilities-exploited-in-2026-intrusion-campaign/) — SentinelOne (2026-03-16)
 - [Hackers Exploit FortiGate Firewalls in Widespread Attacks to Steal Network Credentials](https://cybertechfocus.com/hackers-exploit-fortigate-firewalls-in-widespread-attacks-to-steal-network-credentials/) — Cyber Tech Focus (2026-03-16)
 
 ---

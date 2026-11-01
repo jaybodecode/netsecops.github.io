@@ -56,7 +56,6 @@ Detection of such attacks is challenging as it occurs on third-party platforms. 
 
 ## Sources
 - [Ransomware Group handala Hits: 15 SIGINT Agents Exposed — $50,000 Reward](https://www.hookphish.com/blog/ransomware-group-handala-hits-15-sigint-agents-exposed-50000-reward) — Hookphish (2026-01-03)
-- [Handala Hack: Telegram Breach of Israeli Officials](https://kela.com/blog/handala-hack-telegram-breach-of-israeli-officials/) — KELA (2026-01-01)
 - [Identities of 15 Israeli SIGINT Officers Exposed](https://wana.news/2026/01/04/identities-of-15-israeli-sigint-officers-exposed/) — WANA News (2026-01-04)
 - [Iran-linked hacking group claims access to phone of Netanyahu aide](https://www.reuters.com/world/middle-east/iran-linked-hacking-group-claims-access-phone-netanyahu-aide-2025-12-28/) — Reuters (2025-12-28)
 

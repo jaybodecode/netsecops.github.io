@@ -54,8 +54,8 @@ Detection focuses on the local execution of the HTML lure and the subsequent net
 **Tags:** Phishing, Supply Chain Attack, NPM, CDN Abuse, Credential Theft
 
 ## Sources
-- [Massive NPM Supply-Chain Attack Infects Developers During Package Installs](https://socket.dev/blog/massive-npm-supply-chain-attack-infects-developers-during-package-installs) — Socket (2025-10-05)
-- [Phishing Campaign Leverages NPM and UNPKG CDN for Credential Theft](https://snyk.io/blog/npm-unpkg-supply-chain-phishing/) — Snyk (2025-10-06)
+- [Socket](https://socket.dev/) — Socket (2025-10-05)
+- [Snyk](https://snyk.io/) — Snyk (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/novel-phishing-attack-abuses-npm-and-unpkg-cdn-for-credential-theft/

@@ -60,8 +60,6 @@ The primary goals and potential impacts of this phishing campaign are:
 **Tags:** Credential Theft, FIFA, Financial Fraud, Phishing, Scam, World Cup 2026
 
 ## Sources
-- [Phishing Attacks Begin Targeting the 2026 FIFA World Cup](https://blog.knowbe4.com/phishing-attacks-target-2026-fifa-world-cup) (2026-05-14)
-- [World Cup scams 'exploit heightened interest', cyber security firm warns](https://www.thenationalnews.com/tech/2026/05/05/world-cup-scams-exploit-heightened-interest-cyber-security-firm-warns/) (2026-05-15)
 - [2026 World Cup Ticket Scams: How to Avoid Them and What to Do If You've Already Paid](https://www.findlaw.com/consumer/fraud/2026-world-cup-ticket-scams.html) (2026-05-14)
 
 ---

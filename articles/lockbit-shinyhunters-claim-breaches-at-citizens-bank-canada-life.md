@@ -52,7 +52,6 @@ Organizations in high-risk sectors should be on heightened alert.
 **Tags:** Dark Web, Data Breach, Everest, Financial Services, LockBit, Ransomware, ShinyHunters
 
 ## Sources
-- [The Most Recent Data Breaches in 2026](https://www.breachsense.com/breach/citizensbank-everest) (2026-04-20)
 - [LockBit and ShinyHunters List New Victims from Finance and Legal Sectors](https://www.databreaches.net/lockbit-and-shinyhunters-list-new-victims-from-finance-and-legal-sectors/) (2026-04-20)
 
 ---

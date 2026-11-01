@@ -59,7 +59,6 @@ A successful RCE attack on an AI inference server can have devastating consequen
 **Tags:** AI, Machine Learning, RCE, Insecure Deserialization, pickle, vLLM, NVIDIA, Meta, Microsoft
 
 ## Sources
-- [Critical RCE Flaws in AI Inference Engines Expose Meta, Nvidia, and Microsoft Frameworks](https://thehackernews.com/2025/11/critical-rce-flaws-in-ai-inference.html) — The Hacker News (2025-11-17)
 - [In Other News: Deepwatch Layoffs, macOS Vulnerability, Amazon AI Bug Bounty](https://www.securityweek.com/in-other-news-deepwatch-layoffs-macos-vulnerability-amazon-ai-bug-bounty/) — SecurityWeek (2025-11-14)
 
 ---

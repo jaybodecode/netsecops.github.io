@@ -46,7 +46,6 @@ While this is a market-level event, it has strategic implications for all organi
 - [US software stocks fall as Anthropic's new AI model revives disruption fears](https://www.reuters.com/technology/us-software-stocks-fall-anthropics-new-ai-model-revives-disruption-fears-2026-04-09/) — Reuters (2026-04-09)
 - [Software and Cybersecurity Stocks Plunge Amid AI Disruption Fears](https://www.paloaltotoday.com/p/software-cybersecurity-stocks-plunge-ai-disruption) — Palo Alto Today (2026-04-09)
 - [Software sector plunges, cybersecurity names hit hardest, as AI disruption concerns persist](https://seekingalpha.com/news/4088497-software-sector-plunges-cybersecurity-names-hit-hardest-as-ai-disruption-concerns-persist) — Seeking Alpha (2026-04-09)
-- [US cybersecurity software stocks ​tumble after Anthropic announces it is 'scared' of launching new, powerful AI model](https://timesofindia.indiatimes.com/gadgets-news/us-cybersecurity-software-stocks-tumble-after-anthropic-announces-it-is-scared-of-launching-new-powerful-ai-model/articleshow/109165747.cms) — The Times of India (2026-04-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/software-cybersecurity-stocks-plummet-on-ai-disruption-fears/

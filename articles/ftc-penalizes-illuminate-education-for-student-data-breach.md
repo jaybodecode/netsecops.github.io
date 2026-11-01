@@ -38,8 +38,8 @@ The FTC order provides a clear roadmap for mitigation, which other EdTech compan
 **Tags:** FTC, Data Breach, EdTech, Student Privacy, COPPA, Access Control, Compliance
 
 ## Sources
-- [FTC Takes Action Against Education Technology Provider for Failing to Secure Students' Personal Data](https://www.ftc.gov/news-events/news/press-releases/2025/12/ftc-takes-action-against-education-technology-provider-failing-secure-students-personal-data) — FTC (2025-12-01)
-- [Illuminate Education settles with FTC over breach impacting 10 million students](https://www.bleepingcomputer.com/news/security/illuminate-education-settles-with-ftc-over-breach-impacting-10-million-students/) — BleepingComputer (2025-12-01)
+- [FTC](https://www.ftc.gov/) — FTC (2025-12-01)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2025-12-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/ftc-penalizes-illuminate-education-for-student-data-breach/

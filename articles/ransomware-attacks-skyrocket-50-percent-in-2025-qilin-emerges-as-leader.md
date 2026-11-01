@@ -49,8 +49,6 @@ The 50% surge in attacks translates to significant financial and operational dam
 **Tags:** Ransomware, Qilin, The Gentlemen, PowerShell, Industrial Sector, Threat Intelligence, RaaS
 
 ## Sources
-- [Newcomers Fuel Ransomware Explosion in 2025 as Old Groups Fade](https://www.cyble.com/blog/newcomers-fuel-ransomware-explosion-in-2025-as-old-groups-fade/) — Cyble
-- [Ransomware Attacks Have Soared in 2025 as New Leaders Emerge](https://thecyberexpress.com/ransomware-attacks-soared-in-2025/) — The Cyber Express
 - [Trellix reports nation-state espionage and AI-driven financial attacks converging, as industrial sector most targeted](https://industrialcyber.co/news/trellix-reports-nation-state-espionage-and-ai-driven-financial-attacks-converging-as-industrial-sector-most-targeted/) — Industrial Cyber
 
 ---

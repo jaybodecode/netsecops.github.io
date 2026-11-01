@@ -57,8 +57,6 @@ The primary impact of this attack is the complete bypass of SMS-based and notifi
 
 ## Sources
 - [Windows Phone Link Exploited by CloudZ RAT to Steal Credentials and OTPs](https://thehackernews.com/2026/05/windows-phone-link-exploited-by-cloudz.html) — The Hacker News (2026-05-06)
-- [CloudZ RAT potentially steals OTP messages using Pheno plugin](https://blog.talosintelligence.com/cloudz-rat-abuses-pheno-plugin/) — Cisco Talos (2026-05-05)
-- [Your Phone Link setup on Windows could be at risk from this Trojan](https://www.androidauthority.com/windows-phone-link-trojan-risk-3622416/) — Android Authority (2026-05-06)
 - [CloudZ RAT Exploits Microsoft Phone Link to Steal OTPs](https://expertinthe.cloud/blog/2026/05/05/cloudz-rat-exploits-microsoft-phone-link-to-steal-otps/) — Expert In the Cloud (2026-05-05)
 - [Windows Phone Link Exploited by CloudZ RAT to Steal Credentials and OTPs](https://www.reddit.com/r/SecOpsDaily/comments/1ckh449/windows_phone_link_exploited_by_cloudz_rat_to/) — Reddit (2026-05-06)
 

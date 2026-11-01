@@ -44,7 +44,6 @@ This action aims to disrupt the operational capabilities of numerous cybercrimin
 **Tags:** Sanctions, OFAC, Bulletproof Hosting, Cybercrime, Russia, LockBit, Threat Actor
 
 ## Sources
-- [U.S., U.K., and Australia Target Russian Cybercrime Infrastructure](https://www.chainalysis.com/blog/ofac-designation-russian-cybercrime-infrastructure-november-2025/) — Chainalysis (2025-11-19)
 - [UK smashes Russian cybercrime networks responsible for attacks on UK businesses](https://www.gov.uk/government/news/uk-smashes-russian-cybercrime-networks-responsible-for-attacks-on-uk-businesses) — GOV.UK (2025-11-19)
 
 ---

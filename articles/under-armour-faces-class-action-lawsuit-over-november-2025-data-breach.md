@@ -50,7 +50,6 @@ Based on the allegations in the lawsuit, the following mitigations are critical 
 
 ## Sources
 - [Under Armour Failed to Protect Sensitive Info from November 2025 Data Breach, Class Action Lawsuit Says](https://www.classaction.org/news/under-armour-failed-to-protect-sensitive-info-from-november-2025-data-breach-class-action-lawsuit-says) — ClassAction.org (2025-12-04)
-- [Breach News](https://www.forecight.com/breach) — Forecight (2025-12-04)
 - [Class Action Lawsuits and Settlements: Stay Informed and Get Legal Help](https://www.classaction.org/) — ClassAction.org (2025-12-04)
 
 ---

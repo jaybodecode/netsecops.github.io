@@ -60,7 +60,7 @@ Compromising a developer's machine is a high-impact event that can lead to a muc
 **Tags:** PyPI, Python, supply chain attack, malware, RAT, typosquatting
 
 ## Sources
-- [Cyware Daily Threat Intelligence, January 28, 2026](https://www.cyware.com/cyware-funnel/cyware-daily-threat-intelligence-january-28-2026-f3b1) — Cyware (2026-01-28)
+- [Cyware](https://www.cyware.com/) — Cyware (2026-01-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/malicious-python-packages-on-pypi-deliver-rat/

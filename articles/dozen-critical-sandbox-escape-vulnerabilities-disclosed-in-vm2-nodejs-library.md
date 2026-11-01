@@ -80,8 +80,8 @@ The following patterns may help identify systems that have been compromised:
 **Tags:** vm2, Node.js, Sandbox Escape, Vulnerability, RCE, CVE-2026-24118, CVE-2026-24120, CVE-2026-24781, CVE-2026-26332
 
 ## Sources
-- [vm2 Node.js Library Vulnerabilities Enable Sandbox Escape and Arbitrary Code Execution](https://thehackernews.com/2026/05/vm2-nodejs-library-vulnerabilities-enable-sandbox-escape-and-arbitrary-code-execution.html) — The Hacker News (2026-05-07)
-- [Cybersecurity News](https://www.wiu.edu/cbt/computer_sciences/cybersecurity_center/news.php) — Western Illinois University (2026-05-07)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-05-07)
+- [Western Illinois University](https://www.wiu.edu/) — Western Illinois University (2026-05-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/dozen-critical-sandbox-escape-vulnerabilities-disclosed-in-vm2-nodejs-library/

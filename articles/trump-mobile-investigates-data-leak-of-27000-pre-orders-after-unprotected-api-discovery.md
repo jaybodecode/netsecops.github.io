@@ -70,11 +70,9 @@ Preventing such incidents requires building security into the software developme
 **Tags:** API Security, Data Leak, PII, BOLA, Insecure API, Pre-order, OWASP
 
 ## Sources
-- [Trump Mobile investigating potential exposure of would-be customers' personal information](https://www.theguardian.com/us-news/article/2026/may/23/trump-mobile-phone-customer-data-leak) — The Guardian (2026-05-23)
 - [Researcher Claims Trump Mobile Website Leaked Data on More Than 27,000 Customers Through Unprotected API](https://www.ghacks.net/2026/05/24/researcher-claims-trump-mobile-website-leaked-data-on-more-than-27000-customers-through-unprotected-api/) — gHacks Technology News (2026-05-24)
 - [Trump Family's Smartphone Venture Hit by Alleged Data Breach Affecting 27,000](https://www.seoul.co.kr/news/newsView.php?id=20260524500030) — Seoul Shinmun (2026-05-24)
 - [Trump Mobile confirms exposure of customer data](https://www.scmagazine.com/brief/trump-mobile-confirms-exposure-of-customer-data) — SC Magazine (2026-05-22)
-- [Trump Mobile confirms data leak, still deciding whether or not it should bother notifying customers](https://www.androidauthority.com/trump-mobile-data-leak-3622410/) — Android Authority (2026-05-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/trump-mobile-investigates-data-leak-of-27000-pre-orders-after-unprotected-api-discovery/

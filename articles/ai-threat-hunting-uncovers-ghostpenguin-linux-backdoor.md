@@ -57,9 +57,7 @@ The impact of a GhostPenguin infection is severe. As a full-featured backdoor, i
 **Tags:** Linux, Backdoor, GhostPenguin, Threat Hunting, AI, C++, Stealth
 
 ## Sources
-- [AI-Automated Threat Hunting Brings GhostPenguin Out of the Shadows](https://www.trendmicro.com/en_us/research/25/l/ai-automated-threat-hunting-brings-ghostpenguin-out-of-the-shado.html) — Trend Micro (2025-12-08)
 - [AI-Driven Tools Uncover GhostPenguin Backdoor Attacking Linux Servers](https://gbhackers.on-security/2025/12/ai-driven-tools-uncover-ghostpenguin.html) — GBHackers (2025-12-09)
-- [AI Uncovers GhostPenguin: Undetectable Linux Backdoor Used RC5-Encrypted UDP for Covert C2](https://dailycybersecurity.com/ai-uncovers-ghostpenguin-undetectable-linux-backdoor/) — Daily Cybersecurity (2025-12-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/ai-threat-hunting-uncovers-ghostpenguin-linux-backdoor/

@@ -87,7 +87,6 @@ Preventing credential-based attacks requires hardening access controls and reduc
 - [French Football Federation Suffers Data Breach](https://www.infosecurity-magazine.com/news/french-football-federation-data/) — Infosecurity Magazine (2025-11-28)
 - [French Soccer Federation Hit by Cyberattack, Member Data Stolen](https://www.securityweek.com/french-soccer-federation-hit-by-cyberattack-member-data-stolen/) — SecurityWeek (2025-11-28)
 - [Attackers stole member data from French Soccer Federation](https://securityaffairs.co/wordpress/160893/data-breach/attackers-stole-member-data-from-french-soccer-federation.html) — Security Affairs (2025-11-28)
-- [French Football Federation Reports Data Breach – Hackers Access Club Software Admin Controls](https://www.cybersecurity-news.com/french-football-federation-reports-data-breach/) — Cybersecurity News (2025-11-28)
 
 ---
 Source: https://cyber.netsecops.io/articles/french-football-federation-data-breach-compromised-account/

@@ -43,7 +43,6 @@ For DIB SMBs, the path to CMMC compliance can be daunting. The DIB CyberDome rep
 ## Sources
 - [Celerium Launches Cybersecurity Platform for Defense Contractors](https://www.executivebiz.com/2026/04/celerium-launches-cybersecurity-platform-for-defense-contractors/) — ExecutiveBiz (2026-04-14)
 - [Celerium launches DIB CyberDome](https://www.ic.news/2026/04/16/celerium-launches-dib-cyberdome/) — Intelligence Community News (2026-04-16)
-- [Celerium Launches DIB CyberDome for Defense Cybersecurity](https://www.cybertechinsights.com/celerium-launches-dib-cyberdome-for-defense-cybersecurity/) — Cybertech Insights (2026-04-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/celerium-launches-dib-cyberdome-to-secure-defense-contractors/

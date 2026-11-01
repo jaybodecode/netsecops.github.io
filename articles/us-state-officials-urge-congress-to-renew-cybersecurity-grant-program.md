@@ -51,7 +51,6 @@ For SLTT governments, the guidance is to:
 
 ## Sources
 - [US states urge Congress to renew cybersecurity grants](https://iapp.org/news/a/us-states-urge-congress-to-renew-cybersecurity-grants/) — IAPP (2026-05-22)
-- [State Cyber Leaders to Congress: Renew the SLCGP](https://www.govtech.com/security/state-cyber-leaders-to-congress-renew-the-slcgp) — GovTech (2026-05-22)
 
 ---
 Source: https://cyber.netsecops.io/articles/us-state-officials-urge-congress-to-renew-cybersecurity-grant-program/

@@ -64,8 +64,6 @@ For organizations:
 **Tags:** ShinyHunters, Udemy, Data Breach, Extortion, PII, Financial Data
 
 ## Sources
-- [Udemy Data Breach](https://haveibeenpwned.com/Breaches/Udemy-Data-Breach) — Have I Been Pwned (2026-04-26)
-- [ShinyHunters Claims Udemy Data Breach of 1.4M Users](https://www.esecurityplanet.com/threats/shinyhunters-claims-udemy-data-breach/) — eSecurity Planet (2026-04-29)
 - [Check Udemy Breach](https://darkentry.com/breaches/udemy/) — Dark Entry (2026-04-29)
 - [ShinyHunters claims it stole 1.4 million records from Udemy](https://www.helpnetsecurity.com/2026/04/28/udemy-data-breach-shinyhunters/) — Help Net Security (2026-04-28)
 

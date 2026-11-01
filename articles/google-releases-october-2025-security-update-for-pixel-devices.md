@@ -65,7 +65,6 @@ While not traditional IOCs, administrators or advanced users can verify the upda
 
 ## Sources
 - [Pixel Update Bulletin—October 2025](https://source.android.com/docs/security/bulletin/pixel/2025-10-01) — Android Open Source Project (2025-10-08)
-- [Google's October 2025 update is rolling out now to Pixel phones](https://www.androidpolice.com/google-pixel-october-2025-update/) — Android Police (2025-10-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-releases-october-2025-security-update-for-pixel-devices/

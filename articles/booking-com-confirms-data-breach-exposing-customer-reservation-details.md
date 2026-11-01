@@ -56,9 +56,7 @@ For platform providers like Booking.com, detection should focus on anomalous par
 
 ## Sources
 - [Booking.com data breach: Customer reservation data exposed](https://www.helpnetsecurity.com/2026/04/14/booking-com-data-breach/) — Help Net Security (2026-04-14)
-- [Booking.com warns customers of hack that exposed their data](https://www.theguardian.com/technology/2026/apr/13/bookingcom-warns-customers-of-hack-that-exposed-their-data) — The Guardian (2026-04-13)
 - [Booking.com Confirms Data Breach, Hackers Access Customer Information](https://www.cxodigitalpulse.com/booking-com-confirms-data-breach-hackers-access-customer-information/) — CXO Digital Pulse (2026-04-14)
-- [Booking.com confirms reservation data breach — tells customers hackers 'may have been able to access certain booking information'](https://techradar.com/pro/security/bookingcom-confirms-reservation-data-breach-tells-customers-hackers-may-have-been-able-to-access-certain-booking-information) — TechRadar (2026-04-14)
 - [Booking.com Data Breach: 4 Essential Steps to Secure Your Account and Travel Plans](https://beincrypto.com/booking-data-breach-steps-secure-account/) — BeInCrypto (2026-04-14)
 
 ---

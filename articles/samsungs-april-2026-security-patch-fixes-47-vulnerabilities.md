@@ -87,8 +87,8 @@ To identify vulnerable devices in an environment:
 **Tags:** Samsung, Android, Mobile Security, Patch Tuesday, Vulnerability
 
 ## Sources
-- [Samsung monthly updates: April 2026 security patch fixes 47 vulnerabilities - SamMobile](https://www.sammobile.com/news/samsung-monthly-updates-april-2026-security-patch-details/) — SamMobile (2026-04-07)
-- [Samsung reveals April 2026 security patch details - Sammy Fans](https://www.sammyfans.com/2026/04/06/samsung-reveals-april-2026-security-patch-details/) — Sammy Fans (2026-04-07)
+- [SamMobile](https://www.sammobile.com/) — SamMobile (2026-04-07)
+- [Sammy Fans](https://www.sammyfans.com/) — Sammy Fans (2026-04-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/samsungs-april-2026-security-patch-fixes-47-vulnerabilities/

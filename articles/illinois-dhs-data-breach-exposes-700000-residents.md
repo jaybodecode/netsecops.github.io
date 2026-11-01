@@ -94,9 +94,6 @@ IDHS's stated response included:
 ## Sources
 - [Illinois Department of Human Services data breach affects 700K people](https://www.bleepingcomputer.com/news/security/illinois-department-of-human-services-data-breach-affects-700k-people/) — BleepingComputer (2026-01-09)
 - [Illinois Notifies 700,000 of Misconfiguration Breach](https://www.bankinfosecurity.com/illinois-notifies-700000-misconfiguration-breach-a-24053) — BankInfoSecurity (2026-01-09)
-- [Illinois state agency exposed personal data of 700,000 people](https://therecord.media/illinois-dhs-data-breach-exposed-700000) — The Record (2026-01-07)
-- [Illinois Department of Human Services Exposes Sensitive Data of 700,000 Individuals Online](https://www.hipaajournal.com/illinois-department-of-human-services-exposes-sensitive-data-of-700000-individuals-online/) — HIPAA Journal (2026-01-05)
-- [Illinois Department of Human Services (IDHS) suffered a data breach that impacted 700K individuals](https://securityaffairs.com/157255/data-breach/illinois-department-of-human-services-data-breach.html) — Security Affairs (2026-01-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/illinois-dhs-data-breach-exposes-700000-residents/

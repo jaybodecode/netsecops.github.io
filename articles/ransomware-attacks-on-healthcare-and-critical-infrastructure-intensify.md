@@ -44,7 +44,6 @@ The impact of ransomware on critical infrastructure is severe and multi-layered:
 ## Sources
 - [Ransomware Attacks on Critical Infrastructure Surge, Reports FBI](https://www.tripwire.com/state-of-security/ransomware-attacks-critical-infrastructure-surge-reports-fbi) — Tripwire (2026-02-13)
 - [When ransomware kills: Attacks on healthcare facilities](https://www.ibm.com/blog/when-ransomware-kills-attacks-on-healthcare-facilities/) — IBM (2026-02-12)
-- [The Threat of Ransomware to Critical Infrastructure](https://www.belfercenter.org/publication/threat-ransomware-critical-infrastructure) — Belfer Center for Science and International Affairs (2026-02-13)
 - [Ransomware Critical Infrastructure | Sepio](https://sepiocyber.com/topics/ransomware-critical-infrastructure/) — Sepio (2026-02-12)
 
 ---

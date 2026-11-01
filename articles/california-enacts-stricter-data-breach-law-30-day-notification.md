@@ -46,9 +46,9 @@ The bill has been signed into law by the Governor, and its requirements are now 
 **Tags:** California, Data Breach Notification, Privacy Law, CCPA, CPRA, Regulatory, Compliance
 
 ## Sources
-- [California Enacts 30-Day Data Breach Notification Deadline](https://www.huntonprivacyblog.com/2025/10/16/california-enacts-30-day-data-breach-notification-deadline/) — Hunton Andrews Kurth (2025-10-16)
-- [2025 Breach Notification Law Update (UPDATED) | Perkins Coie](https://www.jdsupra.com/legalnews/2025-breach-notification-law-update-3870605/) — JD Supra (2025-10-16)
-- [H-ISAC TLP White: Daily Cyber Headlines - October 17, 2025 | AHA](https://www.aha.org/h-isac-tlp-white-daily-cyber-headlines/2025-10-17/h-isac-tlp-white-daily-cyber-headlines-october-17-2025) — American Hospital Association (2025-10-17)
+- [Hunton Andrews Kurth](https://www.huntonprivacyblog.com/) — Hunton Andrews Kurth (2025-10-16)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2025-10-16)
+- [American Hospital Association](https://www.aha.org/) — American Hospital Association (2025-10-17)
 
 ---
 Source: https://cyber.netsecops.io/articles/california-enacts-stricter-data-breach-law-30-day-notification/

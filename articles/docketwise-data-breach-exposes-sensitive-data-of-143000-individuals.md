@@ -68,7 +68,6 @@ To detect similar supply chain or repository compromises, security teams should 
 
 ## Sources
 - [DocketWise Data Breach Impacts 143,000](https://www.securityweek.com/docketwise-data-breach-impacts-143000/) — SecurityWeek (2026-05-25)
-- [DragonForce Strikes at HELIX INTERNATIONAL](https://www.dexpose.io/blog/dragonforce-strikes-at-helix-international) — DeXpose (2026-05-25)
 
 ---
 Source: https://cyber.netsecops.io/articles/docketwise-data-breach-exposes-sensitive-data-of-143000-individuals/

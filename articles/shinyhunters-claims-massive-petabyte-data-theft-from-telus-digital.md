@@ -46,7 +46,6 @@ To detect similar large-scale data exfiltration from a cloud environment:
 **Tags:** ShinyHunters, Data Breach, Extortion, Supply Chain Attack, Cloud Security, GCP
 
 ## Sources
-- [Inside The Telus Data Breach: A Canadian Cybersecurity Crisis That Could Affect Millions](https://www.thecyberexpress.com/telus-data-breach-2026/) — The Cyber Express (2026-03-13)
 - [Hackers reportedly stole nearly 1,000TB of data from Telus Digital](https://mobilesyrup.com/2026/03/12/hackers-reportedly-stole-nearly-1000tb-of-data-from-telus-digital/) — MobileSyrup (2026-03-12)
 
 ---

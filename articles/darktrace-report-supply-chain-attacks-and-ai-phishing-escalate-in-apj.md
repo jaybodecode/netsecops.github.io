@@ -43,8 +43,8 @@ State-sponsored groups are at the forefront of these advanced attacks:
 **Tags:** Threat Intelligence, Darktrace, APT, Supply Chain Attack, Phishing, Generative AI, APJ
 
 ## Sources
-- [Darktrace APJ Threat Report shows supply chain at increasing risk](https://mysecuritymarketplace.com/white-papers-research/darktrace-apj-threat-report-shows-supply-chain-at-increasing-risk/) — MySecurity Marketplace (2025-11-19)
-- [Unit 42 Threat Bulletin – November 2025](https://www.paloaltonetworks.com/blog/unit42/threat-bulletin-november-2025/) — Unit 42 (2025-11-19)
+- [MySecurity Marketplace](https://mysecuritymarketplace.com/) — MySecurity Marketplace (2025-11-19)
+- [Unit 42](https://www.paloaltonetworks.com/) — Unit 42 (2025-11-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/darktrace-report-supply-chain-attacks-and-ai-phishing-escalate-in-apj/

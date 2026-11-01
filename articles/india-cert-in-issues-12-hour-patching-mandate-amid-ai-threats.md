@@ -46,9 +46,9 @@ While the source articles do not detail specific penalties for non-compliance, C
 **Tags:** cert-in, india, cybersecurity policy, regulation, patch management, ai security
 
 ## Sources
-- [CERT-In Recommends 12-Hour Patching for Internet-Facing Flaws Amid AI-Assisted Attacks](https://thehackernews.com/2026/05/cert-in-recommends-12-hour-patching.html) — The Hacker News (2026-05-26)
-- [CERT-In mandates 12-hour fix for critical cyber flaws as AI - VARIndia.](https://www.varindia.com/news/certin-mandates-12hour-fix-for-critical-cyber-flaws-as-ai-accelerates-attacks) — VARIndia (2026-05-26)
-- [India Sets 12-Hour Deadline For Companies To Counter AI-Assisted Cyberattacks](https://www.timesnownews.com/technology-science/indias-sets-12-hour-deadline-for-companies-to-counter-ai-assisted-cyberattacks-article-110435133) — Times Now (2026-05-26)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-05-26)
+- [VARIndia](https://www.varindia.com/) — VARIndia (2026-05-26)
+- [Times Now](https://www.timesnownews.com/) — Times Now (2026-05-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/india-cert-in-issues-12-hour-patching-mandate-amid-ai-threats/

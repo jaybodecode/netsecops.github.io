@@ -46,8 +46,8 @@ The report implicitly calls for a shift towards a more unified and modern approa
 **Tags:** Identity Management, IAM, PAM, AI, Non-Human Identities, Keeper Security, Cybersecurity Report
 
 ## Sources
-- [Keeper Security Research Reveals 89% of IT Leaders Struggle to Manage Growing Identity Footprint Amid AI Expansion](https://www.prnewswire.com/news-releases/keeper-security-research-reveals-89-of-it-leaders-struggle-to-manage-growing-identity-footprint-amid-ai-expansion-302136611.html) — PR Newswire (2026-05-06)
-- [Identity Security at Machine Speed](https://www.keepersecurity.com/blog/2026/05/06/identity-security-at-machine-speed/) — Keeper Security (2026-05-06)
+- [PR Newswire](https://www.prnewswire.com/) — PR Newswire (2026-05-06)
+- [Keeper Security](https://www.keepersecurity.com/) — Keeper Security (2026-05-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/keeper-security-report-highlights-identity-sprawl-and-ai-risks/

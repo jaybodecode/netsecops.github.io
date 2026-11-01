@@ -54,8 +54,8 @@ Financial institutions should take the following steps in response to the G7 sta
 **Tags:** AI, Artificial Intelligence, G7, Finance, Cyber Risk, Policy
 
 ## Sources
-- [Financial Regulation Weekly Bulletin - 9 October 2025](https://www.slaughterandmay.com/news-and-insight/insight/financial-regulation-weekly-bulletin-9-october-2025/) — Slaughter and May (2025-10-06)
-- [Statement on Artificial Intelligence and Cyber Security from the G7 Cyber Expert Group](https://home.treasury.gov/news/press-releases/jy2987) — U.S. Department of the Treasury (2025-10-06)
+- [Slaughter and May](https://www.slaughterandmay.com/) — Slaughter and May (2025-10-06)
+- [U.S. Department of the Treasury](https://home.treasury.gov/) — U.S. Department of the Treasury (2025-10-06)
 
 ---
 Source: https://cyber.netsecops.io/articles/g7-cyber-experts-issue-statement-on-managing-ai-risks-in-financial-sector/

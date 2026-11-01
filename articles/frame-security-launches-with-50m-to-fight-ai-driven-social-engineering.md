@@ -44,8 +44,6 @@ While Frame Security offers a commercial solution, the principles behind its app
 **Tags:** startup, venture capital, security awareness, human firewall, social engineering, deepfake, voice cloning
 
 ## Sources
-- [Israeli startup Frame Security raises $50m](https://www.jpost.com/business-and-innovation/tech-and-start-ups/article-800760) — The Jerusalem Post (2026-05-12)
-- [Frame Security launches with $50m to fight AI threats](https://regtechanalyst.com/2026/05/12/frame-security-launches-with-50m-to-fight-ai-threats/) — RegTech Analyst (2026-05-12)
 - [Frame Security Debuts With $50M for Human-Centric Protection](https://www.bankinfosecurity.com/frame-security-debuts-50m-for-human-centric-protection-a-25164) — BankInfoSecurity (2026-05-12)
 - [Frame Security launches publicly and closes a USD 50 million funding round](https://thepaypers.com/payments-general/frame-security-closes-usd-50-mln-funding-round--1267980) — The Paypers (2026-05-12)
 

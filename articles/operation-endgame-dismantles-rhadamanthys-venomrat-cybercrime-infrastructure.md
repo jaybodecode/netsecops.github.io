@@ -48,9 +48,7 @@ While the primary C2 infrastructure for these families has been dismantled, copy
 
 ## Sources
 - [End of the game for cybercrime infrastructure: 1025 servers taken down - Operation Endgame's latest phase targeted the infostealer Rhadamanthys, Remote Access Trojan VenomRAT, and the botnet Elysium](https://www.europol.europa.eu/media-press/newsroom/news/end-of-game-for-cybercrime-infrastructure-1025-servers-taken-down) — Europol
-- [Rhadamanthys infostealer operation disrupted by law enforcement](https://www.helpnetsecurity.com/2025/11/13/operation-endgame-rhadamanthys/) — Help Net Security
 - [Operation Endgame Dismantles Rhadamanthys, Venom RAT, and Elysium Botnet in Global Crackdown](https://thehackernews.com/2025/11/operation-endgame-dismantles.html) — The Hacker News
-- [Cops take down Rhadamanthys infostealer, VenomRAT](https://www.theregister.com/2025/11/13/operation_endgame_rhadamanthys_takedown/) — The Register
 
 ---
 Source: https://cyber.netsecops.io/articles/operation-endgame-dismantles-rhadamanthys-venomrat-cybercrime-infrastructure/

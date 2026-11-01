@@ -57,12 +57,8 @@ Organizations should take the following proactive steps:
 **Tags:** EU Cybersecurity Act, CSA 2, Supply Chain Security, High-Risk Vendors, 5G Security, ENISA, Regulation, Compliance
 
 ## Sources
-- [Critical Infrastructure: EU Plans Ban on Chinese Tech](https://www.invidis.de/en/2026/01/critical-infrastructure-eu-plans-ban-on-chinese-tech/) — invidis (2026-01-21)
 - [Commission strengthens EU cybersecurity resilience and capabilities](https://digital-strategy.ec.europa.eu/en/news/commission-strengthens-eu-cybersecurity-resilience-and-capabilities) — European Commission (2026-01-20)
-- [EU’s revised cybersecurity law targets ‘high risk’ suppliers](https://www.pv-tech.eu/eus-revised-cybersecurity-law-targets-high-risk-suppliers/) — PV Tech (2026-01-20)
-- [EU's New Cybersecurity Act Could Ban High-Risk Suppliers](https://www.techrepublic.com/article/eus-new-cybersecurity-act-could-ban-high-risk-suppliers/) — TechRepublic (2026-01-21)
 - [European Commission proposes revised Cybersecurity Act to boost EU cyber resilience, secure ICT supply chains](https://www.industrialcyber.co/regulation-standards-and-compliance/european-commission-proposes-revised-cybersecurity-act-to-boost-eu-cyber-resilience-secure-ict-supply-chains/) — Industrial Cyber (2026-01-21)
-- [Telecommunications: Law and Regulation 2026 – Overview and Classification](https://www.iclg.com/briefing/29088-telecommunications-law-and-regulation-2026-overview-and-classification) — ICLG (2026-01-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/eu-proposes-revised-cybersecurity-act-to-ban-high-risk-tech-suppliers/

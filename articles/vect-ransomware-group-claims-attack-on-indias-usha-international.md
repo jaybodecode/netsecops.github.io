@@ -48,7 +48,7 @@ To detect such an attack, organizations should:
 **Tags:** Vect, Ransomware, India, Manufacturing, SAP, Data Breach
 
 ## Sources
-- [Vect Ransomware Strikes USHA International Limited - DeXpose](https://www.dexpose.io/blog/vect-ransomware-strikes-usha-international-limited) — DeXpose (2026-03-01)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-03-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/vect-ransomware-group-claims-attack-on-indias-usha-international/

@@ -60,7 +60,6 @@ For Logitech, the exfiltrated data reportedly includes information about employe
 **Tags:** Cl0p, ransomware, data breach, zero day, CVE-2025-61882, Oracle, Logitech, The Washington Post
 
 ## Sources
-- [Logitech confirms data breach](https://www.helpnetsecurity.com/2025/11/17/logitech-confirms-data-breach/) — Help Net Security (2025-11-17)
 - [17th November – Threat Intelligence Report](https://research.checkpoint.com/2025/17th-november-threat-intelligence-report/) — Check Point Research (2025-11-17)
 
 ---

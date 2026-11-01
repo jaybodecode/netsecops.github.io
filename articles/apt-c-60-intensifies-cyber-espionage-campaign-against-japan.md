@@ -42,7 +42,6 @@ The sustained and evolving nature of this campaign indicates a dedicated, long-t
 
 ## Sources
 - [APT-C-60 Escalates SpyGlace Campaigns Targeting Japan With Evolved Malware, Advanced Evasion TTPs](https://blogs.cyble.com/2025/10/27/apt-c-60-escalates-spyglace-campaigns-targeting-japan-with-evolved-malware-advanced-evasion-ttps/) — Cyble (2025-10-27)
-- [Second Source on APT-C-60 Escalation](https://www.example.com/second_source_apt-c-60) — Example.com (2025-10-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/apt-c-60-intensifies-cyber-espionage-campaign-against-japan/

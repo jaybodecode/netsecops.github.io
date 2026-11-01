@@ -54,10 +54,6 @@ Relevant **[D3FEND](https://d3fend.mitre.org/)** techniques:
 **Tags:** MuddyWater, Iran, APT, espionage, MuddyViper, Israel, critical infrastructure
 
 ## Sources
-- [MuddyWater: Snakes by the riverbank](https://www.welivesecurity.com/en/eset-research/muddywater-snakes-by-the-riverbank/) — ESET (2025-12-02)
-- [MuddyWater strikes Israel with advanced MuddyViper malware](https://securityaffairs.co/155122/apt/muddywater-targets-israel-muddyviper.html) — Security Affairs (2025-12-02)
-- [Iran-Linked Hackers Hit Israeli Sectors with New MuddyViper Backdoor in Targeted Attacks](https://thehackernews.com/2025/12/iran-linked-hackers-hit-israeli.html) — The Hacker News (2025-12-02)
-- [Iran-linked hackers target Israeli, Egyptian critical infrastructure through phishing campaign](https://www.scmagazine.com/news/iran-linked-muddywater-apt-targets-israeli-egyptian-critical-infrastructure) — SC Magazine (2025-12-02)
 - [ESET researchers trace new MuddyWater campaign hitting critical sectors in Israel, Egypt](https://industrialcyber.co/threats-risks/eset-researchers-trace-new-muddywater-campaign-hitting-critical-sectors-in-israel-egypt/) — Industrial Cyber (2025-12-03)
 
 ---

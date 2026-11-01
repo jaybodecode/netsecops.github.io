@@ -58,7 +58,6 @@ Successful exploitation could lead to production downtime, equipment damage, or 
 **Tags:** ICS, OT, Schneider Electric, Code Injection, Vulnerability, CISA Advisory
 
 ## Sources
-- [CISA: Schneider Electric EcoStruxure Automation Expert Vu...](https://www.changeflow.io/news/cisa-schneider-electric-ecostruxure-automation-expert-vulnerability-icsa-26-078-03) — Changeflow (2026-03-19)
 - [CISA: Schneider Electric EcoStruxure Automation Expert Vu... - Changeflow](https://www.google.com/search?q=CISA%3A+Schneider+Electric+EcoStruxure+Automation+Expert+Vu...+-+Changeflow&sca_esv=2a4be605fd408d6d&sxsrf=ACQVn08X1y70UeHj0uN6d6k3x-32u5i43A%3A1708453629477&ei=C_HRZcHXG4iIur8P2oyH4Ao&ved=0ahUKEwi5h82D6rmEAxUZhF4BHVqMAawQ4dUDCBA&uact=5&oq=CISA%3A+Schneider+Electric+EcoStruxure+Automation+Expert+Vu...+-+Changeflow&gs_lp=Egxnd3Mtd2l6LXNlcnAiSENJU0E6IFNjaG5laWRlciBFbGVjdHJpYyBFY29TdHJ1eHVyZSBBdXRvbWF0aW9uIEV4cGVydCBWdS4uLiAtIENoYW5nZWZsb3cyCBAAGIAEGKIEMggQABiABBiiBDIIEAAYgAQYogRI1xJQAFgAcAJ4AJABAJgBeqABeqoBAzAuMbgBA8gBAPgBAfgBAqgCCsICBBAjGCeYAgCSAgSoATE&sclient=gws-wiz-serp) — Changeflow (2026-03-19)
 
 ---

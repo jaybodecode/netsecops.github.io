@@ -51,7 +51,6 @@ The most critical mitigation for this type of threat is public awareness and edu
 ## Sources
 - [SEC Files Charges Over $14 Million Crypto Scam Using Fake AI-Themed Investment Tips](https://thehackernews.com/2025/12/sec-files-charges-over-14-million.html) — The Hacker News (2025-12-24)
 - [Multi-million investment scam nets SEC charges against crypto firms, investment clubs](https://www.scmagazine.com/news/multi-million-investment-scam-nets-sec-charges-against-crypto-firms-investment-clubs) — SC Magazine (2025-12-24)
-- [SEC Charges Crypto Firms in $14m Investment Scam](https://www.infosecurity-magazine.com/news/sec-charges-crypto-firms-14m/) — Infosecurity Magazine (2025-12-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/sec-charges-seven-firms-in-14m-ai-themed-crypto-investment-scam/

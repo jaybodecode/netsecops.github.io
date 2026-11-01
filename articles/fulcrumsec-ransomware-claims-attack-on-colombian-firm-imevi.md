@@ -68,7 +68,6 @@ Security teams at similar organizations can hunt for generic ransomware precurso
 ## Sources
 - [FulcrumSec Ransomware Attack on IMEVI](https://www.dexpose.io/fulcrumsec-ransomware-attack-on-imevi/) — DeXpose (2026-05-02)
 - [Ransomware Group fulcrumsec Hits: IMEVI](https://hookphish.com/blog/ransomware-group-fulcrumsec-hits-imevi) — HookPhish (2026-05-01)
-- [IMEVI Data Breach in 2026](https://www.breachsense.com/breach/imevi-com-co) — Breachsense (2026-04-30)
 
 ---
 Source: https://cyber.netsecops.io/articles/fulcrumsec-ransomware-claims-attack-on-colombian-firm-imevi/

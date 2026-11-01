@@ -68,7 +68,6 @@ Detecting this specific attack would be difficult without direct access to the p
 
 ## Sources
 - [Google Patches Antigravity IDE Flaw Enabling Prompt Injection Code Execution](https://thehackernews.com/2026/04/google-patches-antigravity-ide-flaw.html) — The Hacker News (2026-04-21)
-- [Google Antigravity IDE Vulnerability Exposes Users to Code Execution Attacks](https://www.securityweek.com/google-antigravity-ide-vulnerability-allows-code-execution/) — SecurityWeek (2026-04-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-patches-critical-prompt-injection-flaw-in-antigravity-ide/

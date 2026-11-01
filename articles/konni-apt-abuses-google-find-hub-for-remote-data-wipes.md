@@ -67,8 +67,6 @@ This campaign demonstrates that even without exploiting a software vulnerability
 
 ## Sources
 - [Konni Hackers Turn Google's Find Hub into a Remote Data-Wiping Weapon](https://thehackernews.com/2025/11/konni-hackers-turn-googles-find-hub.html) — The Hacker News (2025-11-10)
-- [Android Devices Targeted by KONNI APT in Find Hub Exploitation](https://www.infosecurity-magazine.com/news/android-devices-targeted-by-konni/) — Infosecurity Magazine (2025-11-11)
-- [North Korea-linked Konni APT used Google Find Hub to erase data and spy on defectors](https://securityaffairs.co/wordpress/160824/apt/konni-apt-google-find-hub.html) — Security Affairs (2025-11-11)
 - [North Korea’s KONNI APT Hijacks Google Find Hub to Remotely Wipe and Track South Korean Android Devices](https://www.dailycybersec.com/2025/11/11/north-koreas-konni-apt-hijacks-google-find-hub-to-remotely-wipe-and-track-south-korean-android-devices/) — Daily Cybersec (2025-11-11)
 
 ---

@@ -66,7 +66,7 @@ The report emphasizes that fighting AI-powered attacks requires AI-powered defen
 **Tags:** Akamai, Threat Intelligence, AI, Botnet, DDoS, Financial Services, API Security
 
 ## Sources
-- [This Week's Top Five Stories in Cyber](https://cybermagazine.com/articles/this-weeks-top-five-stories-in-cyber) — Cyber Magazine (2026-05-23)
+- [Cyber Magazine](https://cybermagazine.com/) — Cyber Magazine (2026-05-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/akamai-report-ai-powered-botnets-and-ddos-attacks-escalating-against-financial-sector/

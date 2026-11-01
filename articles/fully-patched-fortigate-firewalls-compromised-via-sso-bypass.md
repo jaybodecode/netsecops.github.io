@@ -63,8 +63,6 @@ The compromise of a perimeter firewall is one of the most critical security inci
 
 ## Sources
 - [Week in review: Fully patched FortiGate firewalls are getting compromised, attackers probe Cisco RCE flaw](https://www.helpnetsecurity.com/2026/01/25/week-in-review-fully-patched-fortigate-firewalls-are-getting-compromised-attackers-probe-cisco-rce-flaw/) — Help Net Security (2026-01-25)
-- [Arctic Wolf Observes Malicious Configuration Changes On Fortinet FortiGate Devices via SSO Accounts](https://arcticwolf.com/resources/blog/arctic-wolf-observes-malicious-configuration-changes-on-fortinet-fortigate-devices-via-sso-accounts/) — Arctic Wolf (2026-01-24)
-- [Cyber Security Week in Review: January 23, 2026](https://www.cybersecurity-help.cz/blog/cyber-security-week-in-review-january-23-2026/) — CyberSecurity Help (2026-01-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/fully-patched-fortigate-firewalls-compromised-via-sso-bypass/

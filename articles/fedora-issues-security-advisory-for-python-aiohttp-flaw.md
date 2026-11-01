@@ -72,7 +72,6 @@ This process is a core part of **[Patch Management](https://www.netsecops.io/cat
 
 ## Sources
 - [Fedora 43 python-aiohttp Important Security Advisory 2026-66cb8ecfc2](https://www.linuxsecurity.com/advisories/fedora/fedora-43-python-aiohttp-important-security-advisory-2026-66cb8ecfc2?format=amp) — Linux Security (2026-02-14)
-- [Versa Cyber - Threat Intelligence Reports](https://versatrust.com/security/cyber-threat-intelligence-reports/february-14-2026) — VersaTrust (2026-02-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/fedora-issues-security-advisory-for-python-aiohttp-flaw/

@@ -47,7 +47,7 @@ As an amendment to the Sexual Offences Act 2003, individuals found guilty under 
 **Tags:** AI, Deepfake, Law, Regulation, UK, Policy
 
 ## Sources
-- [Data and Cyber Update - January 2026 | Stephenson Harwood](https://www.stephensonharwood.com/en/knowledge/publications/2026/data-and-cyber-update-january-2026) — Stephenson Harwood
+- [Stephenson Harwood](https://www.stephensonharwood.com/) — Stephenson Harwood
 
 ---
 Source: https://cyber.netsecops.io/articles/uk-law-criminalizing-ai-generated-intimate-images-takes-effect/

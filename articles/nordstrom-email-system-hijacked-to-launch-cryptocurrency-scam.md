@@ -47,8 +47,6 @@ The attack chain focuses on the compromise and misuse of legitimate cloud servic
 **Tags:** cryptocurrency, scam, SaaS security, brand impersonation, email security
 
 ## Sources
-- [Nordstrom Email Breach 2026: A Wake-Up Call for Email Security & NIS2 DORA Lessons](https://aigovhub.com/2026/03/20/nordstrom-email-breach-2026-a-wake-up-call-for-email-security-incident-reporting-compliance/) — AI Gov Hub
-- [900K Records Exposed](https://www.esecurityplanet.com/data-security/900k-records-exposed/) — eSecurity Planet
 - [Nordstrom's email system abused to send crypto scams to customers](https://www.bleepingcomputer.com/news/security/nordstroms-email-system-abused-to-send-crypto-scams-to-customers/) — BleepingComputer
 
 ---

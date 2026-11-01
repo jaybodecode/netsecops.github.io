@@ -52,7 +52,7 @@ Standard ransomware and data breach defenses apply:
 **Tags:** RansomHouse, Ransomware, Data Extortion, Neinver, Retail, Europe
 
 ## Sources
-- [RansomHouse Strikes Neinver, Major European Outlet Operator](https://www.dexpose.io/blog/ransomhouse-strikes-neinver-major-european-outlet-operator-94) — DeXpose (2026-02-27)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-02-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomhouse-group-targets-european-retail-operator-neinver/

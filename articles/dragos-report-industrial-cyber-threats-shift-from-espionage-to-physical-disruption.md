@@ -49,7 +49,6 @@ Defending against these threats requires a shift from IT-centric security to an 
 **Tags:** ICS, OT, Dragos, Threat Intelligence, APT, SYLVANITE, Critical Infrastructure, Ransomware
 
 ## Sources
-- [The 2026 Dragos OT ICS Cybersecurity Report Shows Industrial Cyber Risk Is No Longer Theoretical - Coder Legion](https://coderlegion.com/the-2026-dragos-ot-ics-cybersecurity-report-shows-industrial-cyber-risk-is-no-longer-theoretical/) — Coder Legion (2026-03-08)
 - [Cyber Insights 2026: The Ongoing Fight to Secure Industrial Control Systems](https://www.securityweek.com/cyber-insights-2026-the-ongoing-fight-to-secure-industrial-control-systems/) — SecurityWeek (2026-03-08)
 
 ---

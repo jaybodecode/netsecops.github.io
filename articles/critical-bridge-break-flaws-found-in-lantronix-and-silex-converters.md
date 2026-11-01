@@ -73,8 +73,8 @@ The following patterns can help identify vulnerable devices or exploitation atte
 **Tags:** Vulnerability, ICS, OT, Forescout, Lantronix, Silex, RCE
 
 ## Sources
-- [22 BRIDGE:BREAK Flaws Expose Thousands of Lantronix and Silex Serial-to-IP Converters](https://thehackernews.com/2026/04/22-bridgebreak-flaws-expose-thousands.html) — The Hacker News (2026-04-21)
-- [‘BRIDGE:BREAK’ Vulnerabilities Expose Lantronix, Silex Serial-to-IP Converters](https://www.securityweek.com/bridge-break-vulnerabilities-expose-lantronix-silex-serial-to-ip-converters/) — SecurityWeek (2026-04-21)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-04-21)
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek (2026-04-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-bridge-break-flaws-found-in-lantronix-and-silex-converters/

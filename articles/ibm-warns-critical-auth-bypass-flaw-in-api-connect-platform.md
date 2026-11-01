@@ -53,9 +53,6 @@ Successful exploitation of `CVE-2025-13915` could be catastrophic. Since API Con
 
 ## Sources
 - [Remote access likely with critical IBM API Connect vulnerability](https://www.scmagazine.com/news/vulnerability/remote-access-likely-with-critical-ibm-api-connect-vulnerability) — SC Magazine (2026-01-02)
-- [Critical Vulnerability in IBM API Connect](https://www.csa.gov.sg/alerts-advisories/alerts/al-2026-001) — Cyber Security Agency of Singapore (CSA) (2026-01-02)
-- [IBM warns of critical API Connect bug enabling remote access](https://securityaffairs.co/156695/security/ibm-api-connect-vulnerability.html) — Security Affairs (2026-01-02)
-- [Critical vulnerability in IBM API Connect requires quick patch](https://www.itdaily.be/security/kritieke-kwetsbaarheid-in-ibm-api-connect-vereist-snelle-patch/) — ITdaily (2026-01-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/ibm-warns-critical-auth-bypass-flaw-in-api-connect-platform/

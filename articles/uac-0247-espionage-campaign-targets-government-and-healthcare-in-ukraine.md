@@ -60,7 +60,6 @@ CERT-UA's advisory contains specific IOCs. While not listed in the summary artic
 **Tags:** Espionage, Ukraine, UAC-0247, CERT-UA, Phishing, Healthcare, Government
 
 ## Sources
-- [From clinics to government: UAC-0247 expands cyber campaign across Ukraine](https://securityaffairs.com/161942/apt/uac-0247-expands-cyber-campaign-across-ukraine.html) — Security Affairs (2026-04-17)
 - [(UAC-0247) Розповсюдження шкідливого програмного забезпечення з метою викрадення даних (CERT-UA#9240)](https://cert.gov.ua/article/6280370) — CERT-UA (2026-04-17)
 
 ---

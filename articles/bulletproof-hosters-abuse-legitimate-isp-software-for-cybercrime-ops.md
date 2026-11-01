@@ -52,7 +52,6 @@ The key observable from this research is the default hostname pattern.
 **Tags:** Bulletproof Hosting, BPH, RDP, Infrastructure, Cybercrime, RaaS
 
 ## Sources
-- [Bulletproof Hosting Providers Exploit Legitimate ISPs to Power Cybercrime Servers](https://www.varutra.com/blog/bulletproof-hosting-providers-exploit-legitimate-isps-to-power-cybercrime-servers/) — Varutra (2026-02-06)
 - [Malicious use of virtual machine infrastructure](https://news.sophos.com/en-us/2026/02/04/malicious-use-of-virtual-machine-infrastructure/) — Sophos News (2026-02-04)
 
 ---

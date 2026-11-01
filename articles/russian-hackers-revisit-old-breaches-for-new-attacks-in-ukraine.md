@@ -30,7 +30,6 @@ This tactical shift poses a severe and persistent threat to Ukrainian national s
 **Tags:** APT28, Fancy Bear, Void Blizzard, Russia, Ukraine, cyberwar, espionage, social engineering, CERT-UA
 
 ## Sources
-- [Ukraine warns Russian hackers are revisiting past breaches to prepare new attacks](https://therecord.media/ukraine-warns-russian-hackers-are-revisiting-past-breaches) — The Record
 - [Regarding the intensification of attacks by the group UAC-0050 on the public sector of Ukraine (ESET: "Stealthy Kapeka")](https://cert.gov.ua/article/6278332) — CERT-UA
 
 ---

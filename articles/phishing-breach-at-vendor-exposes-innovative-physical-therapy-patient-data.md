@@ -57,8 +57,8 @@ For organizations like Innovative Physical Therapy, detection involves monitorin
 **Tags:** Data Breach, Healthcare, Supply Chain Attack, Phishing, Vendor Breach, PHI
 
 ## Sources
-- [Innovative Physical Therapy Data Breach: SSNs & Names Exposed](https://claimdepot.com/innovative-physical-therapy-data-breach-ssns-names-exposed) — Claim Depot (2025-11-19)
-- [Data breach at St. Anthony Hospital might have exposed personal information of more than 6,600 patients and staff](https://www.cbsnews.com/chicago/news/st-anthony-hospital-data-breach/) — CBS Chicago (2025-11-19)
+- [Claim Depot](https://claimdepot.com/) — Claim Depot (2025-11-19)
+- [CBS Chicago](https://www.cbsnews.com/) — CBS Chicago (2025-11-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/phishing-breach-at-vendor-exposes-innovative-physical-therapy-patient-data/

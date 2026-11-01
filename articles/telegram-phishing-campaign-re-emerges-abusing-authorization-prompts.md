@@ -47,7 +47,6 @@ The attack unfolds through several social engineering steps:
 
 ## Sources
 - [Re-Emerging Telegram Phishing Campaign Targeting User Authorization Prompts](https://www.cyfirma.com/research/re-emerging-telegram-phishing-campaign-targeting-user-authorization-prompts/) — CYFIRMA (2026-02-07)
-- [Latest Cyber Security Attack News Today – Cyber Threat Post](https://www.varutra.com/blog/latest-cyber-security-attack-news-today-cyber-threat-post/) — Varutra (2026-02-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/telegram-phishing-campaign-re-emerges-abusing-authorization-prompts/

@@ -104,7 +104,6 @@ Security teams should hunt for generic ransomware TTPs:
 **Tags:** PII, PHI, Identity Theft, Medical Fraud, Credit Freeze
 
 ## Sources
-- [Scam of the day – March 1, 2026 – Conduent Data Breach: Safepay Ransomware Attack Exposes 25 Million Victims’ Sensitive Personal Information](https://scamicide.com/2026/03/01/scam-of-the-day-march-1-2026-conduent-data-breach-safepay-ransomware-attack-exposes-25-million-victims-sensitive-personal-information/) — Scamicide (2026-03-01)
 - [News – February 2026](https://www.cybersecurity-review.com/news-february-2024/) — Cybersecurity Review (2026-02-28)
 
 ---

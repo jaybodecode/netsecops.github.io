@@ -94,8 +94,6 @@ The attack erodes trust in the open-source ecosystem and highlights the fragilit
 **Tags:** supply chain, PyPI, GitHub Actions, CI/CD, credential theft, open source, AI security
 
 ## Sources
-- [Trojanization of Trivy, Checkmarx, and LiteLLM solutions](https://www.kaspersky.com/blog/team-pcp-supply-chain-attack/51531/) — Kaspersky (2026-03-25)
-- [Guidance for detecting, investigating, and defending against the Trivy supply chain compromise](https://www.microsoft.com/en-us/security/blog/2026/03/25/guidance-for-detecting-investigating-and-defending-against-the-trivy-supply-chain-compromise/) — Microsoft Security (2026-03-25)
 - [Open Source Is Under Attack. Here's How to Manage the Risk Without Abandoning the Benefit.](https://www.activestate.com/blog/open-source-is-under-attack-how-to-manage-the-risk/) — ActiveState (2026-03-25)
 
 ---

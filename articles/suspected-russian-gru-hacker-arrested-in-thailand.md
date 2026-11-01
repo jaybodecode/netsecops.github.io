@@ -42,10 +42,7 @@ The arrest of a state-sponsored actor like **Lukashev** is a significant event. 
 
 ## Sources
 - ['World-class' hacker arrested in Phuket rumoured to be GRU officer Aleksey Lukashev](https://www.thephuketnews.com/world-class-hacker-arrested-in-phuket-rumoured-to-be-gru-officer-aleksey-lukashev-94263.php) — The Phuket News (2025-11-14)
-- [Suspect arrested in Phuket for global hacking spree is Russian spy - Thaiger](https://thethaiger.com/news/phuket/suspected-russian-hacker-arrested-in-phuket-is-a-gru-officer) — The Thaiger (2025-11-14)
-- [Russian Hacker Linked to GRU Arrested in Phuket - SOFREP](https://sofrep.com/news/russian-hacker-linked-to-gru-arrested-in-phuket/) — SOFREP (2025-11-14)
 - [“World-class” Russian hacker wanted by FBI and arrested in Thailand is likely GRU officer Aleksey Lukashev - The Insider](https://theins.ru/en/politics/276495) — The Insider (2025-11-13)
-- [Suspected Russian hacker reportedly detained in Thailand, faces possible US extradition](https://therecord.media/russian-hacker-detained-thailand-us-extradition) — The Record (2025-11-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/suspected-russian-gru-hacker-arrested-in-thailand/

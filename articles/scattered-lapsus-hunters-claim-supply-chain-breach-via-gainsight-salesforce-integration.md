@@ -86,8 +86,6 @@ Mitigating SaaS-to-SaaS supply chain attacks requires a multi-layered approach f
 
 ## Sources
 - [Hackers Claim New Mega Breach As Salesforce Investigates Data Thefts](https://www.pcmag.com/news/hackers-claim-new-mega-breach-as-salesforce-investigates-data-thefts) — PCMag (2025-11-21)
-- [Scattered LAPSUS$ Hunters Escalate With New Channel and Gainsight Breach](https://www.socradar.com/scattered-lapsus-hunters-escalate-with-new-channel-and-gainsight-breach/) — SOCRadar (2025-11-21)
-- [Google says hackers stole data from 200 companies following Gainsight breach](https://maaal.com/google-says-hackers-stole-data-from-200-companies-following-gainsight-breach/) — Maaal (2025-11-22)
 - [When OAuth Tokens Turn Toxic: How ShinyHunters Exploited Gainsight to Steal Data from 200+ Companies](https://www.coesecurity.com/when-oauth-tokens-turn-toxic-how-shinyhunters-exploited-gainsight-to-steal-data-from-200-companies/) — COE Security (2025-11-22)
 
 ---

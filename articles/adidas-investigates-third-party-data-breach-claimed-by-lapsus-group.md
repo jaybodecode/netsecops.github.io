@@ -56,10 +56,7 @@ While specific technical details of the breach are not yet public, we can infer 
 **Tags:** supply chain attack, data breach, Adidas, Lapsus$, third-party risk, extranet
 
 ## Sources
-- [Adidas investigates third-party data breach after criminals claim they pwned the sportswear giant](https://www.theregister.com/2026/02/18/adidas_third_party_breach/) — The Register
-- [Adidas investigates third-party data breach](https://daily.dev/blog/adidas-investigates-third-party-data-breach) — daily.dev
 - [Adidas investigates data breach at independent licensing partner](https://www.sgi.com/news-sports/adidas-investigates-data-breach-at-independent-licensing-partner/) — SGI Europe
-- [Lapsus$ gang claims Adidas breach, company confirms investigation](https://cybernews.com/news/lapsus-gang-claims-adidas-breach-company-confirms-investigation/) — Cybernews
 - [Adidas Investigates Alleged Data Breach - 815,000 Records of Customer Data Stolen](https://bright-red.com/news/adidas-investigates-data-breach) — Bright Red
 
 ---

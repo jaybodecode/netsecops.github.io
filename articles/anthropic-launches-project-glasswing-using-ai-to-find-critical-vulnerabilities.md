@@ -51,7 +51,6 @@ Project Glasswing is not just a new tool; it's the beginning of a new methodolog
 - [Project Glasswing: Securing critical software for the AI era](https://www.anthropic.com/news/project-glasswing) — Anthropic (2026-04-07)
 - [Anthropic's Claude Mythos Finds Thousands of Zero-Day Flaws Across Major Systems](https://thehackernews.com/2026/04/anthropics-claude-mythos-finds.html) — The Hacker News (2026-04-07)
 - [Anthropic Unveils 'Claude Mythos' – A Cybersecurity Breakthrough That Could Also Supercharge Attacks](https://www.securityweek.com/anthropic-unveils-claude-mythos-a-cybersecurity-breakthrough/) — SecurityWeek (2026-04-07)
-- [Tech giants launch AI-powered 'Project Glasswing' to identify critical software vulnerabilities](https://www.cyberscoop.com/tech-giants-launch-project-glasswing-ai-vulnerabilities/) — CyberScoop (2026-04-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/anthropic-launches-project-glasswing-using-ai-to-find-critical-vulnerabilities/

@@ -65,8 +65,8 @@ Security teams should hunt for the following indicators:
 **Tags:** Ransomware, DeadLock, BYOVD, EDR Evasion, Kernel, Defense Evasion
 
 ## Sources
-- [New BYOVD loader behind DeadLock ransomware attack](https://blog.talosintelligence.com/new-byovd-loader-behind-deadlock-ransomware-attack/) — Cisco Talos (2025-12-09)
-- [DeadLock Ransomware Uses Vulnerable Baidu AV Driver to Disable Security Tools](https://thehackernews.com/2025/12/deadlock-ransomware-uses-vulnerable.html) — The Hacker News (2025-12-09)
+- [Cisco Talos](https://blog.talosintelligence.com/) — Cisco Talos (2025-12-09)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2025-12-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/deadlock-ransomware-deploys-byovd-tactic-to-disable-edr/

@@ -86,8 +86,6 @@ Defending against ransomware requires a multi-layered approach:
 
 ## Sources
 - [Active Ransomware Groups Q2 Trends and Intelligence Update](https://purpleops.ai/blog/active-ransomware-groups-q2-trends-and-intelligence-update) (2026-04-24)
-- [Qilin Ransomware Strikes City of Napoleon, Ohio](https://dexpose.io/blog/qilin-ransomware-strikes-city-of-napoleon-ohio) (2026-04-24)
-- [City of Napoleon Data Breach in 2026](https://breachsense.com/breach/napoleonohio-com) (2026-04-24)
 - [Ransomware Group qilin Hits: City of Napoleon, Ohio](https://www.hookphish.com/blog/ransomware-group-qilin-hits-city-of-napoleon-ohio) (2026-04-24)
 
 ---

@@ -51,8 +51,6 @@ Mitigating the risks of autonomous AI agents, as enabled by this technology, inv
 ## Sources
 - [Palo Alto Networks to Acquire Portkey to Secure the Rise of AI Agents](https://www.paloaltonetworks.com/company/press/2026/palo-alto-networks-to-acquire-portkey-to-secure-the-rise-of-ai-agents) — Palo Alto Networks (2026-04-30)
 - [Palo Alto Networks To Acquire AI Gateway Startup Portkey](https://www.crn.com/news/security/2026/palo-alto-networks-to-acquire-ai-gateway-startup-portkey) — CRN (2026-04-30)
-- [Palo Alto Networks to acquire Elevation Capital-backed AI app infra startup Portkey](https://economictimes.indiatimes.com/tech/startups/palo-alto-networks-to-acquire-elevation-capital-backed-ai-app-infra-startup-portkey/articleshow/109761356.cms) — The Economic Times (2026-05-01)
-- [Palo Alto Networks set to acquire Elevation and Lightspeed-backed Portkey](https://entrackr.com/2026/05/palo-alto-networks-set-to-acquire-elevation-and-lightspeed-backed-portkey/) — Entrackr (2026-05-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/palo-alto-networks-to-acquire-portkey-to-secure-autonomous-ai-agents/

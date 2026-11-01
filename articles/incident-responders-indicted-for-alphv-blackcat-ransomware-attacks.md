@@ -39,9 +39,7 @@ The primary impact was on the victim organizations, one of which suffered a fina
 **Tags:** Insider Threat, ALPHV, BlackCat, Ransomware, Indictment, Incident Response, Cybersecurity Ethics
 
 ## Sources
-- [Prosecutors allege incident response pros used ALPHV/BlackCat to commit string of ransomware attacks](https://cyberscoop.com/alphv-blackcat-ransomware-incident-response-indictment/) — CyberScoop (2025-11-03)
 - [US Traces Ransomware Attacks to 2 People Working for Cybersecurity Firms](https://www.pcmag.com/news/us-traces-ransomware-attacks-to-2-people-working-for-cybersecurity-firms) — PCMag (2025-11-03)
-- [Former ransomware negotiators allegedly targeted US firms with ALPHV/BlackCat](https://www.helpnetsecurity.com/2025/11/04/alphv-blackcat-ransomware-negotiators/) — Help Net Security (2025-11-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/incident-responders-indicted-for-alphv-blackcat-ransomware-attacks/

@@ -58,8 +58,8 @@ Detecting exposed cloud storage requires continuous monitoring of an organizatio
 **Tags:** EY, Ernst & Young, Data Leak, Data Breach, Cloud Security, Misconfiguration, SQL Server, Data Exposure
 
 ## Sources
-- [EY exposes 4TB+ SQL database to open internet for who knows how long](https://www.theregister.com/2025/10/29/ey_database_leak/) — The Register (2025-10-29)
-- [The Hidden Cause Behind 70% of Today's Major Breaches](https://www.panaseer.com/library/hidden-cause-behind-70-percent-of-todays-major-breaches/) — Panaseer (2025-10-29)
+- [The Register](https://www.theregister.com/) — The Register (2025-10-29)
+- [Panaseer](https://www.panaseer.com/) — Panaseer (2025-10-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/consulting-giant-ey-exposes-4tb-sql-database-to-internet/

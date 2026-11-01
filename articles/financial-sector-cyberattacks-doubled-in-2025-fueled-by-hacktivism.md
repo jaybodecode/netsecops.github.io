@@ -62,7 +62,6 @@ Strategic mitigations should focus on resilience and reducing the attack surface
 
 ## Sources
 - [Financial institutions under the cyberattack whip](https://www.it-online.co.za/2026/02/06/financial-institutions-under-the-cyberattack-whip/) — IT-Online (2026-02-06)
-- [Check Point: Which Cyber Risks Rule the Financial Sector?](https://cybermagazine.com/articles/check-point-which-cyber-risks-rule-the-financial-sector) — Cyber Magazine (2026-02-05)
 
 ---
 Source: https://cyber.netsecops.io/articles/financial-sector-cyberattacks-doubled-in-2025-fueled-by-hacktivism/

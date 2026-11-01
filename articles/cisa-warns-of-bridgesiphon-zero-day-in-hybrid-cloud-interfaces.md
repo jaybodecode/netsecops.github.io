@@ -76,7 +76,6 @@ CISA's directive outlines immediate mitigation steps while vendors work on a pat
 
 ## Sources
 - [Cyber Security News Briefing March 28, 2026](https://www.youtube.com/watch?v=example-cybersec-news) — YouTube
-- [CISA Issues Emergency Directive on BridgeSiphon Vulnerability](https://www.cisa.gov/alerts/2026/03/28/emergency-directive-26-29) — CISA
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-warns-of-bridgesiphon-zero-day-in-hybrid-cloud-interfaces/

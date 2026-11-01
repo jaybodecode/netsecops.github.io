@@ -76,9 +76,9 @@ Healthcare organizations must implement robust security controls to protect pati
 **Tags:** Data Breach, Healthcare, HIPAA, PII, PHI, Florida Physician Specialists
 
 ## Sources
-- [Florida Physician Specialists Data Breach: Edelson Lechtzin LLP Launches Investigation into Exposure of Personal Information](https://www.prnewswire.com/news-releases/florida-physician-specialists-data-breach-edelson-lechtzin-llp-launches-investigation-into-exposure-of-personal-information-302134563.html) — PR Newswire (2026-05-03)
-- [Florida Physician Specialists Breach Exposes Sensitive PII and PHI](https://www.claimdepot.com/florida-physician-specialists-breach-exposes-sensitive-pii-and-phi) — Claim Depot (2026-04-27)
-- [Florida Physician Specialists Data Breach: Edelson Lechtzin LLP Launches Investigation into Exposure of Personal Information ...Middle East](https://pressbee.net/show/florida-physician-specialists-data-breach-edelson-lechtzin-llp-launches-investigation-into-exposure-of-personal-information-middle-east) — PRESSBEE (2026-05-03)
+- [PR Newswire](https://www.prnewswire.com/) — PR Newswire (2026-05-03)
+- [Claim Depot](https://www.claimdepot.com/) — Claim Depot (2026-04-27)
+- [PRESSBEE](https://pressbee.net/) — PRESSBEE (2026-05-03)
 
 ---
 Source: https://cyber.netsecops.io/articles/florida-physician-specialists-breach-exposes-patient-data/

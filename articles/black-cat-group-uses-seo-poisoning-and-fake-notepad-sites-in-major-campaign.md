@@ -65,7 +65,6 @@ This campaign demonstrates Black Cat's versatility, using commodity malware dist
 ## Sources
 - [Black Cat Behind SEO Poisoning Malware Campaign Targeting Popular Software Searches](https://thehackernews.com/2026/01/black-cat-behind-seo-poisoning-malware.html) — The Hacker News (2026-01-07)
 - [New Black Cat SEO poisoning campaign spreads malware via software searches](https://www.scmagazine.com/news/new-black-cat-seo-poisoning-campaign-spreads-malware-via-software-searches) — SC Magazine (2026-01-08)
-- [Black Cat Hacker Group with Fake Notepad++ Sites Install Malware to Steal Data](https://gbhackers.com/black-cat-hacker-group-with-fake-notepad-sites-install-malware-to-steal-data/) — GBHackers on Security (2026-01-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/black-cat-group-uses-seo-poisoning-and-fake-notepad-sites-in-major-campaign/

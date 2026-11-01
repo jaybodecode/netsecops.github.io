@@ -67,9 +67,7 @@ Security teams can hunt for generic Qilin TTPs:
 **Tags:** Qilin, Agenda, ransomware, Jayeff Construction, RaaS, Fortinet
 
 ## Sources
-- [The Most Recent Data Breaches in 2026](https://www.breachsense.com/breach/jayeff-com) — Breachsense (2026-05-01)
 - [Ransomware Group qilin Hits: Jayeff Construction](https://hookphish.com/blog/ransomware-group-qilin-hits-jayeff-construction) — HookPhish (2026-04-30)
-- [Victim: Jayeff Construction](https://ransomware.live/victim/jayeff-com/) — Ransomware.live (2026-04-30)
 - [Qilin Ransomware (Agenda): A Deep Dive](https://www.checkpoint.com/cyber-hub/threat-intelligence/research-reports/qilin-ransomware-a-deep-dive/) — Check Point (2026-05-01)
 
 ---

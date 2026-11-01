@@ -61,7 +61,6 @@ For any cybersecurity firm, the mitigations against such an attack must be exemp
 
 ## Sources
 - [Team4Security Data Breach: 7 Urgent Facts Revealed](https://darknetsearch.com/team4security-data-breach-7-urgent-facts-revealed/) — DarknetSearch (2026-03-07)
-- [Team4Security Data Breach: 7 Urgent Facts Revealed | DarknetSearch](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFxr3peQ8waKJbJy8qQNVxijIHIIg900ZpBPlSRcf1wsUeZolr9c_grb7AhFhh7vNbJpbOOV7XYuk9eMxiJlVtM124jf6m-6LGHgSTOAShFoZqg5lx2Kc94PqqMV-FBNf8EtWt1RPeZbNHk779kbqgX1WTgkccqT51NAtE1RlTbqBDWf0mvtfZK2-Q6sXRdnhhSHlDDOkkTJP0=) — DarknetSearch (2026-03-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/hacker-ghostcrawl-claims-breach-of-team4security-demands-ransom/

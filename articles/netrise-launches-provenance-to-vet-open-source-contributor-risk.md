@@ -43,7 +43,6 @@ This approach represents a maturation of supply chain security, moving beyond vu
 
 ## Sources
 - [NetRise Provenance launched to expose open source contributor risk, map impact across software supply chains](https://industrialcyber.co/vendor-news/netrise-provenance-launched-to-expose-open-source-contributor-risk-map-impact-across-software-supply-chains/) — Industrial Cyber (2026-03-25)
-- [Launch of NetRise Provenance Reveals Who and What Are Behind Open Source, And How Risk Propagates Through the Supply Chain](https://www.prnewswire.com/news-releases/launch-of-netrise-provenance-reveals-who-and-what-are-behind-open-source-and-how-risk-propagates-through-the-supply-chain-302100898.html) — PR Newswire (2026-03-25)
 - [NetRise launches Provenance to trace open source risk](https://www.ecommercenews.com.au/story/netrise-launches-provenance-to-trace-open-source-risk) — eCommerce News Australia (2026-03-26)
 
 ---

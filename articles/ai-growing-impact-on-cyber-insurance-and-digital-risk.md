@@ -54,7 +54,6 @@ For businesses navigating this new landscape, proactive risk management is key:
 **Tags:** AI, Cyber Insurance, InsurTech, Liability, Risk Management, Regulation
 
 ## Sources
-- [This Week's Top Five Stories in Cyber](https://cybermagazine.com/cyber-attacks-and-data-breaches/this-weeks-top-five-stories-in-cyber) — Cyber Magazine (2026-05-16)
 - [The Uninsurable Machine: Why Big Insurers Are Fleeing AI — and Who Will Fill the Gap](https://www.linkedin.com/pulse/uninsurable-machine-why-big-insurers-fleeing-ai-who-fill-gap-rod-sobers) — LinkedIn (2026-05-16)
 
 ---

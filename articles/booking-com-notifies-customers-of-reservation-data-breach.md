@@ -57,12 +57,8 @@ Detection is challenging as it involves abuse of legitimate functionality. Howev
 - [Booking.com Says Hackers Accessed User Information](https://www.securityweek.com/booking-com-says-hackers-accessed-user-information/) (2026-04-13)
 - [Hack at Booking.com; Customers' booking data accessed](https://www.nltimes.nl/2026/04/13/hack-bookingcom-customers-booking-data-accessed) (2026-04-13)
 - [Data Breach at Booking.com (BKNG) Affects Customer Information](https://www.gurufocus.com/news/2507851/data-breach-at-bookingcom-bkng-affects-customer-information) (2026-04-13)
-- [Booking.com warns of possible reservation data exposure](https://www.theregister.com/2026/04/13/bookingcom_data_breach/) (2026-04-13)
-- [Hackers gained access to customer data from both Basic-Fit and Booking.com](https://belganewsagency.eu/hackers-gained-access-to-customer-data-from-both-basic-fit-and-booking-com) (2026-04-13)
 - [Booking.com data breach: Customer reservation data exposed](https://www.helpnetsecurity.com/2026/04/14/booking-com-data-breach/) (2026-04-14)
-- [Booking.com warns customers of hack that exposed their data](https://www.theguardian.com/technology/2026/apr/13/bookingcom-warns-customers-of-hack-that-exposed-their-data) (2026-04-13)
 - [Booking.com Confirms Data Breach, Hackers Access Customer Information](https://www.cxodigitalpulse.com/booking-com-confirms-data-breach-hackers-access-customer-information/) (2026-04-14)
-- [Booking.com confirms reservation data breach — tells customers hackers 'may have been able to access certain booking information'](https://techradar.com/pro/security/bookingcom-confirms-reservation-data-breach-tells-customers-hackers-may-have-been-able-to-access-certain-booking-information) (2026-04-14)
 - [Booking.com Data Breach: 4 Essential Steps to Secure Your Account and Travel Plans](https://beincrypto.com/booking-data-breach-steps-secure-account/) (2026-04-14)
 
 ---

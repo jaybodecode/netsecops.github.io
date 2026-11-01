@@ -48,8 +48,8 @@ The impact of exploiting **CVE-2026-21877** is identical to the unauthenticated 
 **Tags:** n8n, CVE-2026-21877, RCE, Vulnerability, CVSS 10, Authenticated, Privilege Escalation, Cloud Security
 
 ## Sources
-- [CVE-2026-21877: Max-Severity n8n Flaw Allows Authenticated RCE](https://socradar.io/cve-2026-21877-max-severity-n8n-flaw-allows-authenticated-rce/) — SOCRadar (2026-01-07)
-- [Authenticated RCE in n8n](https://github.com/n8n-io/n8n/security/advisories/GHSA-56pq-h65v-w7x7) — GitHub (2026-01-07)
+- [SOCRadar](https://socradar.io/) — SOCRadar (2026-01-07)
+- [GitHub](https://github.com/) — GitHub (2026-01-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/second-critical-rce-flaw-in-n8n-disclosed-cvss-10-0/

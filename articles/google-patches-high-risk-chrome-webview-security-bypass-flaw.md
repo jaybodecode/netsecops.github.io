@@ -62,11 +62,9 @@ Since this vulnerability requires a malicious extension, detection would focus o
 **Tags:** Google Chrome, Vulnerability, Security Bypass, WebView, Patch Management, CVE-2026-0628
 
 ## Sources
-- [Google Patches High-Risk Chrome Zero-Day Affecting Billions of Users](https://the420.in/2026/01/09/google-patches-high-risk-chrome-zero-day-affecting-billions-of-users/) — The 420 (2026-01-09)
 - [Google Warns of High-Risk WebView Vulnerability That Breaks Security Controls](https://www.cyberpress.com/google-warns-of-high-risk-webview-vulnerability-that-breaks-security-controls/) — Cyberpress (2026-01-07)
 - [Chrome “WebView” Vulnerability Allows Hackers to Bypass Security Restrictions](https://gbhackers.on-line/chrome-webview-vulnerability-2/) — GBHackers on Security (2026-01-07)
 - [Weekly Threat Landscape Digest - Week 2](https://www.hawkeye.com/threat-landscape-digest-week-2/) — Hawkeye (2026-01-09)
-- [Google High-Severity WebView Vulnerability Allows Hackers to Bypass Security Restrictions](https://www.securityweek.com/google-warns-of-high-severity-chrome-webview-vulnerability/) — SecurityWeek (2026-01-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/google-patches-high-risk-chrome-webview-security-bypass-flaw/

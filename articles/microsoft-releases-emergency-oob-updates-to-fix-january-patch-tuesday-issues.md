@@ -61,9 +61,8 @@ These updates are available via the Microsoft Update Catalog and will be pushed 
 **Tags:** Microsoft, Windows Update, Patch Tuesday, Out-of-Band, KB5078136, KB5078238, Remote Desktop, Bug Fix
 
 ## Sources
-- [Windows Releases Out-of-Band Updates to Fix Issues Introduced in January Patch Tuesday](https://www.sans.org/newsletters/newsbites/xxviii/5) — SANS Institute (2026-01-24)
-- [January 24, 2026—KB5078136 (OS Build 20348.4651) Out-of-band](https://support.microsoft.com/en-us/topic/january-24-2026-kb5078136-os-build-20348-4651-out-of-band-b30f8a84-0239-4467-b892-2646c24300e8) — Microsoft Support (2026-01-24)
-- [January 24, 2026—Hotpatch KB5078238 (OS Build 20348.4655) Out-of-band](https://support.microsoft.com/en-us/topic/january-24-2026-hotpatch-kb5078238-os-build-20348-4655-out-of-band-4f762319-3c35-430b-968b-5942f7bf285f) — Microsoft Support (2026-01-24)
+- [SANS Institute](https://www.sans.org/) — SANS Institute (2026-01-24)
+- [Microsoft Support](https://support.microsoft.com/) — Microsoft Support (2026-01-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-releases-emergency-oob-updates-to-fix-january-patch-tuesday-issues/

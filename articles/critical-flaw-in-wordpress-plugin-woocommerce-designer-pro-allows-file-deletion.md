@@ -56,8 +56,8 @@ Successful exploitation of `CVE-2025-6439` can have devastating consequences:
 **Tags:** WordPress, Vulnerability, CVE-2025-6439, WooCommerce, Path Traversal, RCE, Critical
 
 ## Sources
-- [CVE-2025-6439 Impact, Exploitability, and Mitigation Steps | Wiz](https://www.wiz.io/blog/cve-2025-6439-impact-exploitability-and-mitigation-steps) — Wiz (2025-10-11)
-- [Clop Ransomware group claims the hack of Harvard University (References other news from same day)](https://securityaffairs.com/175960/cyber-crime/clop-ransomware-group-claims-harvard-university-hack.html) — Security Affairs (2025-10-12)
+- [Wiz](https://www.wiz.io/) — Wiz (2025-10-11)
+- [Security Affairs](https://securityaffairs.com/) — Security Affairs (2025-10-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-flaw-in-wordpress-plugin-woocommerce-designer-pro-allows-file-deletion/

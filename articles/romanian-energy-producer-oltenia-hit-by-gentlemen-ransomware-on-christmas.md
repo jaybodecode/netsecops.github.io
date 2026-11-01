@@ -53,7 +53,6 @@ While the attack did not disrupt electricity production, the impact on Oltenia E
 
 ## Sources
 - [Romania’s Oltenia Energy Complex suffers major ransomware attack](https://securityaffairs.com/156557/cyber-crime/oltenia-energy-complex-ransomware-attack.html) — Security Affairs (2025-12-26)
-- [The holiday siege: Unpacking the ransomware attack on Oltenia Energy Complex](https://thecyberexpress.com/holiday-siege-ransomware-attack-oltenia-energy-complex/) — The Cyber Express (2025-12-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/romanian-energy-producer-oltenia-hit-by-gentlemen-ransomware-on-christmas/

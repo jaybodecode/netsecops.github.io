@@ -55,7 +55,6 @@ The attack chain likely followed these steps, consistent with known supply chain
 
 ## Sources
 - [OpenAI and others deal with fallout from TanStack supply-chain attack.](https://thecyberwire.com/newsletters/daily-briefing/15/94) — The CyberWire (2026-05-16)
-- [OpenAI hit by supply chain attack linked to malicious TanStack packages](https://securityaffairs.com/163345/hacking/openai-tanstack-supply-chain-attack.html) — Security Affairs (2026-05-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/openai-compromised-in-shai-hulud-supply-chain-attack-targeting-tanstack/

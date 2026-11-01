@@ -67,8 +67,6 @@ This incident serves as a critical lesson in third-party risk management for all
 
 ## Sources
 - [Spanish fashion retailer MANGO disclosed a data breach](https://securityaffairs.com/177030/data-breach/mango-data-breach.html) — Security Affairs (2025-10-16)
-- [MANGO data breach, Jewelbug infiltrates Russian network, F5 attack questions](https://risky.biz/mango/) — Risky Business (2025-10-16)
-- [Mango latest retailer to experience data breach](https://www.retail-week.com/fashion/mango-latest-retailer-to-experience-data-breach/7046039.article) — Retail Week (2025-10-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/mango-discloses-data-breach-via-third-party-marketing-vendor/

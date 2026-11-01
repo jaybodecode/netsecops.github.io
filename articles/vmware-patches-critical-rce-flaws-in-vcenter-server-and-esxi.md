@@ -54,8 +54,8 @@ A compromise of an ESXi host is a catastrophic security event. The impact includ
 **Tags:** VMware, ESXi, vCenter, CVE-2024-22252, CVE-2024-22253, RCE, VM Escape, Virtualization
 
 ## Sources
-- [VMware Patches Critical Vulnerabilities in vCenter Server, ESXi](https://www.securityweek.com/vmware-patches-critical-vulnerabilities-in-vcenter-server-esxi/) — SecurityWeek
-- [VMware urges admins to patch critical vCenter RCE vulnerability](https://www.bleepingcomputer.com/news/security/vmware-urges-admins-to-patch-critical-vcenter-rce-vulnerability/) — BleepingComputer
+- [SecurityWeek](https://www.securityweek.com/) — SecurityWeek
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer
 
 ---
 Source: https://cyber.netsecops.io/articles/vmware-patches-critical-rce-flaws-in-vcenter-server-and-esxi/

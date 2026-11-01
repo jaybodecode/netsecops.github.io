@@ -45,7 +45,6 @@ Supply chain attacks have a cascading effect, multiplying the impact of a single
 
 ## Sources
 - [Software supply chain attacks surge, as ransomware groups escalate and industrial sectors face more exposure](https://industrialcyber.co/news/software-supply-chain-attacks-surge-as-ransomware-groups-escalate-and-industrial-sectors-face-more-exposure/) — Industrial Cyber (2025-11-07)
-- [Software Supply Chain Attacks Surge to Record High in October 2025](https://cyble.com/blog/software-supply-chain-attacks-surge-to-record-high-in-october-2025/) — Cyble (2025-11-04)
 - [Leak Site Ransomware Victims Spike 13% in a Year](https://www.infosecurity-magazine.com/news/leak-site-ransomware-victims-spike/) — Infosecurity Magazine (2025-11-06)
 
 ---

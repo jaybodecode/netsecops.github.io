@@ -56,8 +56,6 @@ Security teams should focus on behavioral and traffic analysis rather than stati
 
 ## Sources
 - [NSA and Others Release Joint Guidance Addressing Multiple China-Nexus Threat Actors Using External Covert Networks to Facilitate Cyber Activity at Scale](https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/3752538/nsa-and-others-release-joint-guidance-addressing-multiple-china-nexus-threat-a/) — NSA (2026-04-23)
-- [Defending Against China-Nexus Covert Networks of Compromised Devices](https://www.ncsc.gov.uk/files/defending-against-china-nexus-covert-networks.pdf) — NCSC (2026-04-23)
-- [China disguises cyberattacks with ‘covert network’ botnets, US and allies warn](https://therecord.media/china-covert-network-botnets-cisa-nsa-fbi-advisory) — The Record (2026-04-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/global-agencies-warn-of-china-linked-actors-using-covert-botnets-at-scale/

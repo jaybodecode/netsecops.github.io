@@ -57,7 +57,6 @@ While awaiting the final document, organizations can anticipate several key them
 
 ## Sources
 - [The Trump Administration Prepares A New Cybersecurity Strategy For 2026](http://www.ramaonhealthcare.com/the-trump-administration-prepares-a-new-cybersecurity-strategy-for-2026/) (2025-12-21)
-- [How do militaries of the modern age protect their networks from cyber-attacks?](https://www.cyberpeace.org/blogs/how-do-militaries-of-the-modern-age-protect-their-networks-from-cyber-attacks/) — CyberPeace Institute (2025-12-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/trump-administration-drafting-new-national-cybersecurity-strategy-for-2026/

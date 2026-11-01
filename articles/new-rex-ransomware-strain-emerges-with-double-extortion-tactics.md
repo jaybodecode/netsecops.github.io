@@ -74,7 +74,6 @@ Security teams can hunt for signs of a ransomware attack in progress with the fo
 - [Weekly Intelligence Report – 15 May 2026](https://www.cyfirma.com/outofband/weekly-intelligence-report-15-may-2026/) (2026-05-15)
 - [Rex ransomware - Decryption, removal, and lost files recovery](https://www.pcrisk.com/removal-guides/35234-rex-ransomware) (2026-05-14)
 - [Rex ransomware removal [.Rex48 file virus].](https://www.youtube.com/watch?v=VIDEO_ID) (2026-05-14)
-- [Rex ransomware removal [.Rex48 file virus]](https://www.newsbreak.com/news/3432766324902-rex-ransomware-removal-rex48-file-virus) (2026-05-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/new-rex-ransomware-strain-emerges-with-double-extortion-tactics/

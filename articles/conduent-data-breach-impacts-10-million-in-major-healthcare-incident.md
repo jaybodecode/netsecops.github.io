@@ -67,7 +67,6 @@ The detection of the breach occurred on January 13, 2025, nearly three months af
 **Tags:** Healthcare Breach, PII, PHI, Class Action, Conduent, HIPAA
 
 ## Sources
-- [Conduent cyberattack: 10.5 million hit in 8th largest healthcare data breach in US—what affected people can do](https://www.livemint.com/technology/tech-news/conduent-cyberattack-10-5-million-hit-in-8th-largest-healthcare-data-breach-in-us-what-affected-people-can-do-11733878135891.html) — Livemint (2025-12-11)
 - [Conduent Data Breach Hits 10.5 Million in 8th Largest US Healthcare Breach](https://www.red94.com/conduent-data-breach-hits-10-5-million-in-8th-largest-us-healthcare-breach) — Red94 (2025-12-11)
 
 ---

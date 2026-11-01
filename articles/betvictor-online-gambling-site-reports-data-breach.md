@@ -88,7 +88,6 @@ For similar organizations, observables to hunt for include:
 
 ## Sources
 - [BetVictor Reports Major Data Breach Impacting Customer Accounts and Operations](https://www.weareiowa.com/article/news/business/betvictor-reports-major-data-breach-impacting-customer-accounts-and-operations/524-1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p) — WeAreIowa (2026-01-10)
-- [BetVictor announces data breach affecting customer and business operations](https://www.gamingintelligence.com/business/178923-betvictor-discloses-cybersecurity-incident/) — Gaming Intelligence (2026-01-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/betvictor-online-gambling-site-reports-data-breach/

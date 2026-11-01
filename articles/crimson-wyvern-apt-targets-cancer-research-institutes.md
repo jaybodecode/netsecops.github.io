@@ -49,7 +49,6 @@ The attack methodology observed by Mandiant follows a typical APT lifecycle:
 
 ## Sources
 - [Crimson Wyvern: Nation-State Espionage Targets Cancer Research](https://www.mandiant.com/resources/blog/crimson-wyvern-apt-targets-cancer-research) — Mandiant (2026-02-16)
-- [State-sponsored hackers are stealing cancer research data, new report says](https://arstechnica.com/security/2026/02/state-sponsored-hackers-are-stealing-cancer-research-data/) — Ars Technica (2026-02-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/crimson-wyvern-apt-targets-cancer-research-institutes/

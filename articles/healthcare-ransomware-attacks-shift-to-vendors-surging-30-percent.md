@@ -55,7 +55,6 @@ Defending against these supply chain attacks requires a proactive and collaborat
 
 ## Sources
 - [Healthcare ransomware attacks surge 30% in 2025, as cybercriminals shift focus to vendors and service partners](https://industrialcyber.co/healthcare/healthcare-ransomware-attacks-surge-30-in-2025-as-cybercriminals-shift-focus-to-vendors-and-service-partners/) — Industrial Cyber (2025-10-13)
-- [Cyber & AI Weekly - October 13th](https://strongestlayer.com/cyber-ai-weekly-october-13th/) — Strongest Layer (2025-10-13)
 
 ---
 Source: https://cyber.netsecops.io/articles/healthcare-ransomware-attacks-shift-to-vendors-surging-30-percent/

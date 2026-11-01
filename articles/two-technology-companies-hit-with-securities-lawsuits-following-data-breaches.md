@@ -37,7 +37,6 @@ The impact of a securities lawsuit goes far beyond the immediate costs of a data
 
 ## Sources
 - [Two Tech Companies Hit with Data Breach-Related Securities Suits](https://www.dandodiary.com/2025/12/articles/securities-litigation/two-tech-companies-hit-with-data-breach-related-securities-suits/) — The D&O Diary (2025-12-21)
-- [ADRs | CLS Blue Sky Blog](https://clsbluesky.law.columbia.edu/authoritative-daily-digest/?author_digest=d-o-diary) — Columbia Law School (2025-12-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/two-technology-companies-hit-with-securities-lawsuits-following-data-breaches/

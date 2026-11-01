@@ -23,7 +23,6 @@ This incident serves as a case study in the importance of diversity and represen
 **Tags:** diversity, inclusion, cybersecurity community, tryhackme, training
 
 ## Sources
-- [TryHackMe races to add women to Christmas cyber challenge roster after backlash](https://www.theregister.com/2025/11/28/tryhackme_diversity_gaffe/) — The Register (2025-11-28)
 - [Cyber Briefing: 2025-11-28](https://www.youtube.com/watch?v=J_3rqB4f0Ew) — YouTube (2025-11-28)
 
 ---

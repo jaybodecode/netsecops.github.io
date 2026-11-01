@@ -84,7 +84,6 @@ The MaaS model exemplified by **GrayBravo** has a multiplying effect on the thre
 **Tags:** MaaS, GrayBravo, CastleLoader, Cybercrime, RedLine Stealer, Logistics
 
 ## Sources
-- [Four Threat Clusters Using CastleLoader as GrayBravo Expands Its Malware Service Infrastructure](https://thehackernews.com/2025/12/four-threat-clusters-using.html) — The Hacker News (2025-12-09)
 - [Weekly Intelligence Report – 12 December 2025](https://www.cyfirma.com/outofband/weekly-intelligence-report-12-december-2025/) — CYFIRMA (2025-12-10)
 
 ---

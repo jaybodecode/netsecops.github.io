@@ -53,7 +53,7 @@ Organizations should hunt for TTPs associated with ransomware groups:
 **Tags:** DragonForce, Ransomware, Brazil, Education, FGV, Data Breach
 
 ## Sources
-- [DragonForce Ransomware Attack Targets Fundação Getulio Vargas - DeXpose](https://www.dexpose.io/blog/dragonforce-ransomware-attack-targets-fundacao-getulio-vargas) — DeXpose (2026-03-02)
+- [DeXpose](https://www.dexpose.io/) — DeXpose (2026-03-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/dragonforce-ransomware-attacks-brazilian-university-fgv/

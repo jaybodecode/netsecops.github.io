@@ -52,9 +52,9 @@ This is not a matter of penalties for non-compliance, but rather the removal of 
 **Tags:** cybersecurity law, information sharing, threat intelligence, US government, policy, CISA
 
 ## Sources
-- [Cybersecurity Information Sharing Act of 2015 Allowed to Sunset](https://www.cov.com/-/media/files/corporate/publications/2025/10/cybersecurity_information_sharing_act_of_2015_allowed_to_sunset.pdf) — Covington & Burling (2025-10-09)
-- [Critical Cybersecurity Authorities Expire](https://www.jdsupra.com/legalnews/critical-cybersecurity-authorities-4334360/) — JD Supra (2025-10-10)
-- [US Cybersecurity Information Sharing Act (CISA) Expires After Key Contributions](https://www.discvr.blog/post/us-cybersecurity-information-sharing-act-cisa-expires-after-key-contributions) — Discovery Blog (2025-10-09)
+- [Covington & Burling](https://www.cov.com/) — Covington & Burling (2025-10-09)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2025-10-10)
+- [Discovery Blog](https://www.discvr.blog/) — Discovery Blog (2025-10-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/key-us-cyber-information-sharing-law-expires-sparking-concerns/

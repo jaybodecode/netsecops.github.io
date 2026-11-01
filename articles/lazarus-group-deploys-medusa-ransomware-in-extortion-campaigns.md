@@ -49,8 +49,8 @@ Preventing Lazarus intrusions and mitigating the impact of a potential ransomwar
 **Tags:** Lazarus Group, Medusa, Ransomware, RaaS, Healthcare, North Korea, APT, BLINDINGCAN
 
 ## Sources
-- [Lazarus Group Uses Medusa Ransomware in Middle East and U.S. Healthcare Attacks](https://thehackernews.com/2026/02/lazarus-group-uses-medusa-ransomware.html) — The Hacker News (2026-02-24)
-- [North Korea's Lazarus Group targets healthcare orgs with Medusa ransomware](https://www.theregister.com/2026/02/24/lazarus_medusa_ransomware/) — The Register (2026-02-24)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-02-24)
+- [The Register](https://www.theregister.com/) — The Register (2026-02-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/lazarus-group-deploys-medusa-ransomware-in-extortion-campaigns/

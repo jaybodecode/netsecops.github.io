@@ -58,8 +58,8 @@ This case provides clear guidance for other organizations:
 **Tags:** 23andMe, CCPA, data privacy, lawsuit, credential stuffing, genetic data
 
 ## Sources
-- [California AG Files Lawsuit Over 23andMe Data Breach](https://www.hipaajournal.com/california-ag-files-lawsuit-over-23andme-data-breach/) — The HIPAA Journal (2026-05-29)
-- [California sues 23andMe over data breach that exposed genetic info of millions](https://www.sfchronicle.com/tech/article/california-sues-23andme-data-breach-19493557.php) — San Francisco Chronicle (2026-05-29)
+- [The HIPAA Journal](https://www.hipaajournal.com/) — The HIPAA Journal (2026-05-29)
+- [San Francisco Chronicle](https://www.sfchronicle.com/) — San Francisco Chronicle (2026-05-29)
 
 ---
 Source: https://cyber.netsecops.io/articles/california-ag-sues-23andme-over-2023-data-breach/

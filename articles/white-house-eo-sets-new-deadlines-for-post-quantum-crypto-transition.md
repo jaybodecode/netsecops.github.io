@@ -40,7 +40,6 @@ Federal agencies must take immediate steps to prepare for the December 1, 2025 d
 **Tags:** PQC, Post-Quantum Cryptography, White House, Executive Order, NIST, CISA, NSA, TLS 1.3, Policy
 
 ## Sources
-- [Sustaining Select Efforts to Strengthen the Nation’s Cybersecurity and Amending Executive Order 13694 and Executive Order 14144](https://www.whitehouse.gov/briefing-room/presidential-actions/2025/12/07/executive-order-on-sustaining-select-efforts-to-strengthen-the-nations-cybersecurity/) — The White House (2025-12-07)
 - [New Cybersecurity Executive Order Revises Specific Federal Policies While Retaining Core Security Principles](https://www.woodsandrogers.com/insights/new-cybersecurity-executive-order-revises-specific-federal-policies/) — Woods Rogers (2025-12-08)
 
 ---

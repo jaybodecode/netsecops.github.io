@@ -45,7 +45,6 @@ The focus on the industrial sector is particularly concerning due to the potenti
 
 ## Sources
 - [Trellix reports nation-state espionage and AI-driven financial attacks converging, as industrial sector most targeted](https://industrialcyber.co/news/trellix-reports-nation-state-espionage-and-ai-driven-financial-attacks-converging-as-industrial-sector-most-targeted/) — Industrial Cyber
-- [What Microsoft's 2025 report reveals about the new rules of engagement in cyberdefense](https://www.helpnetsecurity.com/2025/10/24/microsoft-2025-cyberdefense-report/) — Help Net Security
 
 ---
 Source: https://cyber.netsecops.io/articles/nation-state-financial-cybercrime-converge-industrial-sector-targeted/

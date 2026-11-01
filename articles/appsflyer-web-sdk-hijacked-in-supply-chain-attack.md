@@ -56,8 +56,8 @@ Detecting this as a downstream victim (a website using the SDK) is very difficul
 **Tags:** JavaScript, Cryptocurrency, Clipboard Hijacking, DNS Hijacking, Subresource Integrity
 
 ## Sources
-- [AppsFlyer Web SDK hijacked to spread crypto-stealing JavaScript code](https://www.bleepingcomputer.com/news/cryptocurrency/appsflyer-web-sdk-hijacked-to-spread-crypto-stealing-javascript-code/) — BleepingComputer (2026-03-14)
-- [AppsFlyer Web SDK hijacked to spread crypto-stealing JavaScript code](https://jedar.net/en/appsflyer-web-sdk-hijacked-to-spread-crypto-stealing-javascript-code/) — Jedar (2026-03-14)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-03-14)
+- [Jedar](https://jedar.net/) — Jedar (2026-03-14)
 
 ---
 Source: https://cyber.netsecops.io/articles/appsflyer-web-sdk-hijacked-in-supply-chain-attack/

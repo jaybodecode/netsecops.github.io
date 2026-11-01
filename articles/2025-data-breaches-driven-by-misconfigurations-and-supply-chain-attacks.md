@@ -41,8 +41,8 @@ The collective impact of these fundamental failures is massive. Millions of indi
 **Tags:** Data Breach, Cloud Security, Misconfiguration, Supply Chain Attack, Default Password, 2025 Review
 
 ## Sources
-- [The biggest corporate security blunders of 2025](https://www.cybernews.com/security/biggest-corporate-security-blunders-of-2025/) — Cybernews (2025-12-26)
-- [Data Breaches 2025: The Biggest Cybersecurity Incidents So Far](https://www.pkware.com/blog/data-breaches-2025/) — PKWARE (2025-12-26)
+- [Cybernews](https://www.cybernews.com/) — Cybernews (2025-12-26)
+- [PKWARE](https://www.pkware.com/) — PKWARE (2025-12-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/2025-data-breaches-driven-by-misconfigurations-and-supply-chain-attacks/

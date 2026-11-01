@@ -94,9 +94,7 @@ This attack highlights critical gaps in modern software development security. Lo
 - [Trivy's March Supply Chain Attack Shows Where Secret Exposure Hurts Most](https://www.securityboulevard.com/2026/03/trivys-march-supply-chain-attack-shows-where-secret-exposure-hurts-most/) — Security Boulevard (2026-03-24)
 - [Widespread cloud environment compromise facilitated by Trivy supply chain hack](https://www.scmagazine.com/brief/cloud-security/widespread-cloud-environment-compromise-facilitated-by-trivy-supply-chain-hack) — SC Magazine (2026-03-25)
 - [LiteLLM PyPI packages compromised in expanding TeamPCP supply chain attacks](https://www.helpnetsecurity.com/2026/03/25/litellm-supply-chain-attack-team-pcp/) — Help Net Security (2026-03-25)
-- [Update: Ongoing Investigation and Continued Remediation](https://www.aquasec.com/blog/update-ongoing-investigation-and-continued-remediation/) — Aqua Security (2026-03-25)
 - [Trojanization of Trivy, Checkmarx, and LiteLLM solutions](https://www.kaspersky.com/blog/trivy-checkmarx-litellm-supply-chain-attack/49943/) — Kaspersky (2026-03-25)
-- [Experts warn of a 'loud and aggressive' extortion wave following Trivy hack](https://www.cyberscoop.com/trivy-supply-chain-attack-mandiant-aqua-security/) — CyberScoop (2026-03-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/teampcp-supply-chain-attack-compromises-trivy-litellm/

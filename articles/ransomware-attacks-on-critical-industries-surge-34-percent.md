@@ -44,7 +44,7 @@ General observables for ransomware activity include:
 **Tags:** Ransomware, KELA, CriticalInfrastructure, Qilin, Clop, Akira, Cyberattack
 
 ## Sources
-- [Global Ransomware Attacks Against Critical Industries Surge 34% in 2025](https://www.morningstar.com/news/pr-newswire/20251021la30478/global-ransomware-attacks-against-critical-industries-surge-34-in-2025) — Morningstar (2025-10-21)
+- [Morningstar](https://www.morningstar.com/) — Morningstar (2025-10-21)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-attacks-on-critical-industries-surge-34-percent/

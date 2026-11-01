@@ -80,7 +80,6 @@ Security teams should hunt for anomalous use of legitimate services:
 - [China's Webworm Uses Discord, Microsoft Graphs to Hack EU Govts](https://www.darkreading.com/cyberattacks-data-breaches/china-webworm-discord-microsoft-graphs-hack-eu-govts) — Dark Reading (2026-05-22)
 - [ESET uncovers the expanded arsenal of China-aligned Webworm; European governments targeted](https://www.streetinsider.com/Globe+Newswire/ESET+uncovers+the+expanded+arsenal+of+China-aligned+Webworm%3B+European+governments+targeted/23258045.html) — StreetInsider.com (2026-05-20)
 - [Webworm: New burrowing techniques](https://www.welivesecurity.com/en/eset-research/webworm-new-burrowing-techniques/) — WeLiveSecurity (2026-05-20)
-- [China-Linked Webworm APT Evolves Tactics, Expands to European Targets](https://www.infosecurity-magazine.com/news/webworm-apt-targets-european-govt/) — Infosecurity Magazine (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/china-aligned-apt-webworm-expands-to-europe-using-discord-and-ms-graph-for-c2/

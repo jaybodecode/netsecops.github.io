@@ -41,11 +41,7 @@ EU citizens and companies must immediately cease all financial dealings with the
 **Tags:** Sanctions, European Union, Hack-for-Hire, iSoon, Emennet Pasargad, Flax Typhoon, Cyber Espionage, China, Iran
 
 ## Sources
-- [EU sanctions Iranian cyber front over election meddling, Charlie Hebdo breach](https://www.theregister.com/2026/03/17/eu_sanctions_iran_china/) — The Register (2026-03-17)
-- [Cybersecurity – The EU sanctions several private cyber offensive ecosystem actors (March 17, 2026)](https://www.francebleu.fr/infos/faits-divers-justice/cybersecurite-l-ue-sanctionne-plusieurs-acteurs-de-l-ecosysteme-prive-de-la-cyberoffensive-17032026) — France Diplomatie (2026-03-17)
-- [EU sanctions Chinese and Iranian actors over cyberattacks on critical infrastructure](https://securityaffairs.co/160563/cyber-warfare-2/eu-sanctions-chinese-iranian-actors-cyber-attacks.html) — Security Affairs (2026-03-17)
 - [EU adopts cyber-related sanctions on companies based in China and Iran](https://dig.watch/updates/eu-adopts-cyber-related-sanctions-on-companies-based-in-china-and-iran/) — Digital Watch Observatory (2026-03-17)
-- [EU Sanctions Companies in China & Iran for Cyberattacks](https://www.darkreading.com/cyberattacks-data-breaches/eu-sanctions-companies-china-iran-cyberattacks) — Dark Reading (2026-03-19)
 
 ---
 Source: https://cyber.netsecops.io/articles/eu-sanctions-chinese-and-iranian-firms-for-malicious-cyber-activities/

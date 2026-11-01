@@ -68,7 +68,6 @@ Ransomware remains the most impactful threat. The report notes a trend where som
 
 ## Sources
 - [Hacktivists and cybercriminals expand attacks on ICS, OT, and AI systems across critical infrastructure](https://industrialcyber.co/threats-risks/hacktivists-and-cybercriminals-expand-attacks-on-ics-ot-and-ai-systems-across-critical-infrastructure/) — Industrial Cyber (2026-01-20)
-- [Annual Threat Landscape Report 2025: Navigating the Polycrisis](https://cyble.com/blog/annual-threat-landscape-report-2025/) — Cyble (2026-01-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/hackers-target-critical-ics-ot-environments-and-ai-systems/

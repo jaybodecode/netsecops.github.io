@@ -75,8 +75,6 @@ The expansion of **Silver Fox**'s operations poses a significant threat to organ
 
 ## Sources
 - [Silver Fox Expands Winos 4.0 Attacks to Japan and Malaysia via HoldingHands RAT](https://thehackernews.com/2025/10/silver-fox-expands-winos-40-attacks-to.html) — The Hacker News (2025-10-18)
-- [WIU Cybersecurity Center - Western Illinois University](https://www.wiu.edu/cbt/cybersecurity_center/news.php) — WIU Cybersecurity Center (2025-10-18)
-- [Winos 4.0 hackers expand to Japan and Malaysia with new malware](https://securityaffairs.com/169707/apt/winos-4-0-holdinghands-rat.html) — Security Affairs (2025-10-18)
 
 ---
 Source: https://cyber.netsecops.io/articles/silver-fox-apt-expands-attacks-to-japan-malaysia/

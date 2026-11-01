@@ -55,9 +55,9 @@ The only effective remediation is to apply the security updates provided by Appl
 **Tags:** iOS, iPadOS, Privacy, Signal, Forensics, Vulnerability, Data Leak
 
 ## Sources
-- [Apple fixes bug that let the FBI recover deleted Signal messages](https://www.bleepingcomputer.com/news/security/apple-fixes-bug-that-let-the-fbi-recover-deleted-signal-messages/) — BleepingComputer (2026-04-22)
-- [Apple Fixes iOS Flaw That Let FBI Recover Deleted Signal Messages](https://thehackernews.com/2026/04/apple-fixes-ios-flaw-that-let-fbi.html) — The Hacker News (2026-04-23)
-- [iOS Flaw Let Deleted Notifications Linger, Apple Issues Fix](https://securityaffairs.co/150170/digital-id/ios-flaw-deleted-notifications.html) — Security Affairs (2026-04-23)
+- [BleepingComputer](https://www.bleepingcomputer.com/) — BleepingComputer (2026-04-22)
+- [The Hacker News](https://thehackernews.com/) — The Hacker News (2026-04-23)
+- [Security Affairs](https://securityaffairs.co/) — Security Affairs (2026-04-23)
 
 ---
 Source: https://cyber.netsecops.io/articles/apple-patches-ios-flaw-that-exposed-deleted-signal-message-notifications/

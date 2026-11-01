@@ -58,7 +58,6 @@ Based on the report's findings, organizations should prioritize the following:
 
 ## Sources
 - [Key Takeaways from the S-RM Cyber Incident Insights Report 2026](https://www.dlapiper.com/en/insights/publications/2026/03/key-takeaways-from-the-s-rm-cyber-incident-insights-report-2026) — DLA Piper
-- [2026 Cyber Incident Insights Report](https://www.s-rminform.com/2026-cyber-incident-report) — S-RM
 
 ---
 Source: https://cyber.netsecops.io/articles/s-rm-report-reveals-fragmenting-ransomware-ecosystem-and-surging-apac-attacks/

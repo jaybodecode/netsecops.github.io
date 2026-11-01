@@ -61,8 +61,8 @@ The shift to identity-driven attacks means that traditional, perimeter-focused s
 **Tags:** Threat Landscape, AI, Social Engineering, Identity Attack, SaaS, Cloud Security, SSO, Tidal Cyber, 2025 Review
 
 ## Sources
-- [Security coverage is falling behind the way attackers behave](https://www.helpnetsecurity.com/2025/12/31/security-coverage-is-falling-behind-the-way-attackers-behave/) — Help Net Security (2025-12-31)
-- [Tidal Cyber Releases Industry-First Threat-Led Defense Report, Powered by Unmatched Adversary Behavioral Intelligence](https://www.prweb.com/releases/tidal-cyber-releases-industry-first-threat-led-defense-report-powered-by-unmatched-adversary-behavioral-intelligence-302321035.html) — PRWeb (2025-12-08)
+- [Help Net Security](https://www.helpnetsecurity.com/) — Help Net Security (2025-12-31)
+- [PRWeb](https://www.prweb.com/) — PRWeb (2025-12-08)
 
 ---
 Source: https://cyber.netsecops.io/articles/2025-threat-report-highlights-ai-social-engineering-and-identity-attacks/

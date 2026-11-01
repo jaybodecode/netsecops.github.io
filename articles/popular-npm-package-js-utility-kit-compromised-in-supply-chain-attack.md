@@ -56,8 +56,8 @@ Developers and security teams should look for these signs of compromise:
 **Tags:** supply chain attack, NPM, infostealer, malware, cryptocurrency, developer security, CI/CD
 
 ## Sources
-- [Malicious Code Injected into Popular NPM Package 'js-utility-kit'](https://snyk.io/blog/supply-chain-attack-npm-package-js-utility-kit/) — Snyk (2026-01-26)
-- [Popular NPM package with 5M weekly downloads hijacked to spread crypto-stealing malware](https://www.theregister.com/2026/01/26/npm_package_hijacked_crypto_stealer/) — The Register (2026-01-26)
+- [Snyk](https://snyk.io/) — Snyk (2026-01-26)
+- [The Register](https://www.theregister.com/) — The Register (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/popular-npm-package-js-utility-kit-compromised-in-supply-chain-attack/

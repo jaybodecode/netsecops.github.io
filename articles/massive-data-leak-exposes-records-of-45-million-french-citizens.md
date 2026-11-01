@@ -61,7 +61,6 @@ Detecting misconfigured cloud assets is a critical aspect of an external attack 
 
 ## Sources
 - [Massive breach leaks 45 million French records: demographic, healthcare, and financial data all leaked, here's what we know](https://www.techradar.com/pro/security/massive-breach-leaks-45-million-french-records-demographic-healthcare-and-financial-data-all-leaked-heres-what-we-know) — TechRadar Pro (2026-01-15)
-- [Massive data leak exposes 45 million French citizens](https://cybernews.com/security/france-data-leak-45m-citizens-exposed/) — Cybernews (2026-01-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/massive-data-leak-exposes-records-of-45-million-french-citizens/

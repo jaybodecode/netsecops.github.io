@@ -57,10 +57,10 @@ Organizations should immediately add the identified IOCs to their blocklists and
 **Tags:** Threat Actor, APT, Gamaredon, Lazarus, Russia, North Korea, Threat Intelligence, C2
 
 ## Sources
-- [Rare APT Collaboration Emerges Between Russia and North Korea](https://www.esecurityplanet.com/threat-intelligence/apt-collaboration-russia-gamaredon-north-korea-lazarus/) — eSecurity Planet (2025-11-25)
-- [Russian and North Korean Hackers Forge Global Cyberattack Alliance](https://gbhackers.com/russian-and-north-korean-hackers/) — GBHackers on Security (2025-11-25)
-- [Russian and North Korean Hackers Form Alliances to Attack Organizations Worldwide](https://cybersecuritynews.com/russian-north-korean-hackers/) — Cyber Security News (2025-11-25)
-- [Russia’s Gamaredon and North Korea’s Lazarus observed using shared servers and tools](https://thecyberexpress.com/russia-gamaredon-north-korea-lazarus/) — The Cyber Express (2025-11-24)
+- [eSecurity Planet](https://www.esecurityplanet.com/) — eSecurity Planet (2025-11-25)
+- [GBHackers on Security](https://gbhackers.com/) — GBHackers on Security (2025-11-25)
+- [Cyber Security News](https://cybersecuritynews.com/) — Cyber Security News (2025-11-25)
+- [The Cyber Express](https://thecyberexpress.com/) — The Cyber Express (2025-11-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/unprecedented-collaboration-found-between-russian-gamaredon-and-north-korean-lazarus-apts/

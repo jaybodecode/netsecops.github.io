@@ -58,7 +58,6 @@ To detect similar stealthy attacks, security teams should focus on hunting for s
 **Tags:** Vietnam, Government, Data Breach, Cyberattack, SOC, VNCERT, Skills Gap
 
 ## Sources
-- [Hackers breach two Vietnamese ministerial systems in major cyberattack](https://vietnamnet.vn/en/hackers-breach-two-vietnamese-ministerial-systems-in-major-cyberattack-228373.html) — VietNamNet (2026-05-22)
 - [Vietnam Investigates Major Cyberattacks on Government Systems](https://e.vcci.com.vn/vietnam-investigates-major-cyberattacks-on-government-systems) — VCCI (2026-05-22)
 
 ---

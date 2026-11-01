@@ -53,7 +53,6 @@ Strengthening defenses against supply chain attacks requires looking beyond your
 **Tags:** Supply Chain Attack, PII, Telecommunications, Credential Compromise, Third-Party Risk
 
 ## Sources
-- [Freedom Mobile Data Breach](https://www.upguard.com/breaches/freedom-mobile-data-breach) — UpGuard (2026-03-18)
 - [Freedom Mobile Data Breach | UpGuard](https://www.google.com/search?q=Freedom+Mobile+Data+Breach+%7C+UpGuard&sca_esv=a0e7130b06b29cd7&sxsrf=ACQVn08X1u5sK2b6_Nl_F-1p2F9o-Y73fA%3A1708453531109&ei=pPDRZdnqJpPuvr0P6rW06Ao&ved=0ahUKEwi5mZnw6bmEAxWT9L0KHepsDK0Q4dUDCBA&uact=5&oq=Freedom+Mobile+Data+Breach+%7C+UpGuard&gs_lp=Egxnd3Mtd2l6LXNlcnAiH0ZyZWVkb20gTW9iaWxlIERhdGEgQnJlYWNoIHwgVXBHdWFyZEjZEVAAWABwAngAkAEAmAGIAaABhAGqAQMwLjG4AQPIAQD4AQH4AQLiAwQYACB6BAgBGAE&sclient=gws-wiz-serp) — UpGuard (2026-03-18)
 
 ---

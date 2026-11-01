@@ -76,7 +76,6 @@ No specific Indicators of Compromise were provided in the source articles.
 
 ## Sources
 - [11th May – Threat Intelligence Report](https://research.checkpoint.com/2026/05/11th-may-threat-intelligence-report/) — Check Point Research (2026-05-11)
-- [Threat Intelligence: May 11, 2026](https://www.resecurity.com/blog/threat-intelligence-may-11-2026) — ReSecurity (2026-05-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-vulnerabilities-found-in-ai-coding-agents-and-browser-extensions/

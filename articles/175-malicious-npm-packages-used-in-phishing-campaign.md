@@ -59,7 +59,6 @@ Preventing these attacks requires a shift towards a more security-conscious deve
 
 ## Sources
 - [Top 5 Cybersecurity News Stories October 10, 2025](https://diesec.com/blog/top-5-cybersecurity-news-stories-october-10-2025) — DIESEC (2025-10-10)
-- [Snake Keylogger Uses Weaponized Emails and PowerShell to Steal Sensitive Data](https://gbhackers.com/snake-keylogger-malware/) — GBHackers on Security (2025-10-11)
 
 ---
 Source: https://cyber.netsecops.io/articles/175-malicious-npm-packages-used-in-phishing-campaign/

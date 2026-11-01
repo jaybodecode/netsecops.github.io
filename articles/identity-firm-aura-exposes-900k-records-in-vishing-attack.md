@@ -55,11 +55,11 @@ Detecting vishing-initiated breaches requires a focus on post-compromise activit
 **Tags:** vishing, social engineering, PII, identity theft, M&A security, legacy systems
 
 ## Sources
-- [Aura Data Breach Exposes 900,000 Records — The Identity Protection Company That Couldn't Protect Its Own Data](https://breached.company/aura-data-breach/) — Breached.Company
-- [Aura data breach: What happened and how to respond](https://us.norton.com/blog/privacy/aura-data-breach) — Norton
-- [Aura data breach: What happened and how to stay protected](https://www.lifelock.com/blogs/privacy/aura-data-breach) — LifeLock
-- [Aura Confirms Data Breach Affecting Over 900,000 Records Following Voice Phishing Attack](https://www.thaicert.or.th/news/2026/03/20/aura-confirms-data-breach-affecting-over-900000-records-following-voice-phishing-attack.html) — ThaiCERT
-- [900K Records Exposed](https://www.esecurityplanet.com/data-security/900k-records-exposed/) — eSecurity Planet
+- [Breached.Company](https://breached.company/) — Breached.Company
+- [Norton](https://us.norton.com/) — Norton
+- [LifeLock](https://www.lifelock.com/) — LifeLock
+- [ThaiCERT](https://www.thaicert.or.th/) — ThaiCERT
+- [eSecurity Planet](https://www.esecurityplanet.com/) — eSecurity Planet
 
 ---
 Source: https://cyber.netsecops.io/articles/identity-firm-aura-exposes-900k-records-in-vishing-attack/

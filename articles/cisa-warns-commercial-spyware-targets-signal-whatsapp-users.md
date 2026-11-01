@@ -69,9 +69,6 @@ CISA recommends several best practices:
 **Tags:** CISA, spyware, mobile security, Signal, WhatsApp, zero-click, phishing, social engineering
 
 ## Sources
-- [​​Spyware Allows Cyber Threat Actors to Target Users of Messaging Applications​](https://www.cisa.gov/news-events/cybersecurity-advisories/spyware-allows-cyber-threat-actors-target-users-messaging-applications) — CISA (2025-11-24)
-- [CISA alert draws attention to spyware’s targeting of messaging apps](https://cyberscoop.com/cisa-spyware-messaging-apps/) — CyberScoop (2025-11-24)
-- [CISA Warns of Commercial Spyware Targeting Signal and WhatsApp Users](https://gbhackers.com/cisa-warns-of-commercial-spyware-targeting-signal-and-whatsapp-users/) — GBHackers on Security (2025-11-25)
 - [CISA Warns of Active Spyware Campaigns Hijacking High-Value Signal and WhatsApp Users](https://thehackernews.com/2025/11/cisa-warns-of-active-spyware-campaigns.html) — The Hacker News (2025-11-25)
 - [CISA Alert Draws Attention to Spyware’s Targeting of Messaging Apps](https://ground.news/article/cisa-alert-draws-attention-to-spywares-targeting-of-messaging-apps) — Ground News (2025-11-24)
 

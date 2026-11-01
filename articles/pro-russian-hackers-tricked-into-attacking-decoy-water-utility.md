@@ -58,9 +58,7 @@ The direct impact of this specific incident was zero, as the target was a decoy.
 **Tags:** hacktivism, honeypot, ICS, OT security, critical infrastructure, threat intelligence, Russia
 
 ## Sources
-- [Pro-Russian Hackers Caught Bragging About Attack on Fake Water Utility](https://thehackernews.com/2025/10/pro-russian-hackers-caught-bragging.html) — The Hacker News (2025-10-10)
 - [Forescout exposes TwoNet hacktivists targeting water utility honeypot in latest OT cyberattack findings](https://industrialcyber.co/threats-vulnerabilities/forescout-exposes-twonet-hacktivists-targeting-water-utility-honeypot-in-latest-ot-cyberattack-findings/) — Industrial Cyber (2025-10-10)
-- [Pro-Russia Hacktivists “Claim” Attack on Water Utility Honeypot](https://www.infosecurity-magazine.com/news/prorussia-hacktivists-attack/) — Infosecurity Magazine (2025-10-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/pro-russian-hackers-tricked-into-attacking-decoy-water-utility/

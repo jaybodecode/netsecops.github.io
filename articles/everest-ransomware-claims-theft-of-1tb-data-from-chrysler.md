@@ -54,7 +54,6 @@ If Everest's claims are true, the impact on Chrysler would be **high**. The publ
 
 ## Sources
 - [IT Security News Hourly Summary 2025-12-28 00h : 1 Posts](https://ground.news/article/it-security-news-hourly-summary-2025-12-28-00h-1-posts_778434) — Ground News (2025-12-27)
-- [Everest Ransomware Group Claims Theft Of Over 1TB Of Chrysler Data](https://www.hackread.com/everest-ransomware-chrysler-data-theft/) — HackRead (2025-12-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/everest-ransomware-claims-theft-of-1tb-data-from-chrysler/

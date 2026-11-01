@@ -43,7 +43,7 @@ For advanced users, factory images and OTA files are also available on the Googl
 **Tags:** Google, Pixel, Android, Patch Management, Mobile Security, Vulnerability
 
 ## Sources
-- [Pixel Update Bulletin—February 2026 | Android Open Source Project](https://source.android.com/docs/security/bulletin/pixel/2026-02-01) — Android Open Source Project
+- [Android Open Source Project](https://source.android.com/) — Android Open Source Project
 
 ---
 Source: https://cyber.netsecops.io/articles/google-issues-february-2026-security-update-for-pixel-devices/

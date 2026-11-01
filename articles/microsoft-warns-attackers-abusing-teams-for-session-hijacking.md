@@ -74,7 +74,6 @@ DFIR teams should hunt for the following:
 ## Sources
 - [NEWS ROUNDUP – 8th October 2025](https://www.digitalforensicsmagazine.com/news-roundup-8th-october-2025/) — Digital Forensics Magazine (2025-10-08)
 - [Daily Cyber News – October 8th, 2025](https://www.youtube.com/watch?v=kYcI943Y_s8) — YouTube (2025-10-08)
-- [Oracle Confirms Cl0p Ransomware Group Exploited Zero-Day (CVE-2025-61882) to Attack E-Business Suite Customers](https://www.thaicert.or.th/alerts/A-2025-10-07-01.html) — ThaiCERT (2025-10-07)
 
 ---
 Source: https://cyber.netsecops.io/articles/microsoft-warns-attackers-abusing-teams-for-session-hijacking/

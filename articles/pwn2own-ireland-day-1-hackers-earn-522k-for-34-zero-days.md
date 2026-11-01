@@ -51,7 +51,6 @@ Until the vulnerabilities are publicly disclosed, specific observables are not a
 
 ## Sources
 - [Pwn2Own Ireland 2025: Day One Results](https://www.zerodayinitiative.com/blog/2025/10/21/pwn2own-ireland-2025-day-one-results) — Zero Day Initiative (2025-10-21)
-- [Hackers Exploited 34 Zero-Day Vulnerabilities And Earned $522,500 In Pwn2Own Ireland 2025](https://www.cybersecuritynews.com/pwn2own-ireland-2025/) — Cyber Security News (2025-10-22)
 - [Pwn2Own Ireland 2025 Day 1: 34 Zero-Day Exploits & $522K in Rewards!](https://www.youtube.com/watch?v=F3a6Z2hP0j8) — YouTube (2025-10-21)
 
 ---

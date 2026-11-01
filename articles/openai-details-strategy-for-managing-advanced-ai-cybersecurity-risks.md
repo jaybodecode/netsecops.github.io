@@ -43,7 +43,6 @@ The announcement also comes in the wake of a report that a state-sponsored cyber
 **Tags:** AI, Artificial Intelligence, OpenAI, Cybersecurity Policy, Risk Management, AI Safety
 
 ## Sources
-- [OpenAI lays out its plan for major advances in AI cybersecurity features](https://www.scmagazine.com/news/openai-lays-out-its-plan-for-major-advances-in-ai-cybersecurity-features) — SC Media (2025-12-12)
 - [Top 5 Cybersecurity News Stories December 12, 2025](https://diesec.com/blog/top-5-cybersecurity-news-stories-december-12-2025) — DIESEC (2025-12-12)
 
 ---

@@ -54,8 +54,6 @@ A successful compromise by BlueNoroff can lead to catastrophic financial losses 
 
 ## Sources
 - [Kaspersky: BlueNoroff targets executives on Windows and macOS using AI-driven tools](https://www.kaspersky.com/about/press-releases/2025_kaspersky-bluenoroff-targets-executives-on-windows-and-macos-using-ai-driven-tools) — Kaspersky (2025-10-28)
-- [BlueNoroff's latest campaigns: GhostCall and GhostHire](https://securelist.com/bluenoroffs-latest-campaigns-ghostcall-and-ghosthire/116995/) — Securelist (2025-10-28)
-- [North Korea's BlueNoroff Expands Scope of Crypto Heists](https://www.darkreading.com/cyberattacks-data-breaches/north-koreas-bluenoroff-expands-scope-crypto-heists) — Dark Reading (2025-10-28)
 - [BlueNoroff APT Campaigns GhostCall and GhostHire Target Web3, Venture Capital Sectors via Advanced Social Engineering](https://www.technadu.com/bluenoroff-apt-campaigns-ghostcall-and-ghosthire-target-web3-venture-capital-sectors-via-advanced-social-engineering/306786/) — TechNadu (2025-10-28)
 
 ---

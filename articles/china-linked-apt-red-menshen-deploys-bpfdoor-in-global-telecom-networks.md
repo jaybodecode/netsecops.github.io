@@ -48,8 +48,8 @@ Detecting BPFDoor is challenging due to its passive nature. However, defenders c
 **Tags:** Red Menshen, BPFDoor, APT, China, Telecommunications, Espionage, Linux
 
 ## Sources
-- [China-linked Red Menshen APT deploys stealthy BPFDoor implants in telecom networks](https://securityaffairs.com/161026/apt/china-linked-red-menshen-apt-bpfdoor.html) — Security Affairs (2026-03-27)
-- [China-linked hackers plant stealth malware deep in global telecom networks: Report](https://therecord.media/china-linked-hackers-plant-stealth-malware-deep-in-global-telecom-networks) — The Record (2026-03-27)
+- [Security Affairs](https://securityaffairs.com/) — Security Affairs (2026-03-27)
+- [The Record](https://therecord.media/) — The Record (2026-03-27)
 
 ---
 Source: https://cyber.netsecops.io/articles/china-linked-apt-red-menshen-deploys-bpfdoor-in-global-telecom-networks/

@@ -81,9 +81,9 @@ CISA's directive provides a baseline for mitigation, but all organizations using
 **Tags:** F5, BIG-IP, CISA, Emergency Directive, Source Code, Supply Chain Attack, Nation-State Actor, China, Zero-Day
 
 ## Sources
-- [Cybersecurity order warns of "imminent risk" to federal agencies following possible breach](https://www.cbsnews.com/news/f5-breach-cisa-emergency-order-federal-agencies/) — CBS News (2025-10-15)
-- [CISA Directs Federal Agencies to Mitigate Vulnerabilities in F5 Devices](https://www.cisa.gov/news-events/news/cisa-directs-federal-agencies-mitigate-vulnerabilities-f5-devices) — CISA (2025-10-15)
-- [F5 systems data stolen in major nation-state cyberattack](https://www.siliconrepublic.com/enterprise/f5-data-breach-cyberattack-china-us-cisa) — Silicon Republic (2025-10-16)
+- [CBS News](https://www.cbsnews.com/) — CBS News (2025-10-15)
+- [CISA](https://www.cisa.gov/) — CISA (2025-10-15)
+- [Silicon Republic](https://www.siliconrepublic.com/) — Silicon Republic (2025-10-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-issues-emergency-directive-after-nation-state-actor-steals-f5-source-code/

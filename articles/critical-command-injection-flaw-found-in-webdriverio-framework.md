@@ -46,10 +46,8 @@ Compromise of a developer's machine is also critical, as it provides access to s
 **Tags:** WebdriverIO, command injection, CI/CD security, DevSecOps, supply chain attack, open source, vulnerability
 
 ## Sources
-- [9.8 Severity Alert: Malicious Git Branches Can Hijack Your WebdriverIO Build Servers](https://dailycybersecurity.com/9-8-severity-alert-malicious-git-branches-can-hijack-your-webdriverio-build-servers/) — Daily Cybersecurity (2026-05-13)
 - [WebdriverIO Security Policy](https://github.com/webdriverio/webdriverio/security/policy) — GitHub (2025-05-25)
 - [webdriverio - Snyk Vulnerability Database](https://snyk.io/vuln/npm:webdriverio) — Snyk (2026-05-13)
-- [Microsoft Patch Tuesday May 2026 Fixes 137 Flaws, Including Netlogon RCE and Critical SSO Bypass](https://dailycybersecurity.com/microsoft-patch-tuesday-may-2026-fixes-137-flaws-including-netlogon-rce-and-critical-sso-bypass/) — Daily Cybersecurity (2026-05-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/critical-command-injection-flaw-found-in-webdriverio-framework/

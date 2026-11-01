@@ -55,9 +55,7 @@ This is a news item about a potential political appointment and does not have di
 
 ## Sources
 - [IBM security executive emerges as possible contender to lead CISA](https://www.nextgov.com/cybersecurity/2026/05/ibm-security-executive-emerges-possible-contender-lead-cisa/396269/) — Nextgov/FCW (2026-05-03)
-- [IBM security executive emerges as possible contender to lead CISA](https://threat.media/news/ibm-security-executive-emerges-as-possible-contender-to-lead-cisa/) — Threat Beat (2026-05-04)
 - [IBM - Ground News](https://ground.news/article/ibm-security-executive-emerges-as-possible-contender-to-lead-cisa) — Ground News (2026-05-04)
-- [Section: Government and Industry - Page 120](https://threat.media/section/government-and-industry?page=120) — Threat Beat (2026-05-04)
 
 ---
 Source: https://cyber.netsecops.io/articles/ibm-executive-tom-parker-emerges-as-top-candidate-for-cisa-director/

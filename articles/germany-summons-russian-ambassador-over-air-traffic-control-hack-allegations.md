@@ -45,7 +45,6 @@ Protecting critical infrastructure like ATC systems requires a defense-in-depth 
 **Tags:** geopolitics, cyber warfare, state-sponsored, Germany, Russia, air traffic control, critical infrastructure
 
 ## Sources
-- [Germany calls in Russian Ambassador over air traffic control hack claims](https://securityaffairs.com/152912/apt/germany-summons-russian-ambassador-hack.html) — Security Affairs (2025-12-13)
 - [Germany summons Russian envoy over suspected cyberattack on air traffic systems](https://www.reuters.com/world/europe/germany-summons-russian-envoy-over-alleged-cyberattack-2025-12-13/) — Reuters (2025-12-13)
 
 ---

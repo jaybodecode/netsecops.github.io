@@ -48,7 +48,6 @@ The impact of a successful attack on an OT environment goes far beyond data loss
 **Tags:** ICS Security, IT-OT convergence, OT Security, critical infrastructure, manufacturing, threat report
 
 ## Sources
-- [Operational technology faces heightened cyber risk, with the industrials sector experiencing thousands of attacks per year, warns NCC Group](https://www.nccgroup.com/uk/about-us/newsroom-and-events/press-releases/2026/operational-technology-faces-heightened-cyber-risk-with-the-industrials-sector-experiencing-thousands-of-attacks-per-year-warns-ncc-group/) (2026-05-13)
 - [Global Cyber Threat Outlook 2026: Rising Infrastructure Attacks](https://securityboulevard.com/2026/05/global-cyber-threat-outlook-2026-rising-infrastructure-attacks/) (2026-05-13)
 
 ---

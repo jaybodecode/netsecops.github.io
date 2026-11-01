@@ -52,7 +52,6 @@ Because the attack ran for over four years, the cumulative data loss across all 
 
 ## Sources
 - [Malicious Go Packages Impersonate Google's UUID Library to Steal Sensitive Data](https://gbhackers.on-line/malicious-go-packages-impersonate-googles-uuid-library-to-steal-sensitive-data/) — GBHackers (2025-12-06)
-- [Malicious Go Libraries Mimic as Google UUID to Exfiltrate User Data](https://cyberpress.com/malicious-go-libraries-mimic-as-google-uuid-to-exfiltrate-user-data/) — Cyberpress (2025-12-06)
 - [Malicious Go Packages Mimic as Google's UUID Library to Exfiltrate Sensitive Data](https://infosecurity.report/2025/12/08/malicious-go-packages-mimic-as-googles-uuid-library-to-exfiltrate-sensitive-data/) — Infosecurity Report (2025-12-08)
 
 ---

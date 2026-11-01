@@ -54,7 +54,6 @@ Defending against these attacks requires a standard, robust anti-ransomware stra
 **Tags:** LockBit, Ransomware, Cybercrime, Malware Builder, Threat Intelligence
 
 ## Sources
-- [Hackers are still using the leaked LockBit ransomware builder in attacks](https://www.bleepingcomputer.com/news/security/hackers-are-still-using-the-leaked-lockbit-ransomware-builder-in-attacks/) — BleepingComputer
 - [LockBit's Leaked Builder Continues to Fuel Ransomware Attacks](https://www.darkreading.com/cyberattacks-data-breaches/lockbit-leaked-builder-continues-to-fuel-ransomware-attacks) — Dark Reading
 
 ---

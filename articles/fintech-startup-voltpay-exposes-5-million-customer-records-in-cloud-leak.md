@@ -54,8 +54,8 @@ Detecting this type of exposure requires proactive security measures, not reacti
 **Tags:** data breach, cloud security, misconfiguration, Elasticsearch, fintech, PII, GDPR, CCPA
 
 ## Sources
-- [Fintech Startup VoltPay Leaks 5 Million Customer Records in Unsecured Database](https://securitydiscovery.com/voltpay-data-leak-5m-records-exposed/) — SecurityDiscovery (2026-01-25)
-- [Fintech app VoltPay exposed millions of users' financial data](https://techcrunch.com/2026/01/26/voltpay-fintech-data-breach-exposed/) — TechCrunch (2026-01-26)
+- [SecurityDiscovery](https://securitydiscovery.com/) — SecurityDiscovery (2026-01-25)
+- [TechCrunch](https://techcrunch.com/) — TechCrunch (2026-01-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/fintech-startup-voltpay-exposes-5-million-customer-records-in-cloud-leak/

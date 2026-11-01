@@ -80,7 +80,6 @@ Mitigating the threat of CaaS platforms like "SIMCARTEL" involves both technical
 
 ## Sources
 - [Authorities Shut Down Cybercrime-as-a-Service, Seize 40,000 SIM Cards - GBHackers](https://gbhackers.com/authorities-shut-down-cybercrime-as-a-service/) — GBHackers (2025-10-18)
-- [SIMCARTEL operation: Europol takes down SIM-Box ring linked to 3,200 scams](https://securityaffairs.com/169720/security/simcartel-operation-europol-sim-box-ring.html) — Security Affairs (2025-10-18)
 - [Authorities Dismantle Cybercrime-as-a-Service Platform, Seize 40,000 Active SIM Cards](https://cybersecuritynews.co.uk/authorities-dismantle-cybercrime-as-a-service-platform-seize-40000-active-sim-cards/) — Cybersecurity News (2025-10-18)
 
 ---

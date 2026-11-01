@@ -45,7 +45,7 @@ To detect such breaches, organizations should monitor for:
 **Tags:** Data Breach, PII, Social Security Number, IT Services
 
 ## Sources
-- [Global Consulting Services Data Breach Compromises PII of 1,320 Individuals](https://www.jdsupra.com/legalnews/global-consulting-services-data-breach-1100418/) — JD Supra (2026-05-20)
+- [JD Supra](https://www.jdsupra.com/) — JD Supra (2026-05-20)
 
 ---
 Source: https://cyber.netsecops.io/articles/global-consulting-services-discloses-data-breach-exposing-pii/

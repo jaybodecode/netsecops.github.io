@@ -42,7 +42,6 @@ Based on the report's themes, organizations should prioritize the following:
 **Tags:** WEF, Cyber Fraud, Phishing, Ransomware, AI, Artificial Intelligence, Cybersecurity Outlook
 
 ## Sources
-- [World Economic Forum: Cyber-fraud overtakes ransomware](https://www.infosecurity-magazine.com/news/world-economic-forum-cyber-fraud/) — Infosecurity Magazine (2026-01-12)
 - [Cyber fraud and geopolitics redefine cybersecurity risks worldwide, says WEF](https://www.fortuneindia.com/enterprise/cyber-fraud-and-geopolitics-redefine-cybersecurity-risks-worldwide-says-wef/115456) — Fortune India (2026-01-12)
 
 ---

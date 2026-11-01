@@ -50,9 +50,7 @@ As the threat actor is unknown, hunting hints must be generic for ransomware act
 **Tags:** financial services, SSN, PII, class action, breach notification, delayed disclosure
 
 ## Sources
-- [American Lending Center notifies 123,000+ people of data breach that leaked SSNs](https://www.comparitech.com/blog/information-security/american-lending-center-data-breach/) — Comparitech (2026-05-12)
 - [American Lending Center Data Breach: Edelson Lechtzin LLP Launches Investigation Into Exposure of Personal Information](https://www.globenewswire.com/news-release/2026/05/12/2881234/0/en/American-Lending-Center-Data-Breach-Edelson-Lechtzin-LLP-Launches-Investigation-Into-Exposure-of-Personal-Information.html) — GlobeNewswire (2026-05-12)
-- [American Lending Center Data Breach](https://www.classaction.org/news/attorneys-investigating-american-lending-center-data-breach) — ClassAction.org (2026-05-12)
 - [American Lending Center Data Breach Investigation](https://www.myclaimdepot.com/american-lending-center-data-breach-investigation/) — MyClaimDepot (2026-05-12)
 
 ---

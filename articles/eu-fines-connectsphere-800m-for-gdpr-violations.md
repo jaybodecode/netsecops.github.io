@@ -50,7 +50,6 @@ For organizations looking to avoid a similar fate, the key takeaways are:
 
 ## Sources
 - [ConnectSphere hit with €800 million EU privacy fine over data breaches](https://www.reuters.com/technology/connectsphere-hit-with-800-million-euro-gdpr-fine-over-data-breaches-2026-02-16/) — Reuters (2026-02-16)
-- [Ireland's data regulator slaps ConnectSphere with €800M fine for GDPR failures](https://www.politico.eu/article/ireland-dpc-fines-connectsphere-800-million-gdpr/) — Politico (2026-02-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/eu-fines-connectsphere-800m-for-gdpr-violations/

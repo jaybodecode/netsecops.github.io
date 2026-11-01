@@ -51,8 +51,6 @@ Financial institutions often have limited visibility into their vendors' securit
 
 ## Sources
 - [Marquis Data Breach Exposes Dozens of U.S. Banks and Credit Unions](https://gbhackers.com/marquis-data-breach/) — GBHackers (2025-11-26)
-- [Marquis Software Solutions Data Breach Lawsuit Investigation](https://www.jointhecase.com/marquis-software-solutions-data-breach-lawsuit-investigation/) — JoinTheCase (2025-11-26)
-- [NOTICE OF DATA BREACH](https://oag.ca.gov/system/files/CoVantage%20-%20Sample%20NBL.pdf) — California Office of the Attorney General (2025-11-26)
 
 ---
 Source: https://cyber.netsecops.io/articles/marquis-software-supply-chain-breach-hits-dozens-of-us-banks/

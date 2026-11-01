@@ -68,7 +68,7 @@ No specific Indicators of Compromise were provided in the source articles.
 **Tags:** xHunt, Cyber Espionage, Threat Actor, Kuwait, Microsoft Exchange, IIS, PowerShell
 
 ## Sources
-- [New Cyber Espionage Campaign Targets Exchange & IIS with Custom Backdoors](https://cyberpress.com/new-cyber-espionage-campaign-targets-exchange-iis-with-custom-backdoors-28773/) — Cyber Press (2025-12-15)
+- [Cyber Press](https://cyberpress.com/) — Cyber Press (2025-12-15)
 
 ---
 Source: https://cyber.netsecops.io/articles/xhunt-cyber-espionage-group-resurfaces-targeting-kuwaiti-organizations/

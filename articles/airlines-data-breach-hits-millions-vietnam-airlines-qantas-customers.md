@@ -69,7 +69,7 @@ For organizations using third-party SaaS platforms like Salesforce:
 **Tags:** Data Breach, Vietnam Airlines, Qantas, Salesforce, Scattered LAPSUS$ Hunters, Third-Party Risk, Supply Chain, PII
 
 ## Sources
-- [Major data breach at Vietnam Airlines and Qantas: millions of customers affected](https://www.travelnews.ch/artikel/major-data-breach-at-vietnam-airlines-and-qantas-millions-of-customers-affected-106516) — TravelNews (2025-10-16)
+- [TravelNews](https://www.travelnews.ch/) — TravelNews (2025-10-16)
 
 ---
 Source: https://cyber.netsecops.io/articles/airlines-data-breach-hits-millions-vietnam-airlines-qantas-customers/

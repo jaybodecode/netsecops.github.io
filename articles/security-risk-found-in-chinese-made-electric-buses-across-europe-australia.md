@@ -62,7 +62,6 @@ Transit authorities in Australia, where over 1,500 Yutong vehicles operate, and 
 **Tags:** ICS, Critical Infrastructure, Transportation, Yutong, Supply Chain Security, National Security
 
 ## Sources
-- [Concerns About Cybersecurity Increase Globally with Yutong Electric Buses](https://rswebsols.com/concerns-about-cybersecurity-increase-globally-with-yutong-electric-buses/) — RS Web Solutions (2025-11-09)
 - [Concerns About Cybersecurity Increase Globally with Yutong Electric Buses](https://news.google.com/search?q=Concerns%20About%20Cybersecurity%20Increase%20Globally%20with%20Yutong%20Electric%20Buses) — Google News (2025-11-09)
 
 ---

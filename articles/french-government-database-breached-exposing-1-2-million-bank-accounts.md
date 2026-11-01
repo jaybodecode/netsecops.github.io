@@ -43,7 +43,6 @@ While the inability to move funds is a mitigating factor, the value of the stole
 **Tags:** Data Breach, Government, France, Stolen Credentials, PII, Banking
 
 ## Sources
-- [French Ministry confirms data access to 1.2 Million bank accounts](https://securityaffairs.com/159423/data-breach/france-confirms-hacker-accessed-1-2-million-bank-accounts.html) — Security Affairs (2026-02-18)
 - [Data breach hits 1 million Figure customers](https://www.americanbanker.com/news/data-breach-hits-1-million-figure-customers) — American Banker (2026-02-18)
 
 ---

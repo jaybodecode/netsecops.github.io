@@ -49,8 +49,7 @@ Mitigation focuses almost entirely on user education and platform moderation.
 **Tags:** Job Scam, MENA, Phishing, Social Engineering, Fraud
 
 ## Sources
-- [Coordinated Scams Target MENA Region With Fake Online Job Ads](https://www.infosecurity-magazine.com/news/coordinated-scams-target-mena-fake/) — Infosecurity Magazine (2025-12-24)
-- [Soft Market, Hard Choices: The State of Cyber Insurance](https://www.infosecurity-magazine.com/news/soft-market-hard-choices-cyber/) — Infosecurity Magazine (2025-12-25)
+- [Infosecurity Magazine](https://www.infosecurity-magazine.com/) — Infosecurity Magazine (2025-12-24)
 
 ---
 Source: https://cyber.netsecops.io/articles/coordinated-scams-target-mena-region-with-fake-online-job-advertisements/

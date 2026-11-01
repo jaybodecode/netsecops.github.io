@@ -49,12 +49,8 @@ The potential impact of this breach is massive, especially if the hacker's claim
 **Tags:** Data Breach, Endesa, Spain, PII, Energy Sector, Cybercrime, IBAN
 
 ## Sources
-- [Threat actor claims the theft of full customer data from Spanish energy firm Endesa](https://securityaffairs.co/wordpress/157262/data-breach/endesa-data-breach.html) — Security Affairs (2026-01-13)
 - [Spanish energy giant Endesa discloses data breach affecting customers](https://www.bleepingcomputer.com/news/security/spanish-energy-giant-endesa-discloses-data-breach-affecting-customers/) — BleepingComputer (2026-01-13)
-- [Endesa probes breach after hackers claim huge data haul](https://www.theregister.com/2026/01/14/endesa_probes_breach_after_hackers/) — The Register (2026-01-14)
 - [Spanish energy giant Endesa says it was hit by data breach, customers affected and 20 million files allegedly put up for sale](https://www.techradar.com/pro/security/spanish-energy-giant-endesa-says-it-was-hit-by-data-breach-customers-affected-and-20-million-files-allegedly-put-up-for-sale) — TechRadar Pro (2026-01-13)
-- [A cyberattack extracts personal data from Endesa customers](https://www.ara.cat/economia/en/a-cyberattack-extracts-personal-data-from-endesa-customers_1_4905898.html) — Ara (2026-01-12)
-- [Spanish electricity company Endesa reports customer data theft, including bank details](https://www.surinenglish.com/malaga/endesa-customer-data-theft-20260112114849-nt.html) — Surinenglish (2026-01-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/spanish-energy-giant-endesa-suffers-major-data-breach/

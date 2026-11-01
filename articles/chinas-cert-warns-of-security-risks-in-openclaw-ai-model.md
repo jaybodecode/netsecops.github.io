@@ -55,7 +55,6 @@ Detecting misuse of an AI model is a novel challenge.
 **Tags:** AI Security, Large Language Model, LLM, Prompt Injection, Vulnerability, China
 
 ## Sources
-- [12th March 2026 Archive](https://www.theregister.com/2026/03/12/) — The Register (2026-03-12)
 - [16th March – Threat Intelligence Report](https://research.checkpoint.com/2026/16th-march-threat-intelligence-report/) — Check Point Research (2026-03-16)
 
 ---

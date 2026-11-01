@@ -55,8 +55,6 @@ Proton has notified the affected politicians. For government IT departments, the
 **Tags:** Data Breach, Dark Web, Government, Password Security, Proton, Phishing, Operational Security
 
 ## Sources
-- [A majority of US state legislators have data leaked on the dark web](https://proton.me/blog/us-state-legislators-data-breach-dark-web) — Proton (2026-04-01)
-- [Leaked: Politicians’ emails and passwords on the dark web](https://proton.me/blog/leaked-politicians-passwords) — Proton (2026-03-31)
 - [Thousands of Capitol Hill staffers’ info spilled across dark web](https://www.washingtontimes.com/news/2024/sep/24/thousands-of-capitol-hill-staffers-info-spilled-a/) — The Washington Times (2026-03-31)
 - [US Capitol hit by massive dark web cyber attack: Reports](https://www.newsweek.com/us-capitol-dark-web-cyber-attack-1956550) — Newsweek (2026-03-31)
 

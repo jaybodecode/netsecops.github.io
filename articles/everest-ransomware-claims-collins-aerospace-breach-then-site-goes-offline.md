@@ -50,7 +50,6 @@ For organizations in the aviation supply chain, detecting such threats requires 
 **Tags:** Everest, Ransomware, Collins Aerospace, Aviation, Supply Chain Attack, Heathrow, Cyberattack
 
 ## Sources
-- [From Airport chaos to cyber intrigue: Everest Gang takes credit for Collins Aerospace breach](https://securityaffairs.com/169984/cyber-crime/everest-claims-collins-aerospace-hack.html) — Security Affairs (2025-10-18)
 - [Ransomware Victims Daily Report 10-18-2025](https://purpleops.io/daily-ransomware-report-10-18-2025/) — PurpleOps (2025-10-18)
 
 ---
