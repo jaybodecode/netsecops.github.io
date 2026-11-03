@@ -1,6 +1,6 @@
 # CISA Launches 2026 Critical Infrastructure Security & Resilience Month
 
-**Severity:** informational | **Category:** Policy and Compliance,Regulatory,Threat Intelligence | **Updated:** 2026-11-02 | **Reading time:** 3 min
+**Severity:** informational | **Category:** Policy and Compliance,Regulatory,Threat Intelligence | **Updated:** 2026-11-03
 
 The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has launched its annual Critical Infrastructure Security and Resilience Month for November 2026. The initiative aims to raise awareness and promote best practices for securing the nation's essential systems. This year's focus is on the human element of security and preparing for evolving threats, including those from artificial intelligence. CISA is urging public and private sector partners to focus on identifying critical systems, understanding risks, and maintaining actionable response plans.
 
@@ -47,10 +47,10 @@ To participate and align with the month's goals, CISA encourages organizations t
 3.  **Review Dependencies:** Re-evaluate your organization's critical dependencies, including third-party suppliers, cloud service providers, and managed service providers. The security of your organization is linked to the security of your partners.
 4.  **Promote Security Awareness:** Run an internal awareness campaign for employees, focusing on topics like phishing prevention, strong password hygiene, and reporting suspicious activity. As Acting CISA Director Nick Andersen stated, "Resilience comes from knowing what matters most and having a plan you can actually use when something goes wrong."
 
-**Tags:** CISA, Critical Infrastructure, Resilience, Cybersecurity Awareness, Policy
+**Tags:** CISA, Critical Infrastructure, Cybersecurity Awareness, Policy, Resilience
 
 ## Sources
-- [CISA Kicks Off Critical Infrastructure Security and Resilience Month 2026](https://www.cisa.gov/news-events/news/cisa-kicks-critical-infrastructure-security-and-resilience-month-2026) — CISA (2026-11-02)
+- [CISA Kicks Off Critical Infrastructure Security and Resilience Month 2026](https://www.cisa.gov/news-events/news/cisa-kicks-critical-infrastructure-security-and-resilience-month-2026) (2026-11-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/cisa-launches-2026-critical-infrastructure-security-and-resilience-month/
