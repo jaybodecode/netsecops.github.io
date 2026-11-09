@@ -1,0 +1,70 @@
+title: Anomalous External Modbus Traffic
+id: f1a2b3c4-d5e6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects Modbus traffic (TCP port 502) originating from the public internet. This is highly anomalous and a strong indicator of reconnaissance or an attempted ICS compromise.
+references:
+  - https://femtosec.io/threat-intelligence/trk25-advanced-scada-malware-industrial-threat
+author: cyber.netsecops.io
+date: 2026-07-04
+tags:
+  - attack.t1595
+  - attack.t0861
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port: 502
+  filter_internal:
+    src_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+---
+title: External Scans for Remote Admin Ports on OT Networks
+id: a1b2c3d4-e5f6-4789-8901-234567890123
+status: experimental
+description: Detects inbound connection attempts to common administrative ports (VNC, RDP, SSH) on OT network segments. While potentially legitimate, a high volume from unknown external sources is suspicious and may indicate TRK25-like scanning.
+references:
+  - https://femtosec.io/threat-intelligence/trk25-advanced-scada-malware-industrial-threat
+author: cyber.netsecops.io
+date: 2026-07-04
+tags:
+  - attack.t1595
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port:
+      - 22
+      - 3389
+      - 5900
+  filter_internal:
+    src_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+---
+title: Failed Remote Login to OT Asset
+id: b2c3d4e5-f6a7-4890-9123-456789012345
+status: experimental
+description: Detects a failed remote login attempt (RDP, SSH) to a system identified as an OT asset. A high rate of these events may indicate a brute-force attack by a tool like TRK25.
+references:
+  - https://femtosec.io/threat-intelligence/trk25-advanced-scada-malware-industrial-threat
+author: cyber.netsecops.io
+date: 2026-07-04
+tags:
+  - attack.t1110
+  - attack.t0861
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4625
+    LogonType: 10
+  condition: selection

@@ -1,0 +1,56 @@
+title: Suspicious Outbound Connection from Network Appliance
+id: 2b9e1c4a-8d3f-4e6b-9c1a-7b8d9e0f1a2b
+status: experimental
+description: Detects network appliances such as firewalls, routers, or ADCs initiating outbound network connections to the external internet. This is often anomalous as these devices typically only receive inbound connections or connect to internal management networks. This behavior is a known TTP of groups like Salt Typhoon.
+references:
+  - https://www.scmagazine.com/brief/data-security/chinese-linked-salt-typhoon-suspected-in-italys-sistemi-informativi-breach
+author: cyber.netsecops.io
+date: 2026-05-07
+tags:
+  - attack.t1190
+  - attack.command_and_control
+falsepositives:
+  - Legitimate administrative tasks, software updates, or cloud-managed services for the appliance.
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip|cidr:
+      - 192.168.1.0/24 # Placeholder for network device management segment
+      - 10.1.1.0/24 # Placeholder for network device management segment
+    action: 'allow'
+  filter_rfc1918:
+    dst_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_rfc1918
+---
+title: Interactive Logon from Service Account
+id: 5c8d9e0f-1a2b-4c3d-8e4f-1a2b3c4d5e6f
+status: experimental
+description: Detects interactive or remote interactive logons by accounts that are designated as service accounts. Service accounts should typically only perform network or batch logons. This activity could indicate credential theft and misuse, a known TTP of groups like Salt Typhoon.
+references:
+  - https://www.scmagazine.com/brief/data-security/chinese-linked-salt-typhoon-suspected-in-italys-sistemi-informativi-breach
+author: cyber.netsecops.io
+date: 2026-05-07
+tags:
+  - attack.t1078
+  - attack.defense_evasion
+falsepositives:
+  - Administrators performing maintenance using service accounts.
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType:
+      - '2' # Interactive
+      - '10' # RemoteInteractive
+    AccountName|re: '.*SVC.*|.*Service.*|.*\$$' # Common service account naming conventions or computer accounts
+  filter_null:
+    AccountName: '-'
+  condition: selection and not filter_null

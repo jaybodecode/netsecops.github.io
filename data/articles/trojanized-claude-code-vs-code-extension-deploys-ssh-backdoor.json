@@ -1,0 +1,172 @@
+{
+  "id": "87d220b9-26f8-4c04-9121-12733c5d0d37",
+  "slug": "trojanized-claude-code-vs-code-extension-deploys-ssh-backdoor",
+  "headline": "Trojanized 'Claude Code' VS Code Extension Installs SSH Backdoor",
+  "title": "Malicious 'Claude Code' VS Code Extension Deploys Backdoor",
+  "summary": "A malicious version of the 'Claude Code' VS Code extension, distributed via the Cursor IDE marketplace, installed a persistent SSH backdoor on developers' machines. The trojanized update, version 2.1.313, affected up to 5,000 users by adding an attacker-controlled public SSH key to the 'authorized_keys' file. The malicious package was active for several hours on October 29, 2026, before being removed. Users are urged to check their systems for the unauthorized key and rotate all credentials.",
+  "full_report": "## Executive Summary\nA software supply chain attack targeted developers using the **[Cursor](https://cursor.sh/)** IDE, a fork of VS Code. On October 29, 2026, a trojanized version of the popular 'Claude Code' extension from **[Anthropic](https://www.anthropic.com)** was published to the Cursor marketplace. The malicious version, `2.1.313`, was disguised as a legitimate update and is estimated to have been installed by up to 5,000 users who had the extension or received it via auto-update. The malware's primary function was to install a persistent SSH backdoor by adding an attacker's public key to the user's `~/.ssh/authorized_keys` file, granting the attacker remote access to the compromised development environment. Cursor has since removed the malicious package and is notifying affected users.\n\n## Threat Overview\nThe incident represents a classic supply chain attack targeting the software development lifecycle, where trusted tools and update mechanisms are abused to distribute malware.\n\n- **Attack Vector**: Compromise of a software distribution channel ([`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/)). The attackers managed to publish a malicious package under the legitimate publisher ID `anthropic.claude-code` within the Cursor marketplace.\n- **Payload**: The malicious extension contained a 66-line JavaScript loader prepended to the legitimate code. This loader was responsible for the persistence mechanism.\n- **Objective**: To gain persistent, remote access to developer machines for potential code theft, lateral movement, or further attacks.\n\n## Technical Analysis\nThe attack was executed in a simple yet effective manner:\n\n1.  **Distribution**: The attacker published the malicious extension `v2.1.313` to the Cursor marketplace. The method used to compromise the publisher account or the publishing process is not detailed.\n2.  **Installation**: Developers installed the extension manually or received it through the IDE's auto-update feature, a common source of inadvertent compromise.\n3.  **Execution**: Upon VS Code startup, the malicious JavaScript loader within the extension would run.\n4.  **Persistence**: The script's primary action was to append an attacker-controlled public SSH key to the `~/.ssh/authorized_keys` file on the host system. To appear benign, the key was commented with the label `svc-telemetry`.\n\nThis provides the attacker with the ability to log into the victim's machine via SSH without needing a password, effectively creating a permanent backdoor.\n\n### MITRE ATT&CK Techniques\n- [`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/): The attack leveraged a trusted marketplace and extension to distribute malware.\n- [`T1059.007 - JavaScript`](https://attack.mitre.org/techniques/T1059/007/): The payload was written in JavaScript, executed by the underlying Node.js engine of VS Code.\n- [`T1552.004 - Private Keys`](https://attack.mitre.org/techniques/T1552/004/): The attack modifies the `authorized_keys` file, which is directly related to the management and use of SSH private/public key pairs for authentication.\n- [`T1547.001 - Registry Run Keys / Startup Folder`](https://attack.mitre.org/techniques/T1547/001/): While not a direct match, the extension's auto-execution on IDE startup serves a similar purpose for achieving persistence.\n\n## Impact Assessment\nThe potential impact is severe. Up to 5,000 developers may have had their machines compromised. A backdoor on a developer's machine provides attackers with access to source code, API keys, internal network resources, and other sensitive intellectual property. The swift removal of the package by Cursor and public notification helped limit the window of exposure. However, any user who installed the malicious version remains vulnerable until the backdoor is removed. This incident also damages trust in the security of IDE marketplaces and the extension ecosystem.\n\n## IOCs — Directly from Articles\nNo specific file hashes, domains, or IP addresses were mentioned in the source articles. The SSH key itself was not published.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify compromised systems:\n| Type | Value | Description | Context |\n|---|---|---|---|\n| `file_path` | `~/.ssh/authorized_keys` | The file modified by the malware. Monitor for any additions, especially those with suspicious comments. | File Integrity Monitoring (FIM), EDR |\n| `string_pattern` | `svc-telemetry` | The deceptive comment label used for the attacker's public SSH key. | File content scanning, SIEM queries on FIM logs |\n| `process_name` | `node` or `Code` | The parent process of the malicious script. Monitor for child processes that modify sensitive files like `authorized_keys`. | EDR, Process Auditing (e.g., Sysmon) |\n| `log_source` | `IDE extension logs` | Check logs from Cursor or VS Code for errors or unusual activity related to the `anthropic.claude-code` extension around the incident date. | Application Logs |\n\n## Detection & Response\n- **Detection**: Use File Integrity Monitoring (FIM) to alert on any changes to critical files like `~/.ssh/authorized_keys`. EDR solutions can be configured to detect processes spawned by IDEs that attempt to modify system configuration files. Regularly auditing installed extensions and their permissions is also a crucial step.\n- **Response**: The immediate response for affected users is to:\n    1.  Isolate the machine from the network.\n    2.  Inspect the `~/.ssh/authorized_keys` file and remove any unrecognized public keys.\n    3.  Rotate all credentials stored on the machine, including SSH keys, API tokens, and passwords.\n    4.  Perform a full audit for any other signs of malicious activity.\n    5.  Update the 'Claude Code' extension to a clean version (2.1.314 or later) or remove it entirely.\n\n## Mitigation\n- **Restrict Auto-updates**: While convenient, auto-updating IDE extensions can be risky. Consider disabling it or moving to a model where updates are reviewed before deployment in enterprise environments.\n- **Code Signing and Verification**: Marketplaces should enforce strict code signing and verification for all extensions to ensure publisher identity and code integrity.\n- **Principle of Least Privilege**: Run development tools as a standard user, not as an administrator, to limit the potential impact of a compromise.\n- **Endpoint Detection and Response (EDR)**: Deploy EDR solutions that can monitor for suspicious behavior, such as an IDE process writing to an SSH configuration file. This aligns with D3FEND's [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).",
+  "twitter_post": "A trojanized 'Claude Code' VS Code extension in the Cursor marketplace installed an SSH backdoor on up to 5,000 developer systems. Version 2.1.313 added an attacker's key to authorized_keys. Users should check their systems immediately. #VScode",
+  "meta_description": "A malicious version of the 'Claude Code' VS Code extension (v2.1.313) installed an SSH backdoor on developer machines, affecting up to 5,000 users.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Anthropic",
+      "type": "company",
+      "url": "https://www.anthropic.com/"
+    },
+    {
+      "name": "Cursor",
+      "type": "product",
+      "url": "https://cursor.sh/"
+    },
+    {
+      "name": "Visual Studio Code",
+      "type": "product",
+      "url": "https://code.visualstudio.com/"
+    },
+    {
+      "name": "Open VSX",
+      "type": "security_organization"
+    },
+    {
+      "name": "Jenn Gile",
+      "type": "person"
+    },
+    {
+      "name": "OpenSourceMalware",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/10/official-claude-code-vs-code-extension.html",
+      "title": "Malicious Claude Code VS Code Extension Installs SSH Backdoor on Dev Systems",
+      "date": "2026-10-30",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-10-29T09:27:00Z",
+      "summary": "Malicious version 2.1.313 of 'Claude Code' extension becomes available in the Cursor marketplace."
+    },
+    {
+      "datetime": "2026-10-29T20:35:00Z",
+      "summary": "The compromised package is removed from the Cursor marketplace."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.002",
+      "name": "Compromise Software Supply Chain",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1552.004",
+      "name": "Private Keys",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1547.001",
+      "name": "Registry Run Keys / Startup Folder",
+      "tactic": "Persistence"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Use endpoint security solutions to detect and block malicious scripts or unauthorized file modifications.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Implement policies to restrict the execution of unsigned or untrusted code within development environments.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable and monitor file integrity for critical configuration files like `~/.ssh/authorized_keys` to detect unauthorized changes.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "To counter threats like the trojanized 'Claude Code' extension, organizations must implement continuous System File Analysis, specifically focusing on critical configuration files on developer endpoints. This involves using a File Integrity Monitoring (FIM) tool to create a baseline of sensitive files, such as `~/.ssh/authorized_keys`, and immediately alerting on any unauthorized modifications. The rule should be highly specific: trigger an alert if any process associated with the IDE (e.g., `Code`, `node`) writes to this file. The alert should capture the process, user, and the exact change made. This provides security operations with a high-fidelity signal of a potential backdoor installation, enabling rapid investigation and response before an attacker can use the newly established access.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "In a development environment, a strict executable allowlisting policy can be challenging. However, a more targeted approach can be effective. Organizations should maintain a repository of approved and vetted IDE extensions. A policy should be enforced, either technically or administratively, that prevents developers from installing extensions from un-vetted sources. For marketplaces like Cursor or VS Code, security teams can curate a list of approved extensions and their specific, known-good versions. Scripts can be used to audit installed extensions against this allowlist. This moves the organization from a reactive posture to a proactive one, preventing the installation of malicious extensions in the first place and reducing the risk of supply chain attacks.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "~/.ssh/authorized_keys",
+      "description": "The malware added an attacker's public SSH key to this file to establish a persistent backdoor.",
+      "context": "File integrity monitoring (FIM), manual inspection",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "svc-telemetry",
+      "description": "The comment label used by the attacker for their public key within the authorized_keys file to evade suspicion.",
+      "context": "File content scanning, SIEM queries on log data",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "anthropic.claude-code version 2.1.313",
+      "description": "The specific version of the trojanized VS Code extension.",
+      "context": "Asset inventory, software management systems",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "supply chain attack",
+    "vscode",
+    "cursor",
+    "anthropic",
+    "ssh",
+    "backdoor",
+    "malware"
+  ],
+  "extract_datetime": "2026-10-30T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers"
+    ],
+    "people_affected_estimate": "Up to 5,000 users"
+  },
+  "pub_date": "2026-10-30",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-10-30T15:00:00.000Z",
+  "updatedAt": "2026-10-30T15:00:00.000Z"
+}

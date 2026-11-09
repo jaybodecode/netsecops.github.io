@@ -1,0 +1,55 @@
+title: RoguePlanet LPE - MsMpEng.exe Spawning Shell
+id: 2b9a8f7e-1c3d-4b8a-9f0e-1a2b3c4d5e6f
+status: experimental
+description: Detects the Microsoft Defender process (MsMpEng.exe) spawning a command shell, which is a strong indicator of CVE-2026-50656 (RoguePlanet) exploitation.
+references:
+  - https://thehackernews.com/2026/06/microsoft-confirms-rogueplanet-defender_02022423645.html
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\MsMpEng.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\cscript.exe'
+      - '\wscript.exe'
+  condition: selection
+---
+title: RoguePlanet LPE - Suspicious Defender Scan Command
+id: 8c7d6e5f-2b4a-4d9f-8a1b-3c4d5e6f7a8b
+status: experimental
+description: Detects command-line invocations of the Microsoft Defender scanner (MpCmdRun.exe) targeting potentially suspicious file paths, which could indicate an attempt to stage the CVE-2026-50656 (RoguePlanet) exploit.
+references:
+  - https://thehackernews.com/2026/06/microsoft-confirms-rogueplanet-defender_02022423645.html
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+level: medium
+falsepositives:
+  - Legitimate administrative scripts that trigger scans on temporary or user-writable directories.
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\MpCmdRun.exe'
+    CommandLine|contains|all:
+      - '-Scan'
+      - '-ScanType 3'
+      - '-FilePath'
+    CommandLine|contains:
+      - 'C:\Users\'
+      - 'C:\ProgramData\'
+      - 'C:\Windows\Temp\'
+      - '\AppData\Local\Temp'
+  condition: selection

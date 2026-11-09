@@ -1,0 +1,271 @@
+{
+  "id": "0be62471-f48b-4eb7-9bbe-e255056f72de",
+  "slug": "head-mare-hacktivists-trojanize-trueconf-installers-in-supply-chain-attack",
+  "headline": "TrueConf Installers Trojanized with Backdoors in Supply Chain Attack",
+  "title": "Head Mare Group Breaches TrueConf Servers, Deploys Backdoors",
+  "summary": "The hacktivist group 'Head Mare' has conducted a supply chain attack by breaching unpatched TrueConf video conferencing servers. The attackers replaced legitimate client installers with malicious versions containing the PhantomCore and PhantomGraph backdoors. By exploiting two vulnerabilities, the group gains SYSTEM-level privileges, deploys a web shell, and then swaps the installers to compromise users who download the software from the breached server.",
+  "full_report": "## Executive Summary\n\nIn a sophisticated supply chain attack, the hacktivist group **[Head Mare](https://malpedia.caad.fkie.fraunhofer.de/actor/head_mare)** has been observed breaching unpatched **[TrueConf](https://trueconf.com/)** video conferencing servers to distribute trojanized software. According to research from Kaspersky, the attackers exploit a chain of two vulnerabilities to gain full system control, then replace legitimate, signed client installers with malicious, unsigned versions. These trojanized installers deploy backdoors known as **PhantomCore** and **PhantomGraph**. The attack targets users of the compromised servers, who download the malicious software believing it to be a legitimate update. The campaign primarily affects organizations in Russia, where TrueConf is a popular alternative to Western conferencing platforms, and highlights the significant risk of unpatched on-premise software.\n\n## Threat Overview\n\n*   **Threat Actor:** Head Mare\n*   **Target:** On-premise TrueConf video conferencing servers\n*   **Attack Vector:** Exploitation of unpatched vulnerabilities in the TrueConf server application.\n*   **Objective:** Distribute malware to the users of the compromised organization and its partners, enabling data theft and persistent access.\n\nThis is a classic server-side supply chain attack. Instead of compromising the vendor's central build environment, the attackers compromise individual, internet-facing instances of the software. When users of that specific company connect to their own server to download the client, they receive the malicious version. This makes the attack highly targeted and difficult to detect for those outside the compromised organization.\n\n## Technical Analysis\n\nThe attack proceeds in several distinct stages:\n\n1.  **Initial Access:** The attackers scan for and identify unpatched TrueConf servers. They connect to the server's default open TCP port `4307`.\n2.  **Privilege Escalation:** **Head Mare** exploits a chain of two vulnerabilities, tracked by Kaspersky as `KLCERT-26-057` and `KLCERT-26-058`. This exploit chain allows them to break out of the application's isolated environment and achieve `NT AUTHORITY\\SYSTEM` privileges on the underlying Windows host. This is a critical step, as it gives them full control of the server. This corresponds to **[Exploitation for Privilege Escalation (T1068)](https://attack.mitre.org/techniques/T1068/)**.\n3.  **Persistence:** The attackers deploy a PHP web shell by replacing the legitimate file `\\public\\js\\locale.php`. This provides them with persistent remote access to the server's file system and allows them to execute commands, a form of **[Server Software Component: Web Shell (T1505.003)](https://attack.mitre.org/techniques/T1505/003/)**.\n4.  **Defense Evasion & Staging:** Using their web shell access, the attackers access the TrueConf database and replace the legitimate, digitally signed client installer with their own malicious, unsigned version containing the **PhantomCore** backdoor. This is the core of the **[Supply Chain Compromise (T1195)](https://attack.mitre.org/techniques/T1195/)**.\n5.  **Impact:** When a user from the compromised organization (or an external partner) downloads the client from the compromised server, they receive the trojanized installer. Executing this installer infects their workstation with the backdoor.\n\n### Malware Analysis\n*   **PhantomCore:** The primary backdoor payload. Its specific capabilities were not detailed in the reports, but it likely provides remote access, command execution, and data exfiltration capabilities.\n*   **PhantomGraph:** A secondary backdoor observed in some cases. It uses a **[Microsoft OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/online-cloud-storage)** account for command and control (**[Web Service C2 - T1102](https://attack.mitre.org/techniques/T1102/)**). One of its known functions is to perform **[OS Credential Dumping: LSASS Memory (T1003.001)](https://attack.mitre.org/techniques/T1003/001/)** to steal user credentials.\n\n## Impact Assessment\n\nThe impact is severe for organizations running compromised TrueConf servers. Every user who downloads the client from that server becomes a potential victim. This can lead to widespread internal network compromise, theft of sensitive corporate data, and credential harvesting. Since TrueConf is often used in government and enterprise environments for secure communications, the data being discussed in these meetings could be of high value. The use of a secondary backdoor that exfiltrates LSASS credentials indicates an intent to move laterally and compromise the broader network.\n\n## IOCs — Directly from Articles\n\nNo specific IP addresses, domains, or file hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns to identify related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| File Path | `\\public\\js\\locale.php` | Monitor for modifications to this file on TrueConf servers. A change indicates likely web shell deployment. |\n| Port | `4307` | Monitor for unusual inbound connections to this default TrueConf port from unknown IPs. |\n| Process Name | `w3wp.exe` or `httpd.exe` | Monitor the web server process on the TrueConf server for suspicious child processes, such as `cmd.exe` or `powershell.exe`. |\n| Network Traffic Pattern | Outbound connections to `onedrive.live.com` from servers | Outbound traffic from a server to a consumer cloud storage service like OneDrive is highly anomalous and could indicate C2 traffic for PhantomGraph. |\n| Certificate Subject | Unsigned TrueConf client installers | Check the digital signature of all TrueConf client installers. Any unsigned executable should be treated as malicious. |\n\n## Detection & Response\n\n*   **File Integrity Monitoring (FIM):** Deploy FIM on TrueConf servers, specifically monitoring critical application files like `locale.php`. D3FEND's **[System File Analysis (D3-SFA)](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis)** is relevant here.\n*   **Signature Verification:** Implement a process to verify the digital signatures of all software before deployment, including updates downloaded from on-premise servers. Alert on any unsigned executables.\n*   **Network Monitoring:** Monitor for outbound connections from the TrueConf server to unexpected destinations, especially consumer cloud services like OneDrive. Use **[Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)** to block such connections by default.\n*   **Endpoint Detection:** On client workstations, use an EDR to monitor for processes attempting to dump LSASS memory. This is a key indicator of the PhantomGraph backdoor.\n\n## Mitigation\n\n*   **Patch Management ([M1051](https://attack.mitre.org/mitigations/M1051/)):** The most critical mitigation is to ensure that TrueConf servers are patched and running the latest versions (5.3.9, 5.4.9, or 5.5.5 and later). This prevents the initial exploit chain.\n*   **Restrict Access ([M1035](https://attack.mitre.org/mitigations/M1035/)):** Restrict access to the TrueConf server's administrative interfaces and port `4307` to only trusted IP addresses. Do not expose these services directly to the public internet if possible.\n*   **Application Whitelisting ([M1038](https://attack.mitre.org/mitigations/M1038/)):** On servers, use application control solutions to prevent the execution of unauthorized executables or scripts, such as web shells.\n*   **Credential Protection:** Implement credential protection mechanisms on endpoints, such as Windows Credential Guard, to protect LSASS memory from being dumped.",
+  "twitter_post": "Supply chain attack: 'Head Mare' hacktivists breach TrueConf servers, replacing client installers with trojanized versions deploying PhantomCore & PhantomGraph backdoors. Users urged to patch servers immediately. #SupplyChain #TrueConf #Malware",
+  "meta_description": "The 'Head Mare' hacktivist group is conducting a supply chain attack, compromising TrueConf servers to distribute trojanized installers with backdoors.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Head Mare",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/head_mare"
+    },
+    {
+      "name": "TrueConf",
+      "type": "product",
+      "url": "https://trueconf.com/"
+    },
+    {
+      "name": "Kaspersky",
+      "type": "security_organization"
+    },
+    {
+      "name": "PhantomCore",
+      "type": "malware"
+    },
+    {
+      "name": "PhantomGraph",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft OneDrive",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/onedrive/online-cloud-storage"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/",
+      "title": "Hackers breach TrueConf to trojanize client installers with backdoors",
+      "date": "2026-08-08",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://dev.to/anoymask/head-mare-breaches-trueconf-from-system-privileges-to-trojanized-legitimate-client-updates-1ke1",
+      "title": "Head Mare Breaches TrueConf: From SYSTEM Privileges to Trojanized Legitimate Client Updates",
+      "friendly_name": "DEV Community"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-01T00:00:00Z",
+      "summary": "Kaspersky researchers discover the Head Mare campaign targeting TrueConf servers."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195",
+      "name": "Supply Chain Compromise",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Server Software Component: Web Shell",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1102",
+      "name": "Web Service",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1003.001",
+      "name": "OS Credential Dumping: LSASS Memory",
+      "tactic": "Credential Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Applying the latest security patches from TrueConf is the most effective way to prevent the initial exploitation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Restrict network access to the TrueConf server's management ports, limiting the attack surface available to external threats.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-SBV",
+          "name": "Service Binary Verification",
+          "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification"
+        }
+      ],
+      "description": "Enforce policies that only allow the execution of properly signed software, which would prevent the unsigned trojanized client from running.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        },
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use endpoint security solutions to detect and block known malware like PhantomCore and PhantomGraph, and to detect suspicious behaviors like LSASS dumping.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The root cause of this supply chain attack is the exploitation of unpatched TrueConf servers. The primary and most effective countermeasure is to maintain a rigorous patch management program for all internet-facing infrastructure. Organizations using TrueConf must immediately identify all server instances and upgrade them to a patched version (5.3.9, 5.4.9, or 5.5.5 and later). This action closes the initial access vector used by the Head Mare group, preventing them from gaining SYSTEM-level privileges and planting their web shell. A continuous vulnerability management program should be in place to ensure that patches for critical, internet-facing systems are applied on an emergency basis.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-SFA",
+      "technique_name": "System File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis",
+      "recommendation": "To detect the persistence mechanism used in this attack, organizations should implement File Integrity Monitoring (FIM) on their TrueConf servers. A FIM solution should be configured to specifically monitor the `\\public\\js\\locale.php` file, as well as other core application directories. The system should generate a high-priority alert whenever this file is modified. Since this file is a static component of the application, any change is highly suspicious and indicative of a web shell being planted. This provides a high-fidelity signal of compromise, allowing incident response teams to intervene before the attackers can replace the client installers.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-SBV",
+      "technique_name": "Service Binary Verification",
+      "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification",
+      "recommendation": "A key failure point in this attack is the user's workstation executing an unsigned binary. Organizations should enforce policies that verify the digital signatures of all executables. This can be achieved through application control solutions like AppLocker or third-party tools. A strict policy should be configured to block the execution of any unsigned executables, especially those downloaded from the internet or internal servers. In the context of this attack, when a user downloads the trojanized, unsigned TrueConf client, the policy would prevent it from running, thereby stopping the infection at the endpoint. This breaks the attack chain at the final, critical stage.",
+      "mitre_mitigation_id": "M1045"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "\\public\\js\\locale.php",
+      "description": "The legitimate TrueConf file that attackers replace with a PHP web shell for persistence.",
+      "context": "File integrity monitoring on TrueConf servers",
+      "confidence": "high"
+    },
+    {
+      "type": "port",
+      "value": "4307",
+      "description": "The default TCP port for TrueConf server communication, used by attackers for initial access.",
+      "context": "Firewall logs, network traffic analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound connections from TrueConf servers to onedrive.live.com",
+      "description": "Potential C2 traffic for the PhantomGraph backdoor, which uses Microsoft OneDrive.",
+      "context": "Firewall logs, proxy logs, NetFlow",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "procdump -ma lsass.exe",
+      "description": "A common command used to dump credentials from the LSASS process memory, a known capability of PhantomGraph.",
+      "context": "EDR logs, command line logging (Event ID 4688)",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Head Mare",
+    "TrueConf",
+    "Supply Chain Attack",
+    "PhantomCore",
+    "PhantomGraph",
+    "Web Shell",
+    "Russia"
+  ],
+  "extract_datetime": "2026-08-09T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Russia"
+    ],
+    "industries_affected": [
+      "Government"
+    ],
+    "other_affected": [
+      "enterprise organizations"
+    ]
+  },
+  "pub_date": "2026-08-09",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-08-09T15:00:00.000Z",
+  "updatedAt": "2026-08-10T00:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-08-10T00:00:00Z",
+      "datetime": "2026-08-10T00:00:00Z",
+      "title": "Update 1",
+      "summary": "New details emerge on Head Mare's TrueConf supply chain attack, including specific affected server versions, patch release date, and targeted sectors.",
+      "sources": [
+        {
+          "title": "TrueConf Server Flaws Exploited to Replace Client Installers with PhantomCore",
+          "url": "https://thehackernews.com/2026/08/head-mare-exploits-trueconf-flaws-to.html"
+        },
+        {
+          "title": "Hackers breach TrueConf to trojanize client installers with backdoors",
+          "url": "https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/"
+        },
+        {
+          "title": "Hackers breach TrueConf to trojanize client installers with backdoors",
+          "url": "https://www.reconbee.com/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/"
+        }
+      ]
+    }
+  ]
+}

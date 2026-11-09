@@ -1,0 +1,77 @@
+title: Anomalous Outbound Traffic from SOHO Edge Device to Internal Network
+id: 2b1a9c8d-e3f4-4a5b-8c6d-7e8f9a0b1c2d
+status: experimental
+description: |
+  Detects network traffic originating from a SOHO edge device (router, firewall) to an internal network asset. This is highly anomalous as edge devices should typically not initiate connections inwards.
+references:
+  - https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/3752538/nsa-and-others-release-joint-guidance-addressing-multiple-china-nexus-threat-a/
+author: cyber.netsecops.io
+date: 2026-04-24
+tags:
+  - attack.t1090.002
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip_category: 'soho_device_range'
+    dst_ip_category: 'internal_asset_range'
+    action: 'allow'
+  condition: selection
+falsepositives:
+  - Legitimate remote administration or monitoring tools initiating connections from the edge device.
+  - Misconfigured network segments.
+---
+title: Non-Standard Protocol Over Common Port
+id: f8e7d6c5-b4a3-4987-6543-210987fedcba
+status: experimental
+description: |
+  Detects traffic over common ports (e.g., 80, 443) that does not conform to the expected protocol (e.g., HTTP/TLS). This can indicate C2 traffic being tunneled to evade simple port-based firewall rules.
+references:
+  - https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/3752538/nsa-and-others-release-joint-guidance-addressing-multiple-china-nexus-threat-a/
+author: cyber.netsecops.io
+date: 2026-04-24
+tags:
+  - attack.t1071.001
+level: medium
+logsource:
+  category: network_connection
+  product: zeek
+detection:
+  selection:
+    - destination_port: 443
+      service|endswith: '!ssl'
+    - destination_port: 80
+      service|endswith: '!http'
+  condition: selection
+falsepositives:
+  - Custom applications using non-standard port assignments.
+---
+title: Unauthorized Remote Access Services on Edge Devices
+id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: |
+  Detects the execution of remote access daemons such as sshd, dropbear, or telnetd on network edge devices where they are not expected to be running. This could indicate a compromised router.
+references:
+  - https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/3752538/nsa-and-others-release-joint-guidance-addressing-multiple-china-nexus-threat-a/
+author: cyber.netsecops.io
+date: 2026-04-24
+tags:
+  - attack.t1021
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith:
+      - '/sshd'
+      - '/dropbear'
+      - '/telnetd'
+  filter_known_good:
+    ParentImage|endswith:
+      - '/init'
+      - '/systemd'
+  condition: selection and not filter_known_good
+falsepositives:
+  - Legitimate administrative action or device startup processes.

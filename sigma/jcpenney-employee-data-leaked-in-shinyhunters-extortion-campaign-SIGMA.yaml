@@ -1,0 +1,57 @@
+title: Potential Oracle PeopleSoft Data Enumeration
+id: 1e0c0580-cd13-433a-b8f1-52e69345761f
+status: experimental
+description: Detects web requests to Oracle PeopleSoft URLs that may indicate enumeration or exploitation attempts, similar to the methods used by ShinyHunters. This is a behavioral rule and requires tuning.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/jcpenney-june-2026
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: low
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-stem|startswith: '/psp/ps/'
+    cs-uri-query|contains:
+      - 'SELECT'
+      - 'UNION'
+      - 'FROM'
+  filter:
+    c-ip:
+      - '127.0.0.1'
+      - '192.168.0.0/16'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+  condition: selection and not filter
+falsepositives:
+  - Legitimate but unusual application usage.
+  - Vulnerability scanning.
+---
+title: Large Network Egress from Internal HR System
+id: 2b1a0987-6e5f-4d3c-8c7d-1a9b8c7d6e5f
+status: experimental
+description: Detects a single large outbound network connection from an internal server, potentially an HR system like Oracle PeopleSoft, to an external address. This could indicate a large file transfer as part of data exfiltration.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/jcpenney-june-2026
+author: cyber.netsecops.io
+date: 2026-06-20
+tags:
+  - attack.t1048
+  - attack.exfiltration
+level: low
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip:
+      - '10.0.0.0/8'      # Placeholder for internal HR/PeopleSoft server IPs
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+    bytes_out|gt: 100000000 # 100MB in a single flow
+  condition: selection
+falsepositives:
+  - Legitimate large file transfers to partners or cloud services.
+  - Large software updates.

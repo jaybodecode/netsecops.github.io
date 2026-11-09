@@ -1,0 +1,34 @@
+title: Outbound Connection from Sensitive Database Server
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects any outbound network connection from a sensitive database server to the public internet. Database servers should typically not initiate external connections, and such activity could indicate data exfiltration. This is a hunting rule inspired by the N0N group's claim against Expedia.
+author: cyber.netsecops.io
+date: 2026-11-09
+references:
+  - https://cypro.co.uk/insights/cyber-bulletins/expedia-ransomware-claim-n0n-provides-no-proof/
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    SourceIp:
+      # Add internal IP addresses or ranges of sensitive database servers here
+      - '10.10.1.5'
+      - '10.10.2.0/24'
+    Initiated: true
+  filter_private:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  filter_known_dest:
+    DestinationIp:
+      # Add known backup destinations, partner IPs, etc.
+      - '198.51.100.10'
+  condition: selection and not filter_private and not filter_known_dest

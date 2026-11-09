@@ -1,0 +1,210 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-30T16:57:43.015Z",
+    "article_slug": "new-email-attacks-use-real-microsoft-login-pages-to-bypass-mfa",
+    "article_date": "2026-06-30",
+    "token_usage": {
+      "input_tokens": 146101,
+      "output_tokens": 2801,
+      "cached_tokens": 140082,
+      "total_tokens": 148902,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.053044
+    }
+  },
+  "report_name": "Tycoon 2FA Phishing-as-a-Service Platform Bypasses MFA Using Real Microsoft Login Pages",
+  "threat_actors": [
+    {
+      "name": "Tycoon 2FA Operators",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Low-skilled or non-technical criminals who use the Tycoon 2FA Phishing-as-a-Service (PhaaS) platform to conduct adversary-in-the-middle (AiTM) attacks to bypass MFA and compromise Microsoft 365 accounts.",
+      "sophistication": "minimal"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Spearphishing Link",
+      "mitre_id": "T1566.002",
+      "description": "The attack begins with a phishing email containing a link to the phishing site. In some cases, the link is embedded within a malicious calendar invite (.ics file) to bypass email security filters."
+    },
+    {
+      "name": "Adversary-in-the-Middle",
+      "mitre_id": "T1557",
+      "description": "The core of the attack involves a reverse proxy server that fetches the real Microsoft login page in real-time and presents it to the user, allowing the platform to intercept the authentication flow and session token."
+    },
+    {
+      "name": "Steal Web Session Cookie",
+      "mitre_id": "T1539",
+      "description": "The primary goal of the Tycoon 2FA platform is to intercept and steal the session cookie generated after a successful user login and MFA challenge, which is then used to gain unauthorized access to the victim's Microsoft 365 account."
+    },
+    {
+      "name": "Multi-Factor Authentication Request Generation",
+      "mitre_id": "T1621",
+      "description": "The adversary-in-the-middle platform proxies the legitimate MFA challenge from Microsoft to the user. When the user approves the request, the subsequent session token is stolen by the attacker."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Tycoon 2FA",
+      "mitre_id": "",
+      "type": "spyware",
+      "is_family": true,
+      "aliases": [],
+      "description": "A Phishing-as-a-Service (PhaaS) platform that enables adversary-in-the-middle (AiTM) attacks to bypass MFA on Microsoft 365 accounts by using a reverse proxy to steal session cookies.",
+      "capabilities": [
+        "steals-authentication-credentials"
+      ]
+    },
+    {
+      "name": "EvilTokens",
+      "mitre_id": "",
+      "type": "spyware",
+      "is_family": true,
+      "aliases": [],
+      "description": "A Phishing-as-a-Service (PhaaS) platform mentioned alongside Tycoon 2FA that democratizes advanced AiTM attacks to steal session tokens and bypass MFA.",
+      "capabilities": [
+        "steals-authentication-credentials"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Microsoft 365 Users",
+      "identity_class": "class",
+      "sectors": [
+        "information-technology"
+      ],
+      "description": "Users of Microsoft 365 services are the primary targets of the Tycoon 2FA phishing campaign."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Tycoon 2FA Phishing Infrastructure",
+      "infrastructure_types": [
+        "phishing",
+        "command-and-control"
+      ],
+      "description": "A reverse proxy server that presents a real Microsoft login page to victims in order to intercept and steal session cookies after a successful MFA-enabled login."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Suspicious ICS File in Email Attachment",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious ICS File in Email Attachment\nid: 2b1a9c8d-4e5f-4a3b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects incoming emails with .ics calendar file attachments, which can be used as a lure in phishing campaigns like Tycoon 2FA.\nreferences:\n  - https://blog.barracuda.com/2026/06/29/email-threat-radar-june-2026\nauthor: cyber.netsecops.io\ndate: 2026-06-30\ntags:\n  - attack.t1566.002\nlevel: medium\nlogsource:\n  category: email\ndetection:\n  selection:\n    Attachment-Filename|endswith: '.ics'\n  condition: selection",
+      "description": "Detects emails containing .ics calendar invites, which are used in the Tycoon 2FA campaign to deliver the phishing link and bypass some security filters."
+    },
+    {
+      "name": "Anomalous Microsoft 365 Sign-in",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Microsoft 365 Sign-in from Non-Compliant Device\nid: 9d8c7b6a-5f4e-3d2c-1b0a-987654321fed\nstatus: experimental\ndescription: 'Detects successful Microsoft 365 sign-ins from devices that are not compliant with the organization''s policy. This can be an indicator of a session token stolen via an AiTM attack being used on an attacker''s machine.'\nreferences:\n  - https://blog.barracuda.com/2026/06/29/email-threat-radar-june-2026\nauthor: cyber.netsecops.io\ndate: 2026-06-30\ntags:\n  - attack.t1539\nlevel: high\nlogsource:\n  product: azure\n  service: signinlogs\ndetection:\n  selection:\n    ResultType: '0'\n    ConditionalAccessStatus: 'success'\n    DeviceDetail.isCompliant: 'false'\n  condition: selection",
+      "description": "Detects successful Microsoft Entra ID sign-ins from non-compliant devices, which could indicate the use of a stolen session cookie by an attacker."
+    },
+    {
+      "name": "Potential AiTM Phishing Page Access",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Potential Microsoft AiTM Phishing Page Access\nid: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d\nstatus: experimental\ndescription: 'Detects potential user access to an adversary-in-the-middle (AiTM) phishing page impersonating Microsoft by looking for POST requests to non-Microsoft domains that contain login-related keywords.'\nreferences:\n  - https://blog.barracuda.com/2026/06/29/email-threat-radar-june-2026\nauthor: cyber.netsecops.io\ndate: 2026-06-30\ntags:\n  - attack.t1557\nlevel: medium\nlogsource:\n  category: proxy\ndetection:\n  selection:\n    cs-method: 'POST'\n    c-uri|contains:\n      - 'login'\n      - 'password'\n      - 'microsoft'\n      - 'office365'\n  filter:\n    cs-host|endswith:\n      - '.microsoft.com'\n      - '.live.com'\n      - '.microsoftonline.com'\n  condition: selection and not filter",
+      "description": "Detects when a user accesses a non-Microsoft domain that appears to be a Microsoft login page, a strong indicator of an AiTM phishing attempt."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Tycoon 2FA Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Tycoon 2FA",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Tycoon 2FA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Spearphishing Link",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Tycoon 2FA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Adversary-in-the-Middle",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Tycoon 2FA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Steal Web Session Cookie",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Tycoon 2FA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Multi-Factor Authentication Request Generation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Tycoon 2FA",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Tycoon 2FA Phishing Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Tycoon 2FA",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "Microsoft 365 Users",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "EvilTokens",
+      "source_type": "malware",
+      "relationship_type": "related-to",
+      "target_name": "Tycoon 2FA",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious ICS File in Email Attachment",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Spearphishing Link",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Microsoft 365 Sign-in",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Steal Web Session Cookie",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Potential AiTM Phishing Page Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Adversary-in-the-Middle",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

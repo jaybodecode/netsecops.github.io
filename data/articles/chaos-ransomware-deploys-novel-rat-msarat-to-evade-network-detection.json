@@ -1,0 +1,219 @@
+{
+  "id": "4d591ca3-810c-40a9-bfd9-7b4d95676a0f",
+  "slug": "chaos-ransomware-deploys-novel-rat-msarat-to-evade-network-detection",
+  "headline": "Chaos Ransomware Uses Browser-Based 'msaRAT' to Evade Detection",
+  "title": "Chaos Ransomware Hides C2 Traffic with Browser-Based RAT",
+  "summary": "The Chaos ransomware group is using a new Rust-based remote access trojan (RAT) called 'msaRAT' that cleverly evades network detection. A report from Cisco Talos explains that msaRAT routes its command-and-control (C2) communications through a legitimate, headless instance of Chrome or Edge. By using the Chrome DevTools Protocol and WebRTC, the malicious traffic is disguised as normal, encrypted browser activity, making it difficult for security tools to spot.",
+  "full_report": "## Executive Summary\nResearchers from **[Cisco Talos](https://blog.talosintelligence.com/)** have uncovered a novel and highly evasive remote access trojan (RAT) used by the **Chaos ransomware** group. The malware, a Rust-based RAT named **msaRAT**, employs an innovative technique to hide its command-and-control (C2) communications by leveraging the victim's own web browser. As detailed in a report on July 23, 2026, `msaRAT` launches a headless instance of **[Google Chrome](https://www.google.com/chrome/)** or **[Microsoft Edge](https://www.microsoft.com/edge)** and uses the Chrome DevTools Protocol (CDP) to establish a **[WebRTC](https://en.wikipedia.org/wiki/WebRTC)** data channel for C2. This method makes the malicious traffic appear as legitimate, encrypted browser activity, effectively bypassing many network security monitoring solutions. This TTP represents a significant evolution in C2 concealment, abusing trusted applications and protocols to 'live off the land.'\n\n## Threat Overview\nThe Chaos ransomware group, known for its disruptive attacks, is now deploying `msaRAT` to establish a stealthy foothold in victim networks. The primary innovation of `msaRAT` is its C2 communication mechanism. Instead of making direct network connections that could be flagged by firewalls or network intrusion detection systems (NIDS), it co-opts a legitimate browser process to do its bidding. This makes the malicious activity blend in with the vast amount of normal web traffic originating from a corporate network.\n\nThe infection chain typically starts with vishing or spam emails containing a malicious MSI installer disguised as a Windows update. This installer loads the `msaRAT` DLL directly into memory, a fileless technique to evade antivirus detection.\n\n## Technical Analysis\n**msaRAT's C2 Channel Obfuscation:**\n1.  **Initial Execution:** The `msaRAT` DLL is loaded into memory. It searches the victim machine for an installation of Google Chrome or Microsoft Edge.\n2.  **Browser Hijacking ([T1185](https://attack.mitre.org/techniques/T1185/)):** The RAT launches a hidden, headless instance of the browser with the remote debugging port enabled (`--remote-debugging-port`).\n3.  **C2 via DevTools Protocol ([T1601.002](https://attack.mitre.org/techniques/T1601/002/)):** `msaRAT` communicates with the headless browser locally using the Chrome DevTools Protocol (CDP). It instructs the browser to establish a WebRTC data channel to the attacker's C2 infrastructure.\n4.  **Infrastructure Obfuscation:** The C2 signaling process is further obscured. The malware uses **Cloudflare Workers** for initial signaling and a **Twilio TURN** relay server. This use of legitimate cloud services as proxies hides the true IP address of the attacker's C2 server and prevents a direct peer-to-peer connection that might be easier to trace.\n5.  **Layered Encryption ([T1573.002](https://attack.mitre.org/techniques/T1573.002/)):** The entire communication is wrapped in the standard DTLS encryption used by WebRTC. Inside this encrypted channel, `msaRAT` adds its own layer of ChaCha-Poly1305 encryption for the actual C2 commands and data, making traffic inspection nearly impossible without breaking the TLS connection.\n\nThis multi-layered approach to evasion makes `msaRAT` exceptionally difficult to detect using traditional network-based IOCs.\n\n## Impact Assessment\nThe deployment of `msaRAT` significantly increases the difficulty of detecting and responding to Chaos ransomware intrusions. By successfully evading network security tools, the attackers can maintain a persistent presence within a network for longer periods, allowing them more time for reconnaissance, lateral movement, and data exfiltration before deploying the final ransomware payload. This leads to more comprehensive and damaging breaches. The reliance on legitimate browser functions means there is no vulnerability to patch; defense must shift entirely to behavioral detection.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nDefenders must hunt for behavioral artifacts rather than static IOCs:\n| Type | Value | Description |\n|---|---|---|\n| command_line_pattern | `chrome.exe --headless --remote-debugging-port=` | A non-interactive process or service account launching a browser in headless mode with remote debugging is highly suspicious. |\n| command_line_pattern | `msedge.exe --headless --remote-debugging-port=` | Same as above, but for Microsoft Edge. |\n| network_traffic_pattern | WebRTC traffic originating from a server | WebRTC is common for client workstations but highly anomalous for servers, especially if initiated by a non-interactive process. |\n| log_source | Windows Event ID 4688 (Process Creation) | Monitor for process creation events that match the suspicious command-line patterns. |\n\n## Detection & Response\n**Detection:**\n- **Endpoint Behavioral Analysis:** This is the most effective detection strategy. Deploy an EDR solution capable of detecting suspicious process chains. A rule to alert when a non-interactive process (like a service) spawns `chrome.exe` or `msedge.exe` with the `--headless` and `--remote-debugging-port` flags would be highly effective. **D3FEND Technique:** [Process Analysis (D3-PA)](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n- **TLS/SSL Inspection:** While the internal payload is re-encrypted, decrypting and inspecting WebRTC traffic (where possible and legally permissible) can help identify non-standard usage. Look for WebRTC connections to known malicious or newly registered domains.\n\n**Response:**\n1.  If a host is identified running `msaRAT`, isolate it from the network immediately.\n2.  Terminate the malicious browser and RAT processes.\n3.  Block the identified C2 domains/IPs at the firewall/proxy, though these are likely to be ephemeral.\n4.  Begin a broader hunt across the enterprise for other instances using the behavioral observables.\n\n## Mitigation\n- **Application Control ([M1033](https://attack.mitre.org/mitigations/M1033/)):** Use application control solutions like AppLocker or WDAC to restrict which applications can run and what command-line arguments they can use. Create rules to block browsers from being launched with the `--remote-debugging-port` argument by non-authorized users or processes. **D3FEND Technique:** [Executable Allowlisting (D3-EAL)](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n- **Endpoint Hardening:** On servers and systems where browser access is not required, uninstall web browsers to remove the tool `msaRAT` depends on.\n- **Egress Filtering ([M1037](https://attack.mitre.org/mitigations/M1037/)):** While `msaRAT` is designed to bypass this, strict egress filtering that denies all traffic except to known-good services can still be effective. Deny WebRTC traffic from servers by default.",
+  "twitter_post": "Chaos ransomware deploys a new Rust-based RAT called 'msaRAT' that hides its C2 traffic inside legitimate Chrome/Edge browser processes using WebRTC and the DevTools protocol. A major evasion technique reported by Cisco Talos. #Ransomware #Malware #Evasion",
+  "meta_description": "The Chaos ransomware group is using a novel RAT, msaRAT, that routes C2 traffic through legitimate browser processes to evade network detection, reports Cisco Talos.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Chaos",
+      "type": "threat_actor"
+    },
+    {
+      "name": "msaRAT",
+      "type": "malware"
+    },
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://blog.talosintelligence.com/"
+    },
+    {
+      "name": "Google Chrome",
+      "type": "product",
+      "url": "https://www.google.com/chrome/"
+    },
+    {
+      "name": "Microsoft Edge",
+      "type": "product",
+      "url": "https://www.microsoft.com/edge"
+    },
+    {
+      "name": "WebRTC",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/WebRTC"
+    },
+    {
+      "name": "Chrome DevTools Protocol",
+      "type": "technology"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor"
+    },
+    {
+      "name": "Twilio",
+      "type": "vendor"
+    },
+    {
+      "name": "Rust",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://blog.talosintelligence.com/chaos-msarat-living-off-the-browser-to-build-covert-c2-channel/",
+      "title": "Chaos ransomware's msaRAT: Living off the browser to build a covert C2 channel",
+      "date": "2026-07-23",
+      "friendly_name": "Cisco Talos"
+    },
+    {
+      "url": "https://www.helpnetsecurity.com/2026/07/23/cisco-talos-chaos-ransomware-msarat/",
+      "title": "Chaos ransomware msaRAT hides its C2 channel inside a legitimate browser process",
+      "date": "2026-07-23",
+      "friendly_name": "Help Net Security"
+    },
+    {
+      "url": "https://securityaffairs.com/195876/malware/chaos-ransomware-deploys-browser-based-msarat-to-evade-network-detection.html",
+      "title": "Chaos ransomware deploys browser-based msaRAT to evade network detection",
+      "date": "2026-07-23",
+      "friendly_name": "Security Affairs"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-23",
+      "summary": "Cisco Talos publishes research on the msaRAT malware used by the Chaos ransomware group."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1185",
+      "name": "Browser Session Hijacking"
+    },
+    {
+      "id": "T1601.002",
+      "name": "Web-based C2"
+    },
+    {
+      "id": "T1573.002",
+      "name": "Asymmetric Cryptography"
+    },
+    {
+      "id": "T1059.007",
+      "name": "JavaScript"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use EDR to detect anomalous process behavior, such as a non-interactive process spawning a browser with debugging flags.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application control to block browsers from being launched with specific command-line arguments like --remote-debugging-port.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "On systems that do not require a web browser (e.g., servers), uninstalling them removes the dependency msaRAT relies on.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Since msaRAT relies on behavioral evasion rather than a software flaw, endpoint process analysis is the most effective detection method. Security teams should configure their Endpoint Detection and Response (EDR) solutions to specifically monitor for the creation of browser processes with suspicious command-line arguments. A high-fidelity alert should be generated whenever `chrome.exe` or `msedge.exe` is launched with both the `--headless` and `--remote-debugging-port=` flags, especially if the parent process is a non-interactive service or a user process not associated with development work. Correlating this with the parent-child process relationship (e.g., a process spawned from an MSI installer then launches a headless browser) can provide definitive evidence of an msaRAT infection.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "A robust application control policy can prevent msaRAT from executing its core function. Using tools like Windows Defender Application Control (WDAC) or AppLocker, administrators can create rules that govern not just which executables can run, but also how they can run. A specific rule should be created to block `chrome.exe` and `msedge.exe` from being executed if the process command line contains the `--remote-debugging-port=` argument. This rule should be applied to all standard users and system processes, with exceptions only for specific developer accounts or administrative tools that legitimately require this functionality. This directly blocks the malware's ability to create its C2 channel via the browser.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "On systems where browsers are required but remote debugging is not, this feature can be disabled via policy. For both Chrome and Edge in a managed enterprise environment, Group Policy Objects (GPOs) can be used to set the `RemoteDebuggingAllowed` policy to `False`. This prevents the browser from being launched with the remote debugging port enabled, effectively neutering msaRAT's primary C2 mechanism. On servers and other critical systems where a browser is not necessary for the machine's function, the simplest and most effective hardening step is to uninstall browsers entirely. This removes the application dependency that the malware relies on, eliminating this attack vector on that host.",
+      "mitre_mitigation_id": "M1042"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "chrome.exe --headless --remote-debugging-port=",
+      "description": "The msaRAT launches a headless Chrome instance with remote debugging enabled. This command line is a strong indicator of compromise.",
+      "context": "EDR logs, Windows Event ID 4688 (Process Creation).",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "msedge.exe --headless --remote-debugging-port=",
+      "description": "The msaRAT launches a headless Edge instance with remote debugging enabled. This command line is a strong indicator of compromise.",
+      "context": "EDR logs, Windows Event ID 4688 (Process Creation).",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound DTLS/WebRTC traffic from a server process",
+      "description": "WebRTC traffic is unusual for server systems, especially when initiated by a non-interactive process. This could indicate msaRAT's C2 channel.",
+      "context": "Network flow data (NetFlow), NIDS/NTA solutions.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Chaos ransomware",
+    "msaRAT",
+    "Cisco Talos",
+    "C2",
+    "evasion",
+    "WebRTC",
+    "Chrome DevTools"
+  ],
+  "extract_datetime": "2026-07-23T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ]
+  },
+  "pub_date": "2026-07-23",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-23T15:00:00.000Z",
+  "updatedAt": "2026-07-23T15:00:00.000Z"
+}

@@ -1,0 +1,86 @@
+title: Website Content File Modification
+id: 2b8c1f3a-9e4d-4b1f-8c7a-1d2e3f4a5b6c
+status: experimental
+description: Detects unauthorized changes to web server content files, which could indicate a defacement attack.
+author: cyber.netsecops.io
+date: 2026-11-01
+references:
+  - https://www.themoscowtimes.com/2026/11/01/russias-statistics-agency-hit-by-cyberattack-as-hackers-claim-massive-data-theft-a94146
+tags:
+  - attack.t1485
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '.html'
+      - '.php'
+      - '.aspx'
+      - '.js'
+    Image|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+      - '\nginx.exe'
+  filter_legit_tools:
+    Image|contains:
+      - 'Content Management System'
+      - 'DeploymentTool.exe'
+  condition: selection and not filter_legit_tools
+---
+title: Anomalous Large Outbound Data Transfer from Server
+id: edcb81f8-0687-4289-9d8c-c6fa47bf274f
+status: experimental
+description: Detects unusually large outbound data transfers from internal servers, which could indicate data exfiltration.
+author: cyber.netsecops.io
+date: 2026-11-01
+references:
+  - https://www.themoscowtimes.com/2026/11/01/russias-statistics-agency-hit-by-cyberattack-as-hackers-claim-massive-data-theft-a94146
+tags:
+  - attack.t1567
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+    SentBytes|gt: 100000000 # 100MB
+  filter_private:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  filter_known_procs:
+    Image|endswith:
+      - '\patching_agent.exe'
+      - '\backup_client.exe'
+  condition: selection and not filter_private and not filter_known_procs
+---
+title: Potential Web Shell POST Request
+id: 8438f22b-1dd0-450d-a01d-f1c04617a570
+status: experimental
+description: Detects suspicious POST requests to web script files, which may indicate web shell activity.
+author: cyber.netsecops.io
+date: 2026-11-01
+references:
+  - https://www.themoscowtimes.com/2026/11/01/russias-statistics-agency-hit-by-cyberattack-as-hackers-claim-massive-data-theft-a94146
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-method: 'POST'
+    cs-uri-stem|endswith:
+      - '.php'
+      - '.aspx'
+      - '.jsp'
+    sc-status: 200
+  filter_legit_apps:
+    cs-uri-stem|contains:
+      - '/admin/'
+      - '/login.php'
+  condition: selection and not filter_legit_apps

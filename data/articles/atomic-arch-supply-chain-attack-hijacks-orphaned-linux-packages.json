@@ -1,0 +1,183 @@
+{
+  "id": "2f067b75-bc52-4542-8a88-4bac855f1784",
+  "slug": "atomic-arch-supply-chain-attack-hijacks-orphaned-linux-packages",
+  "headline": "'Atomic Arch' Supply Chain Attack Hijacks Orphaned Linux Packages to Target Developers",
+  "title": "New 'Atomic Arch' Campaign Abuses Arch User Repository (AUR) to Distribute Malware",
+  "summary": "A sophisticated supply chain attack dubbed 'Atomic Arch' is targeting Linux developers by hijacking trusted but orphaned packages in the Arch User Repository (AUR). Attackers claim ownership of these abandoned packages and modify their build scripts (PKGBUILD) to fetch and install a malicious npm package. This secondary payload, 'atomic-lockfile', deploys a Rust-based infostealer and an eBPF rootkit designed to harvest developer credentials, tokens, and SSH keys. The campaign subverts the AUR's trust model and has compromised over 20 packages in multiple waves.",
+  "full_report": "## Executive Summary\nA new and insidious supply chain attack, named 'Atomic Arch,' has been identified targeting developers using the Arch Linux ecosystem. First reported around June 11, 2026, the campaign involves threat actors taking control of legitimate, trusted software packages in the Arch User Repository (AUR) that have been abandoned by their original maintainers. The attackers then modify the package's build instructions (`PKGBUILD` file) to add a malicious post-install script. This script covertly downloads and executes a malicious package from the public **[npm](https://www.npmjs.com/)** registry, which in turn deploys credential-stealing malware. The attack is dangerous because it abuses the inherent trust users have in established AUR packages. Security firm **[Sonatype](https://www.sonatype.com)** has been tracking the campaign, which has already compromised dozens of packages and appears to be ongoing.\n\n## Threat Overview\n- **Campaign Name:** Atomic Arch\n- **Target:** Developers using Arch Linux and the Arch User Repository (AUR).\n- **Attack Vector:** Supply chain attack via hijacking of orphaned AUR packages.\n- **Methodology:**\n  1. Attacker identifies a trusted but orphaned AUR package.\n  2. Attacker requests and is granted ownership of the package.\n  3. Attacker modifies the `PKGBUILD` file, adding a malicious post-install command.\n  4. A user installs or updates the trusted package, unknowingly executing the malicious command.\n  5. The command fetches and installs a malicious npm package (e.g., `atomic-lockfile`).\n  6. The npm package deploys the final payload: an infostealer and a rootkit.\n- **Payload:** A Rust-based infostealer and an eBPF rootkit designed to harvest developer credentials (SSH keys, API tokens, etc.).\n\n## Technical Analysis\nThis attack cleverly subverts the community-driven trust model of the AUR. Unlike typosquatting, where an attacker creates a new, similarly named package, this method inherits the reputation and userbase of a previously legitimate project.\n\nThe core of the attack lies in modifying the `PKGBUILD` file. A typical malicious addition might look like this in the `post_install()` function:\n\n```bash\n# Malicious command added by attacker\n/usr/bin/npm install -g atomic-lockfile\n```\n\nWhen an unsuspecting user runs `makepkg -si` or uses an AUR helper to install/update the compromised package, this command is executed with their user privileges. The `atomic-lockfile` npm package, tracked by Sonatype as `Sonatype-2026-003775`, contains the final payload. Analysis shows it includes:\n- **A Rust-based Infostealer:** This component is designed to search for and exfiltrate sensitive developer-related information, such as `.ssh` keys, `.aws` credentials, `.kube` configs, and browser data.\n- **An eBPF Rootkit:** This provides stealth and persistence capabilities, allowing the malware to hide its processes and network connections from the system administrator.\n\nThe campaign has evolved, with a second wave on June 12 using the `Bun` runtime as an alternative to `npm` for installation, demonstrating the attacker's adaptability.\n\n### MITRE ATT&CK TTPs\n- **[`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/):** This is the core technique, compromising a trusted software repository.\n- **[`T1059.004 - Unix Shell`](https://attack.mitre.org/techniques/T1059/004/):** The `PKGBUILD` file uses shell commands to execute the malicious installation.\n- **[`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/):** The `npm install` command transfers the malicious payload from the npm registry to the victim's machine.\n- **[`T1552.004 - Private Keys`](https://attack.mitre.org/techniques/T1552/004/):** The infostealer payload is specifically designed to steal SSH and other private keys.\n- **[`T1014 - Rootkit`](https://attack.mitre.org/techniques/T1014/):** The use of an eBPF rootkit for stealth and persistence.\n\n## Impact Assessment\nThe impact on developers is potentially devastating. The theft of SSH keys, API tokens, and other credentials can lead to:\n- **Compromise of Corporate Networks:** A developer's stolen SSH key could grant an attacker direct access to production servers or code repositories.\n- **Further Supply Chain Attacks:** Stolen credentials for package registries (like npm or PyPI) could allow the attacker to inject malware into even more widely used software.\n- **Financial Theft:** Stolen cryptocurrency wallet keys or credentials for cloud providers (like AWS) can lead to direct financial loss.\n- **Loss of Intellectual Property:** Attackers could gain access to and steal proprietary source code.\n\n## Detection & Response\n1.  **Audit AUR Packages:** Developers using AUR should be extremely cautious. Before installing or updating any package, especially one that was recently orphaned and adopted, carefully inspect the `PKGBUILD` file for any suspicious commands. Look for unexpected network calls, `curl | bash` patterns, or installation of packages from other ecosystems like npm or pip. ([D3-DA: Dynamic Analysis](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis))\n2.  **Network Monitoring:** Monitor for unexpected outbound network connections from build processes or package installation scripts. An `install` script should generally not be making arbitrary network connections.\n3.  **Check for Malicious Packages:** Search your system for the presence of known malicious npm packages like `atomic-lockfile`.\n    ```bash\n    npm list -g | grep atomic-lockfile\n    ```\n\n## Mitigation\n1.  **Scrutinize Build Scripts:** **Never** blindly trust build scripts, even from a known package. Always review the `PKGBUILD` (or `Makefile`, `setup.py`, etc.) before building and installing software from community sources. Treat AUR helpers with caution, as they can automate away this crucial review step.\n2.  **Build in Isolated Environments:** Consider building and packaging software in ephemeral, isolated environments like containers or VMs. This can limit the malware's ability to access sensitive files on your host machine. ([D3-DE: Decoy Environment](https://d3fend.mitre.org/technique/d3f:DecoyEnvironment))\n3.  **Principle of Least Privilege:** Do not run build or install commands as root unless absolutely necessary. Run `makepkg` as a regular user.\n4.  **Use Hardware Tokens:** Store high-value SSH and GPG keys on a hardware token (like a YubiKey). This makes it impossible for malware to simply copy and exfiltrate the key file.",
+  "twitter_post": "🚨 SUPPLY CHAIN ATTACK: 'Atomic Arch' campaign hijacks orphaned Arch Linux AUR packages to install infostealers & rootkits on developer machines via malicious npm dependencies. Review your PKGBUILD files now! #SupplyChain #Linux #Malware #AUR",
+  "meta_description": "A new supply chain attack called 'Atomic Arch' is targeting Linux developers by hijacking orphaned packages in the Arch User Repository (AUR) to distribute credential-stealing malware.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Arch User Repository (AUR)",
+      "type": "product"
+    },
+    {
+      "name": "Atomic Arch",
+      "type": "other"
+    },
+    {
+      "name": "Linux",
+      "type": "product"
+    },
+    {
+      "name": "Rust",
+      "type": "technology"
+    },
+    {
+      "name": "Sonatype",
+      "type": "company"
+    },
+    {
+      "name": "eBPF",
+      "type": "technology"
+    },
+    {
+      "name": "npm",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.sonatype.com/blog/atomic-arch-npm-campaign-adds-malicious-dependency",
+      "title": "Atomic Arch npm Campaign Adds Malicious Dependency",
+      "date": null,
+      "website": "sonatype.com"
+    },
+    {
+      "url": "https://hackread.com/atomic-arch-hijacks-linux-aur-packages-malware/",
+      "title": "Atomic Arch Campaign Hijacks 20+ Linux AUR Packages to Deliver Malware",
+      "date": null,
+      "website": "hackread.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html",
+      "title": "Over 400 Arch Linux AUR Packages Hijacked in 'Atomic Arch' Supply Chain Attack",
+      "date": null,
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://securityboulevard.com/2026/06/atomic-arch-npm-campaign-adds-malicious-dependency/",
+      "title": "Atomic Arch npm Campaign Adds Malicious Dependency",
+      "date": null,
+      "website": "securityboulevard.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-11T00:00:00Z",
+      "summary": "The 'Atomic Arch' campaign is first discovered and reported by security researchers."
+    },
+    {
+      "datetime": "2026-06-12T00:00:00Z",
+      "summary": "A second wave of the attack is observed, utilizing the Bun runtime as an alternative to npm."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1014",
+      "name": "Rootkit",
+      "tactic": null
+    },
+    {
+      "id": "T1059.004",
+      "name": "Unix Shell",
+      "tactic": null
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": null
+    },
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": null
+    },
+    {
+      "id": "T1552.004",
+      "name": "Private Keys",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "AUR",
+    "Arch Linux",
+    "Atomic Arch",
+    "Developer Security",
+    "Infostealer",
+    "Malware",
+    "Rootkit",
+    "Supply Chain Attack",
+    "npm"
+  ],
+  "extract_datetime": "2026-06-13",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "Linux developers",
+      "Users of Arch Linux"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "AUR",
+    "Arch Linux",
+    "Atomic Arch",
+    "Developer Security",
+    "Infostealer",
+    "Malware",
+    "Rootkit",
+    "Supply Chain Attack",
+    "npm"
+  ],
+  "pub_date": "2026-06-13",
+  "reading_time_minutes": null,
+  "createdAt": "2026-06-13T15:00:00.000Z",
+  "updatedAt": "2026-06-27T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-06-27T12:00:00Z",
+      "summary": "Scope of 'Atomic Arch' attack dramatically increased, now compromising ~1,500 AUR packages. New details on credential theft and CVSS 8.7 score.",
+      "content": "The 'Atomic Arch' supply chain attack has significantly expanded its reach, now affecting approximately 1,500 packages in the Arch User Repository (AUR), a substantial increase from the previously reported 'dozens'. The attack, assigned a CVSS score of 8.7, continues to target developers by abusing the AUR's package adoption feature to inject malicious code into PKGBUILD files. The payload is designed to steal sensitive developer credentials, including CI/CD service tokens and cloud API keys, highlighting a broader impact on development pipelines and infrastructure. New detection and mitigation strategies, such as CI/CD monitoring and credential hardening, have also been detailed.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.youtube.com/watch?v=oc0uOR9-rvA",
+          "title": "Top 5 Cybersecurity News Stories June 26, 2026",
+          "website": "",
+          "date": "2026-06-27T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "datetime": "2026-06-14T12:00:00Z",
+      "summary": "Scale of 'Atomic Arch' supply chain attack on Arch Linux AUR significantly increased, now impacting over 400 packages.",
+      "content": "The 'Atomic Arch' supply chain attack targeting Arch Linux AUR packages has escalated significantly, with reports now indicating over 400 packages have been compromised. This is a substantial increase from the previously reported 20+ packages. The attack continues to leverage modified PKGBUILDs to deploy a Rust-based infostealer and an eBPF rootkit, aiming to steal developer credentials and maintain stealth. The expanded scope highlights the growing threat to the Arch Linux developer community.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://cambridgeanalytica.org/data-breaches-scandals/arch-linux-aur-packages-hijacked-rootkit-2026-51102/",
+          "title": "Attackers hijacked 400 Arch Linux packages this week to steal developer credentials and install hidden rootkits",
+          "website": "",
+          "date": "2026-06-14T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

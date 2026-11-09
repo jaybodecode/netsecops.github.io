@@ -1,0 +1,38 @@
+# Major Data Breaches and Critical Vulnerabilities Dominate Cybersecurity News
+
+**Published:** 2026-10-29 | **Articles:** 8
+
+**Critical Vulnerabilities Under Active Exploitation**:
+
+- **[UPDATE] China-Linked APT Exploits PHP2Shell and Fragnesia to Root Firewalls**: Palo Alto Networks has confirmed active exploitation of PHP2Shell (CVE-2026-109618, CVE-2026-109619) and Fragnesia (CVE-2026-46300) targeting its internet-exposed PAN-OS firewalls and Panorama appliances. Affected versions include PAN-OS 10.2, 11.1, 11.2, 12.1, and 12.2, with hotfixes available. CISA has added all three CVEs to its Known Exploited Vulnerabilities catalog.
+- **[NEW] Cisco Patches Actively Exploited Zero-Day Crashing Firewalls**: Cisco has released patches for CVE-2026-76418, a high-severity zero-day vulnerability in its ASA and FTD firewall software. Unauthenticated remote attackers are actively exploiting this flaw to cause a denial-of-service condition by crashing devices configured with SSL VPN and secondary authentication.
+- **[NEW] Chinese APT Exploited Low-Severity VMware Flaw for Stealth**: CISA has added a low-severity VMware ESXi logging vulnerability (CVE-2026-41709) to its KEV catalog. A China-linked APT, 'Warp Panda', reportedly exploited this as a zero-day to enable defense evasion and stealthy post-exploitation activity by allowing unlogged command execution with admin privileges.
+
+**Significant Data Breaches and Ransomware Incidents**:
+
+- **[UPDATE] iRhythm Notifies Over 360,000 Patients of Data Breach from June**: The iRhythm data breach, initially reported to affect over 360,000 patients, has now been confirmed to impact 8,179,772 individuals. The initial access vector was a social engineering attack targeting company personnel, leading to unauthorized access to third-party business applications.
+- **[NEW] Japan Airlines Breach Exposes 92,000 Customers via IT Provider**: Japan Airlines (JAL) has disclosed a supply chain data breach impacting approximately 92,000 customers. The incident originated at Amadeus IT Group, a third-party vendor managing JAL's passenger reservation system, exposing personal information including names and flight details.
+- **[NEW] SETTRA Ransomware Group Hits Israel's Largest Car Importer**: The SETTRA ransomware group has been identified as the threat actor behind a cyberattack on Colmobil, Israel's largest vehicle importer. The attack disrupted operations and involved double extortion tactics, with threats to leak stolen customer data.
+- **[NEW] WhiteArmor Ransomware Claims Breach of Echo Global Logistics**: The WhiteArmor ransomware group has claimed a major cyberattack against U.S. logistics provider Echo Global Logistics, alleging the theft of millions of freight, customer, and employee records and demanding a $10 million ransom.
+- **[NEW] Booba Project Ransomware Claims Attack on BASS Medical Group**: The 'Booba Project' ransomware group has claimed responsibility for a cyberattack on BASS Medical Group, a California-based healthcare provider, alleging the exfiltration of 100GB of data.
+
+## Articles in this publication
+- [iRhythm Notifies Over 360,000 Patients of Data Breach from June](https://cyber.netsecops.io/articles/irhythm-technologies-notifies-360000-patients-of-june-data-breach/) (high)
+  Medical device maker iRhythm Technologies is notifying over 360,000 patients that their personal and medical data was stolen in a data breach that occurred in June 2026. The incident involved unauthorized access to business applications hosted by a third party. Attackers accessed and exfiltrated data between June 3 and June 8, then contacted iRhythm on June 9 with a ransom demand. The compromised data includes patient names, addresses, dates of birth, insurance information, and device serial numbers. Notifications to affected individuals began on October 2, 2026, nearly four months after the breach.
+- [China-Linked APT Exploits PHP2Shell and Fragnesia to Root Firewalls](https://cyber.netsecops.io/articles/china-linked-apt-exploits-php2shell-fragnesia-to-root-firewalls/) (critical)
+  A China-linked APT group is actively exploiting a combination of critical vulnerabilities, including PHP2Shell (CVE-2026-109618, CVE-2026-109619) and a Linux kernel flaw known as Fragnesia (CVE-2026-46300). The attack chain allows the threat actor to gain root access on internet-facing firewalls, deploy webshells for persistence, and establish reverse SSH tunnels, with targets including a U.S. government-affiliated organization.
+- [Cisco Patches Actively Exploited Zero-Day Crashing Firewalls](https://cyber.netsecops.io/articles/cisco-patches-actively-exploited-firewall-zero-day-cve-2026-76418/) (high)
+  Cisco has released patches for a high-severity zero-day vulnerability, CVE-2026-76418, affecting its ASA and FTD firewall software. The flaw is being actively exploited by unauthenticated remote attackers to trigger a denial-of-service (DoS) condition by crashing vulnerable devices configured with SSL VPN and secondary authentication. Cisco urges immediate patching.
+- [Chinese APT Exploited Low-Severity VMware Flaw for Stealth](https://cyber.netsecops.io/articles/china-linked-apt-exploits-low-severity-vmware-esxi-flaw-cve-2026-41709/) (high)
+  CISA has added a low-severity VMware ESXi logging vulnerability (CVE-2026-41709) to its KEV catalog after reports that a China-linked APT, 'Warp Panda', exploited it as a zero-day. The flaw allows an attacker with admin privileges to execute commands without them being logged, enabling defense evasion and stealthy post-exploitation activity.
+- [Japan Airlines Breach Exposes 92,000 Customers via IT Provider](https://cyber.netsecops.io/articles/japan-airlines-data-breach-exposes-92000-customers-via-amadeus/) (high)
+  Japan Airlines (JAL) has disclosed a supply chain data breach that exposed the personal information of approximately 92,000 customers. The incident originated at Amadeus IT Group, a third-party vendor that manages JAL's passenger reservation system. Exposed data includes names, flight details, and, for some, passport numbers.
+- [SETTRA Ransomware Group Hits Israel's Largest Car Importer](https://cyber.netsecops.io/articles/settra-ransomware-group-linked-to-attack-on-israeli-car-importer-colmobil/) (high)
+  The SETTRA ransomware group has been identified as the threat actor behind a cyberattack on Colmobil, Israel's largest vehicle importer. The attack, which occurred two weeks prior, disrupted operations and involved double extortion tactics, with the group threatening to leak stolen customer data if the ransom was not paid.
+- [WhiteArmor Ransomware Claims Breach of Echo Global Logistics](https://cyber.netsecops.io/articles/whitearmor-ransomware-claims-attack-on-echo-global-logistics-demands-10m/) (high)
+  The WhiteArmor ransomware group has claimed a major cyberattack against Echo Global Logistics, a U.S. logistics provider. In a dark web leak site post, the group alleged the theft of millions of freight, customer, and employee records and has demanded a $10 million ransom. The claim has not yet been confirmed by the company.
+- [Booba Project Ransomware Claims Attack on BASS Medical Group](https://cyber.netsecops.io/articles/booba-project-ransomware-claims-attack-on-bass-medical-group/) (high)
+  The 'Booba Project' ransomware group has claimed responsibility for a cyberattack on BASS Medical Group, a California-based healthcare provider. The group alleges on its leak site that it exfiltrated 100GB of data. The claim follows a separate data security incident that the medical group had disclosed just days earlier.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-10-29/

@@ -1,0 +1,63 @@
+title: Web Server Process Accessing Sensitive System Files
+id: 2b1a987c-c8d3-4e5f-a0b9-1f2d3e4c5b6a
+status: experimental
+description: |
+  Detects a web server process spawning shell commands to read sensitive system files like /etc/passwd. This can indicate a web shell or RCE vulnerability exploitation.
+references:
+  - Internal hunting hint from NTT Docomo breach analysis
+author: cyber.netsecops.io
+date: 2026-11-05
+tags:
+  - attack.t1059.004
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '/httpd'
+      - '/apache2'
+      - '/nginx'
+      - '/php-fpm'
+  selection_child:
+    Image|endswith:
+      - '/cat'
+      - '/head'
+      - '/tail'
+      - '/more'
+      - '/less'
+    CommandLine|contains:
+      - '/etc/passwd'
+      - '/etc/shadow'
+  condition: all of selection_*
+---
+title: Anomalous Bulk Database Selection
+id: 9f8e7d6c-5b4a-4c3d-8e7f-6a5b4c3d2e1f
+status: experimental
+description: |
+  Detects database queries that select all columns from a table, especially from a web application source, which could indicate a data exfiltration attempt.
+references:
+  - Internal hunting hint from NTT Docomo breach analysis
+author: cyber.netsecops.io
+date: 2026-11-05
+tags:
+  - attack.t1213
+  - attack.collection
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains|all:
+      - 'SELECT * FROM'
+    query|contains:
+      - 'customers'
+      - 'users'
+      - 'accounts'
+  filter_legit:
+    source_address:
+      - '127.0.0.1'
+      - '::1'
+  condition: selection and not filter_legit

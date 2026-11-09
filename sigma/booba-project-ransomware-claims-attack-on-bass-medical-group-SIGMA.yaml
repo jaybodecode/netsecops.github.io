@@ -1,0 +1,72 @@
+title: Anomalous EHR/EMR Database Access
+id: 2a9e3b1f-8c7d-4e6a-9b1f-3d4c5e6a7b8c
+status: experimental
+description: |
+  Detects unusual queries against Electronic Health Record (EHR) or Electronic Medical Record (EMR) databases, such as a single user account exporting an abnormally large number of patient records. This can be an indicator of data collection prior to exfiltration.
+author: cyber.netsecops.io
+date: 2026-10-29
+references:
+  - https://www.hookphish.com/blog/ransomware-group-booba-project-hits-bass-medical-group/
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains:
+      - 'SELECT * FROM patients'
+      - 'SELECT * FROM medical_records'
+    user_account: 'service_account_export' # Example, should be tailored
+    records_returned|gt: 1000 # Example threshold
+  condition: selection
+tags:
+  - attack.t1213
+---
+title: Large Data Egress from Patient Data Servers
+id: 5b1c8d2e-9a3b-4f5e-8c7d-6e5f4d3c2b1a
+status: experimental
+description: |
+  Detects large outbound data transfers from servers known to host patient data (EHR/EMR systems). This is a primary indicator of data exfiltration.
+author: cyber.netsecops.io
+date: 2026-10-29
+references:
+  - https://www.hookphish.com/blog/ransomware-group-booba-project-hits-bass-medical-group/
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    SourceIp: 
+      - '10.1.2.3' # IP of EHR server
+      - '10.1.2.4' # IP of patient database server
+    Initiated: true
+  filter_internal:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  timeframe: 1h
+  condition: selection and not filter_internal | count() > 1000 # Example: more than 1000 outbound connections in an hour
+tags:
+  - attack.t1048
+---
+title: Mass File Access on Network Share by Single Process
+id: 8c7d6e5f-4d3c-4b1a-9e8f-1a2b3c4d5e6f
+status: experimental
+description: |
+  Detects a single process rapidly accessing an unusually high number of files on a network share, which often precedes data staging, exfiltration, and encryption by ransomware.
+author: cyber.netsecops.io
+date: 2026-10-29
+references:
+  - https://www.hookphish.com/blog/ransomware-group-booba-project-hits-bass-medical-group/
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|startswith: '\\\\server\share\'
+  timeframe: 1m
+  condition: selection | count(TargetFilename) by Image > 1000 # Example: process accesses >1000 files in 1 minute
+tags:
+  - attack.t1213

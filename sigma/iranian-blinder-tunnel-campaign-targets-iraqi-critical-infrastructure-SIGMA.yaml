@@ -1,0 +1,90 @@
+title: Suspicious CSProj File Execution
+id: 5d6e7f8a-9b0c-4d1e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Monitors for the execution of C# project files (.csproj) outside of legitimate development tools, which was a TTP in the Blinder Tunnel campaign.
+author: cyber.netsecops.io
+date: 2026-10-06
+references:
+  - https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/
+tags:
+  - attack.t1204
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains: '.csproj'
+  filter:
+    ParentImage|endswith:
+      - '\devenv.exe'
+      - '\msbuild.exe'
+  condition: selection and not filter
+---
+title: AppDomainManager Hijacking via mscoree.dll Load
+id: dda1975f-ad48-45e6-b927-ef0188c5c238
+status: experimental
+description: Detects processes that are not part of the .NET framework unexpectedly loading mscoree.dll, which can be an indicator of AppDomainManager hijacking as seen in the Blinder Tunnel campaign.
+author: cyber.netsecops.io
+date: 2026-10-06
+references:
+  - https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/
+tags:
+  - attack.t1574.014
+level: medium
+logsource:
+  category: image_load
+  product: windows
+detection:
+  selection:
+    ImageLoaded|endswith: '\mscoree.dll'
+  filter:
+    Image|startswith:
+      - 'C:\Windows\Microsoft.NET\'
+      - 'C:\Program Files\dotnet\'
+  condition: selection and not filter
+---
+title: Anomalous GitHub API C2 Traffic
+id: 1d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: 'Scrutinizes traffic to the GitHub API from non-developer workstations or servers, which could indicate C2 communications similar to the Blinder Tunnel campaign.'
+author: cyber.netsecops.io
+date: 2026-10-06
+references:
+  - https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/
+tags:
+  - attack.t1071.001
+level: low
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host: 'api.github.com'
+  filter:
+    c-useragent|contains:
+      - 'git/'
+      - 'Visual Studio'
+      - 'Go-http-client'
+  condition: selection and not filter
+---
+title: Blinder Tunnel Associated File Execution
+id: 2b1a8c3d-f4e5-4b6a-8d7c-9e0f1a2b3c4d
+status: experimental
+description: Detects the execution of files associated with the Blinder Tunnel campaign, including the initial lure and the Chisel tunneling tool.
+author: cyber.netsecops.io
+date: 2026-10-06
+references:
+  - https://unit42.paloaltonetworks.com/blinder-tunnel-targets-critical-infrastructure/
+tags:
+  - attack.t1204
+  - attack.t1105
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\Dubai Airport Careers.exe'
+      - '\chisel.exe'
+  condition: selection

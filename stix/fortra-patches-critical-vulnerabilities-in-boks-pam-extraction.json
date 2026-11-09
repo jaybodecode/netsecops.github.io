@@ -1,0 +1,97 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-10-04T18:01:07.607Z",
+    "article_slug": "fortra-patches-critical-vulnerabilities-in-boks-pam",
+    "article_date": "2026-10-04",
+    "token_usage": {
+      "input_tokens": 146194,
+      "output_tokens": 1533,
+      "cached_tokens": 142258,
+      "total_tokens": 147727,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.038032
+    }
+  },
+  "report_name": "Fortra Patches Critical Flaws in BoKS Privileged Access Manager",
+  "threat_actors": [],
+  "attack_patterns": [],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-79901",
+      "cve": "CVE-2026-79901",
+      "description": "An authentication bypass vulnerability in Fortra BoKS Manager's keytab management for Active Directory. The flaw is due to a predictable pseudo-random number generator seeded with the current Unix timestamp, allowing an attacker to generate and validate possible passwords offline.",
+      "aliases": [],
+      "cvss_score": 9.9,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-79898",
+      "cve": "CVE-2026-79898",
+      "description": "A command injection vulnerability in the crlserver component of Fortra BoKS allows an authenticated user to execute arbitrary shell commands with root privileges on the BoKS Master server via the BCC and WSI REST or SOAP APIs.",
+      "aliases": [],
+      "cvss_score": 9.1,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-12627",
+      "cve": "CVE-2026-12627",
+      "description": "A stack buffer overflow vulnerability in the autoregistration function of Fortra BoKS can be triggered by a remote, unauthenticated attacker, leading to memory corruption which could result in denial of service or arbitrary code execution.",
+      "aliases": [],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "crlserver"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "BoKS PAM crlserver Suspicious Child Process",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: BoKS PAM crlserver Suspicious Child Process\nid: 2b9c1a8e-4f5d-4a1e-8c7b-9d0f2a1b3c4d\nstatus: experimental\ndescription: |\n  Detects suspicious child processes (e.g., shells) spawned by the BoKS crlserver process. \n  This could indicate exploitation of the command injection vulnerability CVE-2026-79898.\nreferences:\n  - https://www.securityweek.com/fortra-patches-critical-vulnerabilities-in-boks/\nauthor: cyber.netsecops.io\ndate: 2026-10-04\ntags:\n  - attack.t1068\n  - attack.privilege_escalation\nlevel: high\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection_parent:\n    ParentImage|endswith: '/crlserver'\n  selection_child:\n    Image|endswith:\n      - '/sh'\n      - '/bash'\n      - '/dash'\n      - '/ksh'\n      - '/zsh'\n      - '/csh'\n      - '/powershell'\n      - '/pwsh'\n      - '/cmd.exe'\n  condition: all of selection_*\nfalsepositives:\n  - Legitimate administrative scripts.\n",
+      "description": "Detects suspicious child processes (e.g., shells) spawned by the BoKS crlserver process, which could indicate exploitation of the command injection vulnerability CVE-2026-79898."
+    },
+    {
+      "name": "BoKS PAM API Command Injection Attempt",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: BoKS PAM API Command Injection Attempt\nid: 8e4d3c2b-1a9f-4d8c-9b7a-6f5d4e3c2b1a\nstatus: experimental\ndescription: |\n  Detects web requests to BoKS BCC and WSI API endpoints containing characters indicative of command injection.\n  This could indicate attempts to exploit command injection vulnerability CVE-2026-79898.\nreferences:\n  - https://www.securityweek.com/fortra-patches-critical-vulnerabilities-in-boks/\nauthor: cyber.netsecops.io\ndate: 2026-10-04\ntags:\n  - attack.t1210\n  - attack.lateral_movement\nlevel: medium\nlogsource:\n  category: proxy\ndetection:\n  selection_path:\n    c-uri-stem|contains:\n      - '/bcc/'\n      - '/wsi/'\n  selection_injection:\n    c-uri-query|contains:\n      - ';'\n      - '|'\n      - '&&'\n      - '`'\n  condition: all of selection_*\nfalsepositives:\n  - Benign API requests that happen to contain these characters in parameters.\n",
+      "description": "Detects web requests to BoKS BCC and WSI API endpoints containing characters indicative of command injection, potentially related to CVE-2026-79898."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "BoKS PAM crlserver Suspicious Child Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-79898",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "BoKS PAM API Command Injection Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-79898",
+      "target_type": "vulnerability"
+    }
+  ]
+}

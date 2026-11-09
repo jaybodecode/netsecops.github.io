@@ -1,0 +1,70 @@
+title: VSSAdmin Shadow Copy Deletion
+id: 5e9b8f7a-1c3d-4b8e-9f6a-2d1c0b9e8f7a
+status: experimental
+description: Detects the use of vssadmin.exe to delete volume shadow copies, a common technique used by ransomware to inhibit system recovery.
+references:
+  - https://www.bleepingcomputer.com/news/security/cisa-medusa-ransomware-hit-over-500-critical-infrastructure-orgs/amp/
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1490
+  - attack.impact
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  condition: selection
+---
+title: Medusa Ransomware File Artifacts Creation
+id: 8c4d5e6f-7b8a-4d9c-8a1b-2c3d4e5f6a7b
+status: experimental
+description: Detects the creation of Medusa ransom notes or files with the .medusa extension.
+references:
+  - https://www.bleepingcomputer.com/news/security/cisa-medusa-ransomware-hit-over-500-critical-infrastructure-orgs/amp/
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1486
+  - attack.impact
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_note:
+    TargetFilename|endswith: '\\!!!READ_ME_MEDUSA!!!.txt'
+  selection_ext:
+    TargetFilename|endswith: '.medusa'
+  condition: 1 of selection_*
+---
+title: Medusa RMM Tool Execution
+id: 9a8b7c6d-5e4f-4a3b-b2c1-d0e9f8a7b6c5
+status: experimental
+description: Detects the execution of legitimate RMM tools known to be abused by Medusa ransomware actors.
+references:
+  - https://www.bleepingcomputer.com/news/security/cisa-medusa-ransomware-hit-over-500-critical-infrastructure-orgs/amp/
+author: cyber.netsecops.io
+date: 2026-08-20
+falsepositives:
+  - Legitimate administrative use of these RMM tools.
+level: medium
+tags:
+  - attack.t1219
+  - attack.command_and_control
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\\AnyDesk.exe'
+      - '\\Splashtop.exe'
+      - '\\AteraAgent.exe'
+      - '\\ConnectWiseControl.Client.exe'
+  condition: selection

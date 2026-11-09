@@ -1,0 +1,134 @@
+{
+  "id": "0834b16e-7746-4686-9018-b0c8ea7a54bc",
+  "slug": "dragonforce-ransomware-abused-microsoft-teams-for-covert-c2",
+  "headline": "DragonForce Ransomware Hid C2 Traffic Inside Microsoft Teams Infrastructure",
+  "title": "DragonForce Ransomware Abuses Microsoft Teams TURN Servers for Covert Command and Control",
+  "summary": "The DragonForce ransomware group demonstrated a novel stealth technique by compromising a major US services firm and hiding its command-and-control (C2) traffic within legitimate Microsoft Teams infrastructure. The attackers used a custom Go-based RAT and dwelled in the network for up to two months, abusing Teams' TURN relay servers to evade detection. During this time, they escalated privileges, created new user accounts, and even used a then-undocumented Huawei driver vulnerability to further mask their activity.",
+  "full_report": "## Executive Summary\nA joint report from **[Symantec](https://www.symantec.com)** and **[Carbon Black](https://www.carbonblack.com/)** has detailed a sophisticated attack by the **DragonForce** ransomware group against a major US services firm. The attackers achieved a dwell time of up to two months by employing a novel technique to hide their command-and-control (C2) communications. They abused the TURN (Traversal Using Relays around NAT) relay servers that are part of **[Microsoft Teams'](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** legitimate infrastructure, effectively camouflaging their malicious traffic as legitimate collaboration tool activity. This incident highlights the increasing trend of attackers 'living off the trusted service' to evade detection.\n\n## Threat Overview\nThe DragonForce group successfully infiltrated a large US services company and remained undetected for a prolonged period. Their key innovation was the use of a custom Go-based Remote Access Trojan (RAT) specifically designed to route its C2 traffic through Microsoft Teams' TURN servers. This made the malicious traffic nearly indistinguishable from the vast amounts of legitimate Teams traffic in a corporate environment.\n\n-   **Threat Actor**: DragonForce\n-   **Malware**: Custom Go-based RAT, DragonForce ransomware\n-   **Key Tactic**: Abusing Microsoft Teams TURN servers for C2 communications.\n\nDuring their two-month dwell time, the attackers performed extensive reconnaissance, privilege escalation, and persistence activities before finally deploying their ransomware.\n\n## Technical Analysis\n1.  **Initial Access**: The vector for initial compromise was not specified in the report.\n2.  **Execution and C2 Camouflage ([T1071.001 - Web Protocols](https://attack.mitre.org/techniques/T1071/001/))**: The attackers deployed their custom Go-based RAT. This RAT was configured to use Microsoft Teams' TURN servers as a relay for its C2 traffic. TURN servers are legitimately used to facilitate real-time media (voice, video) for users behind NATs, meaning their traffic is common and often trusted by security appliances.\n3.  **Defense Evasion ([T1562 - Impair Defenses](https://attack.mitre.org/techniques/T1562/))**: The attackers took several steps to solidify their position and evade detection:\n    *   They altered the `LimitBlankPassword` security setting, allowing them to use accounts with blank passwords for remote access.\n    *   They modified firewall rules to ensure their C2 traffic was not blocked.\n    *   Crucially, they deployed an exploit for a then-undocumented vulnerability in a **[Huawei](https://www.huawei.com)** driver to help mask their activity on the network. This vulnerability was only publicly disclosed later by Huntress.\n4.  **Privilege Escalation & Persistence**: The attackers created new user accounts ([T1136.001 - Local Account](https://attack.mitre.org/techniques/T1136/001/)) to maintain access.\n5.  **Impact ([T1486 - Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486/))**: After extensive preparation, the group deployed the DragonForce ransomware to encrypt the victim's systems.\n\n> This attack is a prime example of 'Living off the Trusted Service'. By blending in with legitimate, high-volume application traffic, attackers can significantly reduce their chances of being detected by traditional network monitoring.\n\n## Impact Assessment\nThe long dwell time allowed the attackers to gain a deep understanding of the victim's network, identify the most critical assets, and exfiltrate large amounts of data before the final ransomware deployment. The impact includes:\n-   **Significant Financial Loss**: Due to operational disruption, incident response costs, and a potential ransom payment.\n-   **Data Breach**: The theft of corporate data before encryption leads to a double-extortion scenario.\n-   **Erosion of Trust**: The abuse of a trusted service like Microsoft Teams for malicious purposes complicates detection and challenges the security models of many organizations.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IPs, domains, hashes) were mentioned in the source articles.\n\n## Cyber Observables — Hunting Hints\nDetecting this type of C2 channel is difficult, but not impossible. Security teams should focus on behavioral anomalies:\n\n| Type | Value | Description |\n|---|---|---|\n| Network Traffic Pattern | Connections to Microsoft TURN server IPs from servers or non-interactive service accounts. | Legitimate Teams traffic originates from user workstations. A server making a TURN connection is highly anomalous. |\n| Process Name | `[custom_rat].exe` | Monitor for unknown Go-based executables making persistent network connections, especially to known cloud service IP ranges. |\n| Log Source | EDR/Network Sensor | Baseline normal Teams traffic patterns. Look for connections to Teams infrastructure that lack a corresponding user-driven Teams process on the endpoint. |\n| Command Line Pattern | `reg.exe add ... /v LimitBlankPasswordUse` | Monitor for command-line modifications to this specific registry key, which weakens security policy. |\n\n## Detection & Response\n-   **Behavioral Network Analysis**: The key to detection is context. While the destination IPs (Microsoft TURN servers) are legitimate, the source of the traffic is not. Deploy network traffic analysis tools that can correlate network flows with endpoint processes. Alert on server-to-Teams traffic or any process other than `teams.exe` communicating with Teams infrastructure.\n-   **Go Malware Analysis**: Go-based malware can be difficult to analyze. Use specialized tools to reverse engineer Go binaries and extract C2 information and capabilities.\n-   **Configuration Auditing**: Regularly audit system configurations for unauthorized changes, such as modifications to password policies (`LimitBlankPassword`) or firewall rules.\n-   **D3FEND Techniques**: This scenario is a perfect use case for **[User Behavior Analysis](https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis)** and **[Process Analysis](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis)**. By baselining which users and processes normally interact with services like Teams, you can spot outliers like a server process communicating with a TURN relay.\n\n## Mitigation\n1.  **Egress Traffic Filtering**: While blocking all Microsoft IPs is not feasible, organizations can implement more granular egress filtering. Deny servers and service accounts from making direct outbound connections to the internet where possible. Route necessary traffic through an authenticated proxy.\n2.  **Principle of Least Privilege**: Ensure service accounts have the minimum necessary permissions and cannot be used for interactive logon.\n3.  **Harden Configurations**: Enforce strong security configurations via Group Policy and regularly audit for deviations. Settings like `LimitBlankPasswordUse` should never be disabled.\n4.  **EDR Deployment**: A robust EDR solution is critical for detecting the post-exploitation activities (privilege escalation, persistence) that precede ransomware deployment.",
+  "twitter_post": "Stealthy C2: DragonForce ransomware group hid inside a US firm for 2 months by abusing Microsoft Teams TURN servers for C2 traffic. The novel tactic used a Go-based RAT to blend in with legitimate activity. 🐉 #Ransomware #DragonForce #C2 #MicrosoftTeams",
+  "meta_description": "The DragonForce ransomware group was found to be abusing Microsoft Teams TURN servers to hide its command-and-control traffic, allowing it to dwell in a victim's network for months.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Carbon Black",
+      "type": "vendor"
+    },
+    {
+      "name": "DragonForce",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Huawei",
+      "type": "vendor"
+    },
+    {
+      "name": "Huntress",
+      "type": "security_organization"
+    },
+    {
+      "name": "Microsoft Teams",
+      "type": "product"
+    },
+    {
+      "name": "Symantec",
+      "type": "vendor"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/",
+      "title": "DragonForce Ransomware Exploited Microsoft Teams to Hide Attack",
+      "date": null,
+      "website": "infosecurity-magazine.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": null
+    },
+    {
+      "id": "T1136.001",
+      "name": "Local Account",
+      "tactic": null
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": null
+    },
+    {
+      "id": "T1562",
+      "name": "Impair Defenses",
+      "tactic": null
+    },
+    {
+      "id": "T1573.002",
+      "name": "Protocol Tunneling",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "C2",
+    "DragonForce",
+    "Go",
+    "Living off the Land",
+    "Microsoft Teams",
+    "RAT",
+    "Ransomware"
+  ],
+  "extract_datetime": "2026-06-16",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "industries_affected": [
+      "Other"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States"
+    ],
+    "other_affected": [
+      "US services firm"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "C2",
+    "DragonForce",
+    "Go",
+    "Living off the Land",
+    "Microsoft Teams",
+    "RAT",
+    "Ransomware"
+  ],
+  "pub_date": "2026-06-16",
+  "reading_time_minutes": null,
+  "createdAt": "2026-06-16T15:00:00.000Z",
+  "updatedAt": "2026-06-17T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-06-17T00:00:00Z",
+      "summary": "New details on DragonForce's 'Backdoor.Turn' malware reveal its C2 uses QUIC over Teams TURN servers, with initial access via SQL/MSSQL or IAB.",
+      "content": "The custom Go-based RAT is named 'Backdoor.Turn' and employs a sophisticated C2 mechanism involving anonymous token acquisition, Microsoft Teams TURN relay servers, and QUIC tunnels. Initial access vectors include SQL/MSSQL vulnerabilities or initial access brokers. The backdoor is a full-featured RAT for post-exploitation persistence, capable of executing commands, scanning networks, mapping Active Directory, and exfiltrating credentials, indicating a more advanced and evasive threat.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/",
+          "title": "Microsoft Teams Relay Servers Abused in DragonForce Ransomware Attack",
+          "website": "",
+          "date": "2026-06-17T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

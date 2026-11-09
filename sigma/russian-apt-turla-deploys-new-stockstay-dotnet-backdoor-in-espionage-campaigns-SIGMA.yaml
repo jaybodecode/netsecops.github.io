@@ -1,0 +1,93 @@
+title: Anomalous Outbound WebSocket Connection
+id: f1a2b3c4-d5e6-4a7b-8c9d-e0f1a2b3c4d5
+status: experimental
+description: Detects outbound WebSocket (wss:// or ws://) connections from non-browser processes, which could indicate C2 communication from implants like STOCKSTAY.
+references:
+  - https://thehackernews.com/2026/06/google-details-turlas-new-stockstay.html
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|startswith: 
+      - 'wss://'
+      - 'ws://'
+  filter_main_browsers:
+    c-useragent|contains:
+      - 'Mozilla/5.0'
+  condition: selection and not filter_main_browsers
+---
+title: Potential Turla Payload Execution via Rundll32
+id: e2b3c4d5-f6a7-4b8c-9d0e-f1a2b3c4d5e6
+status: experimental
+description: Monitors for rundll32.exe spawning unusual child processes or loading .NET assemblies, a TTP associated with Turla.
+references:
+  - https://thehackernews.com/2026/06/google-details-turlas-new-stockstay.html
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1218.011
+  - attack.defense_evasion
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\rundll32.exe'
+  filter:
+    Image|endswith:
+      - '\werfault.exe'
+  condition: selection and not filter
+---
+title: Suspicious Encoded PowerShell Command
+id: bca22de5-c203-41eb-b3c3-d37ae7d58635
+status: experimental
+description: Detects the use of encoded PowerShell commands, a common technique used by APTs like Turla for execution and obfuscation.
+references:
+  - https://thehackernews.com/2026/06/google-details-turlas-new-stockstay.html
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains:
+      - ' -enc '
+      - ' -encodedcommand '
+      - ' -e '
+  condition: selection
+---
+title: Potential STOCKSTAY Payload Drop
+id: a3ba8486-db8b-4521-a183-f11719276290
+status: experimental
+description: Monitors for newly created .NET DLLs in temporary or user-profile directories, a potential indicator of STOCKSTAY payload deployment.
+references:
+  - https://thehackernews.com/2026/06/google-details-turlas-new-stockstay.html
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1105
+  - attack.command_and_control
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.dll'
+    TargetFilename|contains:
+      - '\AppData\Local\Temp\'
+      - '\Users\'
+  condition: selection

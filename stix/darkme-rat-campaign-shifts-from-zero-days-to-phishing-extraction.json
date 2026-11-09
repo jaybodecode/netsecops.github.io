@@ -1,0 +1,265 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-23T15:55:40.850Z",
+    "article_slug": "darkme-rat-campaign-shifts-from-zero-days-to-phishing",
+    "article_date": "2026-09-23",
+    "token_usage": {
+      "input_tokens": 147384,
+      "output_tokens": 3599,
+      "cached_tokens": 0,
+      "total_tokens": 150983,
+      "cache_hit": false,
+      "estimated_cost_usd": 0.22022
+    }
+  },
+  "report_name": "Water Hydra's DarkMe RAT Campaign Pivots to Phishing Attacks",
+  "threat_actors": [
+    {
+      "name": "Water Hydra",
+      "mitre_id": "G0120",
+      "aliases": [
+        "EvilNum"
+      ],
+      "description": "A financially motivated APT group that has shifted tactics from using zero-day exploits to simple phishing attacks to distribute the DarkMe RAT. The group is broadening its target base beyond the financial sector.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Spearphishing Link",
+      "mitre_id": "T1566.002",
+      "description": "The attack chain begins with a phishing email containing a lure, such as a fake image link, which when clicked downloads the initial malicious .pif payload."
+    },
+    {
+      "name": "User Execution: Malicious File",
+      "mitre_id": "T1204.002",
+      "description": "A user is required to execute a downloaded Program Information File (.pif), which is an executable disguised as a shortcut, to initiate the infection."
+    },
+    {
+      "name": "System Checks",
+      "mitre_id": "T1497.001",
+      "description": "The DarkMe loader performs an inverted sandbox check by verifying the presence of 329 common user applications (e.g., Slack, Zoom). If none are found, it assumes it is in a sandbox and terminates."
+    },
+    {
+      "name": "Process Hollowing",
+      "mitre_id": "T1055.012",
+      "description": "The final DarkMe RAT payload is injected into the memory of a legitimate, Microsoft-signed process, clspack.exe, to evade detection."
+    },
+    {
+      "name": "Component Object Model Hijacking",
+      "mitre_id": "T1546.015",
+      "description": "The malware achieves persistence by registering a custom COM object to ensure it is re-executed."
+    },
+    {
+      "name": "Registry Run Keys / Startup Folder",
+      "mitre_id": "T1547.001",
+      "description": "The malware creates a `Locked://` URI protocol handler in the Windows Registry to achieve persistence."
+    },
+    {
+      "name": "Non-Application Layer Protocol",
+      "mitre_id": "T1095",
+      "description": "The DarkMe RAT communicates with its command and control server using a custom TCP protocol on port 7712."
+    }
+  ],
+  "malware": [
+    {
+      "name": "DarkMe",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": true,
+      "aliases": [],
+      "description": "A Remote Access Trojan (RAT) distributed by the Water Hydra group. It is delivered via a multi-stage VB6 loader and uses process hollowing for evasion. Its capabilities include stealing cryptocurrency wallets, capturing screenshots, logging keystrokes, and providing remote access.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "captures-output-peripherals",
+        "captures-input-peripherals",
+        "controls-local-machine",
+        "communicates-with-c2",
+        "persists-after-system-reboot"
+      ],
+      "external_references": [
+        {
+          "source_name": "malpedia",
+          "external_id": "win.darkme"
+        }
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2023-38831",
+      "cve": "CVE-2023-38831",
+      "description": "A WinRAR flaw that was previously used by the Water Hydra group in past campaigns before they pivoted to phishing for DarkMe distribution."
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "DarkMe C2 Infrastructure",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Command and control infrastructure used by the DarkMe RAT, communicating over a custom TCP protocol on port 7712."
+    }
+  ],
+  "observables": [
+    {
+      "type": "domain-name",
+      "value": "thatawful.boutique"
+    },
+    {
+      "type": "ipv4-addr",
+      "value": "67.43.50.11"
+    },
+    {
+      "type": "file",
+      "name": "clspack.exe"
+    },
+    {
+      "type": "windows-registry-key",
+      "value": "HKEY_CLASSES_ROOT\\Locked"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "DarkMe RAT C2 Network Connection",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[network-traffic:dst_ref.value = '67.43.50.11' AND network-traffic:dst_port = 7712] OR [network-traffic:dst_ref.value = 'thatawful.boutique' AND network-traffic:dst_port = 7712]",
+      "x_netsecio_sigma_rule": "title: DarkMe RAT C2 Connection\nid: 7c8b1a2d-3e4f-4a5b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects network connections to known DarkMe RAT C2 infrastructure on port 7712.\nreferences:\n  - https://www.huntress.com/blog/darkme-rat-abandons-exploits\nauthor: cyber.netsecops.io\ndate: 2026-09-23\ntags:\n  - attack.t1095\n  - attack.command_and_control\nlevel: critical\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection_ip:\n    DestinationIp: '67.43.50.11'\n    DestinationPort: 7712\n    Initiated: 'true'\n  selection_dns:\n    DestinationHostname: 'thatawful.boutique'\n    DestinationPort: 7712\n    Initiated: 'true'\n  condition: 1 of them",
+      "pattern": "",
+      "description": "Detects outbound network traffic to the DarkMe RAT C2 domain or IP address on the specific C2 port 7712."
+    },
+    {
+      "name": "DarkMe Process Hollowing of clspack.exe",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: DarkMe RAT Process Hollowing of clspack.exe\nid: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a\nstatus: experimental\ndescription: Detects the legitimate process clspack.exe making unexpected outbound network connections, a behavior associated with DarkMe RAT process hollowing.\nreferences:\n  - https://www.huntress.com/blog/darkme-rat-abandons-exploits\nauthor: cyber.netsecops.io\ndate: 2026-09-23\ntags:\n  - attack.t1055.012\n  - attack.defense_evasion\nlevel: high\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\clspack.exe'\n    Initiated: 'true'\n  filter_local:\n    DestinationIp|cidr:\n      - '127.0.0.0/8'\n      - '::1/128'\n  condition: selection and not filter_local",
+      "description": "Detects the legitimate Windows process `clspack.exe` making outbound network connections, which is anomalous and indicative of the process hollowing technique used by DarkMe."
+    },
+    {
+      "name": "DarkMe Persistence via URI Protocol Handler",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: DarkMe RAT Persistence via URI Protocol Handler\nid: 9e0f1a2b-3c4d-4e5f-9a0b-1c2d3e4f5a6b\nstatus: experimental\ndescription: Detects the creation of a 'Locked://' URI protocol handler in the registry, a persistence technique used by DarkMe RAT.\nreferences:\n  - https://www.huntress.com/blog/darkme-rat-abandons-exploits\nauthor: cyber.netsecops.io\ndate: 2026-09-23\ntags:\n  - attack.t1546.015\n  - attack.t1547.001\n  - attack.persistence\nlevel: high\nlogsource:\n  category: registry_event\n  product: windows\ndetection:\n  selection:\n    TargetObject|startswith: 'HKEY_CLASSES_ROOT\\Locked'\n    EventType: 'CreateKey'\n  condition: selection",
+      "description": "Detects the creation of the `HKEY_CLASSES_ROOT\\Locked` registry key, which establishes a custom URI protocol handler for persistence as used by DarkMe."
+    },
+    {
+      "name": "Execution of PIF File",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Execution of PIF File\nid: a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d\nstatus: experimental\ndescription: Detects the execution of a Program Information File (.pif), which is often used to disguise executables in phishing campaigns like the one delivering DarkMe RAT.\nreferences:\n  - https://www.huntress.com/blog/darkme-rat-abandons-exploits\nauthor: cyber.netsecops.io\ndate: 2026-09-23\ntags:\n  - attack.t1204.002\n  - attack.execution\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '.pif'\n    OriginalFileName|endswith: '.pif'\n  condition: 1 of selection",
+      "description": "Detects the execution of a `.pif` file, a technique used in this campaign for initial execution of the malware loader."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Water Hydra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DarkMe",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Water Hydra",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Spearphishing Link",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DarkMe",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Process Hollowing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DarkMe",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Component Object Model Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DarkMe",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "System Checks",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DarkMe",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Non-Application Layer Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DarkMe",
+      "source_type": "malware",
+      "relationship_type": "communicates-with",
+      "target_name": "DarkMe C2 Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "DarkMe RAT C2 Network Connection",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "DarkMe",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "DarkMe RAT C2 Network Connection",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "thatawful.boutique",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "DarkMe RAT C2 Network Connection",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "67.43.50.11",
+      "target_type": "ipv4-addr"
+    },
+    {
+      "source_name": "DarkMe Process Hollowing of clspack.exe",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Process Hollowing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "DarkMe Persistence via URI Protocol Handler",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Component Object Model Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Execution of PIF File",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "User Execution: Malicious File",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

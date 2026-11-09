@@ -1,0 +1,99 @@
+title: Suspicious External Microsoft Teams Chat Initiation
+id: 5e8f9a0b-1c2d-4e3f-a8b7-c6d5e4f3a2b1
+status: experimental
+description: Detects the creation of a Microsoft Teams chat by an external guest user whose display name contains common IT support keywords, a tactic used in the Spring Ring campaign.
+references:
+  - https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1566.004
+level: medium
+logsource:
+  product: m365
+  service: audit.teams
+detection:
+  selection:
+    Operation: 'ChatCreated'
+    IsGuest: 'true'
+    User|contains:
+      - 'IT'
+      - 'Support'
+      - 'Help Desk'
+  condition: selection
+---
+title: Suspicious Process Execution from Microsoft Teams
+id: 9d0e1f2a-3b4c-4d5e-8f6a-7b8c9d0e1f2a
+status: experimental
+description: Detects Microsoft Teams spawning PowerShell or common RMM tools, which is a technique used in the Spring Ring campaign to execute payloads after a successful vishing call.
+references:
+  - https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1204.002
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith: '\Teams.exe'
+  selection_child:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\AnyDesk.exe'
+      - '\TeamViewer.exe'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate administrative action, although rare.
+---
+title: Potential NTLM Relay Attempt via Anomalous SMB
+id: 1f2a3b4c-5d6e-4f7a-8b9c-0d1e2f3a4b5d
+status: experimental
+description: Detects outbound SMB traffic from an end-user workstation to a non-corporate IP address, which could indicate an NTLM relay attack attempt as seen in the Spring Ring campaign.
+references:
+  - https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1187
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 445
+    Initiated: 'true'
+  filter_internal:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate, but rare, SMB connections to external services.
+---
+title: Spring Ring Campaign Attacker Tenant DNS Query
+id: 2b8c1a9f-4d5e-4f6a-8b7c-9d0e1f2a3b4c
+status: experimental
+description: Detects DNS queries to domains associated with malicious Microsoft 365 tenants used in the Spring Ring vishing campaign.
+references:
+  - https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1585
+  - attack.t1566.004
+level: high
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName|contains:
+      - 'helpdesk-global.onmicrosoft.com'
+      - 'it-servicedesk.onmicrosoft.com'
+      - 'support-help.onmicrosoft.com'
+  condition: selection

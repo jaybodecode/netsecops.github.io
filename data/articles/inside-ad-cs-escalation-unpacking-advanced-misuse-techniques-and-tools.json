@@ -1,0 +1,284 @@
+{
+  "id": "02c891a4-1dae-4758-9e8e-6909935f7e07",
+  "slug": "inside-ad-cs-escalation-unpacking-advanced-misuse-techniques-and-tools",
+  "headline": "AD CS Escalation Deep Dive: How Attackers Abuse Certificate Templates for Domain Dominance",
+  "title": "Unit 42 Details Advanced Exploitation of Active Directory Certificate Services",
+  "summary": "Security researchers from Unit 42 have published a detailed analysis of advanced attacks targeting Active Directory Certificate Services (AD CS). The report highlights how threat actors, from ransomware groups to state-sponsored entities, are exploiting common misconfigurations in certificate templates and abusing shadow credentials to escalate privileges and achieve complete domain control. The research focuses on techniques like ESC1, where attackers can request certificates to impersonate high-privilege accounts. Rather than relying on malware, these attacks leverage native Windows functionality, making them difficult to detect with traditional signature-based tools. The analysis emphasizes the need for behavioral analytics and provides actionable guidance for defenders to identify and mitigate these stealthy but highly impactful threats to enterprise identity infrastructure.",
+  "full_report": "## Executive Summary\n\nActive Directory Certificate Services (AD CS) has emerged as a critical, yet frequently under-monitored, attack surface within enterprise environments. Adversaries are not leveraging zero-day vulnerabilities but are instead abusing insecure default settings, design complexities, and misconfigured certificate templates to escalate privileges, impersonate identities, and establish persistent access. This analysis from **[Unit 42](https://unit42.paloaltonetworks.com)** details the common TTPs used in these attacks, focusing on certificate template abuse (such as the ESC1 technique) and shadow credential misuse. These methods allow an attacker with low-level access to potentially gain full domain administrator privileges. The key takeaway for defenders is that traditional, signature-based detection is insufficient. Effective defense requires a shift towards behavioral analytics, diligent auditing of AD CS configurations, and a deep understanding of the legitimate-looking activities that can mask malicious intent.\n\n---\n\n## Threat Overview\n\n**[Active Directory Certificate Services (AD CS)](https://learn.microsoft.com/en-us/windows-server/identity/ad-cs/active-directory-certificate-services-overview)** is a core component of Windows enterprise infrastructure, managing the Public Key Infrastructure (PKI) that underpins authentication and encryption. However, its complexity and often-insecure default configurations make it a prime target for attackers. Instead of deploying malware, adversaries exploit the native functionality of AD CS to issue certificates that grant them the privileges of other users, including domain administrators.\n\nThis method of attack has become a standard part of the playbook for both financially motivated groups and state-sponsored actors like **[Fighting Ursa](https://attack.mitre.org/groups/G0007/)**. The attack lifecycle typically involves five phases:\n1.  **Reconnaissance:** Identifying the AD CS server.\n2.  **Enumeration:** Discovering vulnerable certificate templates using tools like **[Certipy](https://github.com/ly4k/Certipy)**.\n3.  **Request:** Requesting a malicious certificate based on a weak template.\n4.  **Impersonation:** Using the obtained certificate to impersonate a privileged user or computer.\n5.  **Persistence:** Maintaining access through the newly acquired credentials or by creating shadow credentials.\n\nThis approach is particularly dangerous because the malicious activity is often indistinguishable from legitimate administrative tasks, allowing attackers to operate undetected for long periods.\n\n---\n\n## Technical Analysis\n\nAdversaries primarily exploit two key weaknesses in AD CS: misconfigured certificate templates and shadow credential abuse.\n\n### Certificate Template Misconfigurations (ESC1)\n\nThe most common and impactful technique, first cataloged by **SpecterOps** researchers, is known as ESC1. This attack is possible when a certificate template has a specific combination of weak settings:\n\n*   **Enrollee Supplies Subject:** The `CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT` flag is enabled, allowing the requester to specify any Subject Alternative Name (SAN) in the Certificate Signing Request (CSR).\n*   **Permissive Enrollment Rights:** A low-privileged user or group (like 'Domain Users') has permission to enroll in the template.\n*   **Grants Privileged Access:** The certificate allows for authentication (e.g., 'Client Authentication' EKU) or is configured for a template like 'Subordinate Certification Authority'.\n\nAn attacker can use a tool like `Certipy` to enumerate these templates. Once a vulnerable template is found, the attacker requests a certificate, specifying a domain administrator's account in the SAN. The CA, trusting the template's configuration, issues the certificate. The attacker can then use this certificate with a tool like `Rubeus` to request a Kerberos Ticket-Granting Ticket (TGT) for the impersonated administrator, effectively granting them full domain admin rights.\n\nThis is consistent with the abuse of **[CVE-2022-26923](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-26923)**, where attackers could elevate privileges by acquiring a certificate from AD CS. The report notes an instance where the file `update6.exe` was used in an attempt to exploit this vulnerability.\n\n### Shadow Credential Abuse\n\nShadow credentials are a persistence technique where an attacker, having already gained high privileges, modifies an attribute on a user or computer object (e.g., `msDS-KeyCredentialLink`) to add their own credential, such as a certificate. This allows the attacker to authenticate as that user without knowing their password. This modification is often not logged by default and can be extremely difficult to detect, providing the attacker with durable, stealthy persistence.\n\n### MITRE ATT&CK TTPs\n\n*   **[`T1068 - Exploitation for Privilege Escalation`](https://attack.mitre.org/techniques/T1068/):** The core purpose of abusing AD CS is to escalate from a low-privilege account to a high-privilege one.\n*   **[`T1648.003 - Certificate-based Authentication`](https://attack.mitre.org/techniques/T1648/003/):** Attackers leverage certificates obtained from AD CS to authenticate as privileged users.\n*   **[`T1087.002 - Domain Account`](https://attack.mitre.org/techniques/T1087/002/):** Attackers enumerate domain accounts to identify high-privilege targets for impersonation.\n*   **[`T1558.003 - Kerberoasting`](https://attack.mitre.org/techniques/T1558/003/):** While not directly AD CS, obtaining a privileged TGT via a certificate is a similar end-goal.\n*   **[`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/):** The ultimate goal is to gain access to and use valid, privileged accounts.\n\n---\n\n## Impact Assessment\n\nThe successful exploitation of AD CS can lead to a full compromise of the Active Directory domain. The business impact is severe and includes:\n\n*   **Complete Domain Takeover:** Attackers can gain control of Domain Admin accounts, giving them unrestricted access to all systems, data, and resources on the network.\n*   **Data Exfiltration:** With full access, attackers can exfiltrate sensitive corporate data, intellectual property, and customer information.\n*   **Ransomware Deployment:** Privileged access allows for the widespread deployment of ransomware across the entire enterprise, leading to catastrophic operational disruption.\n*   **Stealthy Persistence:** Techniques like shadow credentials provide attackers with long-term, hard-to-detect access, allowing them to remain in the network even after initial remediation efforts.\n\n---\n\n## IOCs — Directly from Articles\n\nNo traditional IOCs like IP addresses or hashes were provided, but the following file name was associated with exploitation attempts.\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `update6.exe` | Dropped file used in an attempt to exploit CVE-2022-26923 for privilege escalation. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nThe following patterns could indicate related activity and can be used for threat hunting:\n\n*   **Unusual Certificate Requests:** Monitor for a surge in certificate requests from unusual users or endpoints. Look for requests for templates that grant authentication from non-administrative accounts.\n*   **SAN Mismatches:** Correlate the machine account making a certificate request with the Subject Alternative Name (SAN) in the request. A mismatch (e.g., `PC1$` requesting a cert for `DomainAdmin`) is a strong indicator of an ESC1 attack.\n*   **Tool Usage:** Search for command-line execution of tools like `Certipy`, `Certify`, or `Rubeus`. Look for command line arguments like `find -vulnerable` or `request -ca`.\n*   **Network Traffic:** Monitor for traffic to the AD CS web enrollment pages (e.g., `/certsrv/`) from unusual client workstations.\n*   **Event Logs:** Scrutinize Windows Event Logs on the CA server, particularly Event ID `4882` (request created), `4887` (request approved and certificate issued), and `4888` (request denied).\n\n---\n\n## Detection & Response\n\nDetecting AD CS abuse requires moving beyond signatures and focusing on behavior. Products like **[Cortex XDR](https://www.paloaltonetworks.com/cortex/cortex-xdr)** and **Cortex XSIAM** leverage User Entity Behavior Analytics (UEBA) to identify these attacks.\n\n1.  **Monitor CA Event Logs:** Forward AD CS logs to a SIEM. Create alerts for high-risk events, such as the issuance of certificates from templates that allow subject name to be supplied by the requester. Specifically, monitor Event IDs `4882`, `4887`, and `5136` (Directory Service Object modified, for shadow credentials).\n2.  **Behavioral Analytics ([D3-UBA](https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis)):** Deploy UEBA solutions to establish a baseline of normal user and entity behavior. Anomalies, such as a user account that has never interacted with AD CS suddenly requesting a certificate, should trigger an alert.\n3.  **Network Traffic Analysis ([D3-NTA](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)):** Analyze traffic to and from the CA. Any non-standard communication or connections from unexpected sources should be investigated.\n4.  **Endpoint Detection:** Use an EDR solution to monitor for the execution of suspicious processes and command-line arguments related to certificate enumeration and request tools (`certipy.exe`, `certreq.exe`).\n\n---\n\n## Mitigation\n\nStrengthening AD CS security involves a combination of configuration hardening, access control, and monitoring.\n\n1.  **Audit and Harden Certificate Templates:** This is the most critical step. Review all certificate templates and disable or remove any that are not required. For those in use, ensure they are configured securely:\n    *   Disable the `Enrollee Supplies Subject` setting (`CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT`) on templates where it is not absolutely necessary.\n    *   If required, enable the 'Manager Approval' setting to add a human verification step.\n    *   Use the `Restrict enrollment agents` setting.\n2.  **Apply Principle of Least Privilege ([D3-UAP](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions)):** Tightly control who has enrollment permissions on certificate templates. Avoid granting these rights to broad groups like 'Authenticated Users' or 'Domain Users'.\n3.  **Patching ([D3-SU](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)):** Ensure all domain controllers and CA servers are fully patched to protect against known vulnerabilities like **CVE-2022-26923**.\n4.  **Enable Enhanced Logging:** Increase logging levels for AD CS and Active Directory to capture detailed information about certificate requests and object modifications.\n5.  **Restrict NTLM:** Where possible, disable NTLM authentication and enforce Kerberos, which can help mitigate some relay-style attacks associated with certificate abuse.",
+  "twitter_post": "⚠️ Unit 42 deep dive on AD CS attacks! Attackers are abusing certificate templates & shadow credentials for full domain compromise. Learn to detect stealthy privilege escalation beyond signatures. #ADCS #CyberSecurity #ThreatIntel #ActiveDirectory",
+  "meta_description": "Expert analysis from Unit 42 on advanced Active Directory Certificate Services (AD CS) exploitation techniques, including ESC1 and shadow credentials, with actionable detection and mitigation strategies.",
+  "category": [
+    "Threat Intelligence",
+    "Vulnerability",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/"
+    },
+    {
+      "name": "Active Directory Certificate Services (AD CS)",
+      "type": "product"
+    },
+    {
+      "name": "Cortex XDR",
+      "type": "product"
+    },
+    {
+      "name": "Cortex XSIAM",
+      "type": "product"
+    },
+    {
+      "name": "Cortex User Entity Behavior Analytics (UEBA)",
+      "type": "product"
+    },
+    {
+      "name": "Cortex Cloud Identity Security",
+      "type": "product"
+    },
+    {
+      "name": "Rapid7",
+      "type": "company",
+      "url": "https://www.rapid7.com/"
+    },
+    {
+      "name": "SpecterOps",
+      "type": "security_organization"
+    },
+    {
+      "name": "Fighting Ursa",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0007/"
+    },
+    {
+      "name": "Certipy",
+      "type": "other"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2022-26923",
+      "cvss_score": 8.8,
+      "cvss_version": "3.1",
+      "severity": "high"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/active-directory-certificate-services-exploitation/",
+      "title": "Inside AD CS Escalation: Unpacking Advanced Misuse Techniques and Tools",
+      "date": "2026-05-11",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2021-06-01T00:00:00Z",
+      "summary": "SpecterOps researchers publish the 'Certified Pre-Owned' whitepaper, detailing AD CS escalation techniques ESC1 through ESC8."
+    },
+    {
+      "datetime": "2024-08-01T00:00:00Z",
+      "summary": "Rapid7 describes a social engineering campaign where attackers attempted to exploit CVE-2022-26923 for privilege escalation."
+    },
+    {
+      "datetime": "2026-05-11T22:00:43Z",
+      "summary": "Unit 42 publishes 'Inside AD CS Escalation', providing a technical deep-dive into advanced exploitation and detection methods."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation"
+    },
+    {
+      "id": "T1648.003",
+      "name": "Certificate-based Authentication"
+    },
+    {
+      "id": "T1087.002",
+      "name": "Domain Account"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts"
+    },
+    {
+      "id": "T1558",
+      "name": "Steal or Forge Kerberos Tickets"
+    },
+    {
+      "id": "T1552.004",
+      "name": "Private Keys"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "description": "Harden AD CS templates by disabling dangerous settings and restricting enrollment permissions to prevent abuse.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Strictly control and monitor accounts that have permissions to modify certificate templates or approve certificate requests.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable and monitor detailed logging on Certificate Authority servers and Domain Controllers to detect suspicious certificate issuance and object modifications.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Apply security patches for known vulnerabilities like CVE-2022-26923 to prevent exploitation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Enforce the principle of least privilege for user accounts, ensuring they do not have unnecessary permissions to enroll in sensitive certificate templates.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "While not a direct fix for certificate abuse, requiring MFA for privileged account access can mitigate the impact of a compromised certificate.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "The most critical defense against AD CS abuse is hardening the AD CS application itself. Security teams must conduct a thorough audit of all certificate templates on their Certificate Authorities. Specifically, identify any template where the `CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT` flag is enabled. For each, validate the business need and, if not absolutely required, disable this flag immediately. If it is required, ensure that the template also requires manager approval for issuance. Furthermore, review the enrollment permissions for every template. Remove broad groups like 'Authenticated Users' or 'Domain Users' from the access control lists of any template that could be used for authentication. Permissions should be granted on a need-to-have basis to specific, narrow security groups. This process directly mitigates the ESC1 attack path by removing the foundational misconfigurations that attackers rely on. This should be treated as a critical hardening task for any enterprise using AD CS.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-DAM",
+      "technique_name": "Domain Account Monitoring",
+      "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring",
+      "recommendation": "Given that AD CS attacks target identity, monitoring domain accounts for anomalous behavior is key to detection. Implement robust logging and monitoring for Active Directory and the CA servers. Specifically, forward Windows Event Logs to a SIEM and create detection rules for suspicious activity. A high-fidelity rule would be to alert whenever a certificate is issued from a template allowing 'enrollee supplies subject' where the requester's identity does not match the Subject Alternative Name (SAN) in the issued certificate. This requires correlating Event ID 4887 (certificate issued) with network session information and the certificate details. Additionally, monitor for modifications to sensitive attributes like `msDS-KeyCredentialLink`, which indicates potential shadow credential abuse. A UEBA solution can automate this by baselining normal account activity and flagging deviations, such as a service account suddenly requesting a certificate for a domain administrator.",
+      "mitre_mitigation_id": "M1047"
+    },
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "Applying the principle of least privilege is a foundational countermeasure. In the context of AD CS, this means rigorously controlling who can request which certificates. Conduct a full review of the 'Security' tab on every certificate template. Ensure that enrollment and auto-enrollment rights are granted only to the specific users or computers that require them. For highly sensitive templates, such as those used for domain controller authentication or subordinate CAs, permissions should be restricted to a very small group of administrator accounts. This prevents a low-privileged attacker from being able to even attempt an ESC1-style attack. By removing the initial access to the vulnerable template, the entire attack chain is broken at the first step. This should be part of a regular access review cycle for critical infrastructure like PKI.",
+      "mitre_mitigation_id": "M1015"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "update6.exe",
+      "description": "File used in an attempt to exploit CVE-2022-26923 for privilege escalation."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "certipy.exe find -vulnerable",
+      "description": "Command used by the Certipy tool to enumerate vulnerable AD CS certificate templates.",
+      "context": "EDR logs, command line logging (Event ID 4688)",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "certipy.exe req -ca <ca_name> -template <template_name>",
+      "description": "Command used by the Certipy tool to request a certificate from a specified Certificate Authority and template.",
+      "context": "EDR logs, command line logging (Event ID 4688)",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "4882",
+      "description": "A certificate request was created. This event is generated on the CA when a CSR is received.",
+      "context": "Windows Security Log on Certificate Authority servers",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "4887",
+      "description": "The CA approved a certificate request and issued a certificate. Monitor for requests where the requester and the certificate subject (SAN) do not match.",
+      "context": "Windows Security Log on Certificate Authority servers",
+      "confidence": "medium"
+    },
+    {
+      "type": "url_pattern",
+      "value": "/certsrv/",
+      "description": "Default path for the Active Directory Certificate Services web enrollment interface.",
+      "context": "Web server logs, proxy logs, network traffic analysis",
+      "confidence": "low"
+    },
+    {
+      "type": "process_name",
+      "value": "certreq.exe",
+      "description": "Legitimate Windows binary used to request certificates. Monitor for its execution by non-standard users or from unusual script contexts.",
+      "context": "EDR logs, process monitoring",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "AD CS",
+    "Active Directory",
+    "Privilege Escalation",
+    "Certificate Templates",
+    "ESC1",
+    "Shadow Credentials",
+    "UEBA",
+    "PKI",
+    "CVE-2022-26923",
+    "Certipy"
+  ],
+  "extract_datetime": "2026-05-12T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Government",
+      "Healthcare",
+      "Critical Infrastructure",
+      "Manufacturing"
+    ],
+    "other_affected": [
+      "Any organization using Microsoft Active Directory"
+    ]
+  },
+  "keywords": [
+    "AD CS exploitation",
+    "Active Directory Certificate Services",
+    "CVE-2022-26923",
+    "privilege escalation",
+    "certificate template misconfiguration",
+    "ESC1 attack",
+    "shadow credentials",
+    "Certipy",
+    "Unit 42",
+    "cybersecurity"
+  ],
+  "pub_date": "2026-05-12",
+  "reading_time_minutes": 14,
+  "createdAt": "2026-05-12T15:00:00.000Z",
+  "updatedAt": "2026-05-12T15:00:00.000Z"
+}

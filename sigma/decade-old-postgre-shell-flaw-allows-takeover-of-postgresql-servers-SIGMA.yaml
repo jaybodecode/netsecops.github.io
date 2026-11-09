@@ -1,0 +1,52 @@
+title: PostgreSQL Suspicious Shared Library Load Attempt
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: >
+  Detects PostgreSQL server log entries indicating an attempt to load a shared library or output plugin from an unexpected path (e.g., containing '..', '/tmp', or a UNC path), which could indicate an attempt to exploit CVE-2026-6471 (PostGREShell).
+references:
+  - https://www.securityweek.com/12-year-old-postgresql-vulnerability-enables-database-server-takeover/
+author: cyber.netsecops.io
+date: 2026-09-04
+tags:
+  - attack.t1574
+  - attack.t1068
+  - cve.2026.6471
+level: high
+logsource:
+  category: database
+detection:
+  selection_error:
+    - 'could not load library'
+    - 'unrecognized parameter "output_plugin"'
+  selection_path:
+    - '../'
+    - '\\'
+  condition: 1 of selection_error and 1 of selection_path
+falsepositives:
+  - Legitimate but unusual plugin loading procedures that fail.
+---
+title: Unexpected PostgreSQL SUPERUSER Grant
+id: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects PostgreSQL audit logs (pgaudit) showing a user account being unexpectedly granted SUPERUSER privileges. This is the primary goal of the PostGREShell (CVE-2026-6471) exploit.
+references:
+  - https://www.securityweek.com/12-year-old-postgresql-vulnerability-enables-database-server-takeover/
+author: cyber.netsecops.io
+date: 2026-09-04
+tags:
+  - attack.t1068
+  - cve.2026.6471
+level: high
+logsource:
+  category: database
+detection:
+  selection:
+    - 'ALTER ROLE'
+    - 'SUPERUSER'
+  filter:
+    - 'postgres'
+    - 'admin'
+  condition: all of selection and not filter
+falsepositives:
+  - Legitimate administrative actions granting superuser to a new account. Tuning may be required based on environment.

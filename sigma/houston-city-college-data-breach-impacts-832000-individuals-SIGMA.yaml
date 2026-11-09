@@ -1,0 +1,67 @@
+title: Anomalous Database Query for Student Information
+id: 1f2a3b4c-5d6e-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects database queries that may indicate bulk data collection from student information systems, as suggested in the analysis of the Houston City College data breach. This rule is a hunting hint and requires tuning for specific database audit log formats.
+references:
+  - https://gbhackers.com/cisa-urges-critical-infrastructure-operators-to-isolate-vital-ot-systems/
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1213
+  - attack.collection
+falsepositives:
+  - Legitimate administrative or reporting queries.
+level: low
+logsource:
+  category: application
+detection:
+  keywords:
+    - 'SELECT * FROM students'
+    - 'SELECT * FROM alumni'
+    - 'SELECT * FROM employees'
+  condition: keywords
+---
+title: Anomalous Large Outbound Data Transfer
+id: 1bdb0b8c-99de-40dc-9e08-4d58dc6b22f0
+status: experimental
+description: Detects unusually large outbound data transfers from internal servers, which could indicate data exfiltration. This is a hunting hint based on the analysis of the Houston City College data breach and requires baselining and tuning.
+references:
+  - https://gbhackers.com/cisa-urges-critical-infrastructure-operators-to-isolate-vital-ot-systems/
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1041
+  - attack.exfiltration
+falsepositives:
+  - Legitimate large file transfers, backups, or software updates.
+level: low
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allow'
+    bytes_out|gt: 104857600 # Placeholder for 100MB, requires tuning
+  filter_known_dest:
+    dst_ip:
+      - 8.8.8.8 # Placeholder for known destinations
+  condition: selection and not filter_known_dest
+---
+title: Potential Data Staging File 'students.zip'
+id: 5b9e1a2b-3c4d-4e5f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: Detects the creation of a file named 'students.zip', which could indicate data staging prior to exfiltration, as suggested in the analysis of the Houston City College data breach.
+references:
+  - https://gbhackers.com/cisa-urges-critical-infrastructure-operators-to-isolate-vital-ot-systems/
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1074.001
+  - attack.collection
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\students.zip'
+  condition: selection

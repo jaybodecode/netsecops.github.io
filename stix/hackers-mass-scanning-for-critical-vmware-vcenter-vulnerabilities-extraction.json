@@ -1,0 +1,251 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-13T16:20:10.893Z",
+    "article_slug": "hackers-mass-scanning-for-critical-vmware-vcenter-vulnerabilities",
+    "article_date": "2026-08-13",
+    "token_usage": {
+      "input_tokens": 146694,
+      "output_tokens": 3399,
+      "cached_tokens": 140587,
+      "total_tokens": 150093,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.059197
+    }
+  },
+  "report_name": "Widespread Scanning for VMware vCenter Flaws (CVE-2026-59309)",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Active Scanning",
+      "mitre_id": "T1595",
+      "description": "Threat actors are conducting widespread, automated scanning of VMware vCenter Server instances to identify systems vulnerable to CVE-2026-59309 by probing endpoints like /sdk/ and /websso."
+    },
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "Attackers are actively exploiting CVE-2026-59310, a directory traversal vulnerability in the public-facing vCenter Syslog Server, to achieve arbitrary code execution."
+    },
+    {
+      "name": "Cron",
+      "mitre_id": "T1053.003",
+      "description": "A malicious cron job is written to the vCenter appliance via the CVE-2026-59310 exploit to establish persistence for a reverse SSH tunnel."
+    },
+    {
+      "name": "SSH",
+      "mitre_id": "T1021.004",
+      "description": "A persistent reverse SSH tunnel is established from compromised vCenter servers to attacker-controlled infrastructure for command and control."
+    },
+    {
+      "name": "Escape to Host",
+      "mitre_id": "T1611",
+      "description": "The VMXNET3 vulnerability (CVE-2026-47876) could allow a malicious guest virtual machine to execute code on the underlying ESXi host, escaping the VM."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Unnamed Backdoor",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": false,
+      "aliases": [],
+      "description": "A backdoor is being deployed on VMware vCenter servers by exploiting CVE-2026-59310. The backdoor establishes persistence using a cron job and creates a reverse SSH tunnel for remote access.",
+      "capabilities": [
+        "communicates-with-c2",
+        "persists-after-system-reboot"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "reverse_ssh",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The reverse_ssh tool is used by attackers to establish a persistent reverse SSH tunnel from a compromised vCenter appliance back to their C2 infrastructure.",
+      "tool_types": [
+        "remote-access"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-59309",
+      "cve": "CVE-2026-59309",
+      "description": "An authentication bypass vulnerability in the VMware Directory Service (vmdir) that allows a remote attacker with network access to bypass authentication and gain unauthorized access to the vCenter environment. This vulnerability is being actively scanned for by threat actors.",
+      "affected_products": [
+        "VMware vCenter Server"
+      ],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-59310",
+      "cve": "CVE-2026-59310",
+      "description": "A directory traversal vulnerability in the vCenter Syslog Server that is actively exploited to achieve arbitrary code execution, specifically to write a malicious cron job and establish a reverse SSH tunnel.",
+      "affected_products": [
+        "VMware vCenter Server"
+      ],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-47876",
+      "cve": "CVE-2026-47876",
+      "description": "An out-of-bounds write vulnerability in the VMXNET3 virtual network adapter that could allow a malicious guest VM to execute code on the underlying ESXi host.",
+      "affected_products": [
+        "VMware ESXi",
+        "VMware Workstation",
+        "VMware Fusion"
+      ],
+      "cvss_score": 9.3,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Reverse SSH C2 Infrastructure",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Attacker-controlled infrastructure that receives reverse SSH connections from compromised VMware vCenter servers."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "reverse_ssh"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "VMware vCenter Scanning Activity",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: VMware vCenter Scanning Activity\nid: 9b1a6c3d-8e4f-4a1b-9c8d-7e6f5d4c3b2a\nstatus: experimental\ndescription: Detects scanning activity targeting VMware vCenter endpoints /sdk/ and /websso, which is a precursor to exploitation of CVE-2026-59309.\nreferences:\n  - https://cybersecuritynews.com/hackers-scan-vmware-vcenter-vulnerabilities/\nauthor: cyber.netsecops.io\ndate: 2026-08-12\ntags:\n  - attack.t1595\nlevel: medium\nlogsource:\n  category: proxy\ndetection:\n  selection:\n    c-uri|contains:\n      - '/sdk/'\n      - '/websso'\n  condition: selection",
+      "description": "Detects scanning for vulnerable VMware vCenter servers by looking for probes to the /sdk/ and /websso endpoints."
+    },
+    {
+      "name": "Anomalous Outbound SSH from vCenter",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Outbound SSH from VMware vCenter\nid: f8c7b6a5-4d3e-4c2b-1a98-7e6d5c4b3a29\nstatus: experimental\ndescription: Detects highly anomalous outbound SSH connections originating from a VMware vCenter appliance. This is a strong indicator of compromise via CVE-2026-59310.\nreferences:\n  - https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html\nauthor: cyber.netsecops.io\ndate: 2026-08-12\ntags:\n  - attack.t1021.004\n  - attack.command_and_control\nlevel: high\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    Image: '/opt/vmware/bin/vpxd'\n    DestinationPort: 22\n    Initiated: 'true'\n  filter_local:\n    DestinationIp|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  condition: selection and not filter_local",
+      "description": "Detects outbound SSH traffic from a vCenter appliance, which is a high-fidelity indicator of the exploit chain for CVE-2026-59310."
+    },
+    {
+      "name": "Suspicious Cron Job Creation on vCenter",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Cron Job Creation on VMware vCenter\nid: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects the creation of new files in cron directories on a VMware vCenter appliance, a technique used to establish persistence after exploiting CVE-2026-59310.\nreferences:\n  - https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html\nauthor: cyber.netsecops.io\ndate: 2026-08-12\ntags:\n  - attack.t1053.003\n  - attack.persistence\nlevel: high\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|startswith: '/etc/cron.d/'\n  condition: selection",
+      "description": "Detects the creation of a malicious cron job on a vCenter appliance, used for persistence."
+    },
+    {
+      "name": "Reverse SSH Tool on VMware vCenter",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'reverse_ssh']",
+      "x_netsecio_sigma_rule": "title: Reverse SSH Tool on VMware vCenter\nid: 4d5e6f7a-8b9c-4d1e-2f3a-4b5c6d7e8f9a\nstatus: experimental\ndescription: Detects the presence of the 'reverse_ssh' tool on a VMware vCenter appliance, which is a strong indicator of compromise via CVE-2026-59310.\nreferences:\n  - https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html\nauthor: cyber.netsecops.io\ndate: 2026-08-12\ntags:\n  - attack.t1021.004\nlevel: high\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|endswith: '/reverse_ssh'\n  condition: selection",
+      "pattern": ""
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Unnamed Backdoor",
+      "source_type": "malware",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-59310",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Unnamed Backdoor",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Cron",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Backdoor",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "reverse_ssh",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "reverse_ssh",
+      "source_type": "tool",
+      "relationship_type": "uses",
+      "target_name": "SSH",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "reverse_ssh",
+      "source_type": "tool",
+      "relationship_type": "communicates-with",
+      "target_name": "Reverse SSH C2 Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "VMware vCenter Scanning Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Active Scanning",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "VMware vCenter Scanning Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-59309",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Anomalous Outbound SSH from vCenter",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "SSH",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Outbound SSH from vCenter",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "CVE-2026-59310",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Suspicious Cron Job Creation on vCenter",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Cron",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Reverse SSH Tool on VMware vCenter",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "reverse_ssh",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Reverse SSH Tool on VMware vCenter",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "reverse_ssh",
+      "target_type": "tool"
+    }
+  ]
+}

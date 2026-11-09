@@ -1,0 +1,70 @@
+title: AI-Assisted Rapid Discovery Commands
+id: 7f8b1e2a-9c3d-4f5a-8b1c-2d3e4f5a6b7c
+status: experimental
+description: |
+  Detects the execution of common discovery commands. A rapid succession of these commands from a single host or user context in a short time frame may indicate automated reconnaissance by an AI agent.
+references:
+  - https://unit42.paloaltonetworks.com/ai-assisted-cyber-attack-inside-a-unit-42-investigation/
+author: cyber.netsecops.io
+date: 2026-09-02
+tags:
+  - attack.t1082
+  - attack.t1018
+  - attack.t1046
+  - attack.discovery
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_whoami:
+    Image|endswith: '\whoami.exe'
+  selection_net:
+    Image|endswith:
+      - '\net.exe'
+      - '\net1.exe'
+    CommandLine|contains: ' user'
+  selection_ipconfig:
+    Image|endswith: '\ipconfig.exe'
+  selection_arp:
+    Image|endswith: '\arp.exe'
+    CommandLine|contains: ' -a'
+  condition: 1 of selection_*
+falsepositives:
+  - Legitimate administrative activity.
+  - Diagnostic scripts.
+---
+title: Anomalous Cloud IAM Credential Management
+id: 3a4b5c6d-7e8f-4a9b-8c1d-2e3f4a5b6c7d
+status: experimental
+description: |
+  Detects anomalous usage of cloud management APIs for credential creation or modification. This may indicate compromise by an AI agent attempting to seize control of cloud infrastructure by creating or modifying access keys and user roles.
+references:
+  - https://unit42.paloaltonetworks.com/ai-assisted-cyber-attack-inside-a-unit-42-investigation/
+author: cyber.netsecops.io
+date: 2026-09-02
+tags:
+  - attack.t1552
+  - attack.credential_access
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: 'iam.amazonaws.com'
+    eventName:
+      - 'CreateAccessKey'
+      - 'CreateLoginProfile'
+      - 'UpdateAccessKey'
+      - 'CreateUser'
+      - 'AddUserToGroup'
+      - 'PutUserPolicy'
+      - 'AttachUserPolicy'
+  filter_known_automation:
+    userIdentity.arn|contains:
+      - 'role/KnownAdminRole'
+      - 'role/CICD-Runner'
+  condition: selection and not filter_known_automation
+falsepositives:
+  - Legitimate administrative actions for user and access key management.

@@ -1,0 +1,233 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-10-09T01:28:35.717Z",
+    "article_slug": "north-korean-hackers-use-public-blockchain-for-covert-c2",
+    "article_date": "2026-10-08",
+    "token_usage": {
+      "input_tokens": 146765,
+      "output_tokens": 2725,
+      "cached_tokens": 137479,
+      "total_tokens": 149490,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.056042
+    }
+  },
+  "report_name": "North Korean Hackers Use Public Blockchain for Covert C2 Channel",
+  "threat_actors": [
+    {
+      "name": "Alluring Pisces",
+      "mitre_id": "",
+      "aliases": [
+        "Sapphire Sleet"
+      ],
+      "description": "A North Korean state-sponsored threat group that uses a public blockchain for command-and-control (C2) communications in sophisticated software supply chain attacks targeting cloud credentials.",
+      "goals": "To steal cloud credentials (IAM keys, CI/CD tokens) from developer environments and CI/CD pipelines by poisoning open-source packages.",
+      "sophistication": "expert"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Supply Chain",
+      "mitre_id": "T1195.002",
+      "description": "The group poisons open-source software packages on npm, Go, and Packagist to gain initial access to developer environments and CI/CD pipelines."
+    },
+    {
+      "name": "Application Layer Protocol",
+      "mitre_id": "T1071",
+      "description": "The malware queries a smart contract on a public blockchain to retrieve the current C2 server address, abusing a legitimate decentralized application-layer service for resilient C2 communications."
+    },
+    {
+      "name": "Asymmetric Cryptography",
+      "mitre_id": "T1573.002",
+      "description": "The smart contract used for C2 has an update function protected by the attacker's private key, an example of using asymmetric cryptography to control C2 infrastructure."
+    },
+    {
+      "name": "Unsecured Credentials",
+      "mitre_id": "T1552",
+      "description": "The primary goal of the malware is to steal cloud credentials, such as IAM keys and CI/CD tokens, from compromised developer environments and build pipelines."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Shai-Hulud",
+      "mitre_id": "",
+      "type": "worm",
+      "is_family": true,
+      "aliases": [],
+      "description": "A malware family that includes the ChainDrop worm. It is used to infect open-source packages to harvest credentials."
+    },
+    {
+      "name": "ChainDrop",
+      "mitre_id": "",
+      "type": "worm",
+      "is_family": false,
+      "aliases": [],
+      "description": "A self-propagating worm from the Shai-Hulud family that has infected over 400 npm packages. It uses a `preinstall` hook to activate a credential harvester."
+    },
+    {
+      "name": "PolinRider",
+      "mitre_id": "",
+      "type": "loader",
+      "is_family": false,
+      "aliases": [],
+      "description": "Malware that hides loaders in repository configuration files like `devcontainer.json` and IDE settings, causing the payload to execute when a developer opens the compromised project."
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [
+    {
+      "name": "ChainDrop",
+      "description": "A campaign by Alluring Pisces using the ChainDrop worm to poison hundreds of npm packages to steal cloud credentials.",
+      "aliases": []
+    },
+    {
+      "name": "PolinRider",
+      "description": "A campaign by Alluring Pisces that spreads across multiple package ecosystems (npm, Go, Packagist) to steal cloud credentials by hiding loaders in repository and IDE configuration files.",
+      "aliases": []
+    }
+  ],
+  "identities": [],
+  "locations": [
+    {
+      "name": "North Korea",
+      "country": "North Korea",
+      "region": "eastern-asia"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Blockchain C2 Channel",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "A C2 mechanism using a smart contract on a public blockchain to store and retrieve the address of the actual C2 server. This makes the C2 resolution highly resilient and resistant to takedowns."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Anomalous Build Environment Egress to Blockchain APIs",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Build Environment Egress to Blockchain APIs\nid: 2b1c8d9e-4f5a-4b6c-8d9e-0f1a2b3c4d5e\nstatus: experimental\ndescription: |\n  Detects processes associated with package managers (npm, go, composer) making outbound network connections to known public blockchain API endpoints. This could indicate a compromised dependency attempting to resolve a blockchain-based C2 channel, as used by Alluring Pisces.\nreferences:\n  - https://www.cybersecurity-insiders.com/cloud-supply-chain-attacks/\nauthor: cyber.netsecops.io\ndate: 2026-10-08\ntags:\n  - attack.t1071\n  - attack.command_and_control\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection_proc:\n    Image|endswith:\n      - '\\npm.exe'\n      - '\\go.exe'\n      - '\\composer.phar'\n  selection_dest:\n    DestinationHostname|endswith:\n      - '.infura.io'\n      - '.alchemy.com'\n  condition: all of selection_*\nfalsepositives:\n  - Legitimate developer tools or dependencies that interact with blockchain services.",
+      "description": "Detects build tools making outbound connections to public blockchain APIs, a technique used by Alluring Pisces for C2 resolution."
+    },
+    {
+      "name": "Suspicious NPM Preinstall Hook Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious NPM Preinstall Hook Execution\nid: 8a7b6c5d-4e3f-4a2b-8c1d-0e9f8a7b6c5d\nstatus: experimental\ndescription: |\n  Detects the execution of a 'preinstall' script by the Node Package Manager (npm). While this can be legitimate, it is a known vector for supply chain attacks, such as the ChainDrop campaign by Alluring Pisces, to execute malicious code upon package installation.\nreferences:\n  - https://www.cybersecurity-insiders.com/cloud-supply-chain-attacks/\nauthor: cyber.netsecops.io\ndate: 2026-10-08\ntags:\n  - attack.t1195.002\n  - attack.initial_access\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    ParentImage|endswith: '\\npm.cmd'\n    CommandLine|contains: 'preinstall'\n  condition: selection\nfalsepositives:\n  - Legitimate npm packages that use preinstall scripts for setup.",
+      "description": "Detects the execution of npm `preinstall` hooks, a TTP used by the ChainDrop malware to activate its credential harvesting payload."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Alluring Pisces",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Shai-Hulud",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Alluring Pisces",
+      "source_type": "threat-actor",
+      "relationship_type": "originates-from",
+      "target_name": "North Korea",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Alluring Pisces",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Alluring Pisces",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Application Layer Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Alluring Pisces",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Asymmetric Cryptography",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Alluring Pisces",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Unsecured Credentials",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ChainDrop",
+      "source_type": "malware",
+      "relationship_type": "variant-of",
+      "target_name": "Shai-Hulud",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Shai-Hulud",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Blockchain C2 Channel",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "ChainDrop",
+      "source_type": "campaign",
+      "relationship_type": "attributed-to",
+      "target_name": "Alluring Pisces",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "PolinRider",
+      "source_type": "campaign",
+      "relationship_type": "attributed-to",
+      "target_name": "Alluring Pisces",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "ChainDrop",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "ChainDrop",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "PolinRider",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "PolinRider",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Anomalous Build Environment Egress to Blockchain APIs",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Alluring Pisces",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "Suspicious NPM Preinstall Hook Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "ChainDrop",
+      "target_type": "malware"
+    }
+  ]
+}

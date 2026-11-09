@@ -1,0 +1,93 @@
+title: DarkMe RAT Process Hollowing of clspack.exe
+id: 8d9e0f1a-2b3c-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Detects the legitimate process clspack.exe making unexpected outbound network connections, a behavior associated with DarkMe RAT process hollowing.
+references:
+  - https://www.huntress.com/blog/darkme-rat-abandons-exploits
+author: cyber.netsecops.io
+date: 2026-09-23
+tags:
+  - attack.t1055.012
+  - attack.defense_evasion
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\clspack.exe'
+    Initiated: 'true'
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '::1/128'
+  condition: selection and not filter_local
+---
+title: DarkMe RAT Persistence via URI Protocol Handler
+id: 9e0f1a2b-3c4d-4e5f-9a0b-1c2d3e4f5a6b
+status: experimental
+description: Detects the creation of a 'Locked://' URI protocol handler in the registry, a persistence technique used by DarkMe RAT.
+references:
+  - https://www.huntress.com/blog/darkme-rat-abandons-exploits
+author: cyber.netsecops.io
+date: 2026-09-23
+tags:
+  - attack.t1546.015
+  - attack.t1547.001
+  - attack.persistence
+level: high
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|startswith: 'HKEY_CLASSES_ROOT\Locked'
+    EventType: 'CreateKey'
+  condition: selection
+---
+title: Execution of PIF File
+id: a0b1c2d3-e4f5-4a6b-8c7d-8e9f0a1b2c3d
+status: experimental
+description: Detects the execution of a Program Information File (.pif), which is often used to disguise executables in phishing campaigns like the one delivering DarkMe RAT.
+references:
+  - https://www.huntress.com/blog/darkme-rat-abandons-exploits
+author: cyber.netsecops.io
+date: 2026-09-23
+tags:
+  - attack.t1204.002
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '.pif'
+    OriginalFileName|endswith: '.pif'
+  condition: 1 of selection
+---
+title: DarkMe RAT C2 Connection
+id: 7c8b1a2d-3e4f-4a5b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects network connections to known DarkMe RAT C2 infrastructure on port 7712.
+references:
+  - https://www.huntress.com/blog/darkme-rat-abandons-exploits
+author: cyber.netsecops.io
+date: 2026-09-23
+tags:
+  - attack.t1095
+  - attack.command_and_control
+level: critical
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_ip:
+    DestinationIp: '67.43.50.11'
+    DestinationPort: 7712
+    Initiated: 'true'
+  selection_dns:
+    DestinationHostname: 'thatawful.boutique'
+    DestinationPort: 7712
+    Initiated: 'true'
+  condition: 1 of them

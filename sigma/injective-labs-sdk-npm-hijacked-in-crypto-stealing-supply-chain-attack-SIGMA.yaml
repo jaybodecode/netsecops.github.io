@@ -1,0 +1,85 @@
+title: Suspicious Injective Labs SDK Installation
+id: 9b1d8c4a-7e6f-4b1d-8c4a-9b1d8c4a7e6f
+status: experimental
+description: Detects the installation of the potentially compromised '@injectivelabs/sdk-ts' npm package. This should be audited to ensure a non-malicious version is in use.
+references:
+  - https://www.bleepingcomputer.com/tag/supply-chain-attack/
+author: cyber.netsecops.io
+date: 2026-07-10
+tags:
+  - attack.t1195.002
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains|all:
+      - 'npm'
+      - 'install'
+      - '@injectivelabs/sdk-ts'
+  condition: selection
+---
+title: Unusual Outbound Network Connection from Node.js Process
+id: f3a2b1c0-9d8e-4f7a-8b6c-5d4e3f2a1b09
+status: experimental
+description: Monitors for outbound network traffic from Node.js processes, which could indicate exfiltration by a malicious npm package during installation or runtime.
+references:
+  - https://www.bleepingcomputer.com/tag/supply-chain-attack/
+author: cyber.netsecops.io
+date: 2026-07-10
+tags:
+  - attack.t1041
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\node.exe'
+    Initiated: true
+  filter_known_good:
+    DestinationHostname|endswith:
+      - 'registry.npmjs.org'
+      - 'github.com'
+  condition: selection and not filter_known_good
+---
+title: Suspicious npm Post-Install Script Execution
+id: 1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects the execution of a 'postinstall.js' script by Node.js, a common vector for malicious npm packages to execute code upon installation.
+references:
+  - https://www.bleepingcomputer.com/tag/supply-chain-attack/
+author: cyber.netsecops.io
+date: 2026-07-10
+tags:
+  - attack.t1195.002
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\npm.cmd'
+    Image|endswith: '\node.exe'
+    CommandLine|contains: 'postinstall.js'
+  condition: selection
+---
+title: Injective SDK Package Lock File Presence
+id: 06c02b81-de1c-4528-b29e-3ed48fb1c80c
+status: experimental
+description: Detects the presence of package-lock.json. This file should be reviewed for suspicious versions of '@injectivelabs/sdk-ts' or unexpected new dependencies.
+references:
+  - https://www.bleepingcomputer.com/tag/supply-chain-attack/
+author: cyber.netsecops.io
+date: 2026-07-10
+tags:
+  - attack.t1195.002
+level: informational
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\package-lock.json'
+  condition: selection

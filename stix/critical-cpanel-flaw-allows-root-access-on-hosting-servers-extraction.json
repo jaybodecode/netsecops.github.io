@@ -1,0 +1,151 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-28T14:03:26.067Z",
+    "article_slug": "critical-cpanel-flaw-allows-root-access-on-hosting-servers",
+    "article_date": "2026-08-28",
+    "token_usage": {
+      "input_tokens": 147013,
+      "output_tokens": 2290,
+      "cached_tokens": 140742,
+      "total_tokens": 149303,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.048331
+    }
+  },
+  "report_name": "Critical cPanel Flaw Allows Hosting Customers to Gain Root Access",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "An authenticated, low-privileged user can exploit the cPanel & WHM software, which is a public-facing application for hosting customers, to gain initial access to the server's filesystem beyond their intended permissions."
+    },
+    {
+      "name": "Exploitation for Privilege Escalation",
+      "mitre_id": "T1068",
+      "description": "The vulnerability allows a low-privilege authenticated cPanel user to escalate privileges to the root user by writing arbitrary files to sensitive locations on the server."
+    },
+    {
+      "name": "Scheduled Task/Job: Cron",
+      "mitre_id": "T1053.003",
+      "description": "An attacker can exploit the vulnerability to write a malicious cron job to a directory like '/etc/cron.d/', which will then be executed with root privileges, leading to server compromise."
+    },
+    {
+      "name": "Account Manipulation: SSH Authorized Keys",
+      "mitre_id": "T1098.004",
+      "description": "An attacker can exploit the vulnerability to add their own public SSH key to the root user's '/root/.ssh/authorized_keys' file, allowing them to log in directly as root via SSH."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-65643",
+      "cve": "CVE-2026-65643",
+      "description": "A critical path traversal or insufficient validation flaw in cPanel & WHM's domain parking functionality allows an authenticated user to write arbitrary files on the server, leading to code execution as the root user.",
+      "aliases": [],
+      "cvss_score": 0,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "cPanel",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The vendor of the cPanel & WHM web hosting control panel software that contains the CVE-2026-65643 vulnerability."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "cPanel Suspicious Domain Parking Activity",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: cPanel Suspicious Domain Parking Activity\nid: 2b1a3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects suspicious POST requests to cPanel scripts related to domain parking that may indicate exploitation of CVE-2026-65643.\nauthor: cyber.netsecops.io\ndate: 2026-08-28\nreferences:\n  - https://thehackernews.com/2026/08/critical-cpanel-flaw-could-let-one.html\ntags:\n  - attack.t1190\nlevel: high\nlogsource:\n  category: webserver\ndetection:\n  selection:\n    cs-method: 'POST'\n    c-uri|contains|all:\n      - '/json-api/cpanel'\n      - 'api_func=park'\n    c-uri|contains:\n      - '../'\n  condition: selection",
+      "description": "Detects suspicious POST requests to cPanel's domain parking scripts containing directory traversal sequences, which could indicate an attempt to exploit CVE-2026-65643."
+    },
+    {
+      "name": "Suspicious File Creation in Cron Directory",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious File Creation in Cron Directory\nid: 8d7c6b5a-4f3e-4d2c-1b0a-9e8f7d6c5b4a\nstatus: experimental\ndescription: 'Detects the creation of new files in cron directories, which could be a result of exploiting CVE-2026-65643 to establish persistence.'\nauthor: cyber.netsecops.io\ndate: 2026-08-28\nreferences:\n  - https://thehackernews.com/2026/08/critical-cpanel-flaw-could-let-one.html\ntags:\n  - attack.t1053.003\nlevel: high\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|startswith:\n      - '/etc/cron.d/'\n      - '/var/spool/cron/'\n  filter_legit:\n    Image:\n      - '/usr/bin/crontab'\n      - '/usr/sbin/anacron'\n  condition: selection and not filter_legit",
+      "description": "Detects the creation of files in system cron directories by unexpected processes, a potential indicator of persistence established via CVE-2026-65643."
+    },
+    {
+      "name": "Suspicious Modification of Root SSH Authorized Keys",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Modification of Root SSH Authorized Keys\nid: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: 'Detects modification of the root user''s authorized_keys file, which could indicate an attacker adding their key for persistent root access via CVE-2026-65643.'\nauthor: cyber.netsecops.io\ndate: 2026-08-28\nreferences:\n  - https://thehackernews.com/2026/08/critical-cpanel-flaw-could-let-one.html\ntags:\n  - attack.t1098.004\nlevel: critical\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename: '/root/.ssh/authorized_keys'\n  filter_legit:\n    Image:\n      - '/usr/bin/ssh-copy-id'\n  condition: selection and not filter_legit",
+      "description": "Detects modifications to the root user's SSH authorized_keys file, a strong indicator of compromise if performed by an unexpected process like a web server, potentially via CVE-2026-65643."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "CVE-2026-65643",
+      "source_type": "vulnerability",
+      "relationship_type": "enables",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "CVE-2026-65643",
+      "source_type": "vulnerability",
+      "relationship_type": "enables",
+      "target_name": "Exploitation for Privilege Escalation",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "CVE-2026-65643",
+      "source_type": "vulnerability",
+      "relationship_type": "enables",
+      "target_name": "Scheduled Task/Job: Cron",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "CVE-2026-65643",
+      "source_type": "vulnerability",
+      "relationship_type": "enables",
+      "target_name": "Account Manipulation: SSH Authorized Keys",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "cPanel Suspicious Domain Parking Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious File Creation in Cron Directory",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Scheduled Task/Job: Cron",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious Modification of Root SSH Authorized Keys",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Account Manipulation: SSH Authorized Keys",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

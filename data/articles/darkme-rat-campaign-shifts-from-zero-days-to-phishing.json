@@ -1,0 +1,210 @@
+{
+  "id": "7ec69e0c-b46b-4c54-a86f-5d4b22eb0c23",
+  "slug": "darkme-rat-campaign-shifts-from-zero-days-to-phishing",
+  "headline": "DarkMe RAT Abandons Zero-Days for Simpler Phishing Attacks",
+  "title": "Water Hydra's DarkMe RAT Campaign Pivots to Phishing Attacks",
+  "summary": "The financially motivated APT group Water Hydra (aka EvilNum) has shifted tactics in its distribution of the DarkMe Remote Access Trojan (RAT). Previously known for using zero-day exploits, a new campaign observed by Huntress relies on simple phishing emails with malicious .pif file attachments. The malware uses a multi-stage loader, COM registration for persistence, and process hollowing to evade detection while stealing cryptocurrency wallets and other system data. This change indicates a move towards lower-cost, higher-volume attacks.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Huntress](https://www.huntress.com/)** have analyzed a new campaign distributing the **`DarkMe`** Remote Access Trojan (RAT), revealing a significant tactical shift by its operators, the financially motivated APT group **[Water Hydra](https://malpedia.caad.fkie.fraunhofer.de/actor/water_hydra)** (also known as EvilNum). This group, previously known for leveraging expensive zero-day exploits like the WinRAR flaw `CVE-2023-38831`, has pivoted to a much simpler attack vector: phishing. The new campaign uses emails with links to malicious `.pif` files to initiate a complex, multi-stage infection chain. The final payload, the `DarkMe` RAT, uses process hollowing and other defense evasion techniques to steal cryptocurrency wallets, capture screenshots, and provide remote access to the compromised system.\n\n## Threat Overview\nThe attack represents a strategic move from high-cost, targeted attacks to lower-cost, broader campaigns that rely on social engineering and user error. This allows the group to increase its target volume while reducing operational expenses associated with acquiring or developing zero-day exploits.\n\nThe attack chain begins with a phishing email containing a lure, such as a fake image link. When a user clicks the link, they download a Program Information File (`.pif`), which is an executable disguised as a shortcut. Executing this file triggers the download of a remote MSI installer, kicking off a multi-stage loading process written in Visual Basic 6 (VB6).\n\n## Technical Analysis\nThe infection chain demonstrates several defense evasion and persistence techniques:\n\n- **Initial Access**: [`T1566.002 - Phishing: Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/). The user is tricked into clicking a link that downloads the initial payload.\n- **Execution**: [`T1204.002 - User Execution: Malicious File`](https://attack.mitre.org/techniques/T1204/002/). The user is required to execute the downloaded `.pif` file.\n- **Defense Evasion**: The malware employs several evasion tactics:\n    - **Inverted Sandbox Check**: Instead of looking for signs of a sandbox, the loader checks for the presence of 329 common user applications (e.g., Slack, Zoom, Spotify). If none are found, it assumes it's in a bare sandbox environment and terminates. This is a variation of [`T1497.001 - Virtualization/Sandbox Evasion: System Checks`](https://attack.mitre.org/techniques/T1497/001/).\n    - **Process Hollowing**: The final `DarkMe` payload is injected into the memory of a legitimate, Microsoft-signed process, `clspack.exe`. This is a classic implementation of [`T1055.012 - Process Injection: Process Hollowing`](https://attack.mitre.org/techniques/T1055/012/).\n- **Persistence**: The malware achieves persistence by registering a custom COM object and creating a `Locked://` URI protocol handler in the Windows Registry. This ensures the malware is re-executed when certain actions are taken. This maps to [`T1546.015 - Component Object Model Hijacking`](https://attack.mitre.org/techniques/T1546/015/) and [`T1547.001 - Registry Run Keys / Startup Folder`](https://attack.mitre.org/techniques/T1547/001/).\n- **Command and Control**: The `DarkMe` RAT communicates with its C2 server over a custom TCP protocol on port `7712`. An observed C2 domain was `thatawful[.]boutique`. This falls under [`T1095 - Non-Application Layer Protocol`](https://attack.mitre.org/techniques/T1095/).\n\n## Impact Assessment\nA successful infection with `DarkMe` RAT grants attackers significant control over the victim's machine. They can steal sensitive information, including credentials for cryptocurrency wallets, capture screenshots, log keystrokes, and execute arbitrary commands. This can lead to direct financial loss for the victim. The shift in tactics suggests that Water Hydra is broadening its target base, moving beyond the financial sector to any organization or individual they can successfully phish. This increases the overall risk for a wider range of potential victims.\n\n## IOCs — Directly from Articles\n| Type          | Value                  | Description |\n| ------------- | ---------------------- | ----------- |\n| `domain`      | `thatawful[.]boutique` | C2 Domain   |\n| `ip_address_v4` | `67.43.50.11`          | C2 IP Address |\n| `destination_port` | `7712`                 | C2 Port     |\n\n## Detection & Response\n1.  **Email Security**: Use advanced email security gateways to block phishing emails and scan links for malicious destinations. User training on identifying phishing lures is also critical. This aligns with **[D3FEND](https://d3fend.mitre.org/)**'s [`Sender Reputation Analysis`](https://d3fend.mitre.org/technique/d3f:SenderReputationAnalysis).\n\n2.  **Endpoint Detection (EDR)**: Monitor for the specific TTPs used by `DarkMe`. Create detection rules for:\n    - Execution of `.pif` files.\n    - The `clspack.exe` process making unexpected network connections, especially to known malicious IPs/domains on port `7712`.\n    - Creation of custom URI protocol handlers in the registry (`HKEY_CLASSES_ROOT\\Locked`).\n    - This corresponds to [`Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) and [`Windows Registry Key Auditing`](https://d3fend.mitre.org/technique/d3f:WindowsRegistryKeyAuditing).\n\n3.  **Network Monitoring**: Block outbound connections to the known IOCs (`thatawful[.]boutique`, `67.43.50.11`). Monitor for any traffic on TCP port `7712` and investigate the source.\n\n## Mitigation\n1.  **User Training**: Since the new attack vector relies on user interaction, comprehensive and continuous security awareness training is a primary mitigation. Teach users to be suspicious of unsolicited emails and to avoid clicking links or downloading files from unknown senders.\n\n2.  **Application Control**: Use application control policies to block the execution of potentially unwanted file types like `.pif` from user-download locations (e.g., Downloads folder, email client temp folders). This is a form of [`Executable Denylisting`](https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting).\n\n3.  **Attack Surface Reduction (ASR)**: Enable ASR rules on Windows endpoints, such as the rule that blocks executable content from email clients and webmail. This can prevent the initial payload from running even if a user clicks on it.",
+  "twitter_post": "Water Hydra's DarkMe RAT campaign pivots from zero-days to simple phishing. New attacks use malicious .pif files, process hollowing, and COM hijacking for persistence to steal crypto wallets. #DarkMe #WaterHydra #Phishing #Malware #ThreatIntel",
+  "meta_description": "The DarkMe RAT campaign, linked to APT group Water Hydra, has shifted from using zero-days to simple phishing attacks with malicious .pif files to steal data.",
+  "category": [
+    "Malware",
+    "Threat Actor",
+    "Phishing"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Water Hydra",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/water_hydra"
+    },
+    {
+      "name": "EvilNum",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/evilnum"
+    },
+    {
+      "name": "DarkMe",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.darkme"
+    },
+    {
+      "name": "Huntress",
+      "type": "security_organization",
+      "url": "https://www.huntress.com/"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2023-38831"
+    },
+    {
+      "id": "CVE-2024-21412"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.huntress.com/blog/darkme-rat-abandons-exploits",
+      "title": "DarkMe RAT: A VB6 APT Trojan Turned Conventional Infostealer",
+      "date": "2026-09-22",
+      "friendly_name": "Huntress",
+      "website": "huntress.com"
+    },
+    {
+      "url": "https://www.helpnetsecurity.com/2026/09/23/darkme-rat-phishing-email-hits-corporate-targets/",
+      "title": "DarkMe RAT trades zero-days for plain phishing emails",
+      "date": "2026-09-23",
+      "friendly_name": "Help Net Security",
+      "website": "helpnetsecurity.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-08-31T00:00:00Z",
+      "summary": "Huntress analyzes two incidents involving the new phishing-based DarkMe RAT campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1055.012",
+      "name": "Process Hollowing",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1546.015",
+      "name": "Component Object Model Hijacking",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1497.001",
+      "name": "System Checks",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1095",
+      "name": "Non-Application Layer Protocol",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Training users to identify and report phishing attempts is the primary defense against this social engineering-based attack vector.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Block the execution of risky file types like .pif from common download locations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Modern EDR/AV solutions can detect malicious behaviors like process hollowing and COM hijacking.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an EDR solution capable of deep process analysis to detect DarkMe's process hollowing technique. Specifically, security teams should create a detection rule that triggers an alert when the legitimate, signed Windows binary `clspack.exe` initiates an outbound network connection, especially to an unusual port like `7712` or to a low-reputation domain. Since `clspack.exe` is a legacy utility for connection manager profiles and should not be making network connections in a modern environment, this behavior is a high-fidelity indicator of compromise. Correlating this network activity with a parent process spawned from a `.pif` file or an MSI installer would further increase detection confidence.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-WRKA",
+      "technique_name": "Windows Registry Key Auditing",
+      "url": "https://d3fend.mitre.org/technique/d3f:WindowsRegistryKeyAuditing",
+      "recommendation": "To detect DarkMe's persistence mechanism, security teams should configure monitoring and alerting for the creation of new URI protocol handlers in the Windows Registry. The specific key path to monitor is `HKEY_CLASSES_ROOT`. The creation of a novel handler like `Locked://` is highly anomalous and a strong indicator of this malware family. An EDR or a dedicated registry monitoring tool can be configured to alert security analysts whenever a new subkey is created under `HKEY_CLASSES_ROOT` that is not on an established allowlist of known good protocols. This allows for the detection of the malware's attempt to establish persistence, even if the initial execution was missed.",
+      "mitre_mitigation_id": "M1047"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "thatawful.boutique",
+      "description": "C2 server domain for DarkMe RAT"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "67.43.50.11",
+      "description": "C2 server IP address"
+    },
+    {
+      "type": "destination_port",
+      "value": "7712",
+      "description": "C2 communication port (TCP)"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "*.pif",
+      "description": "The malware uses .pif files as its initial payload dropper. Execution of these files from a user's download folder is highly suspicious.",
+      "context": "EDR logs, file system monitoring",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "clspack.exe",
+      "description": "The legitimate clspack.exe process making outbound network connections, especially on port 7712, is a strong indicator of process hollowing by DarkMe.",
+      "context": "EDR process and network monitoring logs",
+      "confidence": "high"
+    },
+    {
+      "type": "registry_key",
+      "value": "HKEY_CLASSES_ROOT\\Locked",
+      "description": "DarkMe creates this custom URI protocol handler for persistence. The presence of this key is a high-fidelity indicator of compromise.",
+      "context": "Registry monitoring tools, EDR",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "DarkMe",
+    "Water Hydra",
+    "EvilNum",
+    "RAT",
+    "Phishing",
+    "VB6",
+    "Process Hollowing"
+  ],
+  "extract_datetime": "2026-09-23T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Retail",
+      "Other"
+    ],
+    "other_affected": [
+      "Corporate targets"
+    ]
+  },
+  "pub_date": "2026-09-23",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-09-23T15:00:00.000Z",
+  "updatedAt": "2026-09-23T15:00:00.000Z"
+}

@@ -1,0 +1,234 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-23T17:48:15.077Z",
+    "article_slug": "laravel-lang-supply-chain-attack-compromises-over-200-package-versions",
+    "article_date": "2026-05-23",
+    "token_usage": {
+      "input_tokens": 143469,
+      "output_tokens": 2714,
+      "cached_tokens": 137731,
+      "total_tokens": 146183,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051529
+    }
+  },
+  "report_name": "Laravel-Lang Supply Chain Attack Injects Credential Stealer into 233 Package Versions",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "The attacker compromised 233 versions of the laravel-lang/lang, laravel-lang/attributes, and laravel-lang/http-statuses packages by creating malicious version tags that pointed to a forked repository containing a credential-stealing payload. The malicious code was injected into the 'src/helpers.php' file."
+    },
+    {
+      "name": "Credentials from Password Stores",
+      "mitre_id": "T1555",
+      "description": "The second-stage payload was a comprehensive PHP script designed to steal a wide range of credentials from the compromised system, including those from password stores."
+    },
+    {
+      "name": "Credentials in Files",
+      "mitre_id": "T1552.001",
+      "description": "The credential-stealing malware specifically targeted credentials stored in files, such as .env files, cloud credentials (AWS, Google Cloud), database credentials, and SSH keys."
+    },
+    {
+      "name": "System Information Discovery",
+      "mitre_id": "T1082",
+      "description": "The initial dropper payload fingerprinted the compromised machine, gathering system information before sending it to the C2 server."
+    },
+    {
+      "name": "Ingress Tool Transfer",
+      "mitre_id": "T1105",
+      "description": "The C2 server at flipboxstudio.info delivered a second-stage payload to the compromised system after receiving the initial fingerprint data."
+    },
+    {
+      "name": "Application Layer Protocol: Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "The malware communicated with its C2 server over web protocols to exfiltrate system information and download the second-stage payload."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Laravel-Lang Credential Stealer",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": false,
+      "aliases": [],
+      "description": "A multi-stage PHP malware injected into Laravel-Lang packages. The first stage acts as a dropper, fingerprinting the system and contacting a C2 server. The second stage is a comprehensive credential-stealing script that exfiltrates .env files, cloud credentials, database credentials, and SSH keys.",
+      "capabilities": [
+        "fingerprints-host",
+        "communicates-with-c2",
+        "installs-other-components",
+        "steals-authentication-credentials"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Laravel-Lang",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A popular open-source project providing language localization packages for the Laravel PHP framework. Three of its repositories (laravel-lang/lang, laravel-lang/attributes, laravel-lang/http-statuses) were compromised in a supply chain attack."
+    },
+    {
+      "name": "GitHub",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The code hosting platform where the attacker abused a feature to create malicious version tags pointing to a forked repository, enabling the supply chain attack."
+    },
+    {
+      "name": "Packagist",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The main PHP package repository that indexed the malicious version tags and distributed the compromised Laravel-Lang packages to developers."
+    },
+    {
+      "name": "Laravel",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The popular PHP web application framework for which the compromised Laravel-Lang packages provide translations."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "flipboxstudio.info C2 Server",
+      "infrastructure_types": [
+        "command-and-control",
+        "hosting-malware"
+      ],
+      "description": "A command-and-control server used by the attacker to host and deliver the second-stage credential-stealing payload."
+    }
+  ],
+  "observables": [
+    {
+      "type": "domain-name",
+      "value": "flipboxstudio.info"
+    },
+    {
+      "type": "file",
+      "name": "helpers.php"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Laravel-Lang Stealer C2 Domain",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[domain-name:value = 'flipboxstudio.info']",
+      "x_netsecio_sigma_rule": "title: Laravel-Lang Supply Chain Attack C2 DNS Query\nid: 9b1b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects DNS queries to the C2 domain associated with the Laravel-Lang supply chain attack.\nreferences:\n  - https://socket.dev/blog/laravel-lang-supply-chain-attack\nauthor: cyber.netsecops.io\ndate: 2026-05-23\ntags:\n  - attack.t1071.001\n  - attack.command_and_control\nlevel: high\nlogsource:\n  category: dns_query\n  product: windows\ndetection:\n  selection:\n    QueryName: 'flipboxstudio.info'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects network communication with the known C2 domain flipboxstudio.info used in the Laravel-Lang supply chain attack."
+    },
+    {
+      "name": "Suspicious PHP Dropper in Laravel-Lang Package",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious PHP Dropper File in Laravel-Lang Package\nid: a2b3c4d5-e6f7-4890-abcd-ef1234567890\nstatus: experimental\ndescription: >\n  Detects the creation of a 'helpers.php' file within the laravel-lang vendor directory, which was the injection point for a credential stealing dropper. \n  File content should be inspected for obfuscated code such as 'eval(base64_decode())'.\nreferences:\n  - https://socket.dev/blog/laravel-lang-supply-chain-attack\nauthor: cyber.netsecops.io\ndate: 2026-05-23\ntags:\n  - attack.t1195.001\nlevel: medium\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|contains|all:\n      - '/vendor/laravel-lang/'\n      - '/src/helpers.php'\n  condition: selection",
+      "description": "Detects the presence of the `src/helpers.php` file within the `vendor/laravel-lang/` directory, which was the file compromised in the supply chain attack. The file should be inspected for malicious content."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials from Password Stores",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials in Files",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "System Information Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Application Layer Protocol: Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "flipboxstudio.info C2 Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Laravel-Lang Credential Stealer",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "Laravel-Lang",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Laravel-Lang Stealer C2 Domain",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Laravel-Lang Credential Stealer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Laravel-Lang Stealer C2 Domain",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "flipboxstudio.info",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "Suspicious PHP Dropper in Laravel-Lang Package",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Laravel-Lang Credential Stealer",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious PHP Dropper in Laravel-Lang Package",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "helpers.php",
+      "target_type": "file"
+    }
+  ]
+}

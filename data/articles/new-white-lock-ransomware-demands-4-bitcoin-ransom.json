@@ -1,0 +1,223 @@
+{
+  "id": "79e8c1fc-43cf-4b60-9f30-8d0de78e9890",
+  "slug": "new-white-lock-ransomware-demands-4-bitcoin-ransom",
+  "headline": "New 'White Lock' Ransomware Emerges, Demanding 4 Bitcoin and Threatening Data Leaks",
+  "title": "'White Lock' Ransomware Surfaces with Double Extortion Tactics, Appends '.fbin' Extension to Files",
+  "summary": "A new ransomware strain named **White Lock** has been identified by cybersecurity researchers. Operating as a double-extortion threat, the malware first exfiltrates sensitive data before encrypting files on the victim's Windows system, appending the `.fbin` extension. A ransom note, `c0ntact.txt`, is dropped in each affected folder, demanding a payment of 4 Bitcoin within a stringent four-day deadline. The operators threaten to notify the victim's customers, sell the stolen data to competitors, and ultimately leak it publicly if the ransom is not paid. Victims are instructed to use the **[Tor](https://www.torproject.org/)** browser to communicate with the attackers, suggesting a focus on high-value enterprise targets.",
+  "full_report": "## Executive Summary\nCybersecurity researchers are tracking a new ransomware family dubbed **White Lock**. This emerging threat employs a double-extortion model, common among modern ransomware operations. The malware is designed to run on Windows systems, where it first exfiltrates sensitive corporate data before initiating an encryption routine. All encrypted files are appended with the `.fbin` extension. The attackers leave a ransom note named `c0ntact.txt` which details the compromise and the ransom demand: 4 Bitcoin. A short four-day deadline is given, after which the attackers threaten to leak the stolen data, sell it, and notify the victim's customers. The use of a **[Tor](https://www.torproject.org/)**-based communication channel and the high ransom demand suggest that the operators are targeting enterprise-level organizations.\n\n---\n\n## Threat Overview\n**White Lock** represents a new and developing ransomware threat. Its core functionality is to deny access to files and extort money, but it follows the modern ransomware playbook by adding data theft to its attack chain.\n\n### Attack Flow\n1.  **Initial Compromise**: The initial access vector is not yet confirmed but is likely standard methods such as phishing, exploiting vulnerable public-facing services, or using compromised credentials.\n2.  **Data Exfiltration**: Before encryption, the malware scans the network for valuable data and exfiltrates it to attacker-controlled infrastructure.\n3.  **Encryption**: The ransomware encrypts a wide variety of file types across the victim's network, appending the `.fbin` extension to each file.\n4.  **Extortion**: A ransom note, `c0ntact.txt`, is created in each directory. It contains the ransom demand, payment deadline, and threats of data leakage. It also provides a unique client ID and a `.onion` URL for communication via the Tor Browser.\n\nTechnical analysis suggests the malware may also attempt to disable security software and delete Volume Shadow Copies to prevent easy recovery, a common feature of ransomware.\n\n## Technical Analysis\nThe malware is built for Windows environments. The `.fbin` extension and `c0ntact.txt` ransom note are the primary indicators of a White Lock infection.\n\n### MITRE ATT&CK TTPs\n- **[`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)**: The primary goal of the ransomware is to encrypt files, making them inaccessible to the user.\n- **[`T1567 - Exfiltration Over Web Service`](https://attack.mitre.org/techniques/T1567/)**: The malware exfiltrates data before encryption, a key part of the double-extortion tactic.\n- **[`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/)**: Like most modern ransomware, White Lock likely deletes Volume Shadow Copies and other backups to make recovery more difficult.\n- **[`T1071.001 - Application Layer Protocol: Web Protocols`](https://attack.mitre.org/techniques/T1071/001/)**: Communication with the C2 server for payment and negotiation occurs over Tor, which uses web protocols.\n- **[`T1133 - External Remote Services`](https://attack.mitre.org/techniques/T1133/)**: A likely initial access vector for ransomware groups targeting enterprises.\n\n## Impact Assessment\nA successful White Lock attack can be catastrophic for an organization. The immediate impact is operational disruption due to encrypted systems. The secondary impact comes from the data breach, which can lead to:\n-   Regulatory fines for data exposure.\n-   Loss of customer trust.\n-   Loss of competitive advantage if data is sold to competitors.\n-   Significant financial loss from the ransom payment and recovery costs.\n\nThe short deadline and high ransom demand are designed to pressure victims into paying quickly.\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| file_extension | .fbin | Appended to all encrypted files. |\n| file_name | c0ntact.txt | The name of the ransom note file. |\n| url | [redacted].onion | The Tor-based portal for victim communication. |\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| file_name | `c0ntact.txt` | Creation of the ransom note is a definitive indicator of infection. | File Integrity Monitoring (FIM), EDR | high |\n| command_line_pattern | `vssadmin.exe delete shadows /all /quiet` | Command used to delete Volume Shadow Copies to inhibit recovery. | EDR, Sysmon Event ID 1 | high |\n| process_name | `wbadmin.exe` | Another tool abused by ransomware to delete system backups. Monitor for suspicious usage. | EDR, Sysmon Event ID 1 | high |\n| network_traffic_pattern | `Outbound connections to Tor entry nodes` | The malware may communicate with C2 infrastructure via Tor. Blocking or alerting on Tor traffic can be an effective detection strategy. | Firewall logs, NIDS | medium |\n\n## Detection & Response\n1.  **Endpoint Detection**: Use EDR and antivirus solutions with behavioral analysis to detect ransomware activity. Look for rapid file modification/encryption, processes that delete shadow copies, and the creation of ransom notes. This aligns with D3FEND's **[File Content Rules](https://d3fend.mitre.org/technique/d3f:FileContentRules)** (D3-FCR).\n2.  **Network Monitoring**: Monitor for large, unexpected outbound data transfers, which could be the data exfiltration phase. Alert on any connections to known Tor nodes from servers or critical workstations.\n3.  **Canary Files**: Place decoy files (canaries) on file shares. Monitor these files for any modification, which can provide an early warning of ransomware activity.\n\n> If an infection is detected, immediately isolate the affected systems from the network to prevent further spread. Do not attempt to pay the ransom, as it encourages the attackers and does not guarantee data recovery.\n\n## Mitigation\nThe best defense against ransomware is a multi-layered, proactive approach.\n1.  **Data Backup and Recovery**: Maintain regular, offline, and immutable backups of all critical data. This is the most important mitigation (D3FEND: **[Data Backup](https://d3fend.mitre.org/technique/d3f:DataBackup)**). Regularly test your recovery procedures.\n2.  **Patch Management**: Keep all systems, especially public-facing services like VPNs and RDP, fully patched to prevent exploitation as an initial access vector (D3FEND: **[Software Update](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**).\n3.  **Network Segmentation**: Segment your network to limit the blast radius of a ransomware attack. Prevent lateral movement between different network zones.\n4.  **User Training**: Train users to recognize and report phishing emails, a common entry point for ransomware.",
+  "twitter_post": "New 'White Lock' ransomware discovered. ⛓️ It steals data, encrypts files with a '.fbin' extension, and demands 4 Bitcoin within 4 days. Uses double extortion tactics, threatening to leak stolen data. #Ransomware #CyberCrime #WhiteLock",
+  "meta_description": "Researchers have identified a new ransomware strain, 'White Lock,' which uses double-extortion tactics, encrypts files with a '.fbin' extension, and demands a 4 Bitcoin ransom.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "White Lock",
+      "type": "malware"
+    },
+    {
+      "name": "Tor",
+      "type": "technology",
+      "url": "https://www.torproject.org/"
+    },
+    {
+      "name": "Windows",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cyfirma.com/outofband/weekly-intelligence-report-10-october-2025/",
+      "title": "Weekly Intelligence Report – 10 October 2025",
+      "date": "2025-10-10",
+      "friendly_name": "CYFIRMA",
+      "website": "cyfirma.com"
+    },
+    {
+      "url": "https://www.pcrisk.com/removal-guides/33986-white-lock-ransomware",
+      "title": "White Lock ransomware",
+      "date": "2025-10-02",
+      "friendly_name": "PCRisk",
+      "website": "pcrisk.com"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=Jt5Pz9A1L4E",
+      "title": "White Lock ransomware removal [.fbin file virus].",
+      "date": "2025-10-07",
+      "friendly_name": "YouTube",
+      "website": "youtube.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1567",
+      "name": "Exfiltration Over Web Service",
+      "tactic": "Exfiltration"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1053",
+      "name": "Data Backup",
+      "description": "Maintain offline, encrypted, and immutable backups to ensure data can be restored without paying the ransom.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        },
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use a modern EDR/antivirus solution with behavioral detection to identify and block ransomware activity.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BDI",
+          "name": "Broadcast Domain Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:BroadcastDomainIsolation"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Segment the network to contain a ransomware outbreak and prevent it from spreading to critical systems.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-IB",
+      "technique_name": "Immutable Backup",
+      "url": "https://d3fend.mitre.org/technique/d3f:ImmutableBackup",
+      "recommendation": "The cornerstone of ransomware defense is the ability to recover without paying. For a threat like White Lock that actively tries to destroy backups, standard backups are not enough. Organizations must implement immutable backups, where backup data is stored in a write-once-read-many (WORM) state for a defined period. This can be achieved with cloud storage services that support object locking (e.g., AWS S3 Object Lock, Azure Blob immutable storage) or on-premise solutions with similar capabilities. This ensures that even if an attacker gains administrative access to the backup system, they cannot delete or encrypt the backup data, guaranteeing a clean source for recovery and rendering the encryption portion of the attack moot.",
+      "mitre_mitigation_id": "M1053"
+    },
+    {
+      "technique_id": "D3-BH",
+      "technique_name": "Behavioral Honeypot",
+      "url": "https://d3fend.mitre.org/technique/d3f:BehavioralHoneypot",
+      "recommendation": "To gain early warning of a ransomware attack in progress, deploy behavioral honeypots, also known as canary files or decoy systems. Scatter decoy files with enticing names like `passwords.xlsx` or `financial_projections.docx` across file shares. Use a File Integrity Monitoring (FIM) or specialized deception technology solution to place these canaries. Any interaction with these files (read, modify, encrypt) is a high-fidelity indicator of malicious activity, as no legitimate user should ever access them. Upon detection, an automated response can be triggered to isolate the affected user account or endpoint, stopping the ransomware before it can encrypt a significant portion of the network.",
+      "mitre_mitigation_id": "M1056"
+    },
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "To prevent the initial execution of the White Lock payload, employ application control policies. While full application allowlisting can be complex, a robust denylisting approach is highly effective. Block the execution of files from user-writable locations like `C:\\Users\\<user>\\AppData\\` and `C:\\ProgramData\\`. Since many ransomware droppers land in these directories via phishing emails or malicious downloads, preventing execution from these paths can stop the attack chain at the outset. This should be combined with PowerShell constraint language mode and blocking of tools frequently abused by attackers, such as `PsExec` and `Cobalt Strike` loaders, from running on standard user endpoints.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "c0ntact.txt",
+      "description": "Ransom note file name"
+    },
+    {
+      "type": "other",
+      "value": ".fbin",
+      "description": "File extension appended to encrypted files"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "c0ntact.txt",
+      "description": "The creation of this ransom note file is a high-confidence indicator of a White Lock infection.",
+      "context": "File Integrity Monitoring (FIM), EDR alerts on file creation.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "vssadmin.exe delete shadows",
+      "description": "Common command used by ransomware to delete Volume Shadow Copies and hinder system recovery.",
+      "context": "Process monitoring, EDR, Windows Event ID 4688.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "wevtutil.exe",
+      "description": "Ransomware often uses 'wevtutil.exe cl' to clear security and application event logs to cover its tracks.",
+      "context": "Process monitoring, EDR, command line logging.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Large outbound SMB or FTP traffic from file servers",
+      "description": "Indicates the data exfiltration phase preceding encryption. Baseline normal traffic and alert on anomalies.",
+      "context": "Netflow analysis, NIDS, Data Loss Prevention (DLP).",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "ransomware",
+    "double extortion",
+    "data exfiltration",
+    "Windows malware",
+    "Tor"
+  ],
+  "extract_datetime": "2025-10-10T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Enterprise-level organizations"
+    ]
+  },
+  "keywords": [
+    "White Lock ransomware",
+    ".fbin extension",
+    "c0ntact.txt",
+    "ransomware removal",
+    "double extortion",
+    "cybercrime",
+    "Bitcoin ransom"
+  ],
+  "pub_date": "2025-10-10",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-10T15:00:00.000Z",
+  "updatedAt": "2025-10-10T15:00:00.000Z"
+}

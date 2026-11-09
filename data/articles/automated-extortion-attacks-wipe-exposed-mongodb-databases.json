@@ -1,0 +1,154 @@
+{
+  "id": "231a1bf8-a78b-47bf-a658-0e80ee9392e7",
+  "slug": "automated-extortion-attacks-wipe-exposed-mongodb-databases",
+  "headline": "Automated Attacks Wipe Exposed MongoDB Databases, Demanding $500 Ransom",
+  "title": "Ongoing Extortion Campaign Targets Thousands of Misconfigured MongoDB Servers",
+  "summary": "An automated data extortion campaign is actively targeting publicly exposed and misconfigured MongoDB databases. A threat actor is systematically wiping data from these unsecured servers and leaving a ransom note demanding approximately $500 in Bitcoin for its return. Research from Flare identified over 3,100 MongoDB instances accessible without authentication, with nearly half (1,400) already compromised by this attacker. This campaign highlights the persistent threat of automated scanning and exploitation of basic security misconfigurations, demonstrating that even with lower ransom demands, such attacks remain a profitable venture for criminals preying on low-hanging fruit.",
+  "full_report": "## Executive Summary\nCybersecurity firm Flare has uncovered an ongoing, automated extortion campaign targeting publicly exposed **[MongoDB](https://www.mongodb.com/)** databases. The attack involves a threat actor scanning the internet for MongoDB instances that lack basic authentication controls. Upon finding an open server, the attacker's script automatically wipes all data and leaves behind a ransom note demanding a payment of approximately $500 in Bitcoin. Flare's research found that of 3,100 completely unsecured MongoDB servers discovered, nearly 46% (around 1,400) had already been compromised by this campaign. These attacks, while less common than several years ago, serve as a critical reminder of the importance of fundamental database security hygiene.\n\n---\n\n## Threat Overview\nThis is a low-sophistication, high-volume automated attack. The threat actor is not using zero-day exploits or advanced techniques but is simply capitalizing on a common and well-known misconfiguration: running a database in production with no authentication required for access.\n\n**Attack Flow**:\n1.  **Scanning**: The attacker uses automated tools like Shodan or custom scripts to scan the internet for open MongoDB ports (typically port `27017`).\n2.  **Connection**: The script attempts to connect to discovered servers without any credentials.\n3.  **Data Wipe**: If the connection is successful (i.e., no authentication is required), the script programmatically deletes all databases and collections on the server.\n4.  **Ransom Note**: The script then creates a new database or collection with a ransom note. The note typically contains instructions for payment, a Bitcoin address, and a threat that the data will be lost forever if the ransom is not paid. In reality, the attacker likely does not back up the data; the 'wipe' is a destructive act.\n\n> **Critical Insight**: Attackers in these campaigns rarely, if ever, return the data. The data is typically destroyed, not exfiltrated and stored. Paying the ransom is highly unlikely to result in data recovery.\n\n## Technical Analysis\nThe attack relies on the default configuration of some older versions of MongoDB or on administrator error. In the past, MongoDB instances would bind to `0.0.0.0` by default and not enforce authentication, making them publicly accessible. While modern versions have improved default security, many legacy systems or misconfigured new deployments remain vulnerable.\n\n### MITRE ATT&CK TTPs\n- [`T1595.002 - Vulnerability Scanning`](https://attack.mitre.org/techniques/T1595/002/): The attacker scans for open MongoDB ports and misconfigurations.\n- [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/): While not an 'exploit' in the traditional sense, this involves abusing a weakness in a public-facing service.\n- [`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/): The core of the attack, where the database contents are wiped.\n- [`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/): By destroying the primary data source, the attacker inhibits recovery unless viable backups exist.\n\n## Impact Assessment\n- **Permanent Data Loss**: For organizations without proper backups, this attack results in permanent and catastrophic data loss.\n- **Operational Disruption**: The loss of a production database can bring business operations to a complete halt, leading to significant financial and reputational damage.\n- **Low Cost, High Reward for Attacker**: The automated nature of the attack means the threat actor can target thousands of victims with minimal effort. Even if only a small fraction pay the $500 ransom, the campaign can be highly profitable.\n\n## Cyber Observables for Detection\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| `port` | `27017` | The default port for MongoDB. Monitor for unexpected inbound connections from the internet. | Firewall logs, network flow data | high |\n| `log_source` | `mongod.log` | The MongoDB log file. Look for a high volume of connection and command activity from an unknown IP, followed by `dropDatabase` commands. | Database server logs | high |\n| `other` | Ransom note in database | The presence of a new database or collection with a name like `README`, `RECOVER_YOUR_DATA`, or similar, containing a ransom message. | Database monitoring | high |\n\n## Detection & Response\n- **Detect**: Regularly use attack surface management (ASM) tools or services like Shodan to scan your own public IP space for exposed database ports. Configure database auditing to log administrative commands like `dropDatabase` and alert on them. Monitor firewall logs for inbound connections to port `27017` from untrusted sources.\n- **Response**: If a database is wiped, immediately isolate the server from the network to preserve any forensic evidence. Do NOT pay the ransom. Begin restoration procedures from your most recent known-good backup. Conduct a post-mortem to identify and remediate the configuration error that allowed the breach.\n\n## Mitigation\nPreventing these attacks involves basic security best practices for database administration.\n1.  **Enforce Authentication**: This is the most critical step. Ensure your MongoDB instances have authentication enabled and require all clients to provide valid credentials. ([`M1032 - Multi-factor Authentication`](https://attack.mitre.org/mitigations/M1032/) and [`M1027 - Password Policies`](https://attack.mitre.org/mitigations/M1027/))\n2.  **Network Hardening**: Configure your MongoDB server to only listen for connections on a trusted interface (e.g., bind to a private IP address, `127.0.0.1` if local access only). Never expose a database directly to the public internet. Use firewall rules to restrict access to the database port to only specific, trusted application servers. ([`M1035 - Limit Access to Resource Over Network`](https://attack.mitre.org/mitigations/M1035/))\n3.  **Principle of Least Privilege**: Create specific user roles with the minimum permissions necessary for the application to function. The application's service account should not have permissions to drop databases. ([`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/))\n4.  **Data Backup**: Maintain regular, tested backups of your databases. Store backups in a separate, isolated location. ([`M0930 - Data Backup`](https://attack.mitre.org/mitigations/M0930/))",
+  "twitter_post": "💸 Automated extortion attacks are wiping thousands of exposed MongoDB databases and demanding ~$500 in Bitcoin. Researchers found 1,400+ unsecured servers already hit. Secure your databases! 🛡️ #MongoDB #DataBreach #Ransomware #CyberSecurity",
+  "meta_description": "An automated extortion campaign is wiping thousands of publicly exposed and misconfigured MongoDB databases, leaving a ransom note demanding $500 in Bitcoin.",
+  "category": [
+    "Cyberattack",
+    "Data Breach",
+    "Cloud Security"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "MongoDB",
+      "type": "product",
+      "url": "https://www.mongodb.com/"
+    },
+    {
+      "name": "Flare",
+      "type": "company"
+    },
+    {
+      "name": "Bitcoin",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGSPRUe-ZXSFUlG68xRIkIIrcxQzKBeXHPGS-YMyUVK8X40_Rq0nEIV618UvB7zUv1gNv58FEYNIjmMVH4wopDEtLIS1w2VSDqI1Sq6BKi1AeaQKa-19R5XUtNafL6voy94SGnMa21c9XUM9cwv8Z0rRDfqX-Xe3Hhy-k5cIHBSMRWJsrW1HazkTFJ8VLvS_iVo1-5uCLy-sOaNJ5OAPFNLCorH2ZKkfJjCqmMeQw==",
+      "title": "Exposed MongoDB instances still targeted in data extortion attacks",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE6k19MCQUPvHJtBIvT_7snwOIGkuxs3dKur_VgY-P6Dbgfz_I_tOYAvbLF4-OH--KLojKZyK7zafNQ2EMkgYuRMiv0q-XKz52kJarD5vB0viIiD5fj9NGyS0_JSQO58cAx4AQdZSA=",
+      "title": "SATURDAY | 31 JAN 2026 | Cybersecurity News",
+      "friendly_name": "Cybersecurity News",
+      "website": "youtube.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1485",
+      "name": "Data Destruction",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1490",
+      "name": "Inhibit System Recovery",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Do not expose databases directly to the internet. Restrict network access to only trusted application servers."
+    },
+    {
+      "id": "M1027",
+      "name": "Password Policies",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SPP",
+          "name": "Strong Password Policy",
+          "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy"
+        }
+      ],
+      "description": "Enforce strong authentication on all database instances."
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Apply the principle of least privilege. Application accounts should not have administrative rights like 'dropDatabase'."
+    },
+    {
+      "id": "M0930",
+      "name": "Data Backup",
+      "description": "Regularly back up and test the restoration of critical data to ensure recovery from a destructive attack.",
+      "domain": "ics"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "port",
+      "value": "27017",
+      "description": "Default port for MongoDB. Any inbound traffic from the internet to this port should be considered highly suspicious.",
+      "context": "Firewall logs, network vulnerability scans.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "db.dropDatabase()",
+      "description": "The command used within MongoDB to delete a database. Auditing for this command is crucial.",
+      "context": "MongoDB audit logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "Database named 'README' or 'RECOVER'",
+      "description": "Attackers commonly create a new database with a ransom note inside, using a name that the administrator is likely to see.",
+      "context": "Database management tools.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "MongoDB",
+    "Data Breach",
+    "Extortion",
+    "Misconfiguration",
+    "Database Security"
+  ],
+  "extract_datetime": "2026-02-01T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "people_affected_estimate": "Owners of at least 1,400 servers"
+  },
+  "pub_date": "2026-02-01",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-02-01T15:00:00.000Z",
+  "updatedAt": "2026-02-01T15:00:00.000Z"
+}

@@ -1,0 +1,223 @@
+{
+  "id": "4ae7780a-a852-4a88-babd-71ddc74e550c",
+  "slug": "roadtools-nation-state-tactics-in-the-cloud",
+  "headline": "Nation-State Actors Weaponize Open-Source ROADtools for Azure Cloud Attacks, Bypassing MFA and Persisting in Networks",
+  "title": "Paved With Intent: Unit 42 Details Nation-State Abuse of ROADtools for Cloud Intrusions",
+  "summary": "Nation-state threat actors, including Midnight Blizzard and Curious Serpens, are increasingly misusing ROADtools, a legitimate open-source framework for Azure and Entra ID security research, to conduct sophisticated cloud attacks. According to Unit 42, attackers leverage ROADtools to perform discovery, establish persistence, and evade defenses within target cloud environments. The tool's ability to interact with legitimate Microsoft APIs and customize its network traffic makes it difficult to detect. Key malicious uses include enumerating tenant information, manipulating OAuth tokens for session hijacking, and registering rogue devices in Entra ID to bypass Multi-Factor Authentication (MFA) and Conditional Access Policies. This report provides defenders with an overview of the tool's capabilities and actionable guidance for detecting and mitigating its malicious use.",
+  "full_report": "## Executive Summary\n**[ROADtools](https://github.com/dirkjanm/ROADtools)**, a publicly available open-source framework designed for **[Microsoft Azure](https://azure.microsoft.com/)** and **[Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)** security research, has been co-opted by nation-state threat actors as a powerful attack utility. Adversaries, including groups tracked as **[Midnight Blizzard](https://attack.mitre.org/groups/G0016/)** and **Curious Serpens**, are leveraging **ROADtools** for discovery, persistence, and defense evasion in cloud environments. The tool's ability to operate through legitimate **[Microsoft](https://www.microsoft.com/)** APIs and mimic normal traffic allows it to blend in and evade traditional detection methods. Key abuse cases involve registering rogue devices to bypass MFA, manipulating OAuth tokens to maintain access, and enumerating tenant configurations to identify further attack paths. This analysis from **[Unit 42](https://unit42.paloaltonetworks.com/)** breaks down how attackers misuse the tool and provides defenders with crucial detection and mitigation strategies.\n\n---\n\n## Threat Overview\nOriginally built for red teaming and security research, **ROADtools** provides a suite of functionalities for interacting with Azure's identity and authentication layers. Its misuse has been documented in several recent nation-state intrusions. Threat actors find it valuable because it allows them to automate complex interactions with Entra ID, often in ways that are indistinguishable from legitimate administrative activity.\n\nThe framework is composed of several key modules:\n- **roadrecon**: Used for discovery and enumeration. It gathers data about users, groups, applications, and devices in an Entra ID tenant and presents it in a navigable web interface.\n- **roadtx**: Facilitates OAuth token acquisition and exchange. Attackers use this to replay stolen tokens, register devices, and interact with cloud services as a legitimate user.\n- **roadlib**: The underlying library that handles API requests and authentication, providing the flexibility to script and customize attacks.\n\nBy using these modules, an attacker with initial credentials can quickly map out an entire cloud environment, escalate privileges, and establish durable persistence mechanisms that survive password resets.\n\n---\n\n## Technical Analysis\nAdversaries are leveraging **ROADtools** to execute specific MITRE ATT&CK techniques within cloud environments.\n\n### Persistence: Device Registration ([`T1098.005`](https://attack.mitre.org/techniques/T1098/005/))\nOne of the most impactful uses of **ROADtools** is for device registration. Using the `roadtx` module, an attacker with a user's credentials can register their own device within the target's Entra ID tenant. This registered device is then trusted by the organization. Depending on the configuration of Conditional Access Policies (CAPs), this can allow the attacker to bypass MFA requirements when authenticating from their rogue device. This creates a powerful and persistent form of access that is difficult to detect and revoke.\n\n```bash\n# Example of using roadtx to register a device (conceptual)\npython roadtx.py device -u victim@example.com -p 'password' --register-device --device-name 'Not-A-Threat-Actor-Laptop'\n```\n\n### Discovery: Cloud Account Enumeration ([`T1087.004`](https://attack.mitre.org/techniques/T1087/004/))\nThe `roadrecon` module is a powerful discovery tool. After authenticating, an attacker can use it to dump a wealth of information from the tenant via the **Microsoft Graph API**. This includes:\n- Users and their group memberships\n- Service principals and application registrations\n- Privileged roles and their assignments\n- Conditional Access Policies and their configurations\n\nThe tool stores this data in a local SQLite database, allowing the attacker to analyze it offline and identify high-value targets or misconfigurations for privilege escalation.\n\n### Defense Evasion: Mimicking Legitimate Traffic\n**ROADtools** is designed to use legitimate Microsoft APIs (like the Graph API and Azure device registration service). Furthermore, it allows attackers to customize HTTP request attributes, such as the `User-Agent` string. This makes it challenging to create simple, signature-based detection rules, as the malicious traffic can be made to look identical to traffic from legitimate scripts or administrative tools.\n\n---\n\n## Impact Assessment\nThe abuse of **ROADtools** poses a significant threat to organizations relying on Azure and Entra ID. A successful attack can lead to:\n- **Persistent Environment Access:** Attackers can maintain access even if initial credentials are changed.\n- **MFA Bypass:** Rogue device registration can undermine a cornerstone of modern identity security.\n- **Data Exfiltration:** Unfettered access to cloud resources can result in the theft of sensitive data from SharePoint, OneDrive, and other Microsoft 365 services.\n- **Privilege Escalation:** Attackers can use the discovered information to move laterally and gain administrative control over the cloud environment.\n\n---\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were provided in the source article.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for potential misuse of ROADtools by looking for the following patterns:\n\n| Type | Value/Pattern | Description & Context |\n|---|---|---|\n| user_agent | `roadlib/*` | **Hunt in web/API logs:** The default User-Agent for ROADtools contains this string. While it can be changed, many attackers may not bother. |\n| log_source | Entra ID Audit Logs | **Monitor for specific events:** Look for `Add registered owner to device` and `Add registered users to device` events, especially when initiated by non-administrative users or from unfamiliar locations/IPs. |\n| command_line_pattern | `python roadtx.py` or `python roadrecon.py` | **Hunt in endpoint logs:** If command-line logging is enabled on endpoints, searching for the execution of the tool's main Python scripts can be a high-fidelity indicator. |\n| api_endpoint | `urn:ms-drs:enterpriseregistration.windows.net` | **Monitor token requests:** Look for anomalous OAuth token requests for the Azure device registration service endpoint, especially when correlated with suspicious sign-in behavior. |\n\n---\n\n## Detection & Response\n- **Monitor Entra ID Logs:** The most critical data source is the Entra ID audit and sign-in logs. Forward these logs to a SIEM for analysis. Create alerts for:\n  - Device registrations from unexpected user accounts or IP ranges.\n  - High-volume enumeration activity against the Microsoft Graph API from a single account.\n  - Application consent grants for new or unfamiliar service principals.\n  - Use of `roadlib` or other Python-based User-Agent strings in sign-in logs.\n- **Analyze Token Usage:** Investigate the issuance and use of Primary Refresh Tokens (PRTs) and access tokens. Anomalies in token claims or usage patterns can indicate abuse.\n- **Utilize D3FEND Techniques:** Employ [`Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring) and [`User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis) to baseline normal activity and detect deviations that could indicate a compromised account being used with **ROADtools**.\n\n---\n\n## Mitigation\n- **Restrict Device Registration ([`M1018`](https://attack.mitre.org/mitigations/M1018/)):** Configure Entra ID to restrict which users can register or join devices. Ideally, this should be limited to administrators or managed through a controlled process like Autopilot. Set *'Users may join devices to Azure AD'* to 'None' or a specific group of administrators.\n- **Strengthen Conditional Access Policies ([`M1032`](https://attack.mitre.org/mitigations/M1032/)):** Ensure CAPs are robust. Require compliant or hybrid-joined devices for access to sensitive applications, which prevents attackers from using a simple registered device to bypass controls.\n- **Principle of Least Privilege ([`M1026`](https://attack.mitre.org/mitigations/M1026/)):** Limit the number of users with high-privilege roles. Use Privileged Identity Management (PIM) to provide just-in-time access to administrative roles.\n- **Monitor Application Consents:** Be vigilant about new applications or service principals being granted consent in the tenant. Attackers may use **ROADtools** to create a malicious application for persistence.",
+  "twitter_post": "🚨 Cloud Attack Alert: Nation-states are weaponizing the open-source ROADtools framework to attack Azure environments. Unit 42 breaks down how they achieve persistence & bypass MFA. #ROADtools #Azure #CloudSecurity #EntraID",
+  "meta_description": "Unit 42 report on the malicious use of the ROADtools framework by nation-state actors for discovery, persistence, and defense evasion in Azure and Entra ID environments.",
+  "category": [
+    "Cloud Security",
+    "Threat Intelligence",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "ROADtools",
+      "type": "product",
+      "url": "https://github.com/dirkjanm/ROADtools"
+    },
+    {
+      "name": "Midnight Blizzard",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0016/"
+    },
+    {
+      "name": "Curious Serpens",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Void Blizzard",
+      "type": "threat_actor"
+    },
+    {
+      "name": "UTA0355",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/"
+    },
+    {
+      "name": "Microsoft Azure",
+      "type": "product",
+      "url": "https://azure.microsoft.com/"
+    },
+    {
+      "name": "Microsoft Entra ID",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id"
+    },
+    {
+      "name": "Microsoft Graph API",
+      "type": "technology"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "MITRE",
+      "type": "security_organization",
+      "url": "https://www.mitre.org/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/roadtools-cloud-attacks/",
+      "title": "Paved With Intent: ROADtools and Nation-State Tactics in the Cloud",
+      "date": "2026-05-21",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1098.005",
+      "name": "Account Manipulation: Device Registration"
+    },
+    {
+      "id": "T1087.004",
+      "name": "Account Discovery: Cloud Account"
+    },
+    {
+      "id": "T1550.001",
+      "name": "Use Alternate Authentication Material: Application Access Token"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Valid Accounts: Cloud Accounts"
+    },
+    {
+      "id": "T1598.003",
+      "name": "Phish for Information: Credentials"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LFP",
+          "name": "Local File Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalFilePermissions"
+        }
+      ],
+      "description": "Strictly manage permissions for device registration in Entra ID. Limit this capability to a small group of administrators to prevent users from registering potentially malicious devices."
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforce strong, phishing-resistant MFA and combine it with Conditional Access Policies that require compliant or hybrid-joined devices, reducing the effectiveness of a simple device registration bypass."
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Implement the principle of least privilege and use tools like Privileged Identity Management (PIM) to ensure accounts only have necessary permissions on a just-in-time basis."
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DAM",
+          "name": "Domain Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring"
+        },
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Continuously audit Entra ID logs for suspicious sign-ins, device registrations, and application consents to detect anomalies indicative of ROADtools abuse."
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "user_account_pattern",
+      "value": "roadlib/*",
+      "description": "The default User-Agent string for the ROADtools framework. Its presence in Entra ID sign-in logs or web proxy logs is a strong indicator of the tool's usage.",
+      "context": "Entra ID sign-in logs, Web proxy logs, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "Add registered owner to device",
+      "description": "This Entra ID audit log event indicates a user has registered a device. A spike in these events or events from non-admin users could signal malicious ROADtools activity.",
+      "context": "Entra ID Audit Logs, SIEM",
+      "confidence": "medium"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "urn:ms-drs:enterpriseregistration.windows.net",
+      "description": "The Azure device registration service endpoint. Anomalous or frequent token requests for this resource may indicate an attacker attempting to register a rogue device using roadtx.",
+      "context": "Entra ID sign-in logs (filtered for token requests), Cloud Access Security Broker (CASB) logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "Microsoft Graph API Audit Logs",
+      "description": "High-volume read operations or enumeration from a single user account against the Graph API can be indicative of the roadrecon tool gathering tenant information.",
+      "context": "Microsoft Graph API activity logs, SIEM, User and Entity Behavior Analytics (UEBA)",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "ROADtools",
+    "Azure",
+    "Entra ID",
+    "Cloud Security",
+    "Midnight Blizzard",
+    "Nation-State",
+    "OAuth",
+    "MFA Bypass"
+  ],
+  "extract_datetime": "2026-05-22T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Government",
+      "Critical Infrastructure"
+    ]
+  },
+  "pub_date": "2026-05-22",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-05-22T15:00:00.000Z",
+  "updatedAt": "2026-05-22T15:00:00.000Z"
+}

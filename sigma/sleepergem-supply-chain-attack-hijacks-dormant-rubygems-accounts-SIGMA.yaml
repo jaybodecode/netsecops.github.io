@@ -1,0 +1,90 @@
+title: SleeperGem Setuid Root Shell Creation
+id: 5ca41a96-a147-476d-a3cb-e33b4e3721b8
+status: experimental
+description: Detects the use of chmod to set the SUID bit on /usr/local/sbin/ping6, a technique used by the SleeperGem backdoor for privilege escalation.
+references:
+  - https://thehackernews.com/2026/07/sleepergem-uses-three-malicious.html
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1548.001
+  - attack.privilege_escalation
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/chmod'
+    CommandLine|contains|all:
+      - 'u+s'
+      - '/usr/local/sbin/ping6'
+  condition: selection
+---
+title: SleeperGem Systemd User Service Persistence
+id: 640a61e5-69a1-44dc-8aa2-71b00e0c471a
+status: experimental
+description: Detects the creation of a new service file in a user's systemd directory, a persistence technique used by the SleeperGem backdoor.
+references:
+  - https://thehackernews.com/2026/07/sleepergem-uses-three-malicious.html
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1543.002
+  - attack.persistence
+level: medium
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|contains: '/.config/systemd/user/'
+    TargetFilename|endswith: '.service'
+  condition: selection
+---
+title: SleeperGem Cron Job Persistence
+id: c6b5a493-82d1-4c0b-9a8b-7c6d5e4f3a2b
+status: experimental
+description: Detects suspicious modification of user crontab files, a persistence technique used by the SleeperGem backdoor.
+references:
+  - https://thehackernews.com/2026/07/sleepergem-uses-three-malicious.html
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1053.003
+  - attack.persistence
+level: medium
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/crontab'
+  filter_legit:
+    CommandLine|contains:
+      - ' -l'
+      - ' -r'
+  condition: selection and not filter_legit
+---
+title: SleeperGem Malicious RubyGem Installation
+id: 2e0d7915-77c5-40a6-ba3d-fad198cebbf9
+status: experimental
+description: Detects the installation of the malicious 'git_credential_manager' Ruby gem, a component of the SleeperGem supply chain attack.
+references:
+  - https://thehackernews.com/2026/07/sleepergem-uses-three-malicious.html
+author: cyber.netsecops.io
+date: 2026-07-20
+tags:
+  - attack.t1195.001
+  - attack.initial_access
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/gem'
+    CommandLine|contains|all:
+      - 'install'
+      - 'git_credential_manager'
+  condition: selection

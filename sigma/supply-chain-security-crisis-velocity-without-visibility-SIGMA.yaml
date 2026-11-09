@@ -1,0 +1,33 @@
+title: Anomalous Outbound Connection from CI/CD Environment
+id: 8c3a2b1f-7d9e-4a6f-1c8b-0e1f2a3b4c9d
+status: experimental
+description: Detects outbound network connections from common CI/CD build agent processes. This could indicate a compromised dependency or build tool exfiltrating data or fetching a next-stage payload.
+references:
+  - https://www.securityweek.com/supply-chain-security-crisis-too-many-vulnerabilities-too-little-visibility/
+author: cyber.netsecops.io
+date: 2026-05-21
+tags:
+  - attack.t1195.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\jenkins.exe'
+      - '\gitlab-runner.exe'
+      - '\actions-runner.exe'
+      - '\build-agent.exe'
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      - 127.0.0.0/8
+  condition: selection and not filter_local
+falsepositives:
+  - Legitimate connections to package repositories (npm, PyPI, Maven), code repositories (GitHub, GitLab), or other external resources required by the build process.
+  - Requires tuning with an allowlist of known-good destinations.

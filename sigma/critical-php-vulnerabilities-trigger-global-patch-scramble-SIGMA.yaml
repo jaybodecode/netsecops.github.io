@@ -1,0 +1,62 @@
+title: Suspicious Web Server Child Process
+id: 2b8a1c3d-f4e5-4b6a-8c7d-9e0f1a2b3c4d
+status: experimental
+description: Detects suspicious child processes such as shells or downloaders being spawned by common web server processes, which can indicate post-exploitation activity following an RCE vulnerability like PHP2Shell.
+references:
+  - https://www.wiz.io/blog/php2shell-php-rce
+author: cyber.netsecops.io
+date: 2026-10-22
+tags:
+  - attack.t1059
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '/apache2'
+      - '/nginx'
+      - '/php-fpm'
+  selection_child:
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+      - '/curl'
+      - '/wget'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate web applications that are designed to call shell scripts or downloaders.
+---
+title: Potential Web Shell Creation in Web Root
+id: 5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b
+status: experimental
+description: Monitors for the creation of new PHP files in common web root directories. This can indicate the deployment of a web shell for persistence after successful exploitation.
+references:
+  - https://www.wiz.io/blog/php2shell-php-rce
+author: cyber.netsecops.io
+date: 2026-10-22
+tags:
+  - attack.t1505.003
+  - attack.persistence
+level: medium
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|startswith:
+      - '/var/www/'
+      - '/srv/www/'
+      - '/usr/share/nginx/html/'
+    TargetFilename|endswith: '.php'
+  filter_legit_process:
+    Image|endswith:
+      - '/dpkg'
+      - '/apt'
+      - '/yum'
+      - '/rpm'
+  condition: selection and not filter_legit_process
+falsepositives:
+  - Legitimate deployment of new PHP files by administrators or automated deployment tools.

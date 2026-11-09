@@ -1,0 +1,82 @@
+title: Anomalous IT to OT Network Traffic
+id: e1c2a3b4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: >
+  Detects network traffic originating from a corporate IT network segment and destined for an Operational Technology (OT) network segment. This type of traffic is highly suspicious and violates the network segmentation principles outlined in CISA's CI Fortify guidance. Organizations should define their specific IT and OT IP ranges in this rule.
+references:
+  - https://www.cisa.gov/resources-tools/resources/ci-fortify-advice-isolating-vital-systems
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1599
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+    dst_ip:
+      - '192.168.1.0/24'
+  filter_dmz:
+    dst_ip:
+      - '192.168.100.0/24'
+  condition: selection and not filter_dmz
+---
+title: RDP Traffic from IT to OT Network Segment
+id: f2d3b4c5-e6f7-4a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: >
+  Detects Remote Desktop Protocol (RDP) traffic originating from a corporate IT network segment and destined for an Operational Technology (OT) network segment. Uncontrolled RDP access is a common vector for lateral movement into OT environments and is advised against in CISA's CI Fortify guidance.
+references:
+  - https://www.cisa.gov/resources-tools/resources/ci-fortify-advice-isolating-vital-systems
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1021.001
+  - attack.lateral_movement
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 3389
+    SourceIp:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+    DestinationIp:
+      - '192.168.1.0/24'
+  filter_jumphost:
+    SourceIp:
+      - '10.100.1.50'
+  condition: selection and not filter_jumphost
+---
+title: Outbound Internet Connection from OT Network
+id: 337031f3-61a0-48a1-a766-e6632b23921c
+status: experimental
+description: >
+  Detects any outbound connection from the Operational Technology (OT) network to a public IP address. According to CISA's CI Fortify guidance, OT networks should be isolated from the internet, and any required remote access should be strictly controlled via secure jump hosts originating from the IT network.
+references:
+  - https://www.cisa.gov/resources-tools/resources/ci-fortify-advice-isolating-vital-systems
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip:
+      - '192.168.1.0/24'
+  filter_private:
+    dst_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter_private

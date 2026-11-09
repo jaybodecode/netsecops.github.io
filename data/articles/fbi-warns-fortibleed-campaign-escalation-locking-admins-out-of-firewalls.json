@@ -1,0 +1,237 @@
+{
+  "id": "bff808b3-9be9-4118-8a46-a07af0385151",
+  "slug": "fbi-warns-fortibleed-campaign-escalation-locking-admins-out-of-firewalls",
+  "headline": "FBI Warns of \"FortiBleed\" Campaign Locking Admins Out of Firewalls",
+  "title": "FBI Warns of Escalating FortiBleed Credential Harvesting Campaign",
+  "summary": "The FBI and U.S. Secret Service issued a joint advisory on October 6, 2026, warning of the escalating \"FortiBleed\" campaign. This global operation targets Fortinet FortiGate firewalls and SSL VPNs, not by exploiting a vulnerability, but by using leaked or brute-forced credentials. Attackers are using a custom tool to intercept credentials, crack them offline, and then lock legitimate administrators out of their own systems. The compromised access is then sold to ransomware affiliates, including the INC, Lynx, and Payload groups, posing a severe threat to critical infrastructure.",
+  "full_report": "## Executive Summary\nOn October 6, 2026, the **[FBI](https://www.fbi.gov)** and **[U.S. Secret Service](https://www.secretservice.gov/)** issued a joint Cybersecurity Advisory (JCSA-20261006-01) regarding an escalating global campaign dubbed \"FortiBleed.\" This operation targets internet-exposed **[Fortinet](https://www.fortinet.com/)** FortiGate firewalls and SSL VPN gateways. Threat actors are harvesting credentials, locking out legitimate administrators, and selling the access to ransomware affiliates. The attack does not leverage a specific CVE but relies on credential stuffing and brute-force attacks against devices with poor password hygiene and no multi-factor authentication. With over 86,000 devices reportedly compromised worldwide, organizations using Fortinet products are urged to implement phishing-resistant MFA and reset all credentials immediately to mitigate the high risk of ransomware deployment.\n\n---\n\n## Threat Overview\nThe \"FortiBleed\" campaign represents a significant threat to organizations relying on Fortinet security appliances. Initial access brokers are systematically targeting these devices to harvest credentials. The campaign's tactics have evolved; attackers are now actively changing passwords or disabling legitimate administrator accounts, effectively locking organizations out of their own perimeter security devices. This prevents IT staff from responding to the intrusion and makes remediation significantly more complex than a simple password reset.\n\nThe advisory confirms that access gained through FortiBleed is being sold on dark web forums to ransomware affiliates. The **[INC](https://malpedia.caad.fkie.fraunhofer.de/details/win.inc_ransom)**, Lynx, and Payload ransomware groups have been observed leveraging this access for initial entry into victim networks. The campaign's reach is global, with security firm SOCRadar reporting over 86,644 compromised devices across 194 countries, affecting all 16 U.S. critical infrastructure sectors.\n\n## Technical Analysis\nThe attack chain does not rely on a software vulnerability. Instead, it exploits weak security configurations. The primary techniques observed are:\n1.  **Credential Stuffing & Brute-Forcing:** Attackers use leaked credentials or brute-force methods against FortiGate management interfaces and SSL VPN portals that lack multi-factor authentication. This is mapped to MITRE ATT&CK [`T1110 - Brute Force`](https://attack.mitre.org/techniques/T1110/).\n2.  **Credential Interception:** A custom Golang-based tool, described as a \"FortiGate sniffer,\" is used to intercept authentication traffic and exfiltrate password hashes.\n3.  **Offline Password Cracking:** The exfiltrated hashes are cracked offline using GPU-accelerated clusters, enabling attackers to recover plaintext passwords.\n4.  **Valid Account Usage:** Once credentials are confirmed, attackers log in as legitimate administrators to establish persistence, lock out other users, and prepare the environment for sale. This corresponds to [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/).\n5.  **Account Manipulation:** Attackers disable or change passwords for legitimate accounts, a form of defense evasion and impact mapped to [`T1098 - Account Manipulation`](https://attack.mitre.org/techniques/T1098/).\n\n## Impact Assessment\nThe operational impact of this campaign is severe. Being locked out of a primary firewall cripples an organization's ability to manage its network security, investigate the breach, and evict the threat actor. This provides the attacker with an uncontested foothold within the network. The subsequent sale of this access to sophisticated ransomware groups like INC means that the initial intrusion is often a precursor to a full-blown ransomware attack, leading to data encryption, exfiltration, and significant financial and operational disruption. The targeting of all 16 critical infrastructure sectors, including energy, healthcare, and government, elevates this campaign to a national security concern.\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns which could indicate related activity:\n| Type | Value | Description |\n|---|---|---|\n| log_source | FortiGate Event Logs | Monitor for anomalous login patterns, especially from unfamiliar IP addresses or geolocations. |\n| command_line_pattern | `diagnose sniffer packet` | While a legitimate diagnostic tool, unexpected or persistent use could indicate traffic sniffing attempts. |\n| process_name | (Unusual Golang binaries) | Monitor for unrecognized processes running on firewall appliances, particularly those compiled with Go. |\n| event_id | FortiGate Event ID `32002` | `User login failed`. A high volume of this event from a single source IP may indicate a brute-force attempt. |\n| event_id | FortiGate Event ID `01004` | `Admin user password changed`. Any unexpected instance of this event should be investigated immediately. |\n\n## Detection & Response\nDefenders should proactively hunt for signs of compromise. \n1.  **Log Analysis:** Continuously analyze FortiGate authentication logs for brute-force attempts (many failed logins followed by a success from the same IP), logins from anomalous geolocations, and password changes outside of normal change windows. Utilize SIEM rules to automate this detection. This aligns with D3FEND's [`User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis).\n2.  **Session Review:** Regularly audit and terminate any suspicious or long-running administrative and VPN sessions.\n3.  **Incident Response:** If a compromise is suspected, immediately isolate the affected FortiGate device from the network to prevent further lateral movement. Preserve logs, memory dumps, and disk images for forensic analysis. Reset *all* credentials associated with the device, including service accounts, API keys, and local user accounts.\n\n## Mitigation\nRemediation focuses on hardening credential security and access controls.\n- **Multi-Factor Authentication (MFA):** This is the most critical mitigation. Enforce phishing-resistant MFA (e.g., FIDO2) for all administrative and SSL VPN user accounts. This is a direct countermeasure to credential stuffing and brute-force attacks. This aligns with D3FEND's [`Multi-factor Authentication`](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication).\n- **Strong Password Policies:** Enforce the use of long, complex, and unique passwords for all accounts. This is covered by D3FEND's [`Strong Password Policy`](https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy).\n- **Restrict Access:** Limit access to the FortiGate management interface to a small set of trusted IP addresses on a dedicated management network. This hardening measure aligns with D3FEND's [`Network Isolation`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation).\n- **Regular Audits:** Routinely audit administrative accounts, removing any that are dormant or no longer necessary.",
+  "twitter_post": "FBI & Secret Service warn of \"FortiBleed\" campaign targeting FortiGate firewalls. Attackers use stolen creds to lock out admins & sell access to ransomware groups. No CVE involved; weak passwords are the vector. #FortiBleed #CyberSecurity #Ransomware",
+  "meta_description": "The FBI and Secret Service issue a joint advisory on the 'FortiBleed' campaign, where attackers target Fortinet devices to harvest credentials and lock out administrators.",
+  "category": [
+    "Cyberattack",
+    "Threat Actor",
+    "Ransomware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "FBI",
+      "type": "government_agency",
+      "url": "https://www.fbi.gov"
+    },
+    {
+      "name": "U.S. Secret Service",
+      "type": "government_agency",
+      "url": "https://www.secretservice.gov/"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    },
+    {
+      "name": "FortiGate",
+      "type": "product"
+    },
+    {
+      "name": "INC",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.inc_ransom"
+    },
+    {
+      "name": "Lynx",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Payload",
+      "type": "threat_actor"
+    },
+    {
+      "name": "SOCRadar",
+      "type": "security_organization"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cybersecuritydive.com/news/fbi-fortibleed-credential-harvesting-attacks/832366/",
+      "title": "FBI warns that FortiBleed credential-harvesting attacks are locking out firewall users",
+      "date": "2026-10-07",
+      "friendly_name": "Cybersecurity Dive",
+      "website": "cybersecuritydive.com"
+    },
+    {
+      "url": "https://securityboulevard.com/2026/10/fortibleed-safebreach-coverage-for-joint-cybersecurity-advisory-jcsa-20261006-01/",
+      "title": "FortiBleed: SafeBreach Coverage for Joint Cybersecurity Advisory JCSA-20261006-01",
+      "date": "2026-10-07",
+      "friendly_name": "Security Boulevard",
+      "website": "securityboulevard.com"
+    },
+    {
+      "url": "https://cyberscoop.com/fortibleed-fortinet-vpn-ransomware-fbi-warning/",
+      "title": "FortiBleed is an ongoing threat that can lead to ransomware, feds warn",
+      "date": "2026-10-06",
+      "friendly_name": "CyberScoop",
+      "website": "cyberscoop.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-10-06T00:00:00Z",
+      "summary": "The FBI and U.S. Secret Service issue a joint advisory (JCSA-20261006-01) on the 'FortiBleed' campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1110",
+      "name": "Brute Force",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1098",
+      "name": "Account Manipulation",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Enforcing MFA on all administrative and VPN accounts is the most effective control against credential stuffing and brute-force attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1027",
+      "name": "Password Policies",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SPP",
+          "name": "Strong Password Policy",
+          "url": "https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy"
+        }
+      ],
+      "description": "Implementing and enforcing strong, unique passwords makes brute-force and password reuse attacks more difficult.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Restricting management interface access to a trusted IP range or dedicated management network reduces the attack surface.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Regularly auditing authentication logs helps in the early detection of brute-force attempts and anomalous account activity.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "To specifically counter the 'FortiBleed' campaign, organizations must immediately deploy phishing-resistant multi-factor authentication across all FortiGate administrative interfaces and SSL-VPN portals. This is not just a recommendation but a critical, urgent requirement. Given that attackers are using credential stuffing and brute-force, MFA acts as a direct blocking mechanism. Prioritize deployment for all accounts with administrative privileges and any user accounts that provide broad network access via VPN. Use hardware tokens or authenticator apps (FIDO2/WebAuthn) over less secure methods like SMS. This directly hardens the authentication process for `sslvpnd` and other Fortinet daemons targeted by the attackers, rendering stolen or cracked passwords insufficient for gaining access.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "In the context of the FortiBleed threat, Network Isolation should be applied to restrict all access to the FortiGate management plane. The administrative interface should never be exposed to the public internet. Create strict firewall rules that only allow access from a dedicated, hardened management VLAN or a small, static set of IP addresses corresponding to security team jump boxes. This significantly reduces the attack surface available to the initial access brokers scanning the internet for vulnerable Fortinet devices. By preventing the attackers from even reaching the login page, their brute-force and credential stuffing tools are rendered ineffective. This is a fundamental hardening practice that provides a powerful layer of defense before authentication even occurs.",
+      "mitre_mitigation_id": "M1035"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "FortiGate Event Logs",
+      "description": "Primary source for detecting anomalous login patterns, brute-force attempts, and unauthorized administrative actions on Fortinet devices.",
+      "context": "SIEM, Log Management Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "diagnose sniffer packet",
+      "description": "Legitimate FortiOS command for packet sniffing. Its unexpected or persistent use by an administrator account could indicate malicious traffic interception.",
+      "context": "Audit logs, Command-line logging",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "32002",
+      "description": "FortiGate Event ID for 'User login failed'. A high volume from a single source IP is a strong indicator of a brute-force or password spraying attack.",
+      "context": "FortiGate Authentication Logs",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "01004",
+      "description": "FortiGate Event ID for 'Admin user password changed'. Any occurrence of this event that does not correlate with a scheduled and authorized administrative action requires immediate investigation.",
+      "context": "FortiGate System Event Logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "credential harvesting",
+    "brute force",
+    "initial access broker",
+    "firewall security",
+    "Fortinet",
+    "JCSA"
+  ],
+  "extract_datetime": "2026-10-07T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Energy",
+      "Healthcare",
+      "Government",
+      "Telecommunications",
+      "Critical Infrastructure",
+      "Finance",
+      "Manufacturing",
+      "Transportation"
+    ],
+    "other_affected": [
+      "All 16 U.S. critical infrastructure sectors"
+    ]
+  },
+  "pub_date": "2026-10-07",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-10-07T15:00:00.000Z",
+  "updatedAt": "2026-10-07T15:00:00.000Z"
+}

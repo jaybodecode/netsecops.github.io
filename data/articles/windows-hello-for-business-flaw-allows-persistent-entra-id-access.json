@@ -1,0 +1,179 @@
+{
+  "id": "ddf7a2c4-58dd-49ee-845b-6208ec885442",
+  "slug": "windows-hello-for-business-flaw-allows-persistent-entra-id-access",
+  "headline": "Windows Hello Flaw Allows Persistent Entra ID Access",
+  "title": "Windows Hello Flaw Enables Entra ID Persistence",
+  "summary": "A security researcher has disclosed a method for malware to abuse Windows Hello for Business (WHfB) to gain persistent access to a user's Microsoft Entra ID account. The technique allows malware with user-level privileges to programmatically use the hardware-bound WHfB key to obtain a primary refresh token (PRT) without needing admin rights, a PIN, or biometrics. This challenges the security assumptions of hardware-bound credentials, as it allows malware on a compromised endpoint to effectively become the user in the cloud.",
+  "full_report": "## Executive Summary\n\nSecurity researcher Dirk-jan Mollema has detailed and released proof-of-concept (PoC) scripts demonstrating a significant design weakness in **[Windows Hello for Business (WHfB)](https://learn.microsoft.com/en-us/windows/security/identity-protection/windows-hello-for-business/hello-overview)**. The technique allows malware, running with standard user-level privileges on a compromised Windows endpoint, to silently use the victim's WHfB key. This action allows the malware to authenticate to **[Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)** and acquire a Primary Refresh Token (PRT), granting it long-term, persistent access to the user's cloud resources. Crucially, this process requires no administrator privileges and bypasses all user interaction, including the need for a PIN or biometric authentication. **[Microsoft](https://www.microsoft.com/security)** has reportedly acknowledged the behavior as part of the current design and has not issued a CVE. This disclosure fundamentally changes the threat model for WHfB, indicating that any code execution on an endpoint should be treated as a full identity compromise.\n\n---\n\n## Vulnerability Details\n\nThis is not a traditional vulnerability with a simple patch, but rather an exploitation of the intended functionality of WHfB in a post-compromise scenario.\n\n- **The Core Issue:** WHfB is designed to allow applications running in the user's session to seamlessly use the WHfB credential for authentication. The PoC demonstrates that malicious code running in the same session can do this as well.\n- **The Mechanism:** The malware programmatically calls the necessary Windows APIs to generate an assertion using the hardware-bound key stored in the TPM. This assertion is then used to request a PRT from **Entra ID**.\n- **Bypassed Protections:** The attack does not require the user's PIN or biometric gesture. It does not require administrator rights. It does not export the key from the TPM. It simply *uses* the key in place, as the logged-on user.\n- **The Outcome:** The attacker obtains a PRT, which is a long-lived token that can be used to silently acquire access tokens for various cloud services (Office 365, Azure, etc.) linked to the user's **Entra ID** account.\n\n---\n\n## Affected Systems\n\n- Any organization using **Windows Hello for Business** for authentication against **Microsoft Entra ID**.\n- The endpoint must be compromised with malware running in the context of an active, signed-in user.\n\n---\n\n## Exploitation Status\n\nThe researcher, Dirk-jan Mollema, has released PoC scripts (`fido_assertion.ps1` and `hellopoc.ps1`) as part of the ROADtools repository, making the technique publicly available. While there is no evidence of widespread in-the-wild exploitation yet, the release of the PoC means that threat actors will likely integrate this technique into their malware toolsets soon.\n\n---\n\n## Technical Analysis\n\nThe attack challenges a core assumption of phishing-resistant, hardware-bound credentials: that they protect user identity even if the user is phished. This technique shows that if the endpoint itself is compromised, the hardware-bound credential can be turned against the user.\n\n### MITRE ATT&CK Mapping\n\n- **[`T1555.003 - Credentials from Web Browsers`](https://attack.mitre.org/techniques/T1555/003/):** While not from a browser, this is conceptually similar to stealing credentials from a local store.\n- **[`T1134.002 - Create Process with Token`](https://attack.mitre.org/techniques/T1134/002/):** The malware effectively uses the user's identity token to perform actions on their behalf.\n- **[`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/):** The ultimate goal and result of the attack is stealing the Primary Refresh Token (PRT).\n- **[`T1621 - Stored Data Manipulation`](https://attack.mitre.org/techniques/T1621/):** The technique abuses the stored WHfB key in the TPM.\n\n> This attack highlights the paradigm shift from 'stealing the key' to 'using the key in place'. The key never leaves the TPM, making traditional credential theft detection methods ineffective.\n\n---\n\n## Impact Assessment\n\nThe impact is significant because it undermines the perceived security of a flagship phishing-resistant authentication method.\n\n- **Full Identity Compromise:** An attacker with code execution on an endpoint can gain full, persistent access to the user's cloud identity and all associated resources.\n- **Stealth and Persistence:** Because the PRT is a legitimate token, subsequent activity by the attacker using it may not be flagged as suspicious by basic security monitoring.\n- **Bypasses MFA:** The technique completely bypasses the need for MFA, as it generates the primary token that is the foundation of the user's authenticated session.\n\nThis means that endpoint security is more critical than ever. If an attacker can run code on your machine, WHfB cannot save your cloud identity.\n\n---\n\n## IOCs — Directly from Articles\n\nThe PoC scripts `fido_assertion.ps1` and `hellopoc.ps1` are indicators of this specific tool being used.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nThe researcher provided a key hunting hint:\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | Entra ID Sign-in Logs | Look for WHfB sign-in events that have an **empty or null device ID**. This can indicate the token was generated programmatically without the full device context. | Microsoft Entra ID Sign-in Logs | medium |\n| event_id | New Device Registration | Monitor for unexpected new device registrations in Entra ID, as an attacker might use the stolen PRT to register their own machine. | Microsoft Entra ID Audit Logs | medium |\n\n**Note:** The researcher cautions that legitimate sessions from incognito browsers or non-SSO browser sessions can also produce sign-ins with an empty device ID, so this indicator may have false positives and requires correlation.\n\n---\n\n## Detection & Response\n\nDetection must focus on the initial endpoint compromise and anomalies in the authentication logs.\n\n### Detection\n1.  **EDR/XDR:** The primary detection method is a strong Endpoint Detection and Response solution that can prevent or detect the initial malware execution. This is the 'left of boom' opportunity.\n2.  **Entra ID Log Analysis:** Implement the hunting query mentioned above to look for WHfB sign-ins with an empty device ID. Correlate these events with other suspicious activity, such as logins from unfamiliar IPs or impossible travel scenarios. This aligns with D3FEND's **[`User Geolocation Logon Pattern Analysis (D3-UGLPA)`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis)**.\n3.  **Monitor for PoC Tools:** Create detection rules in your EDR for the specific PoC script names (`fido_assertion.ps1`, `hellopoc.ps1`) and their unique contents/behaviors.\n\n### Response\n- If a compromise is detected, the response must include both the endpoint and the cloud identity. Revoke all refresh tokens for the user in **Entra ID** and force a password reset, in addition to isolating and re-imaging the compromised endpoint.\n\n---\n\n## Mitigation\n\nSince this is a design feature, mitigation focuses on preventing the prerequisites for the attack.\n\n1.  **Endpoint Security:** The number one mitigation is to prevent the initial endpoint compromise. This includes using a modern EDR/XDR solution, application whitelisting, and aggressive attack surface reduction rules.\n2.  **Conditional Access Policies:** Use **Entra ID** Conditional Access to enforce stricter controls. For example, require logins to sensitive applications to come from compliant, hybrid-joined devices. This would make a stolen PRT less useful if it's used from an attacker's machine. This is a form of **[`System Configuration Permissions (D3-SCP)`](https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions)**.\n3.  **Assume Compromise:** Treat any security alert from your EDR on a WHfB-enabled machine as a potential full identity compromise and trigger response playbooks for both the endpoint and the cloud identity.",
+  "twitter_post": "New Attack Vector: Malware can abuse a design feature in Windows Hello for Business to silently steal Entra ID tokens for persistent access, bypassing PIN/biometrics. Endpoint compromise now equals full identity compromise. #Windows #CyberSecurity #EntraID",
+  "meta_description": "A researcher has shown how malware can abuse Windows Hello for Business to gain persistent access to Microsoft Entra ID without needing admin rights or a PIN.",
+  "category": [
+    "Vulnerability",
+    "Threat Intelligence",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Windows Hello for Business",
+      "type": "product",
+      "url": "https://learn.microsoft.com/en-us/windows/security/identity-protection/windows-hello-for-business/hello-overview"
+    },
+    {
+      "name": "Microsoft Entra ID",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id"
+    },
+    {
+      "name": "Dirk-jan Mollema",
+      "type": "person"
+    },
+    {
+      "name": "ROADtools",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/08/malware-can-abuse-windows-hello-for.html",
+      "title": "Malware Can Abuse Windows Hello for Business Keys for Persistent Entra ID Access",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=GHYXM5kqWmE",
+      "title": "Cyber Security News for August 7 2026 - Daily DefSec Brief",
+      "friendly_name": "YouTube",
+      "website": "youtube.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-08-06",
+      "summary": "The technique and proof-of-concept scripts are publicly disclosed by the security researcher."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token"
+    },
+    {
+      "id": "T1134.002",
+      "name": "Create Process with Token"
+    },
+    {
+      "id": "T1621",
+      "name": "Stored Data Manipulation"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "description": "The primary mitigation is preventing the initial malware execution on the endpoint through EDR/XDR and application control.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "description": "Use Entra ID Conditional Access policies to require compliant or hybrid-joined devices, limiting the usefulness of a stolen token on an attacker's machine.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Audit Entra ID sign-in logs for the specific anomaly of WHfB logins with a null device ID.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "The most effective way to prevent the Windows Hello for Business abuse is to stop the prerequisite: initial malware execution. A robust endpoint security posture is paramount. Implementing Executable Denylisting (D3-EDL) or, more effectively, allowlisting (D3-EAL), can prevent unauthorized code from running in the first place. By using technologies like AppLocker or Windows Defender Application Control, administrators can define a strict set of applications and scripts that are permitted to run. Any malware attempting to execute, including the PowerShell scripts needed to perform this attack, would be blocked. This 'left of boom' approach is the most effective mitigation, as it addresses the root cause (endpoint compromise) rather than trying to detect the nuanced abuse of a legitimate authentication feature.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-UGLPA",
+      "technique_name": "User Geolocation Logon Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis",
+      "recommendation": "To detect the malicious use of a stolen Primary Refresh Token (PRT), security teams must leverage User Geolocation Logon Pattern Analysis (D3-UGLPA), a core feature of Microsoft Entra ID Protection and other UEBA tools. While the initial token generation happens on the compromised endpoint, the attacker will likely use the stolen PRT from their own infrastructure. This will create an 'impossible travel' scenario. For example, the legitimate user logs in from their corporate office in New York, and minutes later, the stolen PRT is used to access SharePoint from an IP address in Eastern Europe. This should trigger a high-risk alert. Correlating the WHfB sign-in with a null device ID with a subsequent impossible travel alert provides a very high-confidence indicator of this specific attack.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-SCP",
+      "technique_name": "System Configuration Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:SystemConfigurationPermissions",
+      "recommendation": "Organizations can limit the blast radius of a stolen PRT by implementing strict System Configuration Permissions (D3-SCP) through Microsoft Entra Conditional Access policies. A critical policy to implement is to require sensitive applications to be accessed only from 'compliant' or 'hybrid-joined' devices. This means that even if an attacker steals a PRT and tries to use it from their own unmanaged machine, Conditional Access will block the login because the attacker's device does not meet the policy requirements. This control effectively tethers the user's identity to a trusted device, making the stolen token far less powerful and preventing the attacker from accessing most corporate resources.",
+      "mitre_mitigation_id": "M1024"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "fido_assertion.ps1"
+    },
+    {
+      "type": "file_name",
+      "value": "hellopoc.ps1"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Entra ID Sign-in Logs",
+      "description": "Look for Windows Hello for Business sign-in events that have an empty or null device ID. This can indicate the token was generated programmatically without the full device context.",
+      "context": "Microsoft Entra ID Sign-in Logs, Microsoft Sentinel",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "New Device Registration in Entra ID",
+      "description": "Monitor for unexpected new device registrations in Entra ID, as an attacker might use the stolen Primary Refresh Token (PRT) to register their own machine to establish further persistence.",
+      "context": "Microsoft Entra ID Audit Logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "powershell.exe -File fido_assertion.ps1",
+      "description": "Execution of the specific proof-of-concept scripts released by the researcher.",
+      "context": "EDR, Command line logging (Event ID 4688)",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Windows Hello for Business",
+    "Entra ID",
+    "Microsoft",
+    "Vulnerability",
+    "Persistence",
+    "PRT",
+    "Authentication"
+  ],
+  "extract_datetime": "2026-08-08T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government"
+    ],
+    "other_affected": [
+      "cloud service customers"
+    ]
+  },
+  "pub_date": "2026-08-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-08-08T15:00:00.000Z",
+  "updatedAt": "2026-08-08T15:00:00.000Z"
+}

@@ -1,0 +1,81 @@
+title: Suspicious Email Targeting UK Law Enforcement Post-PNLD Breach
+id: f1a2b3c4-d5e6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects suspicious emails targeting UK law enforcement personnel that may leverage information from the PNLD breach.
+  This rule looks for emails with subjects referencing internal police matters or using specific ranks, sent to .police.uk or other government domains, which could indicate a targeted spear-phishing attempt.
+references:
+  - https://thehackernews.com/2026/08/pnld-breach-exposes-uk-police-and.html
+author: cyber.netsecops.io
+date: 2026-08-03
+tags:
+  - attack.t1566.002
+level: medium
+logsource:
+  category: email
+detection:
+  selection_keywords:
+    Subject|contains:
+      - 'Internal Memo'
+      - 'Urgent Update'
+      - 'Security Alert'
+      - 'Case File'
+      - 'Chief Constable'
+      - 'Superintendent'
+      - 'Inspector'
+  selection_recipient:
+    Recipient|endswith:
+      - '.police.uk'
+      - '.pnn.police.uk'
+      - '.gov.uk'
+  condition: all of selection_*
+---
+title: Anomalous Microsoft Power Platform Data Access
+id: a2b3c4d5-e6f7-4b8c-9d0e-1f2a3b4c5d6e
+status: experimental
+description: >
+  Detects anomalous data access patterns in Microsoft Power Platform or Dataverse audit logs, which could indicate a misconfiguration being exploited, similar to the potential vector in the PNLD breach. This rule looks for data read operations by an anonymous or external user.
+references:
+  - https://thehackernews.com/2026/08/pnld-breach-exposes-uk-police-and.html
+author: cyber.netsecops.io
+date: 2026-08-03
+tags:
+  - attack.t1530
+  - attack.t1190
+level: medium
+logsource:
+  product: m365
+  service: powerplatform
+detection:
+  selection:
+    Operation: 'RetrieveMultiple'
+    UserId|contains:
+      - 'public'
+      - 'anonymous'
+      - '#EXT#'
+  condition: selection
+---
+title: Anomalous Network Connection to Power Apps Content Domain
+id: cfdbc82b-be83-4540-819c-e9722dd25a81
+status: experimental
+description: >
+  Detects anomalous network connections to content.powerapps.com from unusual sources or outside of expected business patterns, which could indicate reconnaissance or exploitation of a Power Apps portal. This rule flags non-browser user agents.
+references:
+  - https://thehackernews.com/2026/08/pnld-breach-exposes-uk-police-and.html
+author: cyber.netsecops.io
+date: 2026-08-03
+tags:
+  - attack.t1190
+level: low
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host: 'content.powerapps.com'
+  filter:
+    c-useragent|startswith:
+      - 'Mozilla/'
+      - 'Chrome/'
+      - 'Safari/'
+      - 'Edge/'
+  condition: selection and not filter

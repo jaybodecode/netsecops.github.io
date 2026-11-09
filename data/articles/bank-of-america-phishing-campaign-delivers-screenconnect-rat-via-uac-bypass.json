@@ -1,0 +1,200 @@
+{
+  "id": "bb291350-4900-48e0-a066-bd511a9a2611",
+  "slug": "bank-of-america-phishing-campaign-delivers-screenconnect-rat-via-uac-bypass",
+  "headline": "Bank of America Phishing Delivers ScreenConnect RAT via UAC Bypass",
+  "title": "Bank of America Phishing Campaign Uses ScreenConnect",
+  "summary": "A phishing campaign impersonating Bank of America is distributing a disguised version of the ScreenConnect remote access tool. According to Huntress researchers, the attack uses social engineering to lure victims into downloading a malicious installer. The payload installs the legitimate ScreenConnect RMM tool under the name 'Windows Security' and uses a VBScript with SDDL strings to modify its permissions, making it invisible and difficult to remove, even for administrators. This grants the attackers persistent, stealthy access to the victim's machine.",
+  "full_report": "## Executive Summary\nSecurity researchers at **[Huntress](https://www.huntress.com/)** have uncovered an ongoing phishing campaign that impersonates **[Bank of America](https://www.bankofamerica.com/)** to deploy a persistent Remote Access Trojan (RAT). The attack, first observed on July 28, 2026, uses a classic social engineering lure to trick victims into downloading a malicious installer. The installer deploys a legitimate version of the **[ConnectWise ScreenConnect](https://www.connectwise.com/platform/unified-monitoring-management/remote-support-and-access)** remote management tool, disguised as a 'Windows Security' service. A key component of the attack is a VBScript payload that modifies the service's security descriptors, effectively cloaking it from view and preventing its removal, a form of User Account Control (UAC) bypass. This provides the attacker with stealthy and persistent remote access to the compromised Windows machine, which then connects to a command-and-control (C2) server in the United Arab Emirates.\n\n---\n\n## Threat Overview\nThe attack begins with a phishing email sent from a spoofed address designed to look like it originates from Bank of America. The email contains a warning that the user's account will be restricted unless they confirm their details by clicking a link.\n\nThe attack chain proceeds as follows:\n1.  **Phishing Lure**: The user clicks the link in the email, which leads to the download of a malicious installer file.\n2.  **Payload Execution**: The installer contains two encoded data blobs. The first decodes into a legitimate ScreenConnect installer.\n3.  **Masquerading**: The ScreenConnect tool is installed with the name 'Windows Security' to blend in with legitimate system components ([`T1036.005 - Masquerading: Match Legitimate Name or Location`](https://attack.mitre.org/techniques/T1036/005/)).\n4.  **Defense Evasion & Persistence**: The second blob decodes into a VBScript. This script modifies the newly created service's security permissions using Security Descriptor Definition Language (SDDL) strings. This prevents the service from being viewed or managed by standard tools, even with administrative privileges ([`T1548.002 - Abuse Elevation Control Mechanism: Bypass User Account Control`](https://attack.mitre.org/techniques/T1548/002/)). The service itself provides persistence.\n5.  **Command and Control**: The compromised machine establishes a connection to an attacker-controlled C2 server over port `8041/tcp`, giving the attacker full remote control ([`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/)).\n\n---\n\n## Technical Analysis\nThe most notable technique in this campaign is the abuse of SDDL to hide the malicious service. By manipulating the service's Access Control List (ACL), the attacker makes it invisible to tools like the Services control panel (`services.msc`) and even command-line tools like `sc.exe` when queried by a standard administrator. This is a sophisticated defense evasion technique designed to maintain long-term, undetected access.\n\nThe use of a legitimate, signed RMM tool like ScreenConnect is a common tactic to bypass antivirus and EDR solutions that rely on signature-based detection. The tool's traffic is often allowed through firewalls, and its presence on a system may not immediately trigger an alert.\n\nThe VBScript payload is responsible for the defense evasion and persistence. It first cleans up by deleting the registry key of the initial installer, then applies the restrictive SDDL string to the 'Windows Security' service. This multi-step process, combining social engineering, masquerading, and advanced permission manipulation, demonstrates a well-crafted attack designed for stealth.\n\n---\n\n## Impact Assessment\nThe primary impact is the complete compromise of the victim's computer. With full remote access, the attacker can perform a wide range of malicious actions, including:\n*   **Financial Theft**: Stealing online banking credentials, credit card information, and other financial data.\n*   **Keystroke Logging**: Capturing all user input, including passwords to various online accounts.\n*   **Data Theft**: Exfiltrating sensitive personal and business documents from the machine.\n*   **Further Compromise**: Using the compromised machine as a pivot point to attack other systems on the same network.\n*   **Ransomware Deployment**: The persistent access could be sold to or used by a ransomware group to launch a more destructive attack.\n\n---\n\n## IOCs — Directly from Articles\nHuntress published IOCs, but they were not included in the summary articles. The key observable is the C2 infrastructure.\n\n| Type | Value | Description |\n|---|---|---|\n| Network | C2 Server in UAE, Port 8041/tcp | The compromised ScreenConnect client connects to a C2 server in the United Arab Emirates over TCP port 8041. |\n\n---\n\n## Cyber Observables — Hunting Hints\n*   **Command Line Pattern**: Look for the use of `sc.exe sdset` to modify service permissions with complex SDDL strings.\n*   **Service Name**: Hunt for services named 'Windows Security', especially if they are associated with an executable from ScreenConnect/ConnectWise.\n*   **Network Traffic**: Monitor for outbound connections to port `8041/tcp`, particularly to IP addresses located in the UAE or other unusual geolocations.\n*   **File Path**: Look for ScreenConnect executables installed in non-standard directories.\n\n---\n\n## Detection & Response\n1.  **Monitor Service Creation and Modification**: Use an EDR or Sysmon to monitor for Windows Event ID 7045 ('A service was installed in the system') and Event ID 4673 ('A privileged service was called'), specifically looking for modifications of service security descriptors (`sc.exe sdset`).\n2.  **Application Control**: Use application control policies to block the installation and execution of unauthorized RMM tools like ScreenConnect. If it is a legitimate tool in your environment, its usage should be tightly controlled and monitored.\n3.  **Email Security**: Deploy advanced email security gateways that can detect and block phishing emails with malicious links, including those that spoof well-known brands like Bank of America.\n4.  **Network Egress Filtering**: Block outbound connections on non-standard ports like `8041`. All outbound traffic should be restricted to known and necessary ports and destinations.\n\n---\n\n## Mitigation\n1.  **User Training**: Educate users to be skeptical of unsolicited emails, especially those that create a sense of urgency and ask them to click links or download software. Remind them that banks will never ask for account details via email.\n2.  **Principle of Least Privilege**: Ensure users do not have local administrator rights. This would prevent the malicious installer from creating and modifying system services.\n3.  **MFA on Financial Accounts**: Enforce multi-factor authentication on all financial accounts. This can prevent an attacker from accessing accounts even if they manage to steal credentials from a compromised machine.\n4.  **Remove Unnecessary Software**: The attack relies on VBScript. If not required for business purposes, consider disabling Windows Script Host to reduce the attack surface.",
+  "twitter_post": "A Bank of America phishing scam delivers a disguised ScreenConnect RAT. The malware uses a UAC bypass and modifies service permissions with SDDL to achieve stealthy, persistent access. #Phishing #Malware #ScreenConnect #DefenseEvasion",
+  "meta_description": "A phishing campaign impersonating Bank of America uses a UAC bypass technique to install a hidden ScreenConnect RAT, giving attackers persistent remote access.",
+  "category": [
+    "Phishing",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Bank of America",
+      "type": "company",
+      "url": "https://www.bankofamerica.com/"
+    },
+    {
+      "name": "ConnectWise ScreenConnect",
+      "type": "product",
+      "url": "https://www.connectwise.com/platform/unified-monitoring-management/remote-support-and-access"
+    },
+    {
+      "name": "Huntress",
+      "type": "security_organization",
+      "url": "https://www.huntress.com/"
+    },
+    {
+      "name": "VBScript",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.itsecurityguru.org/2026/08/04/fake-bank-of-america-phishing-emails-found-delivering-disguised-screenconnect-rat-via-uac-bypass/",
+      "title": "Fake Bank of America Phishing Emails Found Delivering Disguised ScreenConnect RAT via UAC Bypass",
+      "date": "2026-08-04",
+      "friendly_name": "IT Security Guru"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-28",
+      "summary": "Huntress researchers detect the phishing campaign in a spam trap."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Phishing: Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1036.005",
+      "name": "Masquerading: Match Legitimate Name or Location",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1548.002",
+      "name": "Abuse Elevation Control Mechanism: Bypass User Account Control",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1543.003",
+      "name": "Create or Modify System Process: Windows Service",
+      "tactic": "Persistence"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Training users to recognize and report phishing emails is the first line of defense against this type of attack."
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application control to prevent the execution of unauthorized remote access software like ScreenConnect, or to restrict the execution of VBScript files."
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Enable and monitor logs related to service creation and modification to detect attempts to install and hide malicious services."
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Block outbound network traffic on non-standard ports like 8041 to prevent the RAT from connecting to its C2 server."
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PSC",
+      "technique_name": "Process Spawn Control",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessSpawnControl",
+      "recommendation": "To detect the core of this attack's defense evasion, security teams should implement controls that monitor and restrict service modifications. Specifically, create EDR or Sysmon rules to alert on any process using `sc.exe` with the `sdset` argument. This command is used to directly modify a service's security descriptor and is rarely used in legitimate administrative activity. An alert on `sc.exe sdset` provides a high-fidelity indicator of an attacker attempting to hide a service, as seen in this campaign. This allows security teams to investigate and terminate the malicious service before the attacker can establish long-term control.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "The attackers are abusing a legitimate RMM tool, ScreenConnect. Organizations should maintain a strict policy on allowed software. Use application control technologies like AppLocker or EDR-based denylisting to block the execution of all RMM tools that are not part of the corporate standard. If ScreenConnect is not an approved tool, adding its executable hashes and names to a denylist will prevent the payload from running, even if the user is tricked into downloading it. This breaks the attack chain immediately after the initial phishing link is clicked.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "The ScreenConnect RAT needs to connect to its C2 server on TCP port 8041 to receive commands. Implementing a default-deny policy for outbound network traffic on endpoints is a powerful compensating control. Configure endpoint firewalls to block all outbound traffic except for that on standard, approved ports (e.g., 80, 443) to approved destinations. Blocking traffic on port 8041 would sever the C2 connection, rendering the RAT useless. Monitoring for and alerting on blocked outbound connection attempts on non-standard ports can also serve as an indicator of a successful initial compromise.",
+      "mitre_mitigation_id": "M1037"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "sc.exe sdset \"Windows Security\" *",
+      "description": "Command used to modify the security descriptor of the masquerading service to hide it.",
+      "context": "EDR, Command line logging (Event ID 4688)",
+      "confidence": "high"
+    },
+    {
+      "type": "port",
+      "value": "8041",
+      "description": "Outbound TCP port used for C2 communication with the ScreenConnect RAT.",
+      "context": "Firewall logs, Netflow analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "service_name",
+      "value": "Windows Security",
+      "description": "The deceptive name used for the malicious ScreenConnect service.",
+      "context": "Service creation logs (Event ID 7045), EDR",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Email security gateway logs",
+      "description": "Look for inbound emails with spoofed 'Bank of America' sender domains and links to file-sharing or download sites.",
+      "context": "SIEM, Email security appliance",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "phishing",
+    "Bank of America",
+    "ScreenConnect",
+    "RAT",
+    "UAC bypass",
+    "SDDL",
+    "Huntress"
+  ],
+  "extract_datetime": "2026-08-05T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Finance"
+    ],
+    "other_affected": [
+      "Bank customers"
+    ]
+  },
+  "pub_date": "2026-08-05",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-08-05T15:00:00.000Z",
+  "updatedAt": "2026-08-05T15:00:00.000Z"
+}

@@ -1,0 +1,208 @@
+{
+  "id": "4d1890f4-a2b2-4d5e-97ae-2aab67020b04",
+  "slug": "fortibleed-campaign-compromises-over-70000-fortinet-devices-globally",
+  "headline": "‘FortiBleed’ Campaign: Over 70,000 Fortinet Firewalls Compromised in Global Credential Heist",
+  "title": "Massive \"FortiBleed\" Campaign Compromises Credentials for over 70,000 Fortinet Devices",
+  "summary": "A large-scale, automated credential harvesting campaign dubbed 'FortiBleed' has compromised administrative and VPN credentials for at least 73,932 Fortinet FortiGate firewalls across 194 countries. Fortinet's PSIRT confirmed the campaign does not exploit a new vulnerability but rather leverages weak or reused passwords from past incidents on devices lacking multi-factor authentication. The attack has impacted a wide range of sectors, and Fortinet is urging all customers to reset credentials, enable MFA, upgrade firmware, and hunt for specific IOCs.",
+  "full_report": "## Executive Summary\nA massive and highly automated credential harvesting campaign, dubbed **'FortiBleed'**, has led to the compromise of administrative and SSL-VPN credentials for at least 73,932 **[Fortinet](https://www.fortinet.com/)** FortiGate devices worldwide. The operation, attributed to a Russian-speaking threat group, has affected organizations across 194 countries and over 21,000 unique domains. The attackers conducted a large-scale brute-force and credential stuffing attack, exfiltrated configuration files containing hashed credentials, and cracked them offline. **[Fortinet](https://www.fortinet.com/)** has stated this campaign does not leverage a new zero-day vulnerability but instead exploits poor security hygiene. The company's PSIRT team believes the activity involves threat actors reusing credentials from previous security incidents (e.g., FG-IR-26-060, FG-IR-25-647) and employing brute-force techniques against devices with weak passwords and no multi-factor authentication (MFA). The breach poses a significant threat, as compromised firewalls provide attackers with a direct entry point into corporate networks, enabling data theft, ransomware deployment, and lateral movement.\n\n## Threat Overview\nThe 'FortiBleed' campaign is a textbook example of leveraging weak credentials at scale. The threat actors systematically targeted internet-facing FortiGate firewalls and SSL-VPN gateways. Their primary method involved:\n1.  **Mass Scanning & Brute-Force:** Conducting over 1.16 billion automated login attempts against FortiGate devices, likely reusing credentials from past breaches.\n2.  **Configuration Exfiltration:** Stealing configuration files from vulnerable devices.\n3.  **Offline Hash Cracking:** Extracting SSL VPN authentication hashes (`sslvpn_websession`) from the configuration files and cracking them offline using a powerful 45-GPU cluster managed by Hashtopolis.\n4.  **Credential Validation & Sale:** Verifying the cracked credentials and likely selling them on underground forums or using them for direct network access.\n\nOnce initial access was gained via the compromised VPN or administrative accounts, attackers were observed pivoting into internal **[Active Directory](https://en.wikipedia.org/wiki/Active_Directory)** environments to escalate their attacks.\n\n## Technical Analysis\nThe core of the attack does not rely on sophisticated exploits but on fundamental security failings. The attackers targeted the authentication mechanisms of FortiGate devices. The ability to grab configuration files suggests either the use of a prior vulnerability or the successful guessing of administrative credentials.\n\nThe most critical component was the offline cracking of password hashes. By exfiltrating the `sslvpn_websession` hashes, the attackers could use immense computational power without the risk of triggering lockout policies on the target devices. This highlights the danger of storing even hashed credentials in accessible configuration backups.\n\nFortinet has advised that upgrading to FortiOS versions 7.4, 7.6, or 8.0 mitigates the risk of offline password cracking, as these versions support PBKDF2 for hashing administrator credentials, which is significantly more resistant to brute-force attacks than older hashing mechanisms. They also recommend running the command `set login-lockout-upon-weaker-encryption` to disable legacy password settings.\n\n### MITRE ATT&CK Techniques:\n- **[`T1110 - Brute Force`](https://attack.mitre.org/techniques/T1110/):** The attackers used brute force and credential stuffing against login interfaces.\n- **[`T1110.002 - Password Cracking`](https://attack.mitre.org/techniques/T1110/002/):** The use of a GPU cluster to crack exfiltrated password hashes offline is a clear example of this technique.\n- **[`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/):** The ultimate goal and result of the campaign is the acquisition of valid administrative and VPN accounts.\n- **[`T1589.002 - Email Addresses`](https://attack.mitre.org/techniques/T1589/002/):** The attackers likely harvested email addresses from previous breaches to use in credential stuffing attacks.\n- **[`T1087.002 - Domain Account`](https://attack.mitre.org/techniques/T1087/002/):** Post-compromise, attackers pivoted to compromise internal Active Directory accounts.\n\n## Impact Assessment\nThe impact of this campaign is severe. A compromised firewall or VPN gateway is one of the most critical security failures an organization can experience. It grants attackers a trusted position on the network perimeter, from which they can:\n- **Monitor and Intercept Traffic:** Capture sensitive data passing through the firewall.\n- **Lateral Movement:** Pivot into the internal network to access servers, databases, and workstations.\n- **Deploy Ransomware:** Use the initial foothold to deploy ransomware across the entire enterprise.\n- **Data Exfiltration:** Steal intellectual property, customer data, and other sensitive information.\n\nGiven the targeting of critical infrastructure, government, and financial services, the potential for widespread disruption and significant financial loss is extremely high. The global scale of the compromise means that secondary attacks stemming from this campaign are likely to be seen for months or even years to come.\n\n## IOCs — Directly from Articles\n- **Malicious User Accounts:** `forticloud`, `fortiuser`, `fortinet-support`, `fortinet-tech-support`\n- **Hardening Command:** `set login-lockout-upon-weaker-encryption`\n- **Related Advisories:** `FG-IR-26-060`, `FG-IR-25-647`\n\n## Cyber Observables — Hunting Hints\n\n| Type | Value | Description |\n| --- | --- | --- |\n| log_source | `FortiGate Event Log` | Primary source for investigating login attempts and administrative changes on Fortinet devices. |\n| event_id | `event_type=vpn, event_level=warning, action=ssl-login-fail` | FortiGate log signature for a failed SSL-VPN login attempt. A high volume indicates a brute-force or credential stuffing attack. |\n| event_id | `event_type=event, event_level=alert, action=login-failed-for-user` | FortiGate log signature for a failed administrative login. High frequency is a key indicator of attack. |\n| network_traffic_pattern | `Anomalous successful logins from new/unrecognized geolocations` | A successful admin or VPN login from a country where the organization has no presence is a major red flag. |\n| file_name | `sslvpn_websession` | This object within the FortiGate configuration contains the hashed credentials targeted by the attackers. |\n| other | `forticloud` | Unauthorized local user account observed being created by threat actors post-compromise. |\n| other | `fortiuser` | Unauthorized local user account observed being created by threat actors post-compromise. |\n| other | `fortinet-support` | Unauthorized local user account observed being created by threat actors post-compromise. |\n| other | `fortinet-tech-support` | Unauthorized local user account observed being created by threat actors post-compromise. |\n\n## Detection & Response\n- **Audit Logs:** Immediately review FortiGate authentication logs for any successful logins that appear suspicious. Cross-reference login source IPs with threat intelligence feeds.\n- **Configuration Review:** Review firewall configurations for any unauthorized changes, paying close attention to the creation of unrecognized local user accounts such as `forticloud`, `fortiuser`, `fortinet-support`, or `fortinet-tech-support`.\n- **Session Review:** Terminate all active administrative and VPN user sessions to force re-authentication.\n- **Active Directory Monitoring:** If AD/LDAP integration is in use, treat the associated service account as compromised and monitor Active Directory for unusual authentication activity or the creation of new accounts.\n- **EDR/NDR:** Monitor internal network traffic for signs of lateral movement originating from IP addresses associated with VPN users. Look for unusual RDP, SMB, or WinRM activity.\n- **D3FEND Techniques:** Implement [`D3-DAM: Domain Account Monitoring`](https://d3fend.mitre.org/technique/d3f:DomainAccountMonitoring) and [`D3-LAM: Local Account Monitoring`](https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring) to detect anomalous use of the compromised credentials within the network.\n\n## Remediation Steps\n**Fortinet and security researchers strongly recommend the following actions:**\n1.  **Enforce MFA:** Immediately enable and enforce **[multi-factor authentication (MFA)](https://en.wikipedia.org/wiki/Multi-factor_authentication)** for all administrative and SSL-VPN user accounts. This is the single most effective defense against this attack.\n2.  **Reset All Credentials:** Force a password reset for all FortiGate local users, especially administrative and VPN accounts. Ensure new passwords are long, complex, and unique.\n3.  **Upgrade Firmware:** Update all Fortinet devices to the latest recommended firmware version, specifically versions **7.4, 7.6, 8.0, or newer**. These versions support PBKDF2 hashing for administrator credentials, making them more resilient to offline cracking.\n4.  **Harden Configuration:** After upgrading, run the command `set login-lockout-upon-weaker-encryption` to remove support for older, weaker password encryption schemes.\n5.  **Validate Configuration:** Review device configurations for any unauthorized changes. Compare the running configuration to a known-good backup and investigate any discrepancies, paying particular attention to newly created local users, firewall policies, and VPN settings.\n6.  **Implement Strong Password Policies:** Enforce policies that require complex passwords and regular rotation.\n7.  **Restrict Access:** Limit access to the FortiGate management interface to a trusted set of source IP addresses. Do not expose the management interface directly to the internet if possible.",
+  "twitter_post": "🚨 CRITICAL: The 'FortiBleed' campaign has compromised credentials for over 70,000 Fortinet devices globally. Attackers are cracking passwords offline. All admins urged to reset passwords & enable MFA immediately! #FortiBleed #CyberAttack #Infosec",
+  "meta_description": "A massive credential harvesting campaign, 'FortiBleed,' has compromised over 70,000 Fortinet FortiGate firewalls. Learn about the attack and critical mitigation steps.",
+  "category": [
+    "Cyberattack"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Active Directory",
+      "type": "technology"
+    },
+    {
+      "name": "Australian Cyber Security Centre",
+      "type": "security_organization"
+    },
+    {
+      "name": "FortiGate",
+      "type": "product"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor"
+    },
+    {
+      "name": "Fortinet SSL VPN",
+      "type": "product"
+    },
+    {
+      "name": "Hashtopolis",
+      "type": "technology"
+    },
+    {
+      "name": "Hudson Rock",
+      "type": "company"
+    },
+    {
+      "name": "Kevin Beaumont",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.csoonline.com/article/4186790/fortibleed-campaign-exposes-75000-fortinet-firewalls-worldwide.html",
+      "title": "FortiBleed campaign exposes 75000 Fortinet firewalls worldwide",
+      "date": "2026-06-18",
+      "website": "csoonline.com"
+    },
+    {
+      "url": "https://www.recordedfuture.com/blog/critical-fortibleed-campaign",
+      "title": "FortiBleed Campaign Exposing Credentials for 73,932 FortiGate Systems",
+      "date": "2026-06-19",
+      "website": "recordedfuture.com"
+    },
+    {
+      "url": "https://diesec.com/2026/06/top-5-cybersecurity-news-stories-june-19-2026/",
+      "title": "Top 5 Cybersecurity News Stories June 19, 2026",
+      "date": "2026-06-19",
+      "website": "diesec.com"
+    },
+    {
+      "url": "https://www.fortinet.com/lat/blog/psirt-blogs/analysis-of-reported-credential-compromise-of-fortigate-devices",
+      "title": "Analysis of Reported Credential Compromise of FortiGate Devices",
+      "date": "2026-06-19",
+      "website": "fortinet.com"
+    },
+    {
+      "url": "https://socradar.io/blog/fortibleed-fortinet-firewalls-compromised/",
+      "title": "FortiBleed 2026: 86,644 Fortinet Firewalls Compromised — Active Leak",
+      "date": "2026-06-19",
+      "website": "socradar.io"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-13",
+      "summary": "Security researcher Volodymyr Diachenko first reports on the campaign."
+    },
+    {
+      "datetime": "2026-06-18",
+      "summary": "The Australian Cyber Security Centre issues a critical alert regarding the FortiBleed campaign."
+    },
+    {
+      "datetime": "2026-06-19",
+      "summary": "Fortinet publishes a blog post acknowledging the campaign and providing mitigation guidance."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1087.002",
+      "name": "Domain Account",
+      "tactic": "Discovery"
+    },
+    {
+      "id": "T1110",
+      "name": "Brute Force",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1110.001",
+      "name": "Password Guessing",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1110.002",
+      "name": "Password Cracking",
+      "tactic": "Credential Access"
+    }
+  ],
+  "tags": [
+    "Brute Force",
+    "Credential Stuffing",
+    "Cyberattack",
+    "FortiBleed",
+    "FortiGate",
+    "Fortinet",
+    "MFA"
+  ],
+  "extract_datetime": "2026-06-19",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Government",
+      "Critical Infrastructure",
+      "Telecommunications",
+      "Finance",
+      "Healthcare",
+      "Manufacturing"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States",
+      "India",
+      "Mexico"
+    ],
+    "other_affected": [],
+    "people_affected_estimate": "Credentials for 73,932 devices"
+  },
+  "keywords": [
+    "Brute Force",
+    "Credential Stuffing",
+    "Cyberattack",
+    "FortiBleed",
+    "FortiGate",
+    "Fortinet",
+    "MFA"
+  ],
+  "pub_date": "2026-06-19",
+  "reading_time_minutes": null,
+  "createdAt": "2026-06-19T15:00:00.000Z",
+  "updatedAt": "2026-06-20T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-06-20T12:00:00Z",
+      "summary": "Scope of FortiBleed campaign expands to over 86,000 devices; CISA issues urgent advisory. New details on post-exploitation tools Chisel and Neo-reGeorg emerge.",
+      "content": "The 'FortiBleed' campaign has now impacted over 86,000 Fortinet devices, an increase from previous reports. The U.S. CISA has issued an urgent advisory, emphasizing the severity and directing organizations to immediately rotate credentials and enable MFA. New analysis reveals attackers are leveraging infostealer malware logs for credential acquisition and using post-exploitation tools like Chisel and Neo-reGeorg for tunneling and lateral movement within compromised networks. A significant percentage of compromised accounts were default 'admin' or system accounts, highlighting persistent security hygiene issues. New hunting hints include process names for Chisel and Neo-reGeorg, and monitoring unusual outbound connections from firewall management interfaces.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.bleepingcomputer.com/news/security/cisa-warns-fortinet-users-to-secure-devices-after-fortibleed-leak/",
+          "title": "CISA warns Fortinet users to secure devices after FortiBleed leak",
+          "website": "",
+          "date": "2026-06-20T12:00:00Z"
+        },
+        {
+          "url": "https://www.securityweek.com/fortibleed-86000-fortinet-device-credentials-compromised/",
+          "title": "FortiBleed: 86,000 Fortinet Device Credentials Compromised",
+          "website": "",
+          "date": "2026-06-20T12:00:00Z"
+        },
+        {
+          "url": "https://thehackernews.com/2026/06/cisa-warns-fortinet-customers-as.html",
+          "title": "CISA Warns Fortinet Customers as FortiBleed Hits 86,644 FortiGate Devices",
+          "website": "",
+          "date": "2026-06-20T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "datetime": "2026-06-20T12:00:00Z",
+      "summary": "The 'FortiBleed' campaign has expanded its targets to include Sophos devices and MSSQL servers, with an Initial Access Broker selling credentials on Exploit[.]in.",
+      "content": "New analysis from Palo Alto Networks' Unit 42 reveals that the 'FortiBleed' credential harvesting campaign has broadened its scope beyond Fortinet devices to actively target Sophos appliances and MSSQL servers. An Initial Access Broker (IAB) has claimed responsibility on the Russian-language cybercrime forum 'Exploit[.]in', offering the stolen credentials for sale. The attackers continue to use password spraying techniques, continuously integrating newly compromised credentials to expand their operations and achieve persistent, high-privilege access within victim networks. This expansion significantly increases the potential impact and victim pool of the campaign.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://unit42.paloaltonetworks.com/large-scale-credential-attacks/",
+          "title": "Threat Brief: Mitigating Large-Scale Credential Attacks",
+          "website": "",
+          "date": "2026-06-20T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

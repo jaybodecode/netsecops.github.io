@@ -1,0 +1,293 @@
+{
+  "id": "e17a3ef8-8e72-4554-8aed-a0a652ffaa04",
+  "slug": "unit42-uncovers-peerstitch-stealthy-fortigate-implant",
+  "headline": "PEERSTITCH: Stealthy Implant Hits FortiGate via Chained CVEs",
+  "title": "PEERSTITCH Malware Targets FortiGate via CVE-2024-47575",
+  "summary": "Unit 42 researchers have uncovered a sophisticated attack targeting Fortinet appliances with a novel memory-resident malware dubbed PEERSTITCH. The threat actors, tracked as CL-STA-0954, exploited CVE-2024-47575 on a FortiManager device for initial access, allowing them to exfiltrate configuration and credential data for over 500 managed FortiGate firewalls. Following a dwell period, the attackers leveraged a second vulnerability, CVE-2025-61624, to achieve root access and deploy the PEERSTITCH implant. This ARM64 malware is designed for stealth, operating entirely in memory to patch legitimate FortiOS daemons, leaving no artifacts on disk and making detection extremely difficult.",
+  "full_report": "## Executive Summary\n\nPalo Alto Networks' **[Unit 42](https://unit42.paloaltonetworks.com/)** has identified a sophisticated, multi-stage intrusion campaign targeting a telecommunications managed service provider. The attackers, tracked as threat cluster **[CL-STA-0954](https://unit42.paloaltonetworks.com/fortimanager-cve-2024-47575-peerstitch-malware/)** (also known as UNC5820), demonstrated advanced tradecraft by exploiting two vulnerabilities—**[CVE-2024-47575](https://www.cve.org/CVERecord?id=CVE-2024-47575)** and **[CVE-2025-61624](https://www.cve.org/CVERecord?id=CVE-2025-61624)**—to deploy a novel, memory-resident malware named **[PEERSTITCH](https://unit42.paloaltonetworks.com/fortimanager-cve-2024-47575-peerstitch-malware/)**. The primary targets were **[Fortinet](https://www.fortinet.com/)** **[FortiManager](https://www.fortinet.com/products/management/fortimanager)** and **[FortiGate](https://www.fortinet.com/products/next-generation-firewall)** appliances. The initial compromise led to the exfiltration of configuration data for over 500 firewalls, exposing the provider and its clients to significant risk. PEERSTITCH is an ARM64-based implant that operates entirely in memory, patching legitimate system daemons to evade detection and establish stealthy persistence.\n\n## Threat Overview\n\nThe attack began in September 2024 when the CL-STA-0954 threat actor exploited **CVE-2024-47575**, a command injection vulnerability in FortiManager's management channel (`TCP port 541`). This allowed the unauthenticated, remote attacker to register a rogue virtual appliance and exfiltrate a configuration archive containing sensitive data from over 500 managed FortiGate firewalls. This data included cryptographic material and reversible ciphertext credentials.\n\nAfter a period of extended dwell time, the attackers used the stolen credentials to gain authenticated access to perimeter firewalls via SSL/VPN. From there, they exploited a second vulnerability, **CVE-2025-61624**, an authenticated path traversal flaw in the **[FortiOS](https://www.fortinet.com/products/fortios/fortios-operating-system)** auto-script engine. This vulnerability enabled them to escalate privileges from an administrative user to `root` on the underlying operating system. With root access, they deployed the **PEERSTITCH** malware, a highly stealthy implant designed specifically for FortiGate's ARM64 architecture.\n\n**PEERSTITCH** is particularly dangerous due to its design: it is memory-resident, leaves no binary on disk, opens no listening ports, and initiates no outbound connections. It functions by patching the memory of two core FortiOS daemons, `sshd` and `httpslvpn`, allowing it to intercept and manipulate traffic through legitimate processes, thereby bypassing conventional detection methods.\n\n## Technical Analysis\n\n**PEERSTITCH** is a 64-bit Linux ARM64 executable written in C and statically linked against glibc. Its primary function is to act as a one-shot injector that patches the memory of legitimate processes.\n\n### Attack Chain\n1.  **Initial Access**: The attacker exploits **CVE-2024-47575** (`FortiJump`) against the FortiManager appliance from an external IP (`45.32.41.202`). This allows them to register a rogue device (`FMG-VMTM23017412`) and exfiltrate a configuration archive named `.tm`.\n2.  **Credential Access & Reconnaissance**: The attackers brute-force credentials from the exfiltrated configuration files. They then use these legitimate credentials to establish SSL/VPN sessions from external staging infrastructure (`23.240.77.233`, `47.18.167.159`). They also deploy packet sniffer configurations to map the network and intercept traffic.\n3.  **Privilege Escalation & Deployment**: The attacker, now with administrative access, exploits **CVE-2025-61624**. They create a malicious `system.auto-script` object with a name containing path traversal sequences (e.g., `../../../../setup`). This allows them to write an arbitrary script to the file system and execute it as `root`.\n4.  **Malware Execution**: The executed script downloads the **PEERSTITCH** components from a C2 server (`hxxp[:]//23.240.77.233:8085/`) into the `/data2/template/` directory. The main executable then patches the `sshd` and `httpslvpn` daemons in memory, establishing stealthy persistence without writing a persistent binary to disk.\n\n### MITRE ATT&CK Mapping\n*   [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/): Exploitation of **CVE-2024-47575** on the internet-facing FortiManager.\n*   [`T1005 - Data from Local System`](https://attack.mitre.org/techniques/T1005/): Exfiltration of the FortiManager configuration archive.\n*   [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/): Use of credentials recovered from the exfiltrated configuration files.\n*   [`T1133 - External Remote Services`](https://attack.mitre.org/techniques/T1133/): Accessing internal networks via FortiGate SSL/VPN sessions.\n*   [`T1040 - Network Sniffing`](https://attack.mitre.org/techniques/T1040/): Deployment of unauthorized packet capture configurations on managed firewalls.\n*   [`T1059.004 - Command and Scripting Interpreter: Unix Shell`](https://attack.mitre.org/techniques/T1059.004/): Use of the malicious auto-script to execute shell commands for payload deployment.\n*   [`T1055 - Process Injection`](https://attack.mitre.org/techniques/T1055/): **PEERSTITCH** patches the memory of legitimate `sshd` and `httpslvpn` processes.\n*   [`T1556 - Modify Authentication Process`](https://attack.mitre.org/techniques/T1556/): By patching core daemons like `sshd`, the malware can intercept or alter authentication flows.\n\n## Impact Assessment\n\nThe impact of this campaign is severe, particularly for the targeted telecommunications MSP and its downstream clients. The exfiltration of configuration and credential data for over 500 firewalls provides the attackers with a comprehensive blueprint of multiple network environments. This enables widespread, persistent, and difficult-to-detect access.\n\nKey impacts include:\n*   **Loss of Confidentiality**: Sensitive network configurations, cryptographic keys, and credentials were stolen.\n*   **Compromised Integrity**: The ability to deploy a root-level implant allows attackers to modify system behavior, intercept traffic, and maintain long-term, stealthy control.\n*   **Widespread Exposure**: Since the victim is a managed service provider, the compromise of its central management platform exposes all of its clients to follow-on attacks.\n*   **Evasion of Defenses**: The memory-resident nature of **PEERSTITCH** makes it exceptionally difficult to detect with traditional file-based scanners and network monitoring tools, leading to long dwell times.\n\n## IOCs — Directly from Articles\n\nThe following indicators of compromise were identified in the source report.\n\n| Type            | Value                              | Description                                      |\n|-----------------|------------------------------------|--------------------------------------------------|\n| IP Address      | `45.32.41.202`                     | Attacker infrastructure for initial compromise   |\n| IP Address      | `198.199.122.22`                   | Attacker infrastructure (modified)               |\n| IP Address      | `23.240.77.233`                    | External staging and C2 infrastructure           |\n| IP Address      | `47.18.167.159`                    | External staging infrastructure                  |\n| URL             | `hxxp[:]//23.240.77.233:8085/`       | PEERSTITCH payload download URL                  |\n| Other           | `FMG-VMTM23017412`                 | Serial number of rogue FortiGate appliance       |\n| File Name       | `.tm`                              | Name of exfiltrated configuration archive        |\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns, which could indicate related activity:\n\n| Type                   | Value                                        | Description                                                                        | Context                                      |\n|------------------------|----------------------------------------------|------------------------------------------------------------------------------------|----------------------------------------------|\n| Log Source             | `FortiManager Event Logs`                    | Look for device registration events from unknown or external IP addresses.         | SIEM, Log Management                         |\n| Event ID               | `FortiManager device registration`           | Specifically hunt for new devices named `localhost` or with unusual serial numbers. | SIEM queries on FortiManager logs            |\n| File Path              | `FortiManager file system`                   | Search for unusually named archive files, especially hidden files like `.tm`.      | File Integrity Monitoring, Manual Inspection |\n| Command Line Pattern   | `system auto-script` with `../` in name      | Audit FortiOS configurations for auto-script objects containing path traversal attempts. | Configuration review, CLI audit              |\n| Network Traffic Pattern| Outbound connections to IOC IPs              | Monitor for any traffic from management interfaces to the listed attacker IPs.     | Firewall logs, Netflow, IDS/IPS              |\n| Process Analysis       | `sshd`, `httpslvpn`                          | Perform memory analysis on FortiGate appliances to detect unexpected hooks or patches. | EDR, Memory Forensics                        |\n\n## Detection & Response\n\nDetecting this threat requires moving beyond traditional file and network signature-based methods.\n\n1.  **Memory Forensics**: The primary method for detecting an active **PEERSTITCH** infection is to perform memory analysis of FortiGate appliances. Security teams should dump the memory of the `sshd` and `httpslvpn` processes and analyze them for unauthorized modifications, hooks, or patched code segments. This can be achieved using specialized tools and techniques for embedded Linux systems.\n\n2.  **Log Analysis**: Scrutinize **[FortiManager](https://www.fortinet.com/products/management/fortimanager)** logs for signs of the initial compromise. Look for unauthorized device registration events, especially from external IP addresses or with suspicious hostnames like `localhost`. Correlate these events with any large, unexpected data transfers from the appliance.\n\n3.  **Configuration Audits**: Regularly audit FortiOS configurations for unauthorized changes. Specifically, review `system auto-script` configurations for any objects that have path traversal sequences (`../`) in their names. This is a direct indicator of an attempt to exploit **CVE-2025-61624**.\n\n4.  **Network Monitoring**: While **PEERSTITCH** itself does not initiate outbound C2, the initial deployment does. Monitor network logs for connections from FortiGate appliances to the IOCs listed, particularly on ports like `8085`. Block these indicators at the network perimeter.\n\nDefensive techniques from the **[D3FEND](https://d3fend.mitre.org/)** framework, such as [`D3-PA - Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis) and [`D3-NTA - Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis), are critical for identifying such activity.\n\n## Mitigation\n\nOrganizations using Fortinet products should take immediate action to mitigate this threat.\n\n1.  **Patch Vulnerabilities**: The most critical step is to apply patches for **CVE-2024-47575** and **CVE-2025-61624** immediately. Prioritize patching on internet-facing FortiManager appliances.\n\n2.  **Credential Rotation**: Due to the exfiltration of configuration files, all administrative and SSL/VPN credentials stored on the compromised FortiManager and its managed FortiGates must be considered compromised. A full rotation of all passwords, keys, and certificates is required.\n\n3.  **Restrict Management Access**: Limit access to the FortiManager management interface (`TCP port 541`) to a small set of trusted internal IP addresses. This interface should never be exposed to the public internet.\n\n4.  **Network Segmentation**: Implement network segmentation to isolate management interfaces from general user and server networks. This can prevent attackers who gain a foothold elsewhere from pivoting to critical management appliances.\n\n5.  **Enhanced Monitoring**: Implement the detection strategies outlined above, with a focus on memory analysis and deep log inspection for network appliances. Establish a baseline of normal behavior for these devices to better detect anomalies.\n\nApplying D3FEND countermeasures like [`D3-SU - Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate) and [`D3-ACH - Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening) are essential long-term strategies to prevent similar attacks.",
+  "twitter_post": "Unit 42 uncovers PEERSTITCH, a stealthy ARM64 implant targeting FortiGate firewalls. Attackers exploit CVE-2024-47575 & CVE-2025-61624 for memory-resident access, evading traditional detection. #Fortinet #CyberSecurity #ThreatIntel #Malware",
+  "meta_description": "Unit 42 researchers detail PEERSTITCH, a novel memory-resident malware targeting FortiGate devices by exploiting CVE-2024-47575 and CVE-2025-61624.",
+  "category": [
+    "Malware",
+    "Vulnerability",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "Fortinet",
+      "type": "vendor",
+      "url": "https://www.fortinet.com/"
+    },
+    {
+      "name": "FortiGate",
+      "type": "product",
+      "url": "https://www.fortinet.com/products/next-generation-firewall"
+    },
+    {
+      "name": "FortiManager",
+      "type": "product",
+      "url": "https://www.fortinet.com/products/management/fortimanager"
+    },
+    {
+      "name": "FortiOS",
+      "type": "product",
+      "url": "https://www.fortinet.com/products/fortios/fortios-operating-system"
+    },
+    {
+      "name": "PEERSTITCH",
+      "type": "malware"
+    },
+    {
+      "name": "CL-STA-0954",
+      "type": "threat_actor"
+    },
+    {
+      "name": "UNC5820",
+      "type": "threat_actor"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2024-47575"
+    },
+    {
+      "id": "CVE-2025-61624"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/fortimanager-cve-2024-47575-peerstitch-malware/",
+      "title": "Unit 42 Uncovers PEERSTITCH, a Stealthy FortiGate Implant",
+      "date": "2026-10-14",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2024-09",
+      "summary": "Initial intrusion against a telecommunications organization occurred, exploiting CVE-2024-47575."
+    },
+    {
+      "datetime": "2026-10-14T22:00:44Z",
+      "summary": "Unit 42 published its research on the PEERSTITCH malware and associated campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1005",
+      "name": "Data from Local System",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1040",
+      "name": "Network Sniffing",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1059.004",
+      "name": "Command and Scripting Interpreter: Unix Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1055",
+      "name": "Process Injection",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1556",
+      "name": "Modify Authentication Process",
+      "tactic": "Credential Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Patching CVE-2024-47575 and CVE-2025-61624 is the most critical step to prevent this attack chain.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Rotate all administrative and user credentials on FortiManager and managed FortiGates to invalidate stolen credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restrict network access to the FortiManager and FortiGate management interfaces to a minimal set of trusted hosts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "description": "Isolate management networks from production and user networks to limit an attacker's ability to pivot.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Implement comprehensive logging and regular auditing of FortiManager and FortiGate logs to detect anomalous activities like rogue device registration.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "While file-based scanning is ineffective, solutions capable of memory scanning and process analysis can help detect in-memory threats like PEERSTITCH.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "Immediately apply Fortinet's security patches for CVE-2024-47575 and CVE-2025-61624 across all affected FortiManager and FortiGate appliances. Prioritization is critical: begin with internet-facing FortiManager instances, as they represent the initial access vector for this attack. Following this, patch all internal management appliances and downstream FortiGate firewalls. Establish an automated verification process to confirm successful patch deployment. Given the MSP context of the breach, service providers must ensure patches are rolled out to all client environments under their management. This single action is the most effective countermeasure to prevent the entire attack chain from initiating. It directly hardens the initial target (FortiManager) and the pivot target (FortiGate) against the specific exploits used by the CL-STA-0954 actor.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "To detect an active PEERSTITCH infection, security teams must perform deep process analysis on FortiGate appliances, focusing on memory forensics. Since PEERSTITCH operates by patching the `sshd` and `httpslvpn` daemons in memory, traditional file integrity monitoring is insufficient. Implement procedures to periodically dump and analyze the memory space of these specific processes on critical FortiGate devices. Look for evidence of code hooks, unexpected memory permissions (e.g., writable and executable segments), or deviations from a known-good baseline of the process memory layout. This requires specialized tools and expertise in embedded Linux forensics. For proactive detection, consider deploying endpoint security solutions on the appliances (if supported) that are capable of runtime memory protection and analysis to detect and block process injection and in-memory patching techniques.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Beyond patching, harden the configuration of FortiManager and FortiOS to mitigate risk. First, strictly enforce network access controls for all management interfaces (e.g., FortiManager's TCP/541). These should only be accessible from a dedicated, secured management network or specific jump hosts, and never from the public internet. Second, implement rigorous change control and auditing for `system auto-script` configurations. Create detection rules in your SIEM to alert on the creation or modification of auto-script objects, especially those containing suspicious patterns like path traversal (`../`). Regularly review all administrative accounts, enforce the principle of least privilege, and use role-based access control to limit the capabilities of any single account, reducing the impact of a potential credential compromise.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "45.32.41.202",
+      "description": "Attacker infrastructure for initial compromise"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "198.199.122.22",
+      "description": "Attacker infrastructure (modified)"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "23.240.77.233",
+      "description": "External staging and C2 infrastructure"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "47.18.167.159",
+      "description": "External staging infrastructure"
+    },
+    {
+      "type": "url",
+      "value": "hxxp[:]//23.240.77.233:8085/",
+      "description": "PEERSTITCH payload download URL"
+    },
+    {
+      "type": "other",
+      "value": "FMG-VMTM23017412",
+      "description": "Serial number of rogue FortiGate appliance"
+    },
+    {
+      "type": "file_name",
+      "value": ".tm",
+      "description": "Name of exfiltrated configuration archive"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "FortiManager Event Logs",
+      "description": "Logs from FortiManager should be monitored for signs of unauthorized device registration or configuration changes.",
+      "context": "SIEM, Log Management Platform",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "system auto-script.*name ../",
+      "description": "Creation of a FortiOS auto-script where the name contains path traversal characters, indicating an exploit attempt for CVE-2025-61624.",
+      "context": "Configuration audit logs, CLI session logs",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "sshd",
+      "description": "The sshd daemon process on FortiGate appliances is a target for PEERSTITCH's memory patching.",
+      "context": "Memory forensics, Process monitoring on the appliance",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "httpslvpn",
+      "description": "The httpslvpn daemon process on FortiGate appliances is a target for PEERSTITCH's memory patching.",
+      "context": "Memory forensics, Process monitoring on the appliance",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": ".tm",
+      "description": "Anomalous hidden file created on FortiManager during the exfiltration phase.",
+      "context": "File Integrity Monitoring on FortiManager appliances",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "PEERSTITCH",
+    "FortiGate",
+    "FortiManager",
+    "CVE-2024-47575",
+    "CVE-2025-61624",
+    "Memory-Resident Malware",
+    "ARM64",
+    "Nation-State Actor",
+    "Threat Research",
+    "CL-STA-0954"
+  ],
+  "extract_datetime": "2026-10-15T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Telecommunications",
+      "Technology",
+      "Critical Infrastructure"
+    ],
+    "other_affected": [
+      "Managed Service Provider clients"
+    ]
+  },
+  "pub_date": "2026-10-15",
+  "reading_time_minutes": 14,
+  "createdAt": "2026-10-15T15:00:00.000Z",
+  "updatedAt": "2026-10-15T15:00:00.000Z"
+}

@@ -1,0 +1,78 @@
+title: Suspicious Python Execution for BusySnake
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects execution of Python processes with potentially obfuscated command-line arguments, a TTP associated with the BusySnake Stealer.
+references:
+  - https://thehackernews.com/2026/07/armored-likho-targets-government.html
+author: cyber.netsecops.io
+date: 2026-07-04
+tags:
+  - attack.t1059.006
+  - attack.execution
+falsepositives:
+  - Legitimate Python scripts that use encoded arguments.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith:
+      - '\python.exe'
+      - '\pythonw.exe'
+  selection_cli:
+    CommandLine|contains:
+      - 'base64'
+      - 'b64decode'
+      - 'exec('
+  condition: all of selection_*
+---
+title: Suspicious Outbound SSH Tunneling
+id: 2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e
+status: experimental
+description: Detects outbound SSH network connections from workstations, which could indicate the use of tools like Go2Tunnel for C2 communications, as seen with Armored Likho.
+references:
+  - https://thehackernews.com/2026/07/armored-likho-targets-government.html
+author: cyber.netsecops.io
+date: 2026-07-04
+tags:
+  - attack.t1572
+  - attack.command_and_control
+falsepositives:
+  - Legitimate remote administration or developer activity.
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 22
+    Initiated: 'true'
+  filter_legit:
+    Image|endswith:
+      - '\PuTTY.exe'
+      - '\ssh.exe'
+      - '\WinSCP.exe'
+  condition: selection and not filter_legit
+---
+title: Armored Likho Payload Delivery via GitHub
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects DNS queries to raw.githubusercontent.com, which is used by Armored Likho for payload delivery. While this domain is legitimate, queries from non-developer workstations can be suspicious.
+references:
+  - https://thehackernews.com/2026/07/armored-likho-targets-government.html
+author: cyber.netsecops.io
+date: 2026-07-04
+tags:
+  - attack.t1105
+  - attack.command_and_control
+falsepositives:
+  - Legitimate use by developers or software updating mechanisms.
+level: medium
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName: 'raw.githubusercontent.com'
+  condition: selection

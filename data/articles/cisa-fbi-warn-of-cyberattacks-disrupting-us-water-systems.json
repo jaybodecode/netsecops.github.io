@@ -1,0 +1,184 @@
+{
+  "id": "6d010dbb-43ed-4bea-b92f-79097c95a941",
+  "slug": "cisa-fbi-warn-of-cyberattacks-disrupting-us-water-systems",
+  "headline": "CISA and FBI Warn of Attacks on US Water System PLCs",
+  "title": "US Water Systems Targeted in Attacks on Rockwell PLCs",
+  "summary": "The FBI and CISA have issued an urgent joint advisory following a series of cyberattacks targeting the U.S. Water and Wastewater Systems (WWS) sector. Malicious actors are exploiting internet-exposed Rockwell Automation MicroLogix PLCs in at least seven states, leading to significant operational disruptions. Attackers have been observed locking out operators by changing passwords and altering IP addresses, causing loss of pressure, flooding, and forcing utilities to issue boil water notices. The agencies urge all critical infrastructure operators to immediately remove OT assets from the public internet, implement network segmentation, and enforce strong access controls. The coordinated nature of the attacks across more than 30 systems suggests a concerted effort exploiting a common vulnerability or service provider.",
+  "full_report": "## Executive Summary\nIn late July 2026, the **[FBI](https://www.fbi.gov)** and the **[Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov)** issued a joint advisory warning of a coordinated campaign by malicious cyber actors against the U.S. Water and Wastewater Systems (WWS) sector. Threat actors are targeting internet-facing Operational Technology (OT), specifically **[Rockwell Automation](https://www.rockwellautomation.com/)** Allen-Bradley MicroLogix 1100 and 1400 series Programmable Logic Controllers (PLCs). The attacks have caused tangible operational disruptions in at least seven states, including loss of system control, flooding, and the issuance of boil water notices. Federal agencies are urging all WWS facilities to immediately isolate OT assets from the internet, implement robust access controls, and maintain secure backups to prevent further compromise.\n\n---\n\n## Threat Overview\nThe attacks, which have escalated since July 27, 2026, involve threat actors gaining remote access to publicly exposed PLCs. Once access is achieved, they manipulate the device configurations to disrupt operations and lock out legitimate users. Key tactics include changing device passwords and altering IP addresses, which severs the connection between the PLC and the Supervisory Control and Data Acquisition (SCADA) systems used for monitoring and control. The FBI has confirmed reports of direct operational impacts, such as loss of water pressure and facility flooding. The simultaneous targeting of over 30 systems indicates a potentially widespread and coordinated campaign, possibly exploiting a shared vulnerability, a common third-party service integrator, or default credentials.\n\n---\n\n## Technical Analysis\nThe threat actors' primary TTPs involve scanning the internet for exposed OT devices and exploiting weak or default security configurations. The campaign specifically targets **Rockwell Automation/Allen-Bradley MicroLogix 1100 and 1400 series PLCs**.\n\n**Attack Chain:**\n1.  **Reconnaissance:** Actors scan for internet-accessible PLCs, likely using tools like Shodan to identify vulnerable devices.\n2.  **Initial Access:** Actors gain access via [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/) or by using default/weak credentials associated with [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/). The presence of undocumented cellular modems suggests exploitation of [`T0886 - Remote Services`](https://attack.mitre.org/techniques/T0886/).\n3.  **Impact:** The core of the attack is [`T1489 - Service Stop`](https://attack.mitre.org/techniques/T1489/) and [`T1505 - Server Software Component`](https://attack.mitre.org/techniques/T1505/) by altering PLC configurations. By changing passwords and IP addresses, they effectively cause a Denial of Service and lock out legitimate operators, a form of [`T0831 - Manipulation of Control`](https://attack.mitre.org/techniques/T0831/) in an OT context.\n4.  **Defense Evasion:** By changing IP addresses, attackers disrupt logging and monitoring, hindering incident response efforts.\n\nRockwell Automation has provided guidance for customers to recover locked MicroLogix 1400 controllers, indicating a known recovery path exists if physical access is possible.\n\n---\n\n## Impact Assessment\nThe impact of these attacks is severe and directly affects public health and safety. The disruption of water treatment and distribution has led to boil water advisories, posing a direct risk to communities. Forcing facilities into manual operation increases the likelihood of human error and reduces efficiency. The financial impact includes the cost of emergency response, system recovery, potential regulatory fines, and the long-term investment required to re-architect networks for better security. The targeting of a foundational critical infrastructure sector like water demonstrates a significant threat to national security. The relatively low cybersecurity maturity and limited budgets of many smaller WWS utilities exacerbate this risk.\n\n---\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to identify vulnerable systems or related malicious activity:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| `port` | 44818/TCP | Default EtherNet/IP port used by Rockwell PLCs. Unexpected traffic from external sources is highly suspicious. | Network traffic logs, firewall logs. |\n| `port` | 2222/TCP | Default EtherNet/IP port used by Rockwell PLCs. Unexpected traffic from external sources is highly suspicious. | Network traffic logs, firewall logs. |\n| `log_source` | Shodan/Censys | Search for exposed 'MicroLogix' or 'Allen-Bradley' devices in your organization's IP space. | External scanning services. |\n| `network_traffic_pattern` | Inbound connections to OT subnets | Any direct inbound connection from the internet to an OT network segment should be investigated. | Firewall logs, Netflow data. |\n| `command_line_pattern` | `RSLogix` | Monitor for unexpected usage of Rockwell programming software, especially from unauthorized workstations. | EDR logs, process monitoring. |\n\n---\n\n## Detection & Response\n**Detection:**\n*   **Network Monitoring:** Implement rules to detect and alert on any inbound traffic from the internet to ports `44818/TCP` and `2222/TCP` within OT network segments. Utilize **[Network Traffic Analysis](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** (D3-NTA) to baseline normal traffic patterns and identify anomalous connections.\n*   **Configuration Auditing:** Regularly audit PLC configurations for unauthorized changes to IP addresses, user accounts, or logic. A sudden change should trigger a high-priority alert.\n*   **Log Analysis:** Monitor firewall, VPN, and network access logs for connections to OT assets from unexpected external or internal IP addresses. Centralize logs in a SIEM for correlation.\n\n**Response:**\n1.  **Isolate:** If a compromise is suspected, immediately isolate the affected PLC from the network to prevent further malicious activity.\n2.  **Restore:** Use known-good, validated backups of the PLC logic and configuration to restore the device to a safe state. Follow Rockwell Automation's specific recovery procedures for locked devices.\n3.  **Investigate:** Preserve logs and device images for forensic analysis to determine the initial access vector and scope of the compromise.\n\n---\n\n## Mitigation\n**Immediate Actions:**\n1.  **Remove Internet Exposure:** The most critical step is to identify and remove all internet-facing OT devices, including PLCs. Ensure no undocumented connections, such as cellular modems, exist.\n2.  **Enforce Strong Passwords:** Change all default passwords on PLCs, HMIs, and other OT devices to strong, unique passwords.\n3.  **Network Segmentation:** Implement strict network segmentation using firewalls to isolate OT networks from IT networks and the internet. This aligns with D3FEND's **[Network Isolation](https://d3fend.mitre.org/technique/d3f:NetworkIsolation)** (D3-NI) technique.\n\n**Strategic Recommendations:**\n*   **Secure Remote Access:** Implement a secure remote access solution, such as a VPN with multi-factor authentication (MFA), for any required access to the OT network. All access should be logged and monitored.\n*   **Vulnerability Management:** Establish a program to identify and patch vulnerabilities in OT systems. If patching is not feasible, apply compensating controls.\n*   **Asset Inventory:** Maintain a comprehensive inventory of all OT assets and their network connections to ensure no device is unknowingly exposed.",
+  "twitter_post": "CISA & FBI issue urgent warning on cyberattacks targeting US water systems. Malicious actors are compromising internet-exposed Rockwell PLCs, causing operational disruptions and boil water notices. Operators urged to remove OT from internet. #ICS #OTsecurity",
+  "meta_description": "CISA and the FBI warn of ongoing cyberattacks targeting internet-exposed Rockwell Automation PLCs in the U.S. Water and Wastewater Systems (WWS) sector.",
+  "category": [
+    "Industrial Control Systems",
+    "Cyberattack",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Allen-Bradley MicroLogix 1100",
+      "type": "product"
+    },
+    {
+      "name": "Allen-Bradley MicroLogix 1400",
+      "type": "product"
+    },
+    {
+      "name": "Cybersecurity and Infrastructure Security Agency (CISA)",
+      "type": "government_agency"
+    },
+    {
+      "name": "Federal Bureau of Investigation (FBI)",
+      "type": "government_agency"
+    },
+    {
+      "name": "Operational Technology (OT)",
+      "type": "technology"
+    },
+    {
+      "name": "Programmable Logic Controller (PLC)",
+      "type": "technology"
+    },
+    {
+      "name": "Rockwell Automation",
+      "type": "vendor"
+    },
+    {
+      "name": "Water and Wastewater Systems (WWS)",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.fbi.gov/investigate/cyber/alerts/2026/malicious-cyber-actors-targeting-water-and-wastewater-sector-internet--facing-programmable-logic-controllers-causing-operational-disruptions",
+      "title": "Malicious Cyber Actors Targeting Water and Wastewater Sector Internet- Facing Programmable Logic Controllers, Causing Operational Disruptions",
+      "date": "2026-07-30",
+      "website": "fbi.gov"
+    },
+    {
+      "url": "https://www.cisa.gov/news-events/alerts/2026/07/30/cisa-urges-water-and-wastewater-systems-sector-protect-ot-against-activity-targeting-plcs",
+      "title": "CISA Urges Water and Wastewater Systems Sector to Protect OT Against Activity Targeting PLCs",
+      "date": "2026-07-30",
+      "website": "cisa.gov"
+    },
+    {
+      "url": "https://industrialcyber.co/industrial-cyber-attacks/minnesota-water-cyberattacks-prompt-cisa-warning-on-growing-threats-targeting-internet-exposed-plcs/",
+      "title": "Minnesota water cyberattacks prompt CISA warning on growing threats targeting internet-exposed PLCs",
+      "date": "2026-07-31",
+      "website": "industrialcyber.co"
+    },
+    {
+      "url": "https://techmaniacs.com/2026/07/30/cybersecurity-daily-briefing-july-30-2026/",
+      "title": "Cybersecurity Daily Briefing: July 30, 2026",
+      "date": "2026-07-30",
+      "website": "techmaniacs.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-27T00:00:00Z",
+      "summary": "Escalation of cyberattacks against WWS sector begins, with utility companies reporting incidents."
+    },
+    {
+      "datetime": "2026-07-30T00:00:00Z",
+      "summary": "The FBI and CISA issue joint advisories warning of the attacks and providing mitigation guidance."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T0831",
+      "name": "Manipulation of Control",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T0886",
+      "name": "Remote Services",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1489",
+      "name": "Service Stop",
+      "tactic": "Impact"
+    }
+  ],
+  "tags": [
+    "CISA",
+    "Critical Infrastructure",
+    "FBI",
+    "ICS",
+    "OT",
+    "PLC",
+    "Rockwell Automation",
+    "SCADA"
+  ],
+  "extract_datetime": "2026-07-31",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "industries_affected": [
+      "Critical Infrastructure",
+      "Government"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [
+      "United States"
+    ],
+    "other_affected": [
+      "Water and Wastewater Systems (WWS) sector operators"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "CISA",
+    "Critical Infrastructure",
+    "FBI",
+    "ICS",
+    "OT",
+    "PLC",
+    "Rockwell Automation",
+    "SCADA"
+  ],
+  "pub_date": "2026-07-31",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-31T15:00:00.000Z",
+  "updatedAt": "2026-08-02T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-08-02T00:00:00Z",
+      "summary": "New intelligence suggests Iran-linked actors, specifically CyberAv3ngers, are behind the widespread cyberattacks on US water utilities, affecting states like Minnesota and Michigan.",
+      "content": "New intelligence from U.S. officials now attributes the ongoing cyberattacks against the Water and Wastewater Systems (WWS) sector to actors linked to Iran, specifically mentioning groups like CyberAv3ngers. The FBI and EPA are investigating the widespread campaign, which continues to target internet-exposed Rockwell Automation PLCs in at least seven states, including newly identified Minnesota and Michigan. The attacks cause operational disruptions such as loss of water pressure and force utilities into manual operations. This attribution elevates the threat, highlighting potential state-sponsored involvement in critical infrastructure targeting.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://www.washingtonpost.com/nation/2026/08/01/several-states-report-cyberattacks-spy-agencies-suspect-iran-targeting-water/",
+          "title": "Several states report cyberattacks as spy agencies suspect Iran targeting water",
+          "website": "",
+          "date": "2026-08-02T00:00:00Z"
+        },
+        {
+          "url": "https://www.cbsnews.com/news/us-investigating-iran-cyberattack-minnesota-water-systems/",
+          "title": "U.S. investigating if Iran was behind cyberattack on water systems in 7 states, including Minnesota and Michigan",
+          "website": "",
+          "date": "2026-08-02T00:00:00Z"
+        },
+        {
+          "url": "https://contracosta.news/2026/08/01/hackers-target-municipal-water-systems-in-7-states/",
+          "title": "Hackers Target Municipal Water Systems in 7 States",
+          "website": "",
+          "date": "2026-08-02T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

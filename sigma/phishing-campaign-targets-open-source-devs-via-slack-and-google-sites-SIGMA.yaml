@@ -1,0 +1,68 @@
+title: macOS Malicious Certificate Installation via Security Command
+id: 2b1c8f9a-3d4e-4a5b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the use of the 'security' command-line tool on macOS to add a trusted certificate, a technique used in a campaign targeting open-source developers.
+references:
+  - https://www.techzine.eu/2026/04/14/attackers-are-targeting-developers-via-slack-and-google-sites/
+author: cyber.netsecops.io
+date: 2026-04-14
+tags:
+  - attack.t1553.004
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: macos
+detection:
+  selection:
+    Image|endswith: '/security'
+    CommandLine|contains: 'add-trusted-cert'
+  condition: selection
+---
+title: Windows Malicious Certificate Installation via Certutil
+id: 9d8c7b6a-5f4e-4d3c-b2a1-0987654321fe
+status: experimental
+description: Detects the use of 'certutil.exe' to install a new root certificate into the trusted store, a technique used to enable Man-in-the-Middle attacks.
+references:
+  - https://www.techzine.eu/2026/04/14/attackers-are-targeting-developers-via-slack-and-google-sites/
+author: cyber.netsecops.io
+date: 2026-04-14
+tags:
+  - attack.t1553.004
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\certutil.exe'
+    CommandLine|contains|all:
+      - '-addstore'
+      - 'root'
+  condition: selection
+---
+title: Suspicious Script Execution via Curl Pipe to Bash
+id: 5a4b3c2d-1e9f-4a8b-9c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects a common infection vector on Linux/macOS where a script is downloaded via curl and piped directly into a shell for execution.
+references:
+  - https://www.techzine.eu/2026/04/14/attackers-are-targeting-developers-via-slack-and-google-sites/
+author: cyber.netsecops.io
+date: 2026-04-14
+tags:
+  - attack.t1059
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_curl:
+    Image|endswith: '/curl'
+  selection_bash:
+    ParentImage|endswith: '/bash'
+    Image|endswith: '/curl' # Bash is the parent of curl in a pipe
+  filter_pipe:
+    CommandLine|contains: '|'
+  condition: (1 of selection_*) and filter_pipe

@@ -1,0 +1,69 @@
+title: cPanel Suspicious Domain Parking Activity
+id: 2b1a3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects suspicious POST requests to cPanel scripts related to domain parking that may indicate exploitation of CVE-2026-65643.
+author: cyber.netsecops.io
+date: 2026-08-28
+references:
+  - https://thehackernews.com/2026/08/critical-cpanel-flaw-could-let-one.html
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-method: 'POST'
+    c-uri|contains|all:
+      - '/json-api/cpanel'
+      - 'api_func=park'
+    c-uri|contains:
+      - '../'
+  condition: selection
+---
+title: Suspicious File Creation in Cron Directory
+id: 4a002c41-0440-456d-95a0-715676723aad
+status: experimental
+description: 'Detects the creation of new files in cron directories, which could be a result of exploiting CVE-2026-65643 to establish persistence.'
+author: cyber.netsecops.io
+date: 2026-08-28
+references:
+  - https://thehackernews.com/2026/08/critical-cpanel-flaw-could-let-one.html
+tags:
+  - attack.t1053.003
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|startswith:
+      - '/etc/cron.d/'
+      - '/var/spool/cron/'
+  filter_legit:
+    Image:
+      - '/usr/bin/crontab'
+      - '/usr/sbin/anacron'
+  condition: selection and not filter_legit
+---
+title: Suspicious Modification of Root SSH Authorized Keys
+id: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: 'Detects modification of the root user''s authorized_keys file, which could indicate an attacker adding their key for persistent root access via CVE-2026-65643.'
+author: cyber.netsecops.io
+date: 2026-08-28
+references:
+  - https://thehackernews.com/2026/08/critical-cpanel-flaw-could-let-one.html
+tags:
+  - attack.t1098.004
+level: critical
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename: '/root/.ssh/authorized_keys'
+  filter_legit:
+    Image:
+      - '/usr/bin/ssh-copy-id'
+  condition: selection and not filter_legit

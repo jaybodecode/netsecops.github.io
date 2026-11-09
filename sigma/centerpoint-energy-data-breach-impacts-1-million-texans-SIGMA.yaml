@@ -1,0 +1,55 @@
+title: Anomalous Full Table Database Query
+id: 1a2b3c4d-5e6f-4a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects a database query that appears to select all records from a customer table, which could be part of a data exfiltration attempt. This was a suggested detection method in the CenterPoint Energy breach report.
+references:
+  - https://www.securityweek.com/centerpoint-energy-data-breach-impacts-1-million-texans/
+author: cyber.netsecops.io
+date: 2026-10-15
+tags:
+  - attack.t1005
+  - attack.collection
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains|all:
+      - 'SELECT'
+      - 'FROM'
+    query|contains:
+      - 'customer'
+      - 'user'
+      - 'client'
+  filter_limit:
+    query|contains:
+      - 'LIMIT'
+      - 'TOP'
+  condition: selection and not filter_limit
+---
+title: Large Outbound Data Transfer
+id: 2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e
+status: experimental
+description: Detects a single network connection with a very large amount of data sent outbound to an external address, which could indicate data exfiltration. This was a suggested detection method in the CenterPoint Energy breach report.
+references:
+  - https://www.securityweek.com/centerpoint-energy-data-breach-impacts-1-million-texans/
+author: cyber.netsecops.io
+date: 2026-10-15
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+    SentBytes: '>52428800' # > 50 MB
+  filter_rfc1918:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter_rfc1918

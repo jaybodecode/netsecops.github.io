@@ -1,0 +1,79 @@
+title: Suspicious On-Host Compiler Activity for LPE Exploit
+id: 2b8a1c3d-f4e5-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: |
+  Detects the compilation of C code directly on a server, especially into temporary directories like /tmp. This is a common pattern for attackers deploying custom local privilege escalation (LPE) exploits.
+references:
+  - https://thehackernews.com/2026/11/openai-ai-pipeline-generates-948-linux.html
+author: cyber.netsecops.io
+date: 2026-11-06
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|endswith: '/gcc'
+    CommandLine|contains:
+      - ' -o /tmp/'
+      - ' -o /var/tmp/'
+      - ' -o /dev/shm/'
+  condition: selection
+level: high
+---
+title: Post-Exploitation 'whoami' Execution by Service Account
+id: 9e8f7d6c-5b4a-4c3d-8b2a-1c0d9e8f7d6c
+status: experimental
+description: |
+  Detects the 'whoami' command being executed by common low-privilege service accounts. This is a classic post-exploitation step for an attacker to verify if a privilege escalation attempt was successful.
+references:
+  - https://thehackernews.com/2026/11/openai-ai-pipeline-generates-948-linux.html
+author: cyber.netsecops.io
+date: 2026-11-06
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_cmd:
+    Image|endswith: '/whoami'
+  selection_user:
+    User:
+      - 'www-data'
+      - 'nobody'
+      - 'nginx'
+      - 'apache'
+  condition: all of selection_*
+level: medium
+---
+title: Anomalous Shell Spawning from Web Server Process
+id: 7a6b5c4d-3e2f-4a1b-9c8d-0e9f8d7c6b5a
+status: experimental
+description: |
+  Detects a web server process (like nginx or apache2) spawning a shell process (/bin/sh, bash). This is highly anomalous and often indicates a remote code execution vulnerability has been exploited, potentially as a first step before a local privilege escalation.
+references:
+  - https://thehackernews.com/2026/11/openai-ai-pipeline-generates-948-linux.html
+author: cyber.netsecops.io
+date: 2026-11-06
+tags:
+  - attack.t1059
+  - attack.execution
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '/nginx'
+      - '/apache2'
+      - '/httpd'
+  selection_child:
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+  condition: all of selection_*
+level: high

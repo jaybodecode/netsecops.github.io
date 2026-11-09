@@ -1,0 +1,79 @@
+title: Suspicious Process Creation from WINWORD.EXE
+id: 7e8b1c2a-3d4e-4f5a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects Microsoft Word spawning shell processes like powershell.exe or cmd.exe, which may indicate malicious macro execution.
+references:
+  - https://cypro.co.uk/insights/cyber-bulletins/apt28-nato-campaign-hits-defence-contractors/
+author: cyber.netsecops.io
+date: 2026-10-20
+tags:
+  - attack.t1566.001
+  - attack.t1059.005
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\winword.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+  condition: selection
+---
+title: Anomalous Outbound SSH Connection
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects anomalous or long-lived outbound SSH connections from non-standard clients, which could indicate SSH tunneling for C2.
+references:
+  - https://cypro.co.uk/insights/cyber-bulletins/apt28-nato-campaign-hits-defence-contractors/
+author: cyber.netsecops.io
+date: 2026-10-20
+tags:
+  - attack.t1572
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 22
+    Initiated: 'true'
+  filter:
+    Image|endswith:
+      - '\ssh.exe'
+      - '\scp.exe'
+      - '\sftp.exe'
+      - '\putty.exe'
+  condition: selection and not filter
+---
+title: Potential HOOKEDGE C2 via Webhook Services
+id: f0e9d8c7-b6a5-4f3e-8d1c-0b9a8f7e6d5c
+status: experimental
+description: Detects network traffic to known webhook services from non-developer workstations, which could indicate C2 activity from backdoors like HOOKEDGE.
+references:
+  - https://cypro.co.uk/insights/cyber-bulletins/apt28-nato-campaign-hits-defence-contractors/
+author: cyber.netsecops.io
+date: 2026-10-20
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName|contains:
+      - 'discord.com'
+      - 'hooks.slack.com'
+      - 'webhook.site'
+  filter:
+    Image|endswith:
+      - '\slack.exe'
+      - '\Discord.exe'
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+  condition: selection and not filter

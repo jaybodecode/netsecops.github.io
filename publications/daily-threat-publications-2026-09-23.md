@@ -1,0 +1,41 @@
+# Zero-Days Exploited, AI Security Tools Launch, Ransomware Surges
+
+**Published:** 2026-09-23 | **Articles:** 8
+
+**Critical Vulnerabilities Under Active Exploitation**:
+
+*   **Check Point Zero-Days in Management Servers and VPNs Under Active Attack**: Check Point has released urgent patches for two critical, actively exploited zero-day vulnerabilities (CVE-2026-93616 and CVE-2026-85102) affecting their management servers and VPNs. Both have been added to CISA's KEV catalog, indicating widespread exploitation and requiring immediate attention.
+*   **F5 BIG-IP APM Zero-Day (CVE-2026-94127) Actively Exploited for RCE**: F5 has issued an emergency patch for CVE-2026-94127, a critical unauthenticated RCE vulnerability in BIG-IP APM, which is being actively exploited. CISA has mandated federal agencies patch this vulnerability by September 25, 2026.
+
+**Evolving Threat Landscape and Tactics**:
+
+*   **[UPDATE] Ransomware Attacks Hit 2026 High in July, NCC Group Reports**: Ransomware activity reached a new 2026 record in August with 1,073 publicly reported victims, a 12% increase from July. The industrial sector remains the primary target, and the Qilin ransomware group has become the most prolific.
+*   **[UPDATE] BigCommerce Data Breach Caused by Compromised Third-Party App**: Further analysis of the BigCommerce supply chain attack reveals that the compromised API key was used to inject malicious scripts into affected storefronts, suggesting a potential Magecart-style attack vector.
+*   **CLOSEDQUORUM: First Malware Found Using AI Panel for C2 Decisions**: Cisco Talos discovered 'CLOSEDQUORUM,' a Windows malware implant that uses a panel of four commercial LLMs for its command-and-control decisions, representing a significant shift towards attack automation.
+*   **Malicious 'indexed-btree' NPM Package Amasses Millions of Downloads**: A malicious npm package, 'indexed-btree,' was downloaded nearly two million times per week before removal. It evaded detection by hiding its loader and used the Ethereum blockchain for its second-stage C2.
+*   **DarkMe RAT Abandons Zero-Days for Simpler Phishing Attacks**: The APT group Water Hydra has shifted from using zero-day exploits to distributing the DarkMe RAT via phishing emails with malicious .pif file attachments, indicating a move towards lower-cost, higher-volume attacks.
+
+**Industry Response to AI Security**:
+
+*   **Vendors Launch New Tools to Secure Enterprise AI Adoption**: In response to the rapid adoption of generative AI, cybersecurity vendors have released new platforms to discover and manage 'shadow AI,' control sensitive data flow into LLMs, and enforce responsible AI use policies.
+
+## Articles in this publication
+- [Ransomware Attacks Hit 2026 High in July, NCC Group Reports](https://cyber.netsecops.io/articles/ransomware-attacks-hit-2026-high-in-july-ncc-group-reports/) (high)
+  According to a new threat report from NCC Group, global ransomware activity surged in July 2026, reaching the highest monthly volume of the year. The report recorded 894 cases, a 22% increase from June. The Industrials sector and organizations in North America and Europe remained the top targets. The report also notes the appearance of a new group, 'CRPxO,' and the continued dominance of established actors.
+- [BigCommerce Data Breach Caused by Compromised Third-Party App](https://cyber.netsecops.io/articles/bigcommerce-supply-chain-breach-via-compromised-ribon-app/) (high)
+  E-commerce platform BigCommerce has disclosed a data breach affecting an undisclosed number of its merchants. The incident was a supply-chain attack originating from a compromised application key for the third-party 'Ribon' and 'Ribon 1.5' apps. Attackers used this key to access customer data between September 13 and 17, 2026. Exposed data includes customer names, emails, phone numbers, and shipping addresses. Financial data was not affected. One victim, Master of Malt, has notified its customers and the UK's ICO.
+- [Check Point Zero-Days in Management Servers and VPNs Under Active Attack](https://cyber.netsecops.io/articles/check-point-zero-days-cve-2026-93616-cve-2026-85102-under-active-attack/) (critical)
+  Check Point has released urgent patches for two critical, actively exploited zero-day vulnerabilities. The first, CVE-2026-93616, is a path traversal flaw in management servers allowing remote code execution. The second, CVE-2026-85102, is an authentication bypass in VPN gateways. Both have been added to CISA's Known Exploited Vulnerabilities (KEV) catalog, indicating widespread exploitation and requiring immediate attention from defenders. Attacks against the management server flaw have been observed since July 2026.
+- [F5 BIG-IP APM Zero-Day (CVE-2026-94127) Actively Exploited for RCE](https://cyber.netsecops.io/articles/f5-patches-critical-big-ip-apm-zero-day-cve-2026-94127-under-active-exploitation/) (critical)
+  F5 has released an emergency patch for a critical unauthenticated RCE vulnerability, CVE-2026-94127 (CVSS 9.8), in its BIG-IP Access Policy Manager (APM). The flaw, a heap-based buffer overflow, is being actively exploited in the wild. It affects systems configured with a specific combination of an APM access policy and an OAuth Authorization Server profile. CISA has added the vulnerability to its KEV catalog and mandated federal agencies patch by September 25, 2026. Over 14,700 instances are potentially vulnerable.
+- [CLOSEDQUORUM: First Malware Found Using AI Panel for C2 Decisions](https://cyber.netsecops.io/articles/cisco-talos-discovers-closedquorum-malware-steered-by-ai-panel/) (high)
+  Cisco Talos has discovered a groundbreaking Windows malware implant named 'CLOSEDQUORUM' that uses a panel of four commercial Large Language Models (LLMs) for its command-and-control (C2). The Go-based binary operates autonomously, querying models from Google, Mistral, and others to decide its next action, such as stealing credentials or crypto wallets. While the analyzed sample appears to be a kit not yet deployed, it represents a significant architectural shift towards attack automation.
+- [Malicious 'indexed-btree' NPM Package Amasses Millions of Downloads](https://cyber.netsecops.io/articles/malicious-npm-package-indexed-btree-evades-detection-with-runtime-payload/) (high)
+  A malicious npm package, 'indexed-btree,' was downloaded nearly two million times per week before its removal. The package evaded security scanners by hiding its malicious loader in a runtime function instead of common install scripts. Once triggered by an application, it fingerprinted the host, exfiltrated data via Slack and Telegram, and used the Ethereum blockchain for its second-stage C2. The campaign earned its creator over €230,000, highlighting a sophisticated evolution in software supply chain attacks.
+- [DarkMe RAT Abandons Zero-Days for Simpler Phishing Attacks](https://cyber.netsecops.io/articles/darkme-rat-campaign-shifts-from-zero-days-to-phishing/) (high)
+  The financially motivated APT group Water Hydra (aka EvilNum) has shifted tactics in its distribution of the DarkMe Remote Access Trojan (RAT). Previously known for using zero-day exploits, a new campaign observed by Huntress relies on simple phishing emails with malicious .pif file attachments. The malware uses a multi-stage loader, COM registration for persistence, and process hollowing to evade detection while stealing cryptocurrency wallets and other system data. This change indicates a move towards lower-cost, higher-volume attacks.
+- [Vendors Launch New Tools to Secure Enterprise AI Adoption](https://cyber.netsecops.io/articles/cybersecurity-vendors-launch-tools-to-combat-shadow-ai/) (informational)
+  In response to the rapid and often ungoverned enterprise adoption of generative AI, several cybersecurity vendors have launched new security platforms. Companies like Barracuda and PDI Technologies have released tools designed to discover and manage 'shadow AI,' control the flow of sensitive data into external Large Language Models (LLMs), and help organizations enforce responsible AI use policies. These solutions aim to provide visibility into the thousands of AI tools being used by employees and mitigate risks like data leakage and prompt injection.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-09-23/

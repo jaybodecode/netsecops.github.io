@@ -1,0 +1,229 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-01T02:03:21.371Z",
+    "article_slug": "blacktech-apt-uses-blueshell-linux-backdoor-on-japanese-targets",
+    "article_date": "2026-07-31",
+    "token_usage": {
+      "input_tokens": 145876,
+      "output_tokens": 2792,
+      "cached_tokens": 140179,
+      "total_tokens": 148668,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.052564
+    }
+  },
+  "report_name": "BlackTech APT Deploys 'BlueShell' Linux Backdoor on Japanese Targets",
+  "threat_actors": [
+    {
+      "name": "BlackTech",
+      "mitre_id": "G0098",
+      "aliases": [],
+      "description": "A sophisticated APT group observed deploying the BlueShell Linux backdoor in attacks against Japanese organizations to establish long-term espionage footholds for intelligence gathering and data theft.",
+      "goals": "Intelligence gathering and data theft from Japanese organizations.",
+      "primary_motivation": "organizational-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "External Proxy",
+      "mitre_id": "T1090.002",
+      "description": "The BlueShell backdoor routes its command-and-control traffic through the victim's own internal proxy server to blend in with legitimate outbound web traffic, making it appear as if it originates from a trusted internal source."
+    },
+    {
+      "name": "Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "BlueShell communicates with its C2 server over standard web protocols to evade network-based detection."
+    },
+    {
+      "name": "Asymmetric Cryptography",
+      "mitre_id": "T1573.002",
+      "description": "The BlueShell backdoor performs a check on the C2 server's digital certificate before establishing a full connection, using it as a method of C2 channel authentication."
+    },
+    {
+      "name": "Unix Shell",
+      "mitre_id": "T1059.004",
+      "description": "The BlueShell backdoor provides attackers with remote command execution capabilities via a Unix shell on the compromised Linux host."
+    },
+    {
+      "name": "Obfuscated Files or Information",
+      "mitre_id": "T1027",
+      "description": "The internal command names of the BlueShell malware were renamed to hinder analysis and reverse engineering."
+    },
+    {
+      "name": "SSH",
+      "mitre_id": "T1021.004",
+      "description": "BlackTech may use SSH for lateral movement between compromised Linux servers within the victim's network."
+    }
+  ],
+  "malware": [
+    {
+      "name": "BlueShell",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": true,
+      "aliases": [],
+      "description": "A custom Go-based Linux backdoor used by BlackTech for stealthy persistence, remote command execution, file transfer, and C2 proxying through the victim's internal proxy server.",
+      "capabilities": [
+        "communicates-with-c2",
+        "controls-local-machine"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Japanese organizations",
+      "identity_class": "class",
+      "sectors": [],
+      "description": "Organizations in Japan targeted by the BlackTech APT group with the BlueShell backdoor for espionage and data theft."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Japan",
+      "country": "Japan",
+      "region": "eastern-asia"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "BlueShell C2 Server",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Command and control infrastructure used by the BlueShell backdoor. The malware validates the server's certificate before connecting."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Anomalous Internal SSH Connection",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Internal SSH Connection\nid: 2f8b1c9a-4e7d-4f6a-8b3c-1d9e0f8a7b6c\nstatus: experimental\ndescription: Detects an outbound SSH connection from one internal network segment to another. This could be an indicator of lateral movement, as seen with BlackTech operations.\nreferences:\n  - https://cybersecuritynews.com/blacktech-apt-deploys-blueshell-linux-backdoor/\nauthor: cyber.netsecops.io\ndate: 2026-07-31\ntags:\n  - attack.t1021.004\n  - attack.lateral_movement\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    DestinationPort: 22\n    Initiated: true\n  filter_internal:\n    DestinationIp|cidr:\n      - 10.0.0.0/8\n      - 172.16.0.0/12\n      - 192.168.0.0/16\n  condition: selection and filter_internal",
+      "description": "Detects unexpected SSH lateral movement between internal servers, which is a potential indicator of BlackTech activity."
+    },
+    {
+      "name": "Linux Process Setting Proxy Environment Variable",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Linux Process Setting Proxy Environment Variable\nid: 5d9e0f8a-7b6c-4f6a-8b3c-1d9e0f8a7b6c\nstatus: experimental\ndescription: Detects a process on a Linux host setting the http_proxy or https_proxy environment variables, which could indicate a backdoor like BlueShell configuring its C2 channel.\nreferences:\n  - https://cybersecuritynews.com/blacktech-apt-deploys-blueshell-linux-backdoor/\nauthor: cyber.netsecops.io\ndate: 2026-07-31\ntags:\n  - attack.t1090.002\n  - attack.defense_evasion\nlevel: low\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    CommandLine|contains:\n      - 'export http_proxy='\n      - 'export https_proxy='\n  condition: selection",
+      "description": "Detects a process setting proxy environment variables on Linux, a technique BlueShell could use to configure its C2 communications."
+    },
+    {
+      "name": "Suspicious Unsigned Go Binary Execution on Linux",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Unsigned Go Binary Execution on Linux\nid: 8b3c1d9e-0f8a-4f6a-8b3c-1d9e0f8a7b6c\nstatus: experimental\ndescription: Detects the execution of an unknown, potentially unsigned binary on a Linux server, which could be a backdoor like the Go-based BlueShell.\nreferences:\n  - https://cybersecuritynews.com/blacktech-apt-deploys-blueshell-linux-backdoor/\nauthor: cyber.netsecops.io\ndate: 2026-07-31\ntags:\n  - attack.t1059.004\n  - attack.execution\nlevel: medium\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|startswith:\n      - '/tmp/'\n      - '/var/tmp/'\n      - '/dev/shm/'\n  condition: selection",
+      "description": "Detects the execution of unknown, unsigned binaries, especially those written in Go, on critical Linux servers, which could indicate a BlueShell infection."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "BlackTech",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "BlueShell",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "BlackTech",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Japanese organizations",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "BlackTech",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Japan",
+      "target_type": "location"
+    },
+    {
+      "source_name": "BlackTech",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "SSH",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BlueShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "External Proxy",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BlueShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BlueShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Asymmetric Cryptography",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BlueShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Unix Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BlueShell",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Obfuscated Files or Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BlueShell",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "BlueShell C2 Server",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Anomalous Internal SSH Connection",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "BlackTech",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "Linux Process Setting Proxy Environment Variable",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "BlueShell",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Suspicious Unsigned Go Binary Execution on Linux",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "BlueShell",
+      "target_type": "malware"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+title: Anomalous TURN or QUIC Traffic from Server
+id: cb3e8510-6761-49ec-ad06-9bb416cdf3f5
+status: experimental
+description: >
+  Detects anomalous TURN (UDP 3478-3481) or QUIC (UDP 443) traffic originating from servers or non-user workstations.
+  This may indicate abuse of services like Microsoft Teams for C2, as seen with Backdoor.Turn.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-17
+tags:
+  - attack.t1090
+  - attack.t1572
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_turn:
+    Protocol: 'udp'
+    DestinationPort:
+      - 3478
+      - 3479
+      - 3480
+      - 3481
+  selection_quic:
+    Protocol: 'udp'
+    DestinationPort: 443
+  filter_workstation:
+    Image|startswith: 'C:\Users\'
+  condition: (selection_turn or selection_quic) and not filter_workstation
+---
+title: Process Injection into DbgView64.exe
+id: 3c2d970e-f63d-4d16-aee2-d84196f0c27f
+status: experimental
+description: Detects process injection into the legitimate Sysinternals tool DbgView64.exe, a technique used by DragonForce to hide their Backdoor.Turn malware.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-17
+tags:
+  - attack.t1055
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_access
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith: '\DbgView64.exe'
+  filter_legit:
+    SourceImage|endswith: 
+      - '\procexp64.exe'
+      - '\procmon.exe'
+  condition: selection and not filter_legit
+---
+title: DragonForce BYOVD Vulnerable Driver Load
+id: 2f8b1c9a-4e2d-4f8a-b1c9-a2d4e8f1c9a2
+status: experimental
+description: Detects the loading of known vulnerable drivers used by DragonForce in BYOVD attacks to disable security tools.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-17
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+level: high
+logsource:
+  category: driver_load
+  product: windows
+detection:
+  selection:
+    ImageLoaded|endswith:
+      - '\HWAuidoOs2Ec.sys'
+      - '\wsftprm.sys'
+      - '\GameDriverX64.sys'
+      - '\K7RKScan.sys'
+  condition: selection
+---
+title: DragonForce Malicious Tool Execution
+id: 5c21780a-f370-4852-8ea3-1b25322eac10
+status: experimental
+description: Detects the execution or loading of custom malicious tools used by DragonForce, including the ABYSSWORKER driver and Backdoor.Turn.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-17
+tags:
+  - attack.t1055
+  - attack.t1562.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\ABYSSWORKER'
+      - '\Backdoor.Turn'
+  condition: selection

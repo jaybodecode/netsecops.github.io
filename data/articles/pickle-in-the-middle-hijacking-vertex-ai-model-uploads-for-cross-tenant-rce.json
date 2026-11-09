@@ -1,0 +1,204 @@
+{
+  "id": "03cd6596-210c-4978-a4ac-137bef5c94df",
+  "slug": "pickle-in-the-middle-hijacking-vertex-ai-model-uploads-for-cross-tenant-rce",
+  "headline": "Pickle in the Middle: Critical RCE Flaw in Google Vertex AI Enables ML Model Hijacking",
+  "title": "Pickle in the Middle: Unit 42 Discovers Cross-Tenant RCE in Google Vertex AI via Model Upload Hijacking",
+  "summary": "Palo Alto Networks' Unit 42 has discovered and disclosed a high-severity vulnerability in Google Cloud's Vertex AI Python SDK that could allow an attacker to achieve remote code execution (RCE) across different customer tenants. The attack, named 'Pickle in the Middle,' exploits a predictable default bucket naming convention in the SDK, allowing for a 'bucket squatting' attack. By preemptively creating a bucket with a known name, an attacker can intercept a victim's machine learning model upload, replace it with a malicious version, and execute arbitrary code within the victim's Vertex AI infrastructure. The flaw resided in the `google-cloud-aiplatform` SDK versions 1.139.0 and 1.140.0 and was fixed by Google in version 1.148.0.",
+  "full_report": "## Executive Summary\n\nPalo Alto Networks' **[Unit 42](https://unit42.paloaltonetworks.com/)** discovered a critical vulnerability in the **[Google Cloud](https://cloud.google.com/)** **[Vertex AI](https://cloud.google.com/vertex-ai)** Python SDK (`google-cloud-aiplatform`) that permitted cross-tenant remote code execution (RCE). The vulnerability, present in SDK versions `1.139.0` and `1.140.0`, allowed an attacker with no initial access to a victim's environment to hijack and poison machine learning (ML) models during the upload process. The core of the issue was a predictable default naming pattern for staging buckets combined with a lack of ownership verification in the SDK.\n\nAn attacker could exploit this by predicting and pre-creating a Google Cloud Storage (GCS) bucket (a technique known as 'bucket squatting'). When a victim using a vulnerable SDK version uploaded a model without specifying a custom staging location, the SDK would inadvertently send the model artifacts to the attacker-controlled bucket. The attacker could then replace the legitimate model with a malicious one, leveraging **[Python](https://www.python.org/)**'s `pickle` deserialization to achieve RCE when the victim deployed the compromised model. **[Google](https://www.google.com)** has addressed this vulnerability in SDK version `1.148.0` following responsible disclosure from Unit 42.\n\n---\n\n## Vulnerability Details\n\nThe vulnerability, dubbed 'Pickle in the Middle,' is a multi-stage attack that hinges on three key components:\n\n1.  **Predictable GCS Bucket Name:** When a user uploads a model via the `VertexAI.Model.upload()` function without specifying a `staging_bucket`, the SDK generates a default bucket name using a deterministic pattern: `[project-id]-[region]-vertex-ai-staging`. An attacker only needs the victim's project ID and region to predict this name.\n\n2.  **Bucket Squatting and Missing Ownership Check:** GCS bucket names are globally unique. An attacker can preemptively create a bucket with the predicted name in their own Google Cloud project. The vulnerable SDK versions checked for the bucket's existence but failed to verify that it belonged to the user's project. Consequently, the SDK would proceed to upload the victim's model artifacts to the attacker's bucket, assuming it was a legitimate staging area.\n\n3.  **Malicious Model Replacement and Deserialization RCE:** The attacker can then, within a narrow time window, replace the victim's uploaded model files (e.g., `model.joblib`) with a malicious version. Since many Python ML models are serialized using `pickle` or its wrapper **[joblib](https://joblib.readthedocs.io/en/latest/)**, the attacker can craft a malicious model file. This file, when deserialized by the Vertex AI serving infrastructure using `pickle.load()` or `joblib.load()`, executes arbitrary code via the `__reduce__` method. This provides the RCE payload delivery mechanism.\n\nThe attack flow is as follows:\n1.  Attacker identifies a target's Google Cloud project ID.\n2.  Attacker creates a GCS bucket in their own project named `[victim-project-id]-[region]-vertex-ai-staging`.\n3.  Victim, using a vulnerable SDK, uploads an ML model without specifying a staging bucket.\n4.  The SDK silently uploads the model artifacts to the attacker's bucket.\n5.  Attacker replaces the legitimate model file with a malicious pickled object designed for RCE.\n6.  Victim deploys the now-compromised model to a Vertex AI endpoint.\n7.  The Vertex AI service loads the malicious model, deserializes the pickle file, and executes the attacker's code within the victim's serving infrastructure.\n\n## Affected Systems\n\n-   **Product:** Google Cloud Vertex AI Python SDK (`google-cloud-aiplatform`)\n-   **Vulnerable Versions:** `1.139.0` and `1.140.0`\n-   **Patched Version:** `1.148.0` and later\n\nOrganizations using Vertex AI for MLOps pipelines are urged to check their dependencies and ensure they are not running the affected versions.\n\n## Exploitation Status\n\nThe vulnerability was discovered and demonstrated through a proof-of-concept by Unit 42 researchers. There is no public evidence of this specific technique being exploited in the wild. However, 'bucket squatting' is a known attack class, and with the public disclosure, threat actors may attempt to find and exploit unpatched systems.\n\n## Impact Assessment\n\nA successful exploit of this vulnerability has severe security implications, leading to a complete compromise of the targeted ML model's serving environment. The business impact includes:\n\n-   **Cross-Tenant Remote Code Execution:** The primary impact is gaining a foothold within the victim's cloud infrastructure, running with the permissions of the Vertex AI service account. This bypasses tenant isolation, a fundamental security promise of cloud platforms.\n-   **Data Exfiltration:** Once RCE is achieved, the attacker can use the service account's permissions to access and exfiltrate sensitive data from GCS buckets, BigQuery datasets, or other resources accessible to the Vertex AI service.\n-   **Lateral Movement:** The attacker can leverage the compromised environment as a pivot point to move laterally within the victim's Google Cloud project and potentially across the broader network.\n-   **Model Poisoning and Inference Hijacking:** The attacker can manipulate the model to produce incorrect outputs, sabotage business processes relying on AI, or steal inference data sent to the model endpoint.\n-   **Supply Chain Risk:** This vulnerability introduces a critical supply chain risk into the MLOps lifecycle, compromising models before they are even deployed.\n\n## IOCs — Directly from Articles\n\nNo specific Indicators of Compromise (IOCs) were provided in the source article, as it details a vulnerability rather than a specific active campaign.\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns to identify potential misuse or vulnerable configurations:\n\n| Type | Value | Description |\n|---|---|---|\n| Log Source | Google Cloud Audit Logs | Monitor for `storage.buckets.create` and `storage.objects.create` events. |\n| Log Pattern | `principalEmail` does not match project | Alert when a GCS bucket is accessed or written to by a service account or user from a different project, especially for buckets with predictable names. |\n| GCS Bucket Name | `*-vertex-ai-staging` | Proactively search for public or externally-owned buckets in your organization that match the default Vertex AI staging pattern. |\n| Network Traffic | Egress from Vertex AI Endpoints | Monitor for unexpected outbound network connections from Vertex AI serving containers to unknown IP addresses or domains. |\n\n## Detection & Response\n\nDetecting and responding to this threat requires a focus on both preventative and detective controls.\n\n**Detection Strategies:**\n1.  **Dependency Scanning:** Regularly scan Python environments and `requirements.txt` files to identify vulnerable versions of the `google-cloud-aiplatform` SDK (`1.139.0`, `1.140.0`).\n2.  **Cloud Audit Logging:** In Google Cloud Logging, create alerts based on queries that detect cross-project access to GCS buckets. Look for `storage.objects.create` events where the `principalEmail` (the actor) belongs to a different project than the bucket's parent project.\n3.  **GCS Bucket Inventory:** Regularly audit GCS buckets to ensure no buckets with the pattern `[your-project-id]-[region]-vertex-ai-staging` are owned by an external project.\n4.  **D3FEND Techniques:** Implement defensive measures like [D3-NTA: Network Traffic Analysis](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) to monitor for anomalous egress from Vertex AI serving environments and [D3-FA: File Analysis](https://d3fend.mitre.org/technique/d3f:FileAnalysis) on model artifacts before deployment.\n\n## Mitigation\n\n**Immediate Actions:**\n1.  **Patch Immediately:** The most critical mitigation is to upgrade the `google-cloud-aiplatform` SDK to version `1.148.0` or newer. This can be done by running: `pip install --upgrade google-cloud-aiplatform`.\n\n2.  **Explicitly Define Staging Buckets:** As a defense-in-depth measure, always specify a known, company-owned GCS bucket when uploading models. This overrides the vulnerable default behavior. Example:\n    ```python\n    from google.cloud import aiplatform\n\n    aiplatform.init(project='your-project', staging_bucket='gs://your-secure-staging-bucket')\n    # ... model upload code\n    ```\n\n**Strategic Recommendations:**\n-   **Principle of Least Privilege:** Ensure the Vertex AI service account (`service-[PROJECT_NUMBER]@gcp-sa-aiplatform.iam.gserviceaccount.com`) has the minimum necessary permissions and does not have overly broad access to unrelated projects or data stores.\n-   **Secure MLOps Pipeline:** Integrate security checks into your CI/CD pipeline for ML, including vulnerability scanning of dependencies, static analysis of code, and integrity checks of model artifacts.\n-   **D3FEND Hardening:** Apply countermeasures such as [D3-ACH: Application Configuration Hardening](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening) by enforcing the use of explicit staging buckets in all model upload scripts and CI/CD pipelines.",
+  "twitter_post": "⚠️ Unit 42 discovers critical RCE flaw in Google's Vertex AI SDK! Attackers can hijack ML models via 'bucket squatting,' leading to cross-tenant compromise. Patch `google-cloud-aiplatform` to v1.148.0+ now! #VertexAI #GCP #CyberSecurity #RCE",
+  "meta_description": "Unit 42 researchers detail a critical remote code execution (RCE) vulnerability in Google Cloud's Vertex AI Python SDK, exploitable through bucket squatting to achieve cross-tenant model hijacking. Learn about the 'Pickle in the Middle' attack and how to mitigate it.",
+  "category": [
+    "Vulnerability",
+    "Cloud Security",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Palo Alto Networks Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Google",
+      "type": "vendor",
+      "url": "https://www.google.com"
+    },
+    {
+      "name": "Google Cloud",
+      "type": "product",
+      "url": "https://cloud.google.com/"
+    },
+    {
+      "name": "Vertex AI",
+      "type": "product",
+      "url": "https://cloud.google.com/vertex-ai"
+    },
+    {
+      "name": "Python",
+      "type": "technology",
+      "url": "https://en.wikipedia.org/wiki/Python_(programming_language)"
+    },
+    {
+      "name": "joblib",
+      "type": "technology"
+    },
+    {
+      "name": "pickle",
+      "type": "technology"
+    },
+    {
+      "name": "Ori Hadad",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/hijacking-vertex-ai-model/",
+      "title": "Pickle in the Middle – Hijacking Vertex AI Model Uploads for Cross-Tenant RCE",
+      "date": "2026-06-15",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-04-15T00:00:00Z",
+      "summary": "Google releases `google-cloud-aiplatform` SDK version 1.148.0, which includes a fix for the vulnerability."
+    },
+    {
+      "datetime": "2026-06-16T10:00:29Z",
+      "summary": "Unit 42 publicly discloses the 'Pickle in the Middle' vulnerability and attack vector."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1619",
+      "name": "Cloud Storage Object Manipulation"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application"
+    },
+    {
+      "id": "T1059.006",
+      "name": "Python"
+    },
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage Object"
+    },
+    {
+      "id": "T1496",
+      "name": "Resource Hijacking"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Upgrade the `google-cloud-aiplatform` SDK to a patched version (1.148.0 or later) to fix the vulnerability.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "As a defense-in-depth measure, explicitly configure a secure, owned staging bucket in all model upload scripts to override the SDK's default behavior.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable and monitor Google Cloud Audit Logs to detect suspicious cross-project access to GCS buckets.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate developers and MLOps engineers on the risks of default configurations and the importance of specifying secure parameters.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The primary and most effective countermeasure is to immediately update the `google-cloud-aiplatform` library across all development environments, CI/CD runners, and production systems. Organizations should implement a process to scan for vulnerable versions `1.139.0` and `1.140.0` and enforce an upgrade to version `1.148.0` or higher. This can be achieved by updating `requirements.txt` or `pyproject.toml` files and rebuilding dependent container images. CI/CD pipelines should include a step that fails the build if vulnerable versions of this library are detected. This directly applies the patch from Google, which introduces the necessary ownership verification for the staging bucket, completely neutralizing the 'bucket squatting' attack vector.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "As a critical defense-in-depth measure, organizations must enforce a policy of never relying on default configurations for sensitive operations like model uploads. Specifically for this threat, all Python scripts and applications using the Vertex AI SDK must be modified to explicitly provide the `staging_bucket` parameter within the `aiplatform.init()` function or the `Model.upload()` method. The specified bucket must be one that is owned and controlled by the organization's Google Cloud project. This can be enforced through code reviews, pre-commit hooks that lint for the absence of this parameter, and policy-as-code tools like Open Policy Agent (OPA) Gatekeeper to validate configurations before deployment. This hardening step mitigates the vulnerability even on unpatched SDK versions and protects against similar future vulnerabilities related to default settings.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To detect potential post-exploitation activity, security teams should implement network traffic analysis for egress traffic originating from Vertex AI serving environments. Since a successful RCE would likely lead to C2 communication or data exfiltration, monitoring for anomalous outbound connections is key. Use VPC Flow Logs in conjunction with Google's Packet Mirroring to capture and analyze traffic. Establish a baseline of normal network behavior for your deployed models. Create alerts for connections to non-standard ports, connections to known malicious IPs or domains, or large data transfers to unexpected destinations (e.g., cloud storage providers not used by your organization). This technique serves as a detective control to identify a compromise if preventative measures fail.",
+      "mitre_mitigation_id": "M1031"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "*-vertex-ai-staging",
+      "description": "Default bucket naming pattern used by the Vertex AI SDK. An attacker can squat a bucket with this name to intercept model uploads.",
+      "context": "Google Cloud Audit Logs for GCS",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Google Cloud Audit Logs",
+      "description": "Primary log source for detecting GCS bucket creation and access events related to this vulnerability.",
+      "context": "SIEM, Google Cloud Logging",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "pip list | grep google-cloud-aiplatform",
+      "description": "Command to check the installed version of the Vertex AI Python SDK to identify vulnerable instances.",
+      "context": "Endpoint detection and response (EDR), asset inventory scripts",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "Model.upload()",
+      "description": "The specific function call in the Vertex AI SDK that is vulnerable if a `staging_bucket` is not provided.",
+      "context": "Static code analysis, code review",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Vertex AI",
+    "Google Cloud",
+    "GCP",
+    "RCE",
+    "Bucket Squatting",
+    "Model Poisoning",
+    "MLSecOps",
+    "AI Security",
+    "Python SDK",
+    "Unit 42"
+  ],
+  "extract_datetime": "2026-06-16T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "All organizations utilizing Google Cloud Vertex AI for machine learning"
+    ]
+  },
+  "pub_date": "2026-06-16",
+  "reading_time_minutes": 11,
+  "createdAt": "2026-06-16T15:00:00.000Z",
+  "updatedAt": "2026-06-16T15:00:00.000Z"
+}

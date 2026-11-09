@@ -1,0 +1,213 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-11T15:21:42.836Z",
+    "article_slug": "trust-no-skill-integrity-verification-for-ai-agent-supply-chains",
+    "article_date": "2026-06-11",
+    "token_usage": {
+      "input_tokens": 144462,
+      "output_tokens": 2853,
+      "cached_tokens": 137782,
+      "total_tokens": 147315,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.054103
+    }
+  },
+  "report_name": "AI Agent 'Skills' Pose Major Supply Chain Risk; New Audit Tool Finds 80% Deviate from Declared Behavior",
+  "threat_actors": [
+    {
+      "name": "AI Supply Chain Attacker",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A class of threat actor that exploits the AI agent ecosystem by publishing malicious 'skills' to public registries to achieve credential theft, data exfiltration, and remote code execution in enterprise environments.",
+      "goals": "Credential theft, data exfiltration, and remote code execution within enterprise environments through compromised AI agents.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "Threat actors publish malicious third-party 'skills' to public registries like OpenClaw, which are then installed by enterprises into their AI agents, compromising the software supply chain."
+    },
+    {
+      "name": "Credentials from Password Stores",
+      "mitre_id": "T1555",
+      "description": "A multi-stage attack pattern identified in malicious AI skills, where a skill reads sensitive configuration files or credentials from password stores and then exfiltrates them."
+    },
+    {
+      "name": "Exfiltration Over Alternative Protocol",
+      "mitre_id": "T1048",
+      "description": "Malicious AI skills exfiltrate stolen credentials and data over the network, often using the agent's existing network permissions in a 'Read-Then-Send' pattern."
+    },
+    {
+      "name": "Command and Scripting Interpreter",
+      "mitre_id": "T1059",
+      "description": "A 'Write-Then-Execute' pattern where a malicious AI skill writes code to a local file and then persuades the LLM agent to execute it, leading to remote code execution via a shell or script interpreter."
+    },
+    {
+      "name": "Abuse Elevation Control Mechanism",
+      "mitre_id": "T1548",
+      "description": "Malicious AI skills leverage the inherent, often privileged, permissions of the AI agent to perform actions beyond their stated purpose, constituting privilege abuse."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Malicious AI Skill",
+      "mitre_id": "",
+      "type": "trojan",
+      "is_family": true,
+      "aliases": [],
+      "description": "A class of malicious third-party code modules for AI agents, distributed via public registries like OpenClaw. These skills contain hidden, multi-stage attack chains for credential theft, data exfiltration, and remote code execution.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "exfiltrates-data",
+        "controls-local-machine"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "OpenClaw",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A public AI agent skill registry that was analyzed by Unit 42, where 80% of skills were found to deviate from their declared behavior and 5% contained malicious attack chains."
+    },
+    {
+      "name": "Enterprises using AI Agents",
+      "identity_class": "class",
+      "sectors": [],
+      "description": "Organizations that adopt Large Language Model (LLM) agents and extend them with third-party 'skills', making them vulnerable to AI supply chain attacks."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Public AI Skill Registries",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "Public registries, such as OpenClaw, used to host and distribute third-party AI agent 'skills', which were found to contain malicious, multi-stage attack chains."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "AI Agent Accessing Sensitive Credential Files",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: AI Agent Accessing Sensitive Credential Files\nid: 2b1c8d7e-4f5a-4b6c-8d9e-0f1a2b3c4d5e\nstatus: experimental\ndescription: Detects common AI agent processes (python, node) accessing sensitive credential files.\nreferences:\n  - https://unit42.paloaltonetworks.com/ai-agent-supply-chain-risks/\nauthor: cyber.netsecops.io\ndate: 2026-06-11\ntags:\n  - attack.t1555\nlevel: high\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection_process:\n    Image|endswith:\n      - '/python'\n      - '/node'\n  selection_file:\n    TargetFilename|contains:\n      - '/.aws/credentials'\n      - '/.ssh/'\n  condition: all of selection_*\nfalsepositives:\n  - Legitimate developer or administrative scripts accessing these files.\n",
+      "description": "Detects AI agent processes accessing sensitive files or directories, such as ~/.aws/ or ~/.ssh/, which could indicate credential theft by a malicious skill."
+    },
+    {
+      "name": "AI Agent Spawning Shell",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: AI Agent Spawning Shell\nid: 9e8f7d6c-5b4a-4c3d-2b1a-0f9e8d7c6b5a\nstatus: experimental\ndescription: Detects common AI agent processes (python, node) spawning a shell, which could indicate remote code execution by a malicious skill.\nreferences:\n  - https://unit42.paloaltonetworks.com/ai-agent-supply-chain-risks/\nauthor: cyber.netsecops.io\ndate: 2026-06-11\ntags:\n  - attack.t1059\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_parent:\n    ParentImage|endswith:\n      - '\\python.exe'\n      - '\\node.exe'\n  selection_child:\n    Image|endswith:\n      - '\\cmd.exe'\n      - '\\powershell.exe'\n  condition: all of selection_*\nfalsepositives:\n  - Legitimate automation scripts that use agents to execute shell commands.\n",
+      "description": "Detects an AI agent process spawning a shell or script interpreter (sh, bash, powershell.exe, cmd.exe), indicative of a 'Write-Then-Execute' RCE attack."
+    },
+    {
+      "name": "Python Reverse Shell Command Line",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Python Reverse Shell Command Line\nid: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the execution of a one-line Python reverse shell, often used for remote code execution.\nreferences:\n  - https://unit42.paloaltonetworks.com/ai-agent-supply-chain-risks/\nauthor: cyber.netsecops.io\ndate: 2026-06-11\ntags:\n  - attack.t1059.006\n  - attack.t1059\nlevel: critical\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|endswith: '/python'\n    CommandLine|contains|all:\n      - 'socket.socket'\n      - '.connect('\n      - 'os.dup2'\n      - 'pty.spawn'\n  condition: selection\nfalsepositives:\n  - Unlikely, but could be triggered by security testing tools.\n",
+      "description": "Detects a classic Python one-liner reverse shell, a technique that could be used by a malicious AI skill to establish a C2 channel."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "AI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Malicious AI Skill",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "AI Supply Chain Attacker",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Enterprises using AI Agents",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Malicious AI Skill",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials from Password Stores",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious AI Skill",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious AI Skill",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious AI Skill",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Abuse Elevation Control Mechanism",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Public AI Skill Registries",
+      "source_type": "infrastructure",
+      "relationship_type": "hosts",
+      "target_name": "Malicious AI Skill",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "AI Agent Accessing Sensitive Credential Files",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Credentials from Password Stores",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "AI Agent Spawning Shell",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Python Reverse Shell Command Line",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Command and Scripting Interpreter",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

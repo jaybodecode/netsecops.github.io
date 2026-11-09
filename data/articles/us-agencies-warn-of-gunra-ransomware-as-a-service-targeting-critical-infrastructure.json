@@ -1,0 +1,196 @@
+{
+  "id": "6e6e12dc-1542-4547-895d-52eda4c5d7a4",
+  "slug": "us-agencies-warn-of-gunra-ransomware-as-a-service-targeting-critical-infrastructure",
+  "headline": "CISA Warns of Gunra RaaS Targeting Critical Infrastructure",
+  "title": "CISA Issues Alert on Gunra Ransomware Targeting Global Sectors",
+  "summary": "A joint advisory from CISA, FBI, NSA, and South Korean authorities warns of the Gunra Ransomware-as-a-Service (RaaS). Derived from leaked Conti source code, the group uses double extortion tactics, targeting critical infrastructure sectors like healthcare and government worldwide. The advisory details TTPs, including exploitation of known vulnerabilities and default credentials, and provides mitigation guidance.",
+  "full_report": "## Executive Summary\nOn August 10, 2026, a coalition of U.S. and South Korean government agencies, including **[CISA](https://www.cisa.gov)**, the **[FBI](https://www.fbi.gov)**, and the **[NSA](https://www.nsa.gov)**, released a joint cybersecurity advisory (CSA) AA26-222A, titled \"#StopRansomware: **[Gunra](https://malpedia.caad.fkie.fraunhofer.de/details/win.gunra)** Ransomware.\" The advisory details the activities of a Ransomware-as-a-Service (RaaS) operation that is actively targeting a broad range of critical infrastructure sectors globally. **[Gunra](https://malpedia.caad.fkie.fraunhofer.de/details/win.gunra)**, which is based on the leaked source code of the infamous Conti ransomware, employs a double-extortion model, exfiltrating sensitive data before encryption and threatening to publish it on a dedicated leak site if the ransom is not paid.\n\n## Threat Overview\nThe **[Gunra](https://malpedia.caad.fkie.fraunhofer.de/details/win.gunra)** operation has been observed targeting government, healthcare, financial services, transportation, and utility sectors across the Americas, Europe, Africa, and the Asia-Pacific region. The group functions as a RaaS platform, recruiting affiliates through dark web forums and offering them an 80% share of ransom payments. This model allows the group to scale its operations rapidly by leveraging a network of initial access brokers and financially motivated cybercriminals.\n\nThe attack lifecycle follows a typical double-extortion pattern:\n1.  **Initial Access:** Gained by exploiting public-facing vulnerabilities (e.g., **CVE-2024-55591**, **CVE-2025-24472**) or using default credentials on remote access services like SSL-VPNs.\n2.  **Data Exfiltration:** Sensitive data, including PII and business-critical files, is stolen from the victim's network.\n3.  **Encryption:** Files are encrypted using a ChaCha20 and RSA-4096 algorithm combination, and the `.ENCRT` extension is appended.\n4.  **Extortion:** A ransom note is dropped, directing victims to a Tor-based negotiation portal and demanding contact via the qTox messaging application.\n\n## Technical Analysis\n**[Gunra](https://malpedia.caad.fkie.fraunhofer.de/details/win.gunra)** ransomware is a 32-bit Windows PE file derived from the leaked Conti v3 source code. Its use of a multi-threaded architecture allows for rapid encryption of files on the compromised system. The encryption scheme, combining the ChaCha20 stream cipher for file content and RSA-4096 for key protection, is robust and makes recovery without the attacker's private key computationally infeasible.\n\nKey TTPs identified in the advisory include:\n- **Initial Access ([T1190](https://attack.mitre.org/techniques/T1190/)):** Exploitation of public-facing applications, specifically citing **CVE-2024-55591** and **CVE-2025-24472**.\n- **Initial Access ([T1078.001](https://attack.mitre.org/techniques/T1078/001/)):** Use of valid accounts with default or easily guessable credentials on remote services.\n- **Impact ([T1486](https://attack.mitre.org/techniques/T1486/)):** Data encrypted for impact. The malware appends the `.ENCRT` extension.\n- **Impact ([T1657](https://attack.mitre.org/techniques/T1657/)):** Financial extortion as the primary goal, a hallmark of ransomware attacks.\n- **Exfiltration ([T1041](https://attack.mitre.org/techniques/T1041/)):** Exfiltration over C2 channel before encryption to enable double extortion.\n\n## Impact Assessment\nThe global targeting of critical infrastructure by the **[Gunra](https://malpedia.caad.fkie.fraunhofer.de/details/win.gunra)** RaaS operation poses a significant risk to public safety and national security. A successful attack on a healthcare facility, utility, or government agency can lead to severe operational disruptions, financial loss, and the exposure of vast amounts of sensitive citizen data. The double-extortion tactic increases pressure on victims to pay, as the consequences of a data leak can sometimes be more damaging than the encryption itself, involving regulatory fines, reputational damage, and loss of public trust.\n\n## IOCs — Directly from Articles\nNo specific file hashes, IP addresses, or domains were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect **[Gunra](https://malpedia.caad.fkie.fraunhofer.de/details/win.gunra)** activity:\n\n| Type | Value | Description |\n|---|---|---|\n| File Extension | `.ENCRT` | The file extension appended to encrypted files by Gunra ransomware. |\n| File Name | `readme.txt` | Common name for ransom notes. Monitor for sudden creation of files with this name across many directories. |\n| Network Traffic | `qtox.so` | Outbound traffic to domains associated with the qTox P2P messaging service, which is used for negotiation. |\n| Log Source | VPN Logs | Monitor for multiple failed login attempts followed by a successful login from an unusual location, indicating a brute-force or credential stuffing attack. |\n| EDR Query | `vssadmin.exe delete shadows` | Search for command-line execution of `vssadmin` to delete volume shadow copies, a common precursor to encryption. |\n\n## Detection & Response\n1.  **Network Monitoring:** Implement network traffic analysis (D3FEND **[NTA](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)**) to detect large, unexpected data outflows, which could be a sign of data exfiltration prior to encryption. Monitor for traffic to known anonymization services or unusual destinations.\n2.  **Endpoint Detection:** Use EDR solutions to monitor for common ransomware behaviors, such as rapid file modification, deletion of volume shadow copies (`vssadmin`), and the creation of ransom notes in multiple directories.\n3.  **Log Auditing:** Regularly audit logs from VPNs, firewalls, and domain controllers. Look for signs of brute-force attacks, lateral movement (e.g., unusual RDP or SMB connections), and privilege escalation. Enable logging for process creation (Event ID 4688) and command-line activity.\n4.  **File Integrity Monitoring:** Deploy file integrity monitoring on critical servers to alert on the creation of new files with extensions like `.ENCRT` or files named `readme.txt`.\n\n## Mitigation\nThe joint advisory provides several key mitigation recommendations:\n\n1.  **Patch Management ([M1051](https://attack.mitre.org/mitigations/M1051/)):** Prioritize patching of known exploited vulnerabilities, especially those in internet-facing systems like **CVE-2024-55591** and **CVE-2025-24472**.\n2.  **Identity and Access Management ([M1032](https://attack.mitre.org/mitigations/M1032/)):** Enforce multi-factor authentication (MFA) on all remote access services (VPNs, RDP) and for all user accounts where possible. Disable or change default credentials immediately.\n3.  **Network Segmentation ([M1030](https://attack.mitre.org/mitigations/M1030/)):** Segment networks to prevent attackers from moving laterally from IT to OT environments or between different subnets. This contains the blast radius of an intrusion.\n4.  **Backup and Recovery:** Maintain and test immutable, offline backups of critical data. This ensures that in the event of an attack, you can restore operations without paying a ransom.\n5.  **User Training ([M1017](https://attack.mitre.org/mitigations/M1017/)):** Train employees to identify and report phishing attempts, which are a common vector for initial access.",
+  "twitter_post": "CISA, FBI & NSA issue joint alert on 'Gunra' Ransomware-as-a-Service. Derived from Conti code, the group uses double extortion to target critical infrastructure globally. Patching and MFA are critical. #Ransomware #Gunra #CISA #CyberSecurity",
+  "meta_description": "US and South Korean agencies warn of Gunra, a Ransomware-as-a-Service (RaaS) operation based on Conti code, targeting critical infrastructure with double extortion.",
+  "category": [
+    "Ransomware",
+    "Threat Intelligence",
+    "Cyberattack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "CISA",
+      "type": "government_agency"
+    },
+    {
+      "name": "Conti",
+      "type": "malware"
+    },
+    {
+      "name": "FBI",
+      "type": "government_agency"
+    },
+    {
+      "name": "Gunra",
+      "type": "malware"
+    },
+    {
+      "name": "NSA",
+      "type": "government_agency"
+    },
+    {
+      "name": "South Korea National Police Agency",
+      "type": "government_agency"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2024-55591",
+      "cvss_score": null,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": null
+    },
+    {
+      "id": "CVE-2025-24472",
+      "cvss_score": null,
+      "cvss_version": null,
+      "kev": 0,
+      "severity": null
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-222a",
+      "title": "#StopRansomware: Gunra Ransomware",
+      "date": "2026-08-10",
+      "website": null
+    },
+    {
+      "url": "https://www.meritalk.com/articles/cisa-fbi-warn-gunra-ransomware-targets-critical-infrastructure/",
+      "title": "CISA, FBI Warn Gunra Ransomware Targets Critical Infrastructure",
+      "date": "2026-08-10",
+      "website": null
+    },
+    {
+      "url": "https://industrialcyber.co/cisa/gunra-ransomware-expands-globally-as-us-south-korean-agencies-warn-of-data-theft-encryption-and-extortion-tactics/",
+      "title": "Gunra ransomware expands globally as US, South Korean agencies warn of data theft, encryption, and extortion tactics",
+      "date": null,
+      "website": null
+    },
+    {
+      "url": "https://media.defense.gov/2026/Aug/10/2003976697/-1/-1/0/CSA_STOPRANSOMWARE_GUNRA_RANSOMWARE.PDF",
+      "title": "CSA_STOPRANSOMWARE_GUNRA_RANSOMWARE.PDF",
+      "date": null,
+      "website": null
+    },
+    {
+      "url": "https://www.hipaajournal.com/gunra-ransomware/",
+      "title": "Gunra Ransomware",
+      "date": null,
+      "website": null
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-04",
+      "summary": "Gunra ransomware variant first appears."
+    },
+    {
+      "datetime": "2026-01",
+      "summary": "Gunra evolves into a Ransomware-as-a-Service (RaaS) model."
+    },
+    {
+      "datetime": "2026-08-10",
+      "summary": "CISA, FBI, NSA, and South Korean agencies issue a joint advisory on Gunra."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": null
+    },
+    {
+      "id": "T1078.001",
+      "name": "Valid Accounts: Default Accounts",
+      "tactic": null
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": null
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": null
+    },
+    {
+      "id": "T1566",
+      "name": "Phishing",
+      "tactic": null
+    }
+  ],
+  "tags": [
+    "CISA",
+    "Conti",
+    "Gunra",
+    "RaaS",
+    "critical infrastructure",
+    "double extortion"
+  ],
+  "extract_datetime": "2026-08-11",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Government",
+      "Critical Infrastructure",
+      "Healthcare",
+      "Finance",
+      "Transportation"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "CISA",
+    "Conti",
+    "Gunra",
+    "RaaS",
+    "critical infrastructure",
+    "double extortion"
+  ],
+  "pub_date": "2026-08-11",
+  "reading_time_minutes": null,
+  "createdAt": "2026-08-11T15:00:00.000Z",
+  "updatedAt": "2026-08-12T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-08-12T12:00:00Z",
+      "summary": "New advisory details Gunra ransomware's exploitation of Fortinet and Schneider Electric flaws, including MFA bypass and session hijacking, demanding multi-million dollar ransoms.",
+      "content": "The updated advisory from CISA, FBI, NSA, DC3, USSS, and KNPA provides critical new details on Gunra ransomware. It specifically identifies vulnerabilities in Fortinet FortiOS/FortiProxy and Schneider Electric PowerLogic (CVE-2024-5559) as initial access vectors. New TTPs include session hijacking via SSL-VPN manipulation, MFA bypass through VDI portal tampering, and lateral movement using PsExec/WMIC. The group also employs defense evasion by deleting logs and demands multi-million dollar ransoms. New hunting hints include specific URL patterns, process names, and log analysis for these advanced tactics.",
+      "severity_change": "increased",
+      "sources": [
+        {
+          "url": "https://industrialcyber.co/cisa/gunra-ransomware-expands-globally-as-us-south-korean-agencies-warn-of-data-theft-encryption-and-extortion-tactics/",
+          "title": "Gunra ransomware expands globally as US, South Korean agencies warn of data theft, encryption and extortion tactics",
+          "website": "",
+          "date": "2026-08-12T12:00:00Z"
+        },
+        {
+          "url": "https://thehackernews.com/2026/08/gunra-ransomware-exploits-fortinet-and.html",
+          "title": "Gunra Ransomware Exploits Fortinet and Schneider Electric Flaws to Breach Networks",
+          "website": "",
+          "date": "2026-08-12T12:00:00Z"
+        },
+        {
+          "url": "https://www.meritalk.com/articles/cisa-fbi-warn-gunra-ransomware-targets-critical-infrastructure/",
+          "title": "CISA, FBI Warn Gunra Ransomware Targets Critical Infrastructure",
+          "website": "",
+          "date": "2026-08-12T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "id": "1e35f691-9820-42f7-9533-a51b7f2c1b85",
+  "slug": "dragonforce-ransomware-abuses-microsoft-teams-for-stealthy-c2-communication",
+  "headline": "DragonForce Ransomware Hides C2 Traffic in Microsoft Teams to Evade Detection for Months",
+  "title": "DragonForce Ransomware Group Abuses Microsoft Teams TURN Servers for Covert Command and Control",
+  "summary": "The DragonForce ransomware group has deployed a novel Go-based backdoor, 'Backdoor.Turn', that abuses Microsoft Teams' TURN relay servers to disguise its command-and-control (C2) communications. This sophisticated technique allowed the threat actors to remain undetected on a victim's network for up to two months by making their malicious traffic appear as legitimate Teams activity. The attack highlights a new level of tradecraft for the group, making detection through traditional network filtering methods exceptionally difficult.",
+  "full_report": "## Executive Summary\n\nThe **[DragonForce](https://malpedia.caad.fkie.fraunhofer.de/actor/dragonforce)** ransomware group has demonstrated a significant evolution in its technical capabilities by using **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** infrastructure for covert command-and-control (C2) communications. In a recent incident targeting a U.S. services firm, the group deployed a custom Go-based backdoor known as **Backdoor.Turn**. This malware cleverly abuses the Traversal Using Relays around NAT (TURN) protocol and legitimate **[Microsoft](https://www.microsoft.com/security)** relay servers to establish a C2 channel. By wrapping its traffic to look like standard Teams activity, the threat actor was able to persist on the network for one to two months before detection. This technique represents a sophisticated method of defense evasion that challenges conventional network security monitoring and requires advanced behavioral analysis to uncover.\n\n---\n\n## Threat Overview\n\n**[DragonForce](https://malpedia.caad.fkie.fraunhofer.de/actor/dragonforce)**, a threat actor active since at least June 2023, has escalated its operations from a standard ransomware-as-a-service (RaaS) model to a more organized and technically proficient group. The attack began with an initial intrusion into a U.S. services firm in December 2025, likely through an unpatched SQL server. After gaining a foothold, the attackers used a multi-stage process involving DLL sideloading and exploitation of a **[Huawei](https://www.huawei.com/en/psirt)** driver vulnerability to escalate privileges.\n\nThe most notable aspect of the attack is the deployment of **Backdoor.Turn**. This malware is specifically designed to abuse **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)**' TURN relay servers. The malware first obtains an anonymous visitor token from **[Microsoft](https://www.microsoft.com/security)**'s Skype services, then uses a legitimate TURN server to broker a connection. This initial communication appears as normal Teams traffic. Once the connection is relayed, the backdoor establishes a direct, encrypted QUIC session with the true C2 server, effectively bypassing perimeter security controls that might otherwise block connections to suspicious IPs.\n\n## Technical Analysis\n\nThe attack chain demonstrates a high level of operational security and technical skill:\n\n1.  **Initial Access:** Believed to be via an unknown vulnerability in an SQL or MSSQL server. The possibility of access being purchased from an initial access broker has not been ruled out.\n2.  **Defense Evasion & Privilege Escalation:** The attackers used [`T1574.002 - DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/), loading their malicious code using a legitimate executable (`DbgView64.exe`). They then exploited a then-undocumented vulnerability in a **[Huawei](https://www.huawei.com/en/psirt)** driver to escalate privileges to SYSTEM.\n3.  **Command and Control:** This is the most innovative part of the attack, leveraging [`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/) and [`T1090.002 - External Proxy`](https://attack.mitre.org/techniques/T1090/002/).\n    *   **Backdoor.Turn** authenticates to **[Microsoft](https://www.microsoft.com/security)**'s identity services to get a temporary token.\n    *   It uses this token to connect to a legitimate **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** TURN server.\n    *   The TURN server relays the connection setup to the attacker's C2 server.\n    *   A direct peer-to-peer QUIC session is then established between the implant and the C2 server, with the TURN server dropping out of the communication path. From a firewall or proxy perspective, the initial connection is to a trusted **[Microsoft](https://www.microsoft.com/security)** IP, making it difficult to block.\n4.  **Actions on Objectives:** The **Backdoor.Turn** malware provides standard RAT capabilities, including remote command execution ([`T1059.003 - Windows Command Shell`](https://attack.mitre.org/techniques/T1059/003/)), network scanning ([`T1046 - Network Service Discovery`](https://attack.mitre.org/techniques/T1046/)), and credential theft ([`T1003 - OS Credential Dumping`](https://attack.mitre.org/techniques/T1003/)).\n\n## Impact Assessment\n\nThe primary impact of this technique is prolonged and stealthy network persistence. By masquerading C2 traffic as legitimate **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** activity, **[DragonForce](https://malpedia.caad.fkie.fraunhofer.de/actor/dragonforce)** can evade detection for extended periods, allowing them ample time to conduct reconnaissance, move laterally, and exfiltrate large volumes of data before deploying ransomware. This significantly increases the dwell time and the potential damage from an intrusion. For the victimized U.S. services firm, this meant the attackers were active on their network for up to two months, likely resulting in a comprehensive compromise of their environment before the final ransomware payload was executed.\n\n### IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect this type of activity:\n\n| Type | Value | Description |\n|---|---|---|\n| Network Traffic Pattern | Outbound UDP/3478 | Monitor for unexpected or high-volume traffic on port 3478 (STUN/TURN) from servers or endpoints that do not typically use real-time communication applications. |\n| Network Traffic Pattern | QUIC traffic to non-Microsoft IPs | After an initial TURN handshake with a Microsoft IP, look for subsequent direct QUIC (UDP/443) sessions to unknown or untrusted IP addresses. |\n| Process Name | `DbgView64.exe` | Monitor for the execution of this legitimate Sysinternals tool, especially if it is running from an unusual directory or has unexpected network connections. |\n| Log Source | `Firewall/Proxy Logs` | Analyze logs for patterns where an internal host communicates with a known Microsoft TURN server IP and then immediately initiates a long-lived, high-volume UDP session to an unrelated external IP. |\n\n## Detection & Response\n\nDetecting this attack requires moving beyond simple IP/domain blocklists.\n\n1.  **Network Traffic Analysis:** Employ **[D3FEND](https://d3fend.mitre.org/)**'s [`Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis) (NTA). Baseline normal **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** traffic patterns within your environment. Look for outliers, such as servers initiating TURN sessions or endpoints with unusual data transfer volumes within QUIC sessions that follow a TURN handshake.\n2.  **TLS/SSL Inspection:** Where possible, decrypt and inspect traffic to identify anomalies in protocol usage. While the QUIC session is encrypted, the initial setup might reveal clues.\n3.  **Endpoint Behavioral Analysis:** Use an EDR solution to detect the initial stages of the attack. Monitor for legitimate processes like `DbgView64.exe` loading unusual DLLs or making network connections. Look for processes that exploit driver vulnerabilities for privilege escalation.\n4.  **Log Aggregation:** Correlate endpoint process logs with network flow data. An EDR alert for DLL sideloading followed by anomalous TURN/QUIC network activity from the same host is a strong indicator of a **Backdoor.Turn** compromise.\n\n## Mitigation\n\n1.  **Egress Traffic Filtering:** Implement strict egress filtering rules. While blocking all **[Microsoft](https://www.microsoft.com/security)** IPs is not feasible, restrict outbound TURN (UDP/3478) and QUIC (UDP/443) traffic from servers and systems that have no business need for real-time communication applications like Teams. This is a key **[D3FEND](https://d3fend.mitre.org/)** [`Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering) strategy.\n2.  **Patch Management:** Ensure all public-facing applications, especially SQL/MSSQL servers, are fully patched to prevent initial access. This aligns with [`M1051 - Update Software`](https://attack.mitre.org/mitigations/M1051/).\n3.  **Application Control:** Use application control solutions to prevent the execution of unauthorized or suspicious tools like `DbgView64.exe` from non-standard locations. This maps to [`M1038 - Execution Prevention`](https://attack.mitre.org/mitigations/M1038/).\n4.  **Driver Blacklisting:** Maintain a blacklist of known vulnerable drivers to prevent their loading, which would block the privilege escalation vector used in this attack.",
+  "twitter_post": "🐲 DragonForce ransomware is hiding in plain sight! A new backdoor abuses Microsoft Teams TURN servers to disguise C2 traffic, staying hidden for months. This advanced technique makes detection a major challenge. #Ransomware #CyberAttack #ThreatIntel",
+  "meta_description": "The DragonForce ransomware group is using a sophisticated backdoor called 'Backdoor.Turn' to abuse Microsoft Teams infrastructure for stealthy command-and-control, evading detection for months.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "DragonForce",
+      "type": "threat_actor",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/dragonforce"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Microsoft Teams",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+    },
+    {
+      "name": "Backdoor.Turn",
+      "type": "malware"
+    },
+    {
+      "name": "Symantec",
+      "type": "vendor",
+      "url": "https://www.broadcom.com/products/cyber-security"
+    },
+    {
+      "name": "Carbon Black",
+      "type": "vendor",
+      "url": "https://www.vmware.com/products/carbon-black-cloud.html"
+    },
+    {
+      "name": "Huawei",
+      "type": "vendor",
+      "url": "https://www.huawei.com/en/psirt"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/",
+      "title": "Microsoft Teams Relay Servers Abused in DragonForce Ransomware Attack",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com",
+      "x_url": "https://x.com/SecurityWeek"
+    },
+    {
+      "url": "https://securityaffairs.com/193801/security/dragonforce-hid-inside-microsoft-teams-and-nobody-noticed-for-two-months.html",
+      "title": "DragonForce Hid Inside Microsoft Teams and Nobody Noticed for Two Months",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/06/dragonforce-hackers-abuse-microsoft.html",
+      "title": "DragonForce Hackers Abuse Microsoft Teams Relays to Hide Backdoor.Turn C2 Traffic",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com",
+      "x_url": "https://x.com/thehackersnews"
+    },
+    {
+      "url": "https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/",
+      "title": "DragonForce Ransomware Exploited Microsoft Teams to Hide Attack",
+      "friendly_name": "Infosecurity Magazine",
+      "website": "infosecurity-magazine.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-12-01T00:00:00Z",
+      "summary": "Initial intrusion at the U.S. services firm is believed to have occurred."
+    },
+    {
+      "datetime": "2026-02-01T00:00:00Z",
+      "summary": "Attackers remained undetected on the network for approximately one to two months, until late January or early February 2026."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1090.002",
+      "name": "External Proxy",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1059.003",
+      "name": "Windows Command Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1003",
+      "name": "OS Credential Dumping",
+      "tactic": "Credential Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Implement strict egress filtering to block or limit outbound protocols like TURN and QUIC from servers and endpoints that do not require them.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1031",
+      "name": "Network Intrusion Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NTA",
+          "name": "Network Traffic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis"
+        }
+      ],
+      "description": "Use network analysis and behavioral monitoring to detect anomalous protocol usage that deviates from a baseline of normal activity.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Patching public-facing applications like SQL servers is critical to prevent initial access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application allowlisting to prevent the execution of tools abused for DLL side-loading.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "To counter the 'Backdoor.Turn' malware, security teams must move beyond signature-based detection and implement advanced Network Traffic Analysis. The primary goal is to baseline legitimate Microsoft Teams communication patterns and hunt for deviations. Specifically, configure NTA tools and SIEM rules to detect hosts (especially servers) that initiate STUN/TURN sessions (UDP/3478) to Microsoft IPs and then immediately establish long-lived, high-volume QUIC sessions to non-Microsoft external IPs. This two-stage pattern is a strong indicator of this C2 technique. Enriching flow data with GeoIP information can help flag when the final QUIC destination is in an unusual or high-risk region. This requires full network visibility (e.g., via network taps or flow logs from core switches/firewalls) and the ability to correlate different network sessions from a single internal host.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "A robust egress filtering policy is a powerful mitigation against this threat. Since the attack relies on outbound TURN and QUIC protocols, organizations should deny this traffic by default and only allow it for specific hosts that require it. For example, create a security group for user workstations that are authorized to use Microsoft Teams and allow outbound UDP/3478 and UDP/443 (for QUIC) only for that group. Explicitly block this traffic from all servers, domain controllers, and other critical infrastructure assets that have no legitimate reason to initiate a Teams call. This network segmentation approach contains the threat by preventing critical servers, if compromised, from establishing the covert C2 channel.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Focus EDR and threat hunting efforts on detecting the precursor activities to the C2 communication. Since DragonForce used DLL side-loading with `DbgView64.exe`, create detection rules for this specific behavior. Hunt for instances of `DbgView64.exe` running from unexpected directories (e.g., `C:\\ProgramData`, `C:\\Users\\Public`) or legitimate but rarely used applications initiating network connections for the first time. Correlating this endpoint process data with the network anomalies described in the NTA recommendation provides a high-fidelity alert. For example, an EDR alert for `DbgView64.exe` on a server, followed by a network alert for a TURN session from that same server, should be treated as a critical incident.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "port",
+      "value": "3478",
+      "description": "Default port for STUN/TURN servers. Unexpected outbound UDP traffic on this port from servers could indicate abuse.",
+      "context": "Firewall and NetFlow logs",
+      "confidence": "high"
+    },
+    {
+      "type": "protocol",
+      "value": "QUIC",
+      "description": "Protocol used for the direct C2 session after the TURN handshake. Monitoring for anomalous QUIC sessions is key.",
+      "context": "Network Traffic Analysis (NTA) platforms and deep packet inspection tools.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Microsoft TURN IP -> Non-Microsoft QUIC IP",
+      "description": "A pattern where a host connects to a known Microsoft TURN relay server, followed shortly by a direct QUIC connection to an unrelated, non-Microsoft IP address.",
+      "context": "Correlating NetFlow data with IP reputation and ownership information in a SIEM.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "DbgView64.exe",
+      "description": "Legitimate Sysinternals tool abused for DLL Side-Loading in this attack.",
+      "context": "EDR logs. Alert on execution from unusual paths or if it initiates network connections.",
+      "confidence": "medium"
+    },
+    {
+      "type": "log_source",
+      "value": "SQL Server Audit Logs",
+      "description": "Given the suspected initial access vector, logs may show suspicious login attempts or command execution from the SQL server process.",
+      "context": "SIEM monitoring of database logs.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "DragonForce",
+    "Ransomware",
+    "Backdoor.Turn",
+    "Microsoft Teams",
+    "C2",
+    "TURN",
+    "QUIC",
+    "Defense Evasion"
+  ],
+  "extract_datetime": "2026-06-18T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "U.S. services firm"
+    ]
+  },
+  "pub_date": "2026-06-18",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-06-18T15:00:00.000Z",
+  "updatedAt": "2026-06-19T12:00:00Z",
+  "updates": [
+    {
+      "update_id": "update-1",
+      "update_date": "2026-06-19T12:00:00Z",
+      "datetime": "2026-06-19T12:00:00Z",
+      "title": "Update 1",
+      "summary": "New analysis by Symantec and Carbon Black reveals DragonForce's 'Backdoor.Turn' is sometimes deployed post-ransomware for long-term persistence or access sales, indicating a more strategic threat.",
+      "sources": [
+        {
+          "title": "DragonForce Hackers Abuse Microsoft Teams Relays to Hide Backdoor.Turn C2 Traffic",
+          "url": "https://thehackernews.com/2026/06/dragonforce-hackers-abuse-microsoft.html"
+        },
+        {
+          "title": "DragonForce Ransomware Abused Microsoft Teams to Hide Malware Activity",
+          "url": "https://hackread.com/dragonforce-ransomware-microsoft-teams-malware/"
+        },
+        {
+          "title": "DragonForce Ransomware Exploited Microsoft Teams to Hide Attack",
+          "url": "https://www.infosecurity-magazine.com/news/dragonforce-ransomware-hidden/"
+        }
+      ]
+    }
+  ]
+}

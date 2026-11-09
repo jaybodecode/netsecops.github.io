@@ -1,0 +1,190 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:47:40.009Z",
+    "article_slug": "utah-surgical-practice-rmas-breach-exposes-data-of-50000-patients",
+    "article_date": "2026-04-14",
+    "token_usage": {
+      "input_tokens": 141840,
+      "output_tokens": 2614,
+      "cached_tokens": 136033,
+      "total_tokens": 144454,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.050403
+    }
+  },
+  "report_name": "Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed",
+  "threat_actors": [
+    {
+      "name": "PEAR",
+      "mitre_id": "",
+      "aliases": [
+        "Pure Extortion and Ransom"
+      ],
+      "description": "A threat group focused on pure extortion that claimed responsibility for the data breach at Rocky Mountain Associated Physicians. The group exfiltrated a large patient database and, after its ransom demands were not met, leaked the stolen data on its dark web data leak site.",
+      "goals": "Financial extortion of victim organizations by threatening to leak stolen sensitive data.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Data from Information Repositories",
+      "mitre_id": "T1213",
+      "description": "The PEAR group gained unauthorized access to RMAP's network and exfiltrated the primary patient database."
+    },
+    {
+      "name": "Exfiltration Over C2 Channel",
+      "mitre_id": "T1041",
+      "description": "The attackers transferred the large, stolen patient database out of RMAP's network to their own infrastructure."
+    }
+  ],
+  "malware": [
+    {
+      "name": "PEAR Ransomware",
+      "mitre_id": "",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [],
+      "description": "The toolset used by the PEAR (Pure Extortion and Ransom) group. In the RMAP incident, it was used for data exfiltration and extortion, with the group publicly leaking the stolen data after ransom demands were not met. The attack focused on extortion rather than encryption.",
+      "capabilities": [
+        "exfiltrates-data",
+        "communicates-with-c2"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Rocky Mountain Associated Physicians",
+      "identity_class": "organization",
+      "sectors": [
+        "healthcare"
+      ],
+      "description": "A surgical and medical weight loss practice in Salt Lake City, Utah, that suffered a data breach affecting 50,640 patients by the PEAR extortion group."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Utah",
+      "country": "United States",
+      "region": "northern-america"
+    },
+    {
+      "name": "Salt Lake City",
+      "country": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "PEAR Data Leak Site",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "A dark web site used by the PEAR group to publicly leak the entire stolen dataset from Rocky Mountain Associated Physicians after the extortion attempt failed."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Data Staging via Archive File Creation",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Data Staging via Archive File Creation in Temp Directory\nid: 2b9a7c1d-8e4f-4b1a-9c3d-5e6f7a8b9c0d\nstatus: experimental\ndescription: |\n  Detects the creation of large archive files (zip, rar, 7z) in common temporary directories.\n  This is a common technique used by attackers to stage data for exfiltration.\nreferences:\n  - Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed\nauthor: cyber.netsecops.io\ndate: 2026-04-14\ntags:\n  - attack.t1074.001\n  - attack.collection\nlevel: medium\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|startswith:\n      - 'C:\\Windows\\Temp\\'\n      - 'C:\\Users\\Public\\'\n    TargetFilename|endswith:\n      - '.zip'\n      - '.rar'\n      - '.7z'\n  condition: selection",
+      "description": "Detects the creation of large archive files in temporary directories, a common TTP for staging data before exfiltration, as suggested in the report's detection guidance."
+    },
+    {
+      "name": "Anomalous Egress from Database Server",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Egress Traffic from Database Server\nid: 9e8f7d6c-5b4a-4c3d-2e1f-0a9b8c7d6e5f\nstatus: experimental\ndescription: |\n  Detects large, sustained outbound data flows from a known database server to an external IP address.\n  This is a potential indicator of data exfiltration.\nreferences:\n  - Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed\nauthor: cyber.netsecops.io\ndate: 2026-04-14\ntags:\n  - attack.t1041\n  - attack.exfiltration\nlevel: high\nlogsource:\n  category: network_traffic\ndetection:\n  selection:\n    src_ip: \n      # Add your database server IPs here\n      - '10.0.1.50'\n      - '192.168.1.100'\n    # This requires a baseline or thresholding capability in the SIEM\n    # The following is a placeholder for a high volume of bytes out\n    bytes_out|gt: 100000000 # 100MB\n  filter:\n    dst_ip|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  condition: selection and not filter",
+      "description": "Detects large, sustained outbound data flows from a database server to an external IP address, a potential indicator of data exfiltration mentioned in the report."
+    },
+    {
+      "name": "Suspicious Full Table Database Query",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Full Table Database Query\nid: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d\nstatus: experimental\ndescription: |\n  Monitors for database queries that access large tables in their entirety, especially from non-standard application accounts or at unusual times. This can be a sign of data theft.\nreferences:\n  - Utah Surgical Practice Data Leaked by 'PEAR' Ransomware; 50,000 Patients' SSNs and Financial Info Exposed\nauthor: cyber.netsecops.io\ndate: 2026-04-14\ntags:\n  - attack.t1213\n  - attack.collection\nlevel: medium\nlogsource:\n  category: database\ndetection:\n  selection:\n    query|contains|all:\n      - 'SELECT * FROM'\n      # Add sensitive table names here\n      - 'patients'\n      - 'medical_records'\n  filter:\n    # Add legitimate application user accounts here\n    user:\n      - 'app_service_account'\n  condition: selection and not filter",
+      "description": "Detects database queries accessing large tables in their entirety, especially from non-standard accounts, which can indicate data theft as described in the report."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "PEAR",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PEAR Ransomware",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "PEAR",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data from Information Repositories",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PEAR",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PEAR",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Rocky Mountain Associated Physicians",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "PEAR Ransomware",
+      "source_type": "malware",
+      "relationship_type": "exfiltrates-to",
+      "target_name": "PEAR Data Leak Site",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Rocky Mountain Associated Physicians",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "Utah",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Data Staging via Archive File Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PEAR",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "Anomalous Egress from Database Server",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious Full Table Database Query",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data from Information Repositories",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

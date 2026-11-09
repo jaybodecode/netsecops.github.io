@@ -1,0 +1,181 @@
+{
+  "id": "1bbe787c-8a69-462d-bc5d-b050cb790347",
+  "slug": "cisco-talos-uncovers-jwr-phishing-framework-with-live-operator-steering",
+  "headline": "Cisco Talos uncovers 'JWR' phishing framework with live operator steering",
+  "title": "JWR Phishing Framework Enables Live, Operator-Driven Attacks",
+  "summary": "Cisco Talos has discovered a sophisticated phishing-as-a-service (PhaaS) framework named 'JWR' that enables live, operator-driven attacks. Unlike traditional automated phishing kits, JWR uses an encrypted WebSocket channel to allow an attacker to monitor a victim's actions in real-time and dynamically guide them. The framework is capable of stealing credentials, 2FA codes, payment card data, and even images of identity documents. JWR has been observed in smishing campaigns targeting users in Southeast Asia and the Middle East, impersonating major brands like Shopify and PayPal. Talos notes similarities to another PhaaS platform, 'The Outsider,' and suggests a link to Chinese-speaking threat actors.",
+  "full_report": "## Executive Summary\n\nResearchers at **[Cisco Talos](https://www.talosintelligence.com/)** have detailed a new and highly sophisticated phishing framework known as **\"JWR\"**. This framework moves beyond traditional, static phishing kits by enabling live, interactive attacks steered by a human operator. Through an encrypted WebSocket connection, attackers can monitor victims in real-time, guiding them through fake login and checkout processes to steal a wide range of sensitive data, including credentials, 2FA codes, payment information, and personal documents. The framework is being actively used in smishing campaigns and is assessed to be a variant of another Phishing-as-a-Service (PhaaS) platform called \"The Outsider,\" with potential links to Chinese-speaking actors. The rise of such interactive frameworks poses a significant threat as they are designed to defeat common security controls like multi-factor authentication.\n\n---\n\n## Threat Overview\n\n**JWR** represents the next evolution in phishing, often referred to as Adversary-in-the-Middle (AiTM) phishing. Instead of just hosting a fake page and waiting for credentials, the framework acts as a real-time proxy and interactive console for the attacker.\n\n**How it works:**\n1.  **Lure**: A victim receives a lure, typically via SMS (smishing), with a link to a phishing page controlled by **JWR**. Observed lures relate to postal services and toll road payments.\n2.  **Connection**: The victim's browser loads the phishing page, which contains a client-side engine. This engine establishes an AES-CTR encrypted WebSocket connection back to the attacker's server.\n3.  **Live Interaction**: A live operator is alerted and can now see everything the victim types into the form fields in real-time. The operator can dynamically inject new prompts or modify the page.\n4.  **Data Theft**: The operator can harvest not just usernames and passwords, but also guide the victim through subsequent steps to steal 2FA codes, credit card details, Social Security numbers, and even prompt for uploads of identity documents like passports.\n\nThis live interaction allows the attacker to adapt to unexpected user behavior and overcome challenges that would foil an automated kit, making it highly effective at bypassing MFA.\n\n## Technical Analysis\n\nThe core of the **JWR** framework is its use of WebSockets for persistent, bidirectional communication. This is a significant step up from the simple `POST` requests used by most phishing kits. The communication is encrypted using AES-CTR, making it difficult for network security tools to inspect the exfiltrated data.\n\nThe framework is designed to be modular and can convincingly impersonate a wide variety of major brands, including **[Shopify](https://www.shopify.com/)**, **[PayPal](https://www.paypal.com/)**, **[Apple](https://www.apple.com/)**, and Klarna.\n\nMITRE ATT&CK techniques associated with this activity include:\n-   **[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002/)**: The use of SMS links (smishing) to deliver the initial lure.\n-   **[T1539 - Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539/)**: By acting as a proxy, the framework can capture session cookies after a successful login, allowing the attacker to hijack the session.\n-   **[T1649 - Steal or Forge Authentication Certificates](https://attack.mitre.org/techniques/T1649/)**: While not certificates, the real-time theft of 2FA codes serves a similar purpose in bypassing MFA.\n-   **[T1111 - Two-Factor Authentication Interception](https://attack.mitre.org/techniques/T1111/)**: The live nature of the attack is a form of 2FA interception.\n\n**Cisco Talos** assesses with medium confidence that **JWR** is related to \"The Outsider\" PhaaS platform and may be operated by Chinese-speaking actors, based on code similarities and language artifacts in the operator console.\n\n## Impact Assessment\n\nThe impact of a successful **JWR** attack is far greater than a standard phishing attack. Because it can defeat MFA, it can lead to the full compromise of highly sensitive accounts (e.g., email, banking, corporate SSO). The ability to steal identity documents also opens the door to identity theft and the creation of fraudulent accounts in the victim's name. For organizations, the compromise of a single employee's account via **JWR** could provide an initial access vector for a major network intrusion. The campaigns have been observed targeting users in Southeast Asia and the Middle East.\n\n## IOCs — Directly from Articles\n\nNo specific domains, IPs, or file hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\n\nDetecting this activity is challenging due to its proxying nature and encryption. However, security teams can look for:\n\n| Type | Value | Description |\n|---|---|---|\n| Network Traffic Pattern | `WebSocket Connections` | Outbound WebSocket (`wss://`) connections to new or uncategorized domains from user workstations could be suspicious. |\n| Certificate Subject | `Unusual SSL Certificates` | Phishing sites often use newly registered domains with free SSL certificates (e.g., from Let's Encrypt). Monitor certificate transparency logs for suspicious domain registrations impersonating your brand. |\n| URL Pattern | `Lures in SMS/Email` | Look for URLs with brand names combined with generic terms like 'support', 'account', 'delivery', often on non-standard TLDs. |\n\n## Detection & Response\n\n-   **URL Analysis**: Utilize email and web security gateways that can perform advanced **[URL Analysis (D3-UA)](https://d3fend.mitre.org/technique/d3f:URLAnalysis)** to detect and block phishing links in real-time. These tools look for signs of impersonation, domain age, and other risk factors.\n-   **Network Traffic Analysis**: While the payload is encrypted, monitoring for the presence of WebSocket connections to suspicious domains can be an indicator. D3FEND's **[Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** can help identify these anomalous connections.\n-   **FIDO2/WebAuthn**: The most effective defense against AiTM phishing is the use of phishing-resistant MFA, such as FIDO2 security keys or platform authenticators (e.g., Windows Hello, Face ID). These methods cryptographically bind the authentication to the legitimate domain, preventing credentials from being used on a fake site.\n\n## Mitigation\n\n-   **Phishing-Resistant MFA**: Transition away from SMS, push notification, and OTP-based MFA to FIDO2/WebAuthn wherever possible. This is the strongest technical control against this type of attack.\n-   **User Training**: Educate users about the dangers of smishing and the tactics used in interactive phishing. Teach them to be suspicious of urgent requests and to verify URLs before clicking or entering information. This aligns with **[M1017 - User Training](https://attack.mitre.org/mitigations/M1017/)**.\n-   **Web Filtering**: Implement and maintain a robust web filtering solution to block access to known and suspected phishing domains. This is a form of **[M1021 - Restrict Web-Based Content](https://attack.mitre.org/mitigations/M1021/)**.\n-   **Brand Monitoring**: Proactively monitor for domain registrations and phishing kits impersonating your brand to get ahead of campaigns.",
+  "twitter_post": "Cisco Talos uncovers 'JWR,' a sophisticated phishing framework with live operators who steal credentials, 2FA codes, and IDs in real-time. The framework uses encrypted WebSockets to bypass MFA. #Phishing #CyberSecurity #InfoSec #MFA",
+  "meta_description": "Cisco Talos researchers have discovered 'JWR,' a new phishing framework that uses live operators and encrypted WebSockets to bypass MFA and steal sensitive data.",
+  "category": [
+    "Phishing",
+    "Threat Intelligence",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Cisco Talos",
+      "type": "security_organization",
+      "url": "https://www.talosintelligence.com/"
+    },
+    {
+      "name": "JWR",
+      "type": "malware"
+    },
+    {
+      "name": "The Outsider",
+      "type": "malware"
+    },
+    {
+      "name": "Shopify",
+      "type": "vendor",
+      "url": "https://www.shopify.com/"
+    },
+    {
+      "name": "PayPal",
+      "type": "vendor",
+      "url": "https://www.paypal.com/"
+    },
+    {
+      "name": "Apple",
+      "type": "vendor",
+      "url": "https://www.apple.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://blog.talosintelligence.com/dissecting-the-jwr-phishing-framework/",
+      "title": "Dissecting the JWR phishing framework",
+      "date": "2026-08-13",
+      "friendly_name": "Cisco Talos"
+    },
+    {
+      "url": "https://blog.talosintelligence.com/curiouser-and-curiouser/",
+      "title": "Curiouser and Curiouser",
+      "date": "2026-08-13",
+      "friendly_name": "Cisco Talos"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1111",
+      "name": "Two-Factor Authentication Interception",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1056.001",
+      "name": "Keylogging",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Implement phishing-resistant MFA such as FIDO2/WebAuthn, which is not susceptible to AiTM attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report smishing and phishing attempts, and to be cautious of unexpected requests for credentials or personal information.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DNSAL",
+          "name": "DNS Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:DNSAllowlisting"
+        },
+        {
+          "id": "D3-DNSDL",
+          "name": "DNS Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:DNSDenylisting"
+        },
+        {
+          "id": "D3-UA",
+          "name": "URL Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:URLAnalysis"
+        }
+      ],
+      "description": "Use web filtering and email security gateways to block access to known and suspected phishing domains.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "protocol",
+      "value": "wss://",
+      "description": "The use of secure WebSockets for command and control is a key feature of the JWR framework.",
+      "context": "Network traffic analysis, proxy logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Long-lived interactive web sessions",
+      "description": "Unlike typical web browsing, a JWR session involves a persistent connection with small, frequent data exchanges, which may appear anomalous.",
+      "context": "NetFlow analysis, web proxy logs.",
+      "confidence": "low"
+    },
+    {
+      "type": "log_source",
+      "value": "Certificate Transparency Logs",
+      "description": "Hunting for newly registered domains that impersonate major brands can help identify phishing infrastructure before it is weaponized.",
+      "context": "Threat intelligence platforms, public CT log monitors.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "JWR",
+    "Phishing",
+    "PhaaS",
+    "AiTM",
+    "Cisco Talos",
+    "MFA Bypass",
+    "Smishing"
+  ],
+  "extract_datetime": "2026-08-14T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [],
+    "industries_affected": [
+      "Finance",
+      "Retail",
+      "Telecommunications"
+    ],
+    "other_affected": [
+      "Users in Southeast Asia",
+      "Users in the Middle East"
+    ]
+  },
+  "pub_date": "2026-08-14",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-08-14T15:00:00.000Z",
+  "updatedAt": "2026-08-14T15:00:00.000Z"
+}

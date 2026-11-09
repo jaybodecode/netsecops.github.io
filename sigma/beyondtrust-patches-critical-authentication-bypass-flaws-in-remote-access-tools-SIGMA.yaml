@@ -1,0 +1,59 @@
+title: Anomalous Outbound Connections from BeyondTrust Appliance
+id: 2b8a1c3d-f4e5-4b9a-8c7d-6e5f4a3b2c1d
+status: experimental
+description: |
+  Detects unexpected outbound network connections from a BeyondTrust appliance to external IP addresses. 
+  This could indicate a C2 channel established after exploitation of CVE-2026-40138 or CVE-2026-40139.
+  This rule should be deployed on logs filtered to traffic originating from BeyondTrust appliances.
+references:
+  - https://www.youtube.com/watch?v=M43OzpqzfLc
+author: cyber.netsecops.io
+date: 2026-07-08
+tags:
+  - attack.t1190
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+detection:
+  selection:
+    Initiated: true
+  filter_rfc1918:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  filter_known_good:
+    DestinationHostname|endswith:
+      - '.beyondtrust.com'
+      - '.windowsupdate.com'
+      - '.ntp.org'
+  condition: selection and not filter_rfc1918 and not filter_known_good
+---
+title: Untrusted Inbound Connection to BeyondTrust Management Interface
+id: 9e8f7a6b-5c4d-4b3a-8e2f-1d9c8b7a6f5e
+status: experimental
+description: |
+  Detects inbound network traffic to a BeyondTrust appliance from external, untrusted IP ranges. 
+  This could indicate an exploitation attempt for CVE-2026-40138 or CVE-2026-40139, as per mitigation advice.
+  This rule should be deployed on logs filtered for traffic destined for BeyondTrust appliances and tuned with your organization's trusted IP ranges.
+references:
+  - https://www.youtube.com/watch?v=M43OzpqzfLc
+author: cyber.netsecops.io
+date: 2026-07-08
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: high
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'allow'
+  filter_trusted_sources:
+    SourceIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter_trusted_sources

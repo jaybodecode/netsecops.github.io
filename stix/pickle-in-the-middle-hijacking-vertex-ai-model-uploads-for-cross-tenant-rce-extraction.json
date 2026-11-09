@@ -1,0 +1,241 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-16T16:59:41.763Z",
+    "article_slug": "pickle-in-the-middle-hijacking-vertex-ai-model-uploads-for-cross-tenant-rce",
+    "article_date": "2026-06-16",
+    "token_usage": {
+      "input_tokens": 144341,
+      "output_tokens": 2913,
+      "cached_tokens": 137831,
+      "total_tokens": 147254,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.054496
+    }
+  },
+  "report_name": "Pickle in the Middle: Critical RCE Flaw in Google Vertex AI Enables ML Model Hijacking",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Resource Hijacking",
+      "mitre_id": "T1496",
+      "description": "Attackers perform 'bucket squatting' by preemptively creating a Google Cloud Storage bucket with a predictable name to hijack the staging area intended for a victim's Vertex AI model upload."
+    },
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "The vulnerability exploits the Google Vertex AI model upload process, a public-facing cloud API, by leveraging a predictable default bucket name and a lack of ownership verification to intercept model uploads."
+    },
+    {
+      "name": "AI Supply Chain Compromise",
+      "mitre_id": "AML.T0010",
+      "description": "The attack compromises the MLOps supply chain by injecting a malicious model during the upload phase, before it is deployed into the victim's production environment."
+    },
+    {
+      "name": "Embed Malware",
+      "mitre_id": "AML.T0018.002",
+      "description": "Attackers replace a legitimate ML model with a malicious pickled object containing embedded Python code, which serves as the remote code execution payload."
+    },
+    {
+      "name": "Unsafe AI Artifacts",
+      "mitre_id": "AML.T0011.000",
+      "description": "The victim's Vertex AI environment is tricked into loading and executing a malicious pickled model file, which is an unsafe AI artifact that leads to RCE upon deserialization."
+    },
+    {
+      "name": "Data from Cloud Storage",
+      "mitre_id": "T1530",
+      "description": "A potential impact of the RCE is the exfiltration of sensitive data from Google Cloud Storage buckets, BigQuery, or other resources accessible to the compromised Vertex AI service account."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Malicious Pickled Model",
+      "mitre_id": "",
+      "type": "trojan",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious model file, serialized using Python's pickle module, crafted to execute arbitrary code upon deserialization by the Vertex AI service. It is used to replace a victim's legitimate model in a hijacked GCS bucket.",
+      "capabilities": [
+        "controls-local-machine",
+        "exfiltrates-data"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "pickle",
+      "mitre_id": "",
+      "aliases": [
+        "joblib"
+      ],
+      "description": "Python's object serialization module was abused to deliver the RCE payload. A malicious object was crafted that executes arbitrary code when deserialized by the Vertex AI service using `pickle.load()`.",
+      "tool_types": [
+        "exploitation"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "Pickle in the Middle",
+      "cve": "",
+      "description": "A vulnerability in the Google Cloud Vertex AI Python SDK (versions 1.139.0, 1.140.0) resulting from a predictable default GCS bucket name and a lack of ownership verification, allowing a 'bucket squatting' attack to achieve cross-tenant RCE via malicious pickle deserialization.",
+      "aliases": [],
+      "cvss_score": 0,
+      "severity": "high"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "Pickle in the Middle Attack",
+      "description": "An attack vector exploiting a vulnerability in Google's Vertex AI SDK to perform bucket squatting, model hijacking, and cross-tenant RCE via malicious pickle deserialization.",
+      "aliases": []
+    }
+  ],
+  "identities": [
+    {
+      "name": "Google Cloud",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The cloud platform provider for Vertex AI. The vulnerability was discovered in its Vertex AI Python SDK and involved its Google Cloud Storage service."
+    },
+    {
+      "name": "Vertex AI",
+      "identity_class": "system",
+      "sectors": [
+        "technology"
+      ],
+      "description": "Google Cloud's machine learning platform whose Python SDK contained the 'Pickle in the Middle' vulnerability. Its serving infrastructure was the environment where the RCE occurred."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Squatted GCS Staging Bucket",
+      "infrastructure_types": [
+        "staging",
+        "hosting-malware"
+      ],
+      "description": "An attacker-controlled Google Cloud Storage bucket, created with a predictable name (`[victim-project-id]-[region]-vertex-ai-staging`), used to intercept and replace a victim's ML model during the upload process."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Potential Vertex AI Staging Bucket Squatting",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Potential Vertex AI Staging Bucket Squatting\nid: 9c5b1a3d-8f7e-4b1a-9c8d-6e5f4a3b2c1d\nstatus: experimental\ndescription: >\n  Detects the creation of a Google Cloud Storage bucket that matches the default naming convention for Vertex AI staging buckets ('-vertex-ai-staging'). This could indicate a 'bucket squatting' attempt as seen in the 'Pickle in the Middle' attack.\nreferences:\n  - https://unit42.paloaltonetworks.com/hijacking-vertex-ai-model/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1496\nlevel: medium\nlogsource:\n  category: cloud\n  service: gcp.audit\ndetection:\n  selection:\n    methodName: 'storage.buckets.create'\n    resource.name|endswith: '-vertex-ai-staging'\n  condition: selection",
+      "description": "Detects the creation of a GCS bucket matching the default Vertex AI staging pattern, which could be an attempt at 'bucket squatting'."
+    },
+    {
+      "name": "Unexpected Egress from Vertex AI Endpoint",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Unexpected Egress from Vertex AI Endpoint\nid: e4d3c2b1-a0f9-4e8d-7c6b-5a4b3c2d1e0f\nstatus: experimental\ndescription: >\n  Detects unexpected outbound network connections from a Vertex AI serving container. This could indicate a compromised model exfiltrating data or communicating with an attacker C2, as possible after a 'Pickle in the Middle' attack.\nreferences:\n  - https://unit42.paloaltonetworks.com/hijacking-vertex-ai-model/\nauthor: cyber.netsecops.io\ndate: 2026-06-16\ntags:\n  - attack.t1530\n  - attack.exfiltration\nlevel: medium\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    Image|contains: 'vertex-ai' # This field should be adapted to the specific environment to identify Vertex AI containers\n    Initiated: true\n  filter_known_destinations:\n    DestinationHostname|endswith:\n      - '.googleapis.com'\n      - '.gcr.io'\n      - '.google.com'\n    DestinationIp|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  condition: selection and not filter_known_destinations",
+      "description": "Detects anomalous outbound network traffic from Vertex AI serving containers, a potential sign of post-exploitation activity like data exfiltration."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Pickle in the Middle Attack",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Resource Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Pickle in the Middle Attack",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Pickle in the Middle Attack",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "AI Supply Chain Compromise",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Pickle in the Middle Attack",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Malicious Pickled Model",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Pickle in the Middle Attack",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "Vertex AI",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Pickle in the Middle Attack",
+      "source_type": "campaign",
+      "relationship_type": "exploits",
+      "target_name": "Pickle in the Middle",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "Malicious Pickled Model",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "pickle",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Malicious Pickled Model",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Embed Malware",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Malicious Pickled Model",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Unsafe AI Artifacts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Squatted GCS Staging Bucket",
+      "source_type": "infrastructure",
+      "relationship_type": "hosts",
+      "target_name": "Malicious Pickled Model",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Pickle in the Middle",
+      "source_type": "vulnerability",
+      "relationship_type": "has",
+      "target_name": "Vertex AI",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Potential Vertex AI Staging Bucket Squatting",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Resource Hijacking",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unexpected Egress from Vertex AI Endpoint",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data from Cloud Storage",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

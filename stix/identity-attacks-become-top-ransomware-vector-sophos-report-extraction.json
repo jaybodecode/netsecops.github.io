@@ -1,0 +1,225 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-16T16:02:30.274Z",
+    "article_slug": "identity-attacks-become-top-ransomware-vector-sophos-report",
+    "article_date": "2026-07-16",
+    "token_usage": {
+      "input_tokens": 145802,
+      "output_tokens": 2930,
+      "cached_tokens": 140082,
+      "total_tokens": 148732,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.05396
+    }
+  },
+  "report_name": "Identity Attacks Now Top Ransomware Vector, Eclipsing Exploits",
+  "threat_actors": [
+    {
+      "name": "Ransomware Operators",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A general class of threat actors who operate ransomware. According to the Sophos 'State of Ransomware 2026' report, these actors have shifted their primary initial access vector from exploiting vulnerabilities to compromising identities via phishing and stolen credentials.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Phishing",
+      "mitre_id": "T1566",
+      "description": "Used as the top initial access vector, where users are tricked into revealing credentials or executing a malicious attachment. Malicious emails and phishing together account for 50% of initial access events."
+    },
+    {
+      "name": "Valid Accounts",
+      "mitre_id": "T1078",
+      "description": "After credentials are stolen, attackers use valid accounts to authenticate to systems and services, appearing as legitimate users to move through the network."
+    },
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "The final stage of the attack, where victim data is encrypted to extort a ransom. This was successful in 56% of reported attacks."
+    },
+    {
+      "name": "Exfiltration Over Alternative Protocol",
+      "mitre_id": "T1048",
+      "description": "Data is exfiltrated as part of a double-extortion strategy before the final encryption stage."
+    },
+    {
+      "name": "Remote Desktop Protocol",
+      "mitre_id": "T1021.001",
+      "description": "Legitimate tools like RDP are used for lateral movement within the victim network after initial access is established."
+    },
+    {
+      "name": "PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "PowerShell is used by attackers for discovery and lateral movement activities post-compromise."
+    },
+    {
+      "name": "Kerberoasting",
+      "mitre_id": "T1558.003",
+      "description": "Attackers may attempt to crack service account credentials by requesting Kerberos ticket-granting service (TGS) tickets, a technique known as Kerberoasting."
+    },
+    {
+      "name": "System Owner/User Discovery",
+      "mitre_id": "T1033",
+      "description": "Attackers use commands like 'whoami' to gather information about the current user context after gaining access."
+    }
+  ],
+  "malware": [],
+  "tools": [
+    {
+      "name": "PowerShell",
+      "mitre_id": "S0194",
+      "aliases": [],
+      "description": "Used by ransomware operators for discovery, lateral movement, and executing encoded commands within a compromised network.",
+      "tool_types": [
+        "exploitation"
+      ]
+    },
+    {
+      "name": "RDP",
+      "mitre_id": "",
+      "aliases": [
+        "Remote Desktop Protocol"
+      ],
+      "description": "Used by attackers for lateral movement across the victim's network using compromised credentials.",
+      "tool_types": [
+        "remote-access"
+      ]
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Kerberoasting Activity Detected",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Potential Kerberoasting Activity\nid: 2b9a1f8e-7d3c-4b1a-9f8d-6e5c4b3a2f1e\nstatus: experimental\ndescription: Detects Kerberos TGS requests (Event ID 4769) with RC4-HMAC encryption, which is commonly associated with Kerberoasting attacks.\nreferences:\n  - https://www.sophos.com/en-us/blog/sophos-state-of-ransomware-2026\nauthor: cyber.netsecops.io\ndate: 2026-07-16\ntags:\n  - attack.t1558.003\n  - attack.credential_access\nlevel: medium\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 4769\n    TicketEncryptionType: '0x17' # RC4-HMAC\n    ServiceName|contains:\n      - 'mssql'\n      - 'http'\n      - 'cifs'\n  filter_machine:\n    ServiceName|endswith: '$'\n  condition: selection and not filter_machine\n",
+      "description": "Detects Kerberos TGS requests (Kerberoasting) which can indicate attempts to crack service account credentials, as mentioned in the report's hunting hints."
+    },
+    {
+      "name": "PowerShell Encoded Command Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: PowerShell Execution with Encoded Command\nid: 8c4d5e6f-1a2b-4c3d-8e9f-0a1b2c3d4e5f\nstatus: experimental\ndescription: Detects the execution of PowerShell with an encoded command argument, a common technique used by attackers to obfuscate malicious scripts.\nreferences:\n  - https://www.sophos.com/en-us/blog/sophos-state-of-ransomware-2026\nauthor: cyber.netsecops.io\ndate: 2026-07-16\ntags:\n  - attack.t1059.001\n  - attack.execution\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: \n      - '\\powershell.exe'\n      - '\\pwsh.exe'\n    CommandLine|contains:\n      - ' -e '\n      - ' -en '\n      - ' -enc '\n      - ' -enco'\n      - ' -encod'\n      - ' -encode'\n      - ' -encoded'\n      - ' -encodedc'\n      - ' -encodedco'\n      - ' -encodedcom'\n      - ' -encodedcomm'\n      - ' -encodedcomma'\n      - ' -encodedcomman'\n      - ' -encodedcommand'\n  condition: selection\n",
+      "description": "Detects PowerShell commands with encoded payloads, a common technique for obfuscating malicious activity mentioned in the report's hunting hints."
+    },
+    {
+      "name": "Execution of 'whoami' Discovery Command",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Whoami Execution For Discovery\nid: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c\nstatus: experimental\ndescription: Detects the execution of 'whoami' with the '/all' flag, which is often used by attackers to gather detailed user and group information after gaining initial access.\nreferences:\n  - https://www.sophos.com/en-us/blog/sophos-state-of-ransomware-2026\nauthor: cyber.netsecops.io\ndate: 2026-07-16\ntags:\n  - attack.t1033\n  - attack.discovery\nlevel: low\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\whoami.exe'\n    CommandLine|contains: '/all'\n  condition: selection\n",
+      "description": "Detects the execution of 'whoami /all', a common discovery command used by attackers after gaining initial access to gather user and group information."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Phishing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Valid Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Remote Desktop Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Kerberoasting",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "System Owner/User Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Ransomware Operators",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "RDP",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Kerberoasting Activity Detected",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Kerberoasting",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PowerShell Encoded Command Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Execution of 'whoami' Discovery Command",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "System Owner/User Discovery",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "id": "3bf6d73b-24b4-429c-9eeb-31c06f71fef0",
+  "slug": "cloudflare-fixes-cross-tenant-data-exposure-in-container-service",
+  "headline": "Cloudflare Fixes Cross-Tenant Data Leak in Container Service",
+  "title": "Cloudflare Fixes Container Cross-Tenant Data Exposure Flaw",
+  "summary": "Cloudflare has patched a significant cross-tenant data exposure vulnerability in its Containers platform. The flaw, discovered by a security researcher, could have allowed a paying customer to read residual data, including database pages and directory structures, from other tenants' containers on the same physical host. The vulnerability was caused by a misconfiguration in the Linux device mapper thin provisioning layer. Cloudflare found no evidence of malicious exploitation and has removed the misconfiguration, which involved the 'skip_block_zeroing' option, to remediate the issue.",
+  "full_report": "## Executive Summary\n**[Cloudflare](https://www.cloudflare.com/)** has remediated a significant data exposure vulnerability in its **Cloudflare Containers** and **Sandboxes** services. The flaw, reported on September 4, 2026, by a security researcher, could have allowed a malicious tenant to read residual data left on disk by other tenants' containers that previously ran on the same physical host. This type of vulnerability is known as a cross-tenant data exposure. The root cause was a performance-optimization setting in the underlying storage system that disabled the zeroing of deallocated data blocks. Cloudflare conducted a thorough analysis of historical data and found no evidence that this vulnerability was maliciously exploited. The issue has been fixed by reverting to the default, more secure storage configuration.\n\n## Vulnerability Details\nThe vulnerability was not a traditional virtual machine escape but a subtle information leak at the storage layer. Cloudflare's container platform uses Linux device mapper thin provisioning (`dm-thin`) for storage allocation. For performance reasons on certain storage pools, the `skip_block_zeroing` option was enabled. This option instructs the kernel not to wipe a `64 KiB` storage block with zeros before reallocating it to a new container.\n\nThe researcher, Oren Yomtov, discovered that by writing a small amount of data (e.g., `4 KiB`) to a newly allocated block, they could then read the entire `64 KiB` block. This block could contain up to `60 KiB` of stale data from a previous container that had used that same physical storage block. This allowed the researcher to recover fragments of data from other tenants, including file system structures, database pages, and even complete SQLite databases. An attacker could not target a specific victim, as the data they could access depended entirely on the unpredictable workload placement and block reallocation by the hypervisor.\n\n## Affected Systems\n- **Cloudflare Containers**: Customers on the Workers Paid plan using this service.\n- **Cloudflare Sandboxes**: This service is built on the same underlying platform and was also affected.\n\nThe vulnerability only affected paying customers, as they had the necessary permissions to provision storage in the affected manner. Free-tier users were not impacted.\n\n## Exploitation Status\nCloudflare has stated that there is **no evidence of malicious exploitation** of this vulnerability in the wild. Their incident response team developed signatures to detect the specific exploitation pattern and scanned historical disk I/O telemetry. The only activity found matched the benign research conducted by the reporting security researcher. Cloudflare awarded a bug bounty for the responsible disclosure.\n\n## Impact Assessment\nHad this vulnerability been exploited, it could have led to a serious breach of customer data confidentiality. In a multi-tenant cloud environment, strict separation between tenants is a fundamental security requirement. This flaw broke that isolation at the storage layer. An attacker could have potentially recovered sensitive information such as API keys, passwords, private source code, or customer data that was written to disk by another tenant's container. While an attacker could not specifically target another customer, a large-scale, persistent effort could have yielded a significant amount of sensitive data over time. The fact that it was discovered and fixed without evidence of abuse prevented a potentially major security incident.\n\n## Cyber Observables — Hunting Hints\nFor cloud providers or large-scale container platform operators, detecting this type of issue requires deep introspection of the storage layer:\n| Type | Value | Description | Context |\n|---|---|---|---|\n| `other` | `dm-thin` with `skip_block_zeroing` enabled | This kernel-level configuration is the root cause. Auditing hypervisor and storage node configurations for this setting is key. | Host configuration files, kernel parameters |\n| `log_source` | `Disk I/O telemetry` | Analyzing patterns where a process reads more data from a block than it has written could indicate reading of residual data. | Low-level system monitoring, custom kernel modules |\n| `file_path` | `/sys/module/dm_thin_pool/parameters/` | Kernel parameter directory for device mapper thin provisioning. Check for non-default settings. | Host-level configuration audit |\n\n## Detection Methods\nDetecting exploitation of this specific vulnerability is extremely difficult without access to the cloud provider's low-level infrastructure telemetry. Cloudflare's detection method involved:\n\n1.  **Pattern Signature**: Building a signature based on the researcher's proof-of-concept, which involved a specific sequence of small writes followed by large reads to the same block offset.\n2.  **Historical Telemetry Analysis**: Applying this signature retroactively to terabytes of historical disk I/O logs from the container platform to search for matching patterns. [`D3-SFA: System File Analysis`](https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis) at a massive scale.\n\nFor tenants of a cloud provider, this type of flaw is generally undetectable from within their container or VM.\n\n## Remediation Steps\nThe remediation was straightforward and implemented by Cloudflare's engineering team:\n\n1.  **Configuration Change**: Cloudflare removed the `skip_block_zeroing` option from their `dm-thin` storage pool configurations. This reverted the system to its default, secure behavior of always zeroing out a block before it is re-provisioned to a new tenant.\n2.  **Verification**: The fix was verified by the reporting researcher, who confirmed that they could no longer read residual data after the change was deployed.\n\nThis incident serves as a crucial reminder that performance optimizations in complex systems can sometimes have unintended and severe security consequences. [`D3-PH: Platform Hardening`](https://d3fend.mitre.org/technique/d3f:PlatformHardening)",
+  "twitter_post": "Cloudflare has fixed a critical cross-tenant data exposure flaw in its Containers platform. The bug could let customers read residual data from other tenants' containers. Cloudflare found no evidence of malicious exploitation. #CloudSecurity #Vulnerability",
+  "meta_description": "Cloudflare has patched a cross-tenant data exposure vulnerability in its Containers service that could have allowed customers to read residual data from other tenants.",
+  "category": [
+    "Vulnerability",
+    "Cloud Security"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "Cloudflare",
+      "type": "vendor",
+      "url": "https://www.cloudflare.com/"
+    },
+    {
+      "name": "Cloudflare Containers",
+      "type": "product"
+    },
+    {
+      "name": "Cloudflare Sandboxes",
+      "type": "product"
+    },
+    {
+      "name": "Linux",
+      "type": "product"
+    },
+    {
+      "name": "Oren Yomtov",
+      "type": "person"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.infoq.com/news/2026/10/cloudflare-cross-tenant-exposure/",
+      "title": "Cloudflare Fixes Cross-Tenant Data Exposure in Containers",
+      "date": "2026-10-05",
+      "friendly_name": "InfoQ"
+    },
+    {
+      "url": "https://cybersecuritynews.com/cloudflare-containers-vulnerability/",
+      "title": "Cloudflare Containers Flaw Could Expose Data From Other Customers' Workloads",
+      "date": "2026-10-05",
+      "friendly_name": "Cybersecurity News"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-09-04T00:00:00Z",
+      "summary": "Security researcher Oren Yomtov reports the vulnerability to Cloudflare."
+    },
+    {
+      "datetime": "2026-09-14T00:00:00Z",
+      "summary": "Cloudflare awards a bounty to the researcher after confirming the fix is effective."
+    },
+    {
+      "datetime": "2026-10-05T00:00:00Z",
+      "summary": "Cloudflare publicly discloses the vulnerability and remediation."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage Object",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1028",
+      "name": "Operating System Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-PH",
+          "name": "Platform Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening"
+        }
+      ],
+      "description": "Ensuring secure default configurations for OS and kernel-level features is critical. Disabling risky performance optimizations like 'skip_block_zeroing' is a key mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        }
+      ],
+      "description": "Strong isolation between tenants at all layers of the stack (CPU, memory, network, storage) is fundamental to cloud security.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PH",
+      "technique_name": "Platform Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening",
+      "recommendation": "This incident is a textbook case for the importance of Platform Hardening, specifically in the context of a cloud provider's infrastructure. The vulnerability in Cloudflare Containers was not an application bug but a platform-level configuration choice (`skip_block_zeroing`) that prioritized performance over security. The primary countermeasure is to establish and enforce a secure-by-default configuration baseline for all components of the platform, from the kernel upwards. Any deviation from this baseline, especially for performance optimization, must undergo a rigorous security review to analyze potential side effects. For platforms using Linux `dm-thin`, this means the default behavior of zeroing blocks must be maintained. This incident teaches that security cannot be an afterthought to performance; secure configurations must be the non-negotiable foundation of any multi-tenant service.",
+      "mitre_mitigation_id": "M1028"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "To proactively discover flaws like the one in Cloudflare Containers, platform providers should incorporate dynamic analysis and fuzzing that specifically targets multi-tenancy boundaries. Instead of just testing a single container's functionality, security testing should involve deploying multiple 'fuzzer' tenants onto the same host. These tenants would be programmed to write known data patterns to disk, deallocate the storage, and then have other tenants on the same host attempt to allocate new storage and read it to see if any of the known patterns 'leak' through. This form of 'cross-tenant fuzzing' can dynamically test the isolation guarantees of the underlying storage, memory, and network layers, helping to uncover subtle information disclosure bugs that static analysis or traditional penetration tests might miss.",
+      "mitre_mitigation_id": "M1048"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "other",
+      "value": "dm-thin pool with skip_block_zeroing=true",
+      "description": "The root cause configuration. Auditing for this non-default, performance-enhancing setting in Linux device mapper identifies vulnerable systems.",
+      "context": "Hypervisor/storage node configuration files",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Low-level disk I/O logs",
+      "description": "Analysis of low-level I/O operations to detect patterns where a container reads from a block before it has been fully written to.",
+      "context": "Cloud provider infrastructure monitoring",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Cloud Security",
+    "Vulnerability",
+    "Cloudflare",
+    "Containers",
+    "Multi-tenancy",
+    "Data Exposure"
+  ],
+  "extract_datetime": "2026-10-05T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Cloud service customers"
+    ]
+  },
+  "keywords": [
+    "Cloudflare Containers vulnerability",
+    "cross-tenant data exposure",
+    "dm-thin skip_block_zeroing",
+    "cloud security",
+    "container security",
+    "Oren Yomtov"
+  ],
+  "pub_date": "2026-10-05",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-10-05T15:00:00.000Z",
+  "updatedAt": "2026-10-05T15:00:00.000Z"
+}

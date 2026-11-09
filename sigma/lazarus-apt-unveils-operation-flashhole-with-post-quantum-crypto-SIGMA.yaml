@@ -1,0 +1,87 @@
+title: Suspicious Child Process of CrossWebEX.exe
+id: 18974659-cf60-4197-905f-c7fcbfe206c3
+status: experimental
+description: Detects the legitimate 'CrossWebEX.exe' process spawning command-line interpreters, which may indicate abuse by the Lazarus Group as seen in Operation FlashHole.
+references:
+  - https://securelist.com/lazarus-operation-flashhole/121541/
+author: cyber.netsecops.io
+date: 2026-10-21
+tags:
+  - attack.t1218
+  - attack.defense_evasion
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith: '\CrossWebEX.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: all of selection_*
+---
+title: Suspicious File Modification in SoftForum Directory
+id: 9d0b00a7-212d-4aa5-b246-5eedf8b76c12
+status: experimental
+description: Monitors for new or modified files in the 'C:\Program Files\SoftForum\' directory, the default installation path for CrossWeb software, which was abused by Lazarus in Operation FlashHole.
+references:
+  - https://securelist.com/lazarus-operation-flashhole/121541/
+author: cyber.netsecops.io
+date: 2026-10-21
+tags:
+  - attack.t1218
+  - attack.defense_evasion
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|startswith: 'C:\Program Files\SoftForum\'
+  filter_legit:
+    Image|endswith:
+      - '\CrossWebEX.exe'
+      - '\updater.exe'
+  condition: selection and not filter_legit
+---
+title: Potential LPEClient Malware with PQC
+id: f01f8094-ca13-4e9b-b95a-f1333d92c0b6
+status: experimental
+description: Detects files containing the string 'ML-KEM-1024', potentially indicating the LPEClient backdoor used by Lazarus Group, which employs post-quantum cryptography. This rule requires a log source capable of file content inspection.
+references:
+  - https://securelist.com/lazarus-operation-flashhole/121541/
+author: cyber.netsecops.io
+date: 2026-10-21
+tags:
+  - attack.t1573.001
+  - attack.command_and_control
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    Contents|contains: 'ML-KEM-1024'
+  condition: selection
+---
+title: Lazarus Abused Tool - CrossWebEX.exe
+id: c6b5a493-82e1-4c0b-9a8f-7e6d5c4a3b2a
+status: experimental
+description: Detects the presence or execution of CrossWebEX.exe, a legitimate tool abused by the Lazarus Group in Operation FlashHole.
+references:
+  - https://securelist.com/lazarus-operation-flashhole/121541/
+author: cyber.netsecops.io
+date: 2026-10-21
+tags:
+  - attack.t1218
+level: informational
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\CrossWebEX.exe'
+  condition: selection

@@ -1,0 +1,257 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-21T14:31:28.429Z",
+    "article_slug": "ai-powered-ransomware-jadepuffer-returns-with-encforge-to-wipe-ml-models",
+    "article_date": "2026-07-21",
+    "token_usage": {
+      "input_tokens": 146437,
+      "output_tokens": 3277,
+      "cached_tokens": 140179,
+      "total_tokens": 149714,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.058115
+    }
+  },
+  "report_name": "AI-Powered Ransomware 'JadePuffer' Deploys 'ENCFORGE' to Destroy ML Models",
+  "threat_actors": [
+    {
+      "name": "JadePuffer",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "An autonomous, AI-driven threat actor that uses a Large Language Model (LLM) to conduct end-to-end attacks. In this campaign, it deployed the ENCFORGE ransomware to destroy AI/ML models after exploiting a vulnerability in Langflow to escape a container.",
+      "goals": "Targeted destruction of AI and machine learning intellectual property.",
+      "primary_motivation": "dominance",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "The JadePuffer agent exploited CVE-2025-3248, a missing authentication vulnerability in the public-facing Langflow MLOps platform, to gain initial code execution within a container."
+    },
+    {
+      "name": "Escape to Host",
+      "mitre_id": "T1611",
+      "description": "The threat agent leveraged a mounted Docker socket (/var/run/docker.sock) from within a compromised container to spawn a new, privileged container on the host system."
+    },
+    {
+      "name": "Data Destruction",
+      "mitre_id": "T1485",
+      "description": "The ENCFORGE payload was executed on the host to find and encrypt AI/ML model files, with the primary goal of destroying intellectual property rather than extortion."
+    },
+    {
+      "name": "File Deletion",
+      "mitre_id": "T1070.004",
+      "description": "The ENCFORGE malware self-deletes upon completion of its destructive routine to hinder forensic analysis."
+    }
+  ],
+  "malware": [
+    {
+      "name": "ENCFORGE",
+      "mitre_id": "",
+      "type": "wiper",
+      "is_family": false,
+      "aliases": [],
+      "description": "A purpose-built destructive payload written in Go and packed with UPX. It is designed to find and encrypt files associated with the AI/ML development lifecycle, effectively wiping them. It targets over 180 file extensions, kills processes with file locks, and self-deletes after execution.",
+      "capabilities": [
+        "compromises-data-availability",
+        "cleans-traces-of-infection"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "UPX",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Used to pack the ENCFORGE ransomware payload.",
+      "tool_types": [
+        "unknown"
+      ]
+    },
+    {
+      "name": "Docker",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The Docker socket mounted in the container was abused by the JadePuffer agent to spawn a new privileged container on the host, enabling the container escape.",
+      "tool_types": [
+        "unknown"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2025-3248",
+      "cve": "CVE-2025-3248",
+      "description": "A missing authentication vulnerability in Langflow's code validation endpoint, which was exploited by JadePuffer to gain initial code execution within a container.",
+      "affected_products": [
+        "Langflow"
+      ]
+    }
+  ],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "AI-developing organizations",
+      "identity_class": "class",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A class of organizations focused on developing AI and machine learning models, targeted by the JadePuffer threat actor for intellectual property destruction."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "file",
+      "name": "encforge"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "ENCFORGE File Artifact",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'encforge']",
+      "x_netsecio_sigma_rule": "title: ENCFORGE Destructive Malware Execution\nid: 2b1f8c7d-9e3a-4f1b-8c7d-9e3a4f1b8c7d\nstatus: experimental\ndescription: Detects the execution of the ENCFORGE destructive malware binary.\nreferences:\n  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/\nauthor: cyber.netsecops.io\ndate: 2026-07-20\ntags:\n  - attack.t1485\nlevel: critical\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|endswith: '/encforge'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the execution of the ENCFORGE malware, which is used to destroy AI/ML models."
+    },
+    {
+      "name": "Suspicious Langflow Code Validation Endpoint Access",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Langflow Code Validation Endpoint Access\nid: 8a3c1e9b-5d2f-4b1a-9c8d-7e6f5d4c3b2a\nstatus: experimental\ndescription: Detects suspicious or repeated requests to the vulnerable Langflow /api/v1/validate_code endpoint, which could indicate an exploitation attempt for CVE-2025-3248.\nreferences:\n  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/\nauthor: cyber.netsecops.io\ndate: 2026-07-20\ntags:\n  - attack.t1190\nlevel: high\nlogsource:\n  category: webserver\ndetection:\n  selection:\n    cs-uri-stem|contains: '/api/v1/validate_code'\n    cs-method: 'POST'\n  condition: selection",
+      "description": "Detects access to the vulnerable Langflow endpoint `/api/v1/validate_code` which was used for initial access."
+    },
+    {
+      "name": "Privileged Docker Container Spawn from Container",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Privileged Docker Container Spawn from Container\nid: 1f9b8d7c-3a2e-4f1b-8c7d-6e5f4d3c2b1a\nstatus: experimental\ndescription: Detects a command originating from within a container that attempts to spawn a new privileged container via a mounted Docker socket, a technique used for container escape.\nreferences:\n  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/\nauthor: cyber.netsecops.io\ndate: 2026-07-20\ntags:\n  - attack.t1611\nlevel: high\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    Image|endswith: '/docker'\n    CommandLine|contains|all:\n      - 'run'\n      - '--privileged'\n  filter_known_good_parent:\n    ParentImage|endswith:\n      - '/sshd'\n      - '/bash'\n      - '/zsh'\n  condition: selection and not filter_known_good_parent",
+      "description": "Detects the `docker run --privileged` command used to escape the container."
+    },
+    {
+      "name": "Anomalous Modification of ML Model Files",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Modification of ML Model Files\nid: 5e4d3c2b-1a9f-4b8d-7c6e-5f4d3c2b1a9f\nstatus: experimental\ndescription: Detects high-volume read or write activity on files with common ML model extensions, which could indicate a destructive attack like ENCFORGE.\nreferences:\n  - https://www.infosecurity-magazine.com/news/jadepuffer-ai-model-ransomware/\nauthor: cyber.netsecops.io\ndate: 2026-07-20\ntags:\n  - attack.t1485\nlevel: medium\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|endswith:\n      - '.pt'\n      - '.pth'\n      - '.ckpt'\n      - '.safetensors'\n      - '.gguf'\n      - '.faiss'\n      - '.parquet'\n      - '.tfrecord'\n  condition: selection",
+      "description": "Detects high-volume read/write activity on files with ML model extensions, a key behavior of ENCFORGE."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "JadePuffer",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "ENCFORGE",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "JadePuffer",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Docker",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "JadePuffer",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2025-3248",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "JadePuffer",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "JadePuffer",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Escape to Host",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "JadePuffer",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "AI-developing organizations",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "ENCFORGE",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "UPX",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "ENCFORGE",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data Destruction",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ENCFORGE",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "File Deletion",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ENCFORGE File Artifact",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "ENCFORGE",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "ENCFORGE File Artifact",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "encforge",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Suspicious Langflow Code Validation Endpoint Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Privileged Docker Container Spawn from Container",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Escape to Host",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Modification of ML Model Files",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "ENCFORGE",
+      "target_type": "malware"
+    }
+  ]
+}

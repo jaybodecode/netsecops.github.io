@@ -1,0 +1,89 @@
+title: Active Directory Domain Trust Discovery with nltest
+id: 2a8b1c1d-e3f4-4a5b-8c6d-7e8f9a0b1c2d
+status: experimental
+description: Detects the use of 'nltest.exe' to discover domain trust relationships, a common reconnaissance technique.
+references:
+  - https://www.hookphish.com/blog/ransomware-group-thegentlemen-hits-philippine-savings-bank/
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1482
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\nltest.exe'
+    CommandLine|contains: '/domain_trusts'
+  condition: selection
+---
+title: Active Directory Reconnaissance with AdFind
+id: 3b9c2d2e-f4a5-4b6c-9d7e-8f9a0b1c2d3e
+status: experimental
+description: Detects the execution of 'adfind.exe', a legitimate tool often abused by attackers for Active Directory enumeration.
+references:
+  - https://www.hookphish.com/blog/ransomware-group-thegentlemen-hits-philippine-savings-bank/
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1087
+  - attack.t1018
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    OriginalFileName: 'AdFind.exe'
+  condition: selection
+---
+title: Credential Dumping with Mimikatz
+id: 4c0d3e3f-a5b6-4c7d-ae8f-9a0b1c2d3e4f
+status: experimental
+description: Detects the execution of Mimikatz, a common tool for credential dumping, often by monitoring for access to the LSASS process memory.
+references:
+  - https://www.hookphish.com/blog/ransomware-group-thegentlemen-hits-philippine-savings-bank/
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1003.001
+level: critical
+logsource:
+  category: process_access
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess: '0x1010' # PROCESS_VM_READ | PROCESS_QUERY_LIMITED_INFORMATION
+  filter:
+    SourceImage|endswith:
+      - '\procexp.exe'
+      - '\procexp64.exe'
+      - '\vmmap.exe'
+      - '\procdump.exe'
+      - '\procdump64.exe'
+  condition: selection and not filter
+---
+title: Domain Admins Group Discovery with Net Command
+id: 5d1e4f4a-b6c7-4d8e-bf9a-0b1c2d3e4f5a
+status: experimental
+description: Detects the use of the 'net' command to enumerate members of the 'Domain Admins' group.
+references:
+  - https://www.hookphish.com/blog/ransomware-group-thegentlemen-hits-philippine-savings-bank/
+author: cyber.netsecops.io
+date: 2026-08-02
+tags:
+  - attack.t1087.002
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\net.exe'
+    CommandLine|contains|all:
+      - 'group'
+      - 'Domain Admins'
+      - '/domain'
+  condition: selection

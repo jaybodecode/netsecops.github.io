@@ -1,0 +1,70 @@
+title: Anomalous Internal SSH Connection
+id: 2f8b1c9a-4e7d-4f6a-8b3c-1d9e0f8a7b6c
+status: experimental
+description: Detects an outbound SSH connection from one internal network segment to another. This could be an indicator of lateral movement, as seen with BlackTech operations.
+references:
+  - https://cybersecuritynews.com/blacktech-apt-deploys-blueshell-linux-backdoor/
+author: cyber.netsecops.io
+date: 2026-07-31
+tags:
+  - attack.t1021.004
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 22
+    Initiated: true
+  filter_internal:
+    DestinationIp|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and filter_internal
+---
+title: Linux Process Setting Proxy Environment Variable
+id: 5d9e0f8a-7b6c-4f6a-8b3c-1d9e0f8a7b6c
+status: experimental
+description: Detects a process on a Linux host setting the http_proxy or https_proxy environment variables, which could indicate a backdoor like BlueShell configuring its C2 channel.
+references:
+  - https://cybersecuritynews.com/blacktech-apt-deploys-blueshell-linux-backdoor/
+author: cyber.netsecops.io
+date: 2026-07-31
+tags:
+  - attack.t1090.002
+  - attack.defense_evasion
+level: low
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    CommandLine|contains:
+      - 'export http_proxy='
+      - 'export https_proxy='
+  condition: selection
+---
+title: Suspicious Unsigned Go Binary Execution on Linux
+id: 8b3c1d9e-0f8a-4f6a-8b3c-1d9e0f8a7b6c
+status: experimental
+description: Detects the execution of an unknown, potentially unsigned binary on a Linux server, which could be a backdoor like the Go-based BlueShell.
+references:
+  - https://cybersecuritynews.com/blacktech-apt-deploys-blueshell-linux-backdoor/
+author: cyber.netsecops.io
+date: 2026-07-31
+tags:
+  - attack.t1059.004
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    Image|startswith:
+      - '/tmp/'
+      - '/var/tmp/'
+      - '/dev/shm/'
+  condition: selection

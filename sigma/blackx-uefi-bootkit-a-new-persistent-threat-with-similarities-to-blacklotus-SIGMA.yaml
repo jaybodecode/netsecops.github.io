@@ -1,0 +1,69 @@
+title: Suspicious BCDEDIT Execution for Bootkit Deployment
+id: 3b8c2d1e-f9a8-4b7c-8d2e-f9a8b7c8d2e3
+status: experimental
+description: Detects the use of bcdedit.exe, which attackers may use to modify boot configuration data when deploying a bootkit like BlackX.
+references:
+  - https://securelist.com/uefi-bootkit-blackx/121539/
+author: cyber.netsecops.io
+date: 2026-10-24
+falsepositives:
+  - Legitimate administrative activity, system updates, or dual-boot configuration changes.
+level: medium
+tags:
+  - attack.t1542.003
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\bcdedit.exe'
+  condition: selection
+---
+title: Suspicious EFI File Creation on ESP
+id: 4c7d3e2f-a0b9-4c8d-9e3f-a0b9c8d9e3f4
+status: experimental
+description: 'Monitors for the creation of new or unrecognized .efi files on the EFI System Partition (ESP), a technique used by bootkits like BlackX to establish persistence.'
+references:
+  - https://securelist.com/uefi-bootkit-blackx/121539/
+author: cyber.netsecops.io
+date: 2026-10-24
+falsepositives:
+  - Legitimate firmware updates or bootloader installations.
+level: medium
+tags:
+  - attack.t1542.003
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.efi'
+    TargetFilename|startswith:
+      - 'C:\EFI\'
+      - 'C:\Windows\Boot\EFI\'
+      - '\\?\Volume{'
+  filter:
+    Image|endswith:
+      - '\TiWorker.exe'
+      - '\MoUsoCoreWorker.exe'
+  condition: selection and not filter
+---
+title: BlackX Secure Boot State Registry Monitoring
+id: 2a9b3c1d-e8f7-4a6b-9c1d-e8f7a6b9c1d2
+status: experimental
+description: Monitors for modifications to the SecureBoot state registry key, which could indicate tampering by a bootkit like BlackX.
+references:
+  - https://securelist.com/uefi-bootkit-blackx/121539/
+author: cyber.netsecops.io
+date: 2026-10-24
+tags:
+  - attack.t1542.003
+  - attack.t1014
+level: high
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains: '\SYSTEM\CurrentControlSet\Control\SecureBoot\State'
+  condition: selection
