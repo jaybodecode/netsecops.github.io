@@ -1,6 +1,6 @@
 # Cyber-Physical Attack Hits 700 French Supermarkets via Refrigerators
 
-**Severity:** high | **Category:** Cyberattack,Industrial Control Systems,Supply Chain Attack | **Updated:** 2026-10-18 | **Reading time:** 5 min
+**Severity:** high | **Category:** Cyberattack,Industrial Control Systems,Supply Chain Attack | **Updated:** 2026-11-10
 
 A large-scale cyber-physical attack has crippled over 700 supermarkets across France, including major chains like Coopérative U and Carrefour Market. Attackers remotely manipulated Danfoss refrigeration controllers, causing them to overheat to temperatures as high as 50°C (122°F). This act of sabotage resulted in massive spoilage of fresh and frozen food, operational shutdowns, and even small fires. The attack exploited vulnerabilities in obsolete equipment that was no longer receiving security updates. The incident, which has also affected supply chains in several other European countries and the US, highlights the severe real-world consequences of unsecured Industrial Control Systems (ICS) and IoT devices in critical infrastructure.
 
@@ -14,7 +14,7 @@ A devastating **cyber-physical attack** has impacted at least 700 supermarkets a
 
 The attack vector was the remote manipulation of refrigeration control systems. Attackers gained unauthorized access to **Danfoss** controllers, including the AK-SC and AK-SM series, as well as similar systems like Copeland xweb and Dixell xweb. Instead of executing normal cooling or defrost cycles, the attackers forced the systems into a continuous heating state. This caused temperatures inside refrigerators and freezers to rise dramatically, reaching up to 50°C (122°F).
 
-The root cause appears to be the use of obsolete and insecure equipment. Danfoss had previously issued security alerts in March and August 2025 for related vulnerabilities (**CVE-2025-41450** and **CVE-2025-41451**), which could allow remote attackers to take control of the systems. Organizations that failed to upgrade or isolate these legacy systems were left exposed. The French national cybersecurity agency, **[ANSSI](https://www.ssi.gouv.fr/en/)**, is investigating the incident.
+The root cause appears to be the use of obsolete and insecure equipment. Danfoss had previously issued security alerts in March and August 2025 for related vulnerabilities (**CVE-2025-41450** and **CVE-2025-41451**), which could allow remote attackers to take control of the systems. Organizations that failed to upgrade or isolate these legacy systems were left exposed. The French national cybersecurity agency, **[ANSSI](https.www.ssi.gouv.fr/en/)**, is investigating the incident.
 
 ## Technical Analysis
 
@@ -71,12 +71,12 @@ Preventing cyber-physical attacks requires a robust OT security program.
 - CVE-2025-41450
 - CVE-2025-41451
 
-**Tags:** Cyber-Physical Attack, ICS, OT Security, Danfoss, Supermarket, Food Spoilage, France
+**Tags:** Cyber-Physical Attack, Danfoss, Food Spoilage, France, ICS, OT Security, Supermarket
 
 ## Sources
-- [Cyberattacks on French supermarket refrigeration systems disrupt hundreds of stores, spoil food](https://industrialcyber.co/control-device-security/french-supermarket-cyberattack-exposes-risks-of-unsecured-remote-access-and-legacy-refrigeration-systems/) — Industrial Cyber
-- [Cyber Attack Shuts Down Refrigerators at 700 French Supermarkets, Resulting in Food Losses and Fires](https://www.cpomagazine.com/cyber-security/cyber-attack-shuts-down-refrigerators-at-700-french-supermarkets-resulting-in-food-losses-and-fires/) — CPO Magazine
-- [Cyber Spoils: Refrigerator Attacks Highlight Physical Damage Threat](https://global.lockton.com/apac/en/news-insights/french-supermarket-cyber-attack-highlights-the-importance-of-spoilage-coverage) — Lockton
+- [Cyberattacks on French supermarket refrigeration systems disrupt hundreds of stores, spoil food](https://industrialcyber.co/control-device-security/french-supermarket-cyberattack-exposes-risks-of-unsecured-remote-access-and-legacy-refrigeration-systems/)
+- [Cyber Attack Shuts Down Refrigerators at 700 French Supermarkets, Resulting in Food Losses and Fires](https://www.cpomagazine.com/cyber-security/cyber-attack-shuts-down-refrigerators-at-700-french-supermarkets-resulting-in-food-losses-and-fires/)
+- [Cyber Spoils: Refrigerator Attacks Highlight Physical Damage Threat](https://global.lockton.com/apac/en/news-insights/french-supermarket-cyber-attack-highlights-the-importance-of-spoilage-coverage)
 
 ---
 Source: https://cyber.netsecops.io/articles/french-supermarkets-hit-by-cyber-physical-attack-on-refrigeration-systems/

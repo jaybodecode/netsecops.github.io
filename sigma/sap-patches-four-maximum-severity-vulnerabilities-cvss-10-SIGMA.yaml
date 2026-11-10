@@ -1,0 +1,90 @@
+title: Anomalous Child Process from SAP Dispatcher
+id: 2b8c1a9f-7e4d-4b1a-9c8d-3e5f6a7b8c9d
+status: experimental
+description: |
+  Monitors for the SAP dispatcher and worker processes (disp+work.exe or dw.sap) spawning shell processes.
+  This could indicate remote code execution following exploitation of vulnerabilities like ICM2SHELL or PROXYGATE.
+references:
+  - https://mlq.ai/news/sap-patches-four-maximum-severity-flaws-including-onapsis-found-icm2shell-and-proxygate/
+author: cyber.netsecops.io
+date: 2026-11-10
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\disp+work.exe'
+      - '\dw.sap'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\sh.exe'
+      - '\bash.exe'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate administrative scripts that call shells from SAP processes.
+---
+title: Suspicious Access to SAP ICM Public Path
+id: 8f9e0d1c-2b3a-4d5e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: |
+  Monitors for unusual requests to the default path for the SAP ICM component, /sap/public/icman.
+  This could indicate scanning for or exploitation of vulnerabilities like ICM2SHELL.
+references:
+  - https://mlq.ai/news/sap-patches-four-maximum-severity-flaws-including-onapsis-found-icm2shell-and-proxygate/
+author: cyber.netsecops.io
+date: 2026-11-10
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-uri-stem|contains:
+      - '/sap/public/icman'
+      - '/sap/opu/odata/'
+  filter_internal:
+    c-ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate internal applications or monitoring tools accessing these paths.
+---
+title: Untrusted Inbound Connection to SAP Dispatcher Ports
+id: ceeac75a-005b-4113-8c0c-30dc7110b0a5
+status: experimental
+description: |
+  Monitors for network traffic from untrusted (external) networks to common SAP Dispatcher and Message Server ports.
+  This could indicate scanning or direct exploitation attempts against SAP systems.
+references:
+  - https://mlq.ai/news/sap-patches-four-maximum-severity-flaws-including-onapsis-found-icm2shell-and-proxygate/
+author: cyber.netsecops.io
+date: 2026-11-10
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port:
+      - '3200-3299'
+      - '3300-3399'
+      - '8100-8199'
+  filter_private:
+    src_ip|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '127.0.0.0/8'
+  condition: selection and not filter_private
+falsepositives:
+  - Legitimate, authorized external connections to SAP systems, such as from business partners or remote offices.
