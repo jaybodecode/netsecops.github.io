@@ -1,0 +1,92 @@
+title: HTML Smuggling File Download via Blob URL
+id: 3a1b2c3d-4e5f-4a90-8bcd-ef1234567890
+status: experimental
+description: Detects file downloads originating from a 'blob:' URL, which is a strong indicator of HTML smuggling techniques used by groups like Blind Eagle.
+references:
+  - https://www.scworld.com/brief/blind-eagle-threat-group-launches-new-phishing-campaign-in-latin-america
+author: cyber.netsecops.io
+date: 2026-11-11
+tags:
+  - attack.t1027.006
+  - attack.defense_evasion
+level: high
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|startswith: 'blob:http'
+  condition: selection
+---
+title: Suspicious Wscript/Cscript Execution from Browser
+id: 4b2c3d4e-5f6a-4891-8cde-f12345678901
+status: experimental
+description: Detects the execution of Windows Script Host (wscript.exe or cscript.exe) with a parent process of a common web browser, a TTP used by Blind Eagle after HTML smuggling.
+references:
+  - https://www.scworld.com/brief/blind-eagle-threat-group-launches-new-phishing-campaign-in-latin-america
+author: cyber.netsecops.io
+date: 2026-11-11
+tags:
+  - attack.t1059.007
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_child:
+    Image|endswith:
+      - '\wscript.exe'
+      - '\cscript.exe'
+  selection_parent:
+    ParentImage|endswith:
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+      - '\iexplore.exe'
+  condition: all of selection_*
+---
+title: PowerShell Execution with Encoded Command
+id: 5c3d4e5f-6a7b-4012-8def-123456789012
+status: experimental
+description: Detects the use of 'powershell -EncodedCommand', which can be used by droppers, like those from Blind Eagle, to execute obfuscated commands and bypass AMSI.
+references:
+  - https://www.scworld.com/brief/blind-eagle-threat-group-launches-new-phishing-campaign-in-latin-america
+author: cyber.netsecops.io
+date: 2026-11-11
+tags:
+  - attack.t1027.010
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - ' -EncodedCommand '
+      - ' -enc '
+  condition: selection
+---
+title: Persistence via Startup Folder File Creation
+id: 6d4e5f6a-7b8c-4123-8ef0-234567890123
+status: experimental
+description: Detects the creation of new files in the user's Startup folder, a common persistence technique used by malware like the Blind Eagle RAT.
+references:
+  - https://www.scworld.com/brief/blind-eagle-threat-group-launches-new-phishing-campaign-in-latin-america
+author: cyber.netsecops.io
+date: 2026-11-11
+tags:
+  - attack.t1547.001
+  - attack.persistence
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains: '\Microsoft\Windows\Start Menu\Programs\Startup\'
+  filter_legit:
+    Image|endswith:
+      - '\explorer.exe'
+      - '\msiexec.exe'
+  condition: selection and not filter_legit

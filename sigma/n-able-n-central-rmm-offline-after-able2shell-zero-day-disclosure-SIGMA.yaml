@@ -1,0 +1,55 @@
+title: N-able N-central Suspicious Child Process
+id: 2f8b1c9a-7e6d-4f5a-8b3c-1d9e8f7a6b5c
+status: experimental
+description: Detects suspicious child processes such as shells or network utilities being spawned by the N-able N-central Java process, which may indicate exploitation of Able2Shell RCE vulnerabilities like CVE-2026-125878.
+author: cyber.netsecops.io
+date: 2026-11-11
+references:
+  - https://thehackernews.com/2026/11/n-able-takes-hosted-n-central-offline.html
+tags:
+  - attack.t1059
+  - attack.execution
+level: critical
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|contains: 'java'
+    ParentCommandLine|contains: 'com.nable.server.main.Main'
+  selection_child:
+    Image|endswith:
+      - '\bash.exe'
+      - '\sh.exe'
+      - '\powershell.exe'
+      - '\curl.exe'
+      - '\wget.exe'
+  condition: all of selection_*
+falsepositives:
+  - Unlikely, but custom administrative scripts could trigger this rule.
+---
+title: N-able N-central XXE Injection Attempt
+id: 8a7b6c5d-4e3f-4a2b-9c8d-1e9f8a7b6c5d
+status: experimental
+description: Detects web requests to the N-able N-central login endpoint containing patterns indicative of XML External Entity (XXE) injection attempts, related to CVE-2026-125883.
+author: cyber.netsecops.io
+date: 2026-11-11
+references:
+  - https://thehackernews.com/2026/11/n-able-takes-hosted-n-central-offline.html
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: high
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-method: 'POST'
+    c-uri|contains: '/dms/Login'
+    body|contains|all:
+      - '<?xml'
+      - '<!ENTITY'
+      - 'SYSTEM'
+  condition: selection
+falsepositives:
+  - Legitimate but unusual XML payloads.

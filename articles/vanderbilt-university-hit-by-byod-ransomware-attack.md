@@ -1,6 +1,6 @@
 # Vanderbilt University Hit by 'BYOD' Ransomware, Over 1M Records at Risk
 
-**Severity:** high | **Category:** Ransomware,Data Breach,Cyberattack | **Updated:** 2026-11-10 | **Reading time:** 5 min
+**Severity:** high | **Category:** Ransomware,Data Breach,Cyberattack | **Updated:** 2026-11-11
 
 Vanderbilt University has confirmed a major cybersecurity incident, identified as a ransomware attack by the 'BYOD' group. The attackers claim to have stolen sensitive data, including Social Security numbers, for over one million students and staff. The university's IT department instructed campus members to disconnect from Wi-Fi as it works to contain the breach, which has disrupted campus systems and encrypted files with a '.byod' extension.
 
@@ -49,12 +49,12 @@ Security teams can hunt for activity related to this type of ransomware attack w
 3.  **Network Segmentation:** Segment the network to limit the blast radius of a ransomware attack. Prevent workstations from communicating directly with each other and restrict access to critical servers.
 4.  **User Training:** Conduct regular security awareness training to help users identify and report phishing attempts, which are a primary entry vector for ransomware.
 
-**Tags:** ransomware, BYOD, data breach, Vanderbilt University, education, double extortion
+**Tags:** BYOD, Vanderbilt University, data breach, double extortion, education, ransomware
 
 ## Sources
-- [BREAKING: Vanderbilt Wi-Fi networks experience 'cybersecurity incident'](https://vanderbilthustler.com/2026/11/09/breaking-vanderbilt-wi-fi-networks-reportedly-hacked-vuit-yet-to-confirm/) — The Vanderbilt Hustler (2026-11-09)
-- [Vanderbilt University announces cyberattack amid claims of ransomware incident](https://therecord.media/vanderbilt-cyberattack-ransomware-alert) — The Record by Recorded Future (2026-11-09)
-- [Attackers Claim to Have Stolen Data on Over 1 Million Vanderbilt Students and Staff](https://gizmodo.com/attackers-claim-to-have-stolen-data-on-over-1-million-vanderbilt-students-and-staff-2000837388) — Gizmodo (2026-11-09)
+- [BREAKING: Vanderbilt Wi-Fi networks experience 'cybersecurity incident'](https://vanderbilthustler.com/2026/11/09/breaking-vanderbilt-wi-fi-networks-reportedly-hacked-vuit-yet-to-confirm/) (2026-11-09)
+- [Vanderbilt University announces cyberattack amid claims of ransomware incident](https://therecord.media/vanderbilt-cyberattack-ransomware-alert) (2026-11-09)
+- [Attackers Claim to Have Stolen Data on Over 1 Million Vanderbilt Students and Staff](https://gizmodo.com/attackers-claim-to-have-stolen-data-on-over-1-million-vanderbilt-students-and-staff-2000837388) (2026-11-09)
 
 ---
 Source: https://cyber.netsecops.io/articles/vanderbilt-university-hit-by-byod-ransomware-attack/
