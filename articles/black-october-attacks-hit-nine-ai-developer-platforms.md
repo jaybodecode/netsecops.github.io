@@ -1,6 +1,6 @@
 # 'Black October' Attacks Steal API Keys from Nine AI Dev Platforms
 
-**Severity:** high | **Category:** Cyberattack,Cloud Security,Data Breach | **Updated:** 2026-11-04
+**Severity:** high | **Category:** Cyberattack,Cloud Security,Data Breach | **Updated:** 2026-11-12
 
 A coordinated wave of attacks dubbed "Black October" has compromised at least nine AI developer platforms, including Northflank, Railway, and Lightning AI. Security researchers at Wiz, who identified the campaign, report that attackers targeted environment variables to steal API keys and other secrets. This technique, termed "LLMJacking," allows threat actors to hijack expensive AI model services for their own use, leading to significant fraudulent charges for victims. Northflank confirmed the breach after being alerted by Wiz, noting that multiple customers had reported unauthorized use of their AI API keys. The campaign highlights a critical credential crisis in AI infrastructure, with some attacks employing "agent swarm" tactics and resulting in at least one platform, Zeabur, shutting down permanently.
 

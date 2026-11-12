@@ -1,6 +1,6 @@
 # Email Service Breach Leaks 77 Million Addresses, Sparks Phishing Wave
 
-**Severity:** high | **Category:** Data Breach,Phishing,Supply Chain Attack | **Updated:** 2026-11-02 | **Reading time:** 4 min
+**Severity:** high | **Category:** Data Breach,Phishing,Supply Chain Attack | **Updated:** 2026-11-12
 
 Paycloud Holdings, parent company of the Arara Message email distribution service in Japan, has disclosed a data breach exposing approximately 77 million email addresses. Information from 380 corporate clients was also compromised, though no credit card data was lost. Following the breach, attackers launched a large-scale phishing campaign, sending over 7 million emails impersonating a credit card company to the leaked addresses. Users are warned to be vigilant against suspicious communications.
 
@@ -46,10 +46,10 @@ For affected companies:
 3.  **User Awareness Training**: Continuously train users to recognize and report phishing attempts. This remains one of the most effective defenses against attacks that rely on human interaction.
 4.  **Data Minimization**: Only share the minimum amount of data necessary with third-party services. Question whether a vendor truly needs access to certain customer data fields.
 
-**Tags:** Data Breach, Email, Phishing, Supply Chain Attack, Japan
+**Tags:** Data Breach, Email, Japan, Phishing, Supply Chain Attack
 
 ## Sources
-- [77 Million Email Addresses Leaked from Japanese Distributor](https://www.nippon.com/en/articles/-/56805) — Nippon.com (2026-11-02)
+- [77 Million Email Addresses Leaked from Japanese Distributor](https://www.nippon.com/en/articles/-/56805) (2026-11-02)
 
 ---
 Source: https://cyber.netsecops.io/articles/arara-message-service-breach-leaks-77-million-emails-impacts-380-companies/

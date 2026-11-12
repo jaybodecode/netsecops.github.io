@@ -1,6 +1,6 @@
 # Ten Philippine Government Agencies Report Data Breaches
 
-**Severity:** high | **Category:** Data Breach,Regulatory,Cyberattack | **Updated:** 2026-11-10 | **Reading time:** 4 min
+**Severity:** high | **Category:** Data Breach,Regulatory,Cyberattack | **Updated:** 2026-11-12
 
 The Philippines' National Privacy Commission (NPC) has confirmed that ten government agencies, including the Department of Justice and the Department of Information and Communications Technology, have filed data breach notifications. The NPC is now assessing the scope and nature of the incidents, which raise serious concerns about the security of sensitive government-held data. The full extent of the breaches and the number of affected individuals have not yet been disclosed.
 
@@ -51,12 +51,12 @@ Government agencies should focus on fundamental security hygiene and monitoring.
 3.  **Security Audits and Penetration Testing:** Regularly conduct independent security audits and penetration tests to identify and remediate vulnerabilities before they can be exploited.
 4.  **Incident Response Plan:** Review and test incident response plans to ensure each agency can effectively respond, contain, and eradicate threats and communicate with the NPC and the public.
 
-**Tags:** data breach, philippines, government, NPC, cybersecurity
+**Tags:** NPC, cybersecurity, data breach, government, philippines
 
 ## Sources
-- [Personal data breach reports filed by 10 gov’t agencies](https://bworldonline.com/technology/2026/11/10/792741/personal-data-breach-reports-filed-by-10-govt-agencies/) — BusinessWorld (2026-11-10)
-- [abs-cbn.com](https://www.abs-cbn.com/news/technology/2026/11/10/npc-confirms-data-breaches-in-10-gov-t-agencies-warns-public-against-phishing-2151) — ABS-CBN News
-- [Philippines confirms data breaches involving 10 government agencies](https://gulfnews.com/world/asia/philippines/philippines-confirms-data-breaches-involving-10-government-agencies-1.500742572) — Gulf News (2026-11-10)
+- [Personal data breach reports filed by 10 gov’t agencies](https://bworldonline.com/technology/2026/11/10/792741/personal-data-breach-reports-filed-by-10-govt-agencies/) (2026-11-10)
+- [abs-cbn.com](https://www.abs-cbn.com/news/technology/2026/11/10/npc-confirms-data-breaches-in-10-gov-t-agencies-warns-public-against-phishing-2151)
+- [Philippines confirms data breaches involving 10 government agencies](https://gulfnews.com/world/asia/philippines/philippines-confirms-data-breaches-involving-10-government-agencies-1.500742572) (2026-11-10)
 
 ---
 Source: https://cyber.netsecops.io/articles/ten-philippine-government-agencies-report-data-breaches/
