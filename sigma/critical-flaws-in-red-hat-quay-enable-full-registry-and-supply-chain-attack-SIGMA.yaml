@@ -1,0 +1,71 @@
+title: Red Hat Quay Service Signing Key Injection Attempt
+id: 2b1c9c8f-4f7e-4b9a-8c6d-1e2f3a4b5c6d
+status: experimental
+description: |
+  Detects the creation of new service signing keys in Red Hat Quay, which could indicate exploitation of CVE-2026-123710.
+references:
+  - https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/
+author: cyber.netsecops.io
+date: 2026-11-13
+tags:
+  - attack.t1553
+level: high
+logsource:
+  category: application
+  product: quay
+detection:
+  selection:
+    event_type: 'key_creation'
+    key_type: 'service_signing'
+  filter_legit:
+    source_user: 'admin_user' # Placeholder for legitimate admin users
+  condition: selection and not filter_legit
+---
+title: Red Hat Quay SQL Injection Attempt
+id: 053f5131-3eda-46b9-8913-81ea5f6cf04e
+status: experimental
+description: |
+  Detects malformed SQL queries against the Quay database containing unexpected wildcards, which could indicate an SQL injection attempt related to CVE-2026-110697.
+references:
+  - https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/
+author: cyber.netsecops.io
+date: 2026-11-13
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: database
+detection:
+  selection:
+    query|contains|all:
+      - 'SELECT'
+      - 'FROM repository'
+      - 'LIKE'
+    query|contains:
+      - '%_'
+      - '%%'
+  condition: selection
+---
+title: Anomalous Red Hat Quay Image Push
+id: f1a7f492-f024-475b-9f41-04863a8a9e75
+status: experimental
+description: |
+  Detects container images being pushed to a Quay repository from an unknown IP address or by an unusual account, which could indicate a supply chain attack after a compromise.
+references:
+  - https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/
+author: cyber.netsecops.io
+date: 2026-11-13
+tags:
+  - attack.t1195.002
+level: medium
+logsource:
+  category: application
+  product: quay
+detection:
+  selection:
+    event_type: 'image_push'
+  filter_known_ips:
+    source_ip:
+      - '10.0.0.0/8' # Placeholder for known good CI/CD runners and developer IPs
+      - '172.16.0.0/12'
+  condition: selection and not filter_known_ips

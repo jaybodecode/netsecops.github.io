@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-11-13T15:42:49.879Z",
+    "article_slug": "critical-flaws-in-red-hat-quay-enable-full-registry-and-supply-chain-attack",
+    "article_date": "2026-11-13",
+    "token_usage": {
+      "input_tokens": 146794,
+      "output_tokens": 2005,
+      "cached_tokens": 137734,
+      "total_tokens": 148799,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.048592
+    }
+  },
+  "report_name": "Critical Flaws in Red Hat Quay Enable Full Registry and Supply Chain Attack",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "An SQL injection flaw (CVE-2026-110697) in the public-facing Quay container registry's namespace lookup function can be exploited by a low-privileged user to steal robot account tokens."
+    },
+    {
+      "name": "Subvert Trust Controls",
+      "mitre_id": "T1553",
+      "description": "An unauthenticated attacker can exploit CVE-2026-123710 to install a malicious, non-expiring service signing key into the Quay registry, subverting the trust model for repository access tokens."
+    },
+    {
+      "name": "Supply Chain Compromise",
+      "mitre_id": "T1195.002",
+      "description": "The vulnerabilities in Red Hat Quay could be exploited to read, overwrite, and inject malicious code into any container image stored in the registry, leading to a compromise of the software supply chain."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-123710",
+      "cve": "CVE-2026-123710",
+      "description": "A critical trust-key injection vulnerability in Red Hat Quay that allows a remote, unauthenticated attacker to install their own service signing key, granting them full read and write access to any repository.",
+      "aliases": [],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    },
+    {
+      "name": "CVE-2026-110697",
+      "cve": "CVE-2026-110697",
+      "description": "A critical SQL injection vulnerability in the Red Hat Quay namespace lookup function that allows a low-privileged authenticated user to steal robot account tokens from other tenants.",
+      "aliases": [],
+      "cvss_score": 9.9,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Quay Service Signing Key Injection Attempt",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Red Hat Quay Service Signing Key Injection Attempt\nid: 2b1c9c8f-4f7e-4b9a-8c6d-1e2f3a4b5c6d\nstatus: experimental\ndescription: |\n  Detects the creation of new service signing keys in Red Hat Quay, which could indicate exploitation of CVE-2026-123710.\nreferences:\n  - https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/\nauthor: cyber.netsec.io\ndate: 2026-11-13\ntags:\n  - attack.t1553\nlevel: high\nlogsource:\n  category: application\n  product: quay\ndetection:\n  selection:\n    event_type: 'key_creation'\n    key_type: 'service_signing'\n  filter_legit:\n    source_user: 'admin_user' # Placeholder for legitimate admin users\n  condition: selection and not filter_legit",
+      "description": "Detects the creation of new service signing keys in Red Hat Quay, which could indicate exploitation of CVE-2026-123710."
+    },
+    {
+      "name": "Quay SQL Injection Attempt",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Red Hat Quay SQL Injection Attempt\nid: 9d8e7f6a-5b4c-4a3b-2c1d-0e9f8a7b6c5d\nstatus: experimental\ndescription: |\n  Detects malformed SQL queries against the Quay database containing unexpected wildcards, which could indicate an SQL injection attempt related to CVE-2026-110697.\nreferences:\n  - https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/\nauthor: cyber.netsec.io\ndate: 2026-11-13\ntags:\n  - attack.t1190\nlevel: high\nlogsource:\n  category: database\ndetection:\n  selection:\n    query|contains|all:\n      - 'SELECT'\n      - 'FROM repository'\n      - 'LIKE'\n    query|contains:\n      - '%_'\n      - '%%'\n  condition: selection",
+      "description": "Detects malformed SQL queries against the Quay database containing unexpected wildcards, which could indicate an SQL injection attempt related to CVE-2026-110697."
+    },
+    {
+      "name": "Anomalous Quay Image Push",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous Red Hat Quay Image Push\nid: 8c7b6a5f-4d3c-4b2a-1c0b-9e8f7a6b5c4d\nstatus: experimental\ndescription: |\n  Detects container images being pushed to a Quay repository from an unknown IP address or by an unusual account, which could indicate a supply chain attack after a compromise.\nreferences:\n  - https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/\nauthor: cyber.netsec.io\ndate: 2026-11-13\ntags:\n  - attack.t1195.002\nlevel: medium\nlogsource:\n  category: application\n  product: quay\ndetection:\n  selection:\n    event_type: 'image_push'\n  filter_known_ips:\n    source_ip:\n      - '10.0.0.0/8' # Placeholder for known good CI/CD runners and developer IPs\n      - '172.16.0.0/12'\n  condition: selection and not filter_known_ips",
+      "description": "Detects container images being pushed to a Quay repository from an unknown IP address or by an unusual account, which could indicate a supply chain attack."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Quay Service Signing Key Injection Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Subvert Trust Controls",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Quay SQL Injection Attempt",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Anomalous Quay Image Push",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Supply Chain Compromise",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Massive GitHub Supply Chain Attack Injects 'wfx' Stealer into Repos
 
-**Severity:** critical | **Category:** Supply Chain Attack,Malware,Cloud Security | **Updated:** 2026-11-12 | **Reading time:** 5 min
+**Severity:** critical | **Category:** Supply Chain Attack,Malware,Cloud Security | **Updated:** 2026-11-13
 
 A large-scale software supply chain attack is actively targeting the GitHub ecosystem. Attackers are using compromised developer accounts to inject a sophisticated information stealer, dubbed 'wfx', into tens of thousands of code repositories. The malware is designed to run within GitHub Actions to exfiltrate sensitive CI/CD secrets, including repository secrets, cloud credentials, and API keys, posing a severe threat to software development and deployment pipelines.
 
@@ -66,10 +66,10 @@ Security teams may want to hunt for the following patterns to detect this activi
 - **Principle of Least Privilege:** Regularly audit developer permissions and CI/CD secrets. Ensure that secrets are narrowly scoped and have the minimum necessary permissions. Use short-lived, dynamically generated credentials where possible.
 - **Secret Management:** Use a dedicated secrets management solution (e.g., HashiCorp Vault, AWS Secrets Manager) rather than relying solely on GitHub secrets, and implement strict access policies and audit logging.
 
-**Tags:** supply chain, GitHub, CI/CD, wfx, infostealer, malware, GitHub Actions
+**Tags:** CI/CD, GitHub, GitHub Actions, infostealer, malware, supply chain, wfx
 
 ## Sources
-- [GitHub Actions Supply Chain Attack Targeting CI Secrets at Scale](https://www.endorlabs.com/learn/github-actions-supply-chain-attack-targeting-ci-secrets-at-scale) — Endor Labs (2026-11-12)
+- [GitHub Actions Supply Chain Attack Targeting CI Secrets at Scale](https://www.endorlabs.com/learn/github-actions-supply-chain-attack-targeting-ci-secrets-at-scale) (2026-11-12)
 
 ---
 Source: https://cyber.netsecops.io/articles/github-supply-chain-attack-wfx-stealer-targets-ci-cd-secrets/

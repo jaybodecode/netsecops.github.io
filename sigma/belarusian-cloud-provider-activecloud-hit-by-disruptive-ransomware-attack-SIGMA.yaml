@@ -1,0 +1,73 @@
+title: VSSAdmin Shadow Copy Deletion
+id: 2b80a1c3-7e4d-4f8b-9c6a-0d1e2f3a4b5c
+status: experimental
+description: Detects the use of vssadmin.exe to delete volume shadow copies, a common ransomware TTP to inhibit system recovery.
+references:
+  - https://therecord.media/belarus-cloud-provider-activecloud-ransomware-attack
+author: cyber.netsecops.io
+date: 2026-11-13
+tags:
+  - attack.t1490
+  - attack.impact
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    - Image|endswith: '\vssadmin.exe'
+    - OriginalFileName: 'VSSADMIN.EXE'
+  selection_cli:
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  condition: 1 of selection_img and selection_cli
+---
+title: Windows Account Lockout
+id: 8d1e2f3a-4b5c-4a1b-8c6a-0d1e2f3a4b5d
+status: experimental
+description: Detects Windows account lockouts (Event ID 4740), which can indicate brute force or password spraying attempts.
+references:
+  - https://therecord.media/belarus-cloud-provider-activecloud-ransomware-attack
+author: cyber.netsecops.io
+date: 2026-11-13
+tags:
+  - attack.t1110
+  - attack.credential_access
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4740
+  condition: selection
+---
+title: Anomalous RDP/SMB Traffic
+id: 4b5c6d7e-8f9a-4a1b-8c6a-0d1e2f3a4b5e
+status: experimental
+description: Detects anomalous RDP or SMB traffic between network segments, which could indicate lateral movement. This rule is conceptual and should be customized for specific environment segments.
+references:
+  - https://therecord.media/belarus-cloud-provider-activecloud-ransomware-attack
+author: cyber.netsecops.io
+date: 2026-11-13
+tags:
+  - attack.t1021
+  - attack.lateral_movement
+level: low
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort:
+      - 3389
+      - 445
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_local
