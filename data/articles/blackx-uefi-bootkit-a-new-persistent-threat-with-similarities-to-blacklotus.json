@@ -1,0 +1,174 @@
+{
+  "id": "8587e530-40e2-4b2c-8e60-686fd95c4d63",
+  "slug": "blackx-uefi-bootkit-a-new-persistent-threat-with-similarities-to-blacklotus",
+  "headline": "BlackX: New UEFI Bootkit with BlackLotus Similarities Emerges",
+  "title": "BlackX UEFI Bootkit: A New Threat with Echoes of BlackLotus",
+  "summary": "Security researchers have discovered a new UEFI bootkit named 'BlackX' being used in a targeted APT campaign against diplomatic agencies in Central Asia. The bootkit is highly sophisticated, capable of bypassing the Secure Boot mechanism to achieve persistent and stealthy control over a compromised system. BlackX shares several characteristics with the infamous BlackLotus bootkit, indicating a high level of technical expertise by its creators and a worrying evolution in firmware-level threats.",
+  "full_report": "## Executive Summary\n\nResearchers from **[Securelist by Kaspersky](https://securelist.com)** have uncovered a new, highly sophisticated UEFI bootkit named **BlackX**. This malware has been deployed in a targeted campaign by an unknown Advanced Persistent Threat (APT) group against diplomatic organizations in Tajikistan, Uzbekistan, and Turkmenistan. **BlackX** is a firmware-level threat designed to achieve persistence by embedding itself within the UEFI firmware of a compromised computer. This allows it to execute before the operating system loads, making it invisible to most security software. The bootkit can bypass the Windows Secure Boot feature, a critical security defense. Its design and capabilities show notable similarities to **[BlackLotus](https://malpedia.caad.fkie.fraunhofer.de/details/win.blacklotus)**, another notorious UEFI bootkit, suggesting a continued focus by advanced actors on developing these powerful and stealthy tools.\n\n## Threat Overview\n\nA UEFI bootkit represents one of the most persistent and dangerous forms of malware. By infecting the system's firmware, it ensures that the malware survives reboots, OS reinstalls, and even hard drive replacements. The **BlackX** bootkit is deployed late in the attack chain, after an attacker has already gained administrative privileges on the target machine. \n\nThe primary function of **BlackX** is to establish a stealthy and persistent foothold. It achieves this by:\n1.  **Bypassing Secure Boot:** The attackers exploit a known vulnerability to add their own malicious bootloader to the list of trusted executables, effectively subverting the Secure Boot process.\n2.  **Loading a Malicious Kernel Driver:** Once active, the bootkit loads its own unsigned driver into the Windows kernel. This driver can then disable other security features, such as PatchGuard, and inject other malware into legitimate system processes.\n3.  **Achieving Persistence:** The malware is stored on the EFI System Partition (ESP), ensuring it is executed every time the system starts up.\n\n## Technical Analysis\n\n**BlackX**'s operation is complex and multi-staged. The similarities to **BlackLotus** suggest that the threat actors may have access to its source code or are building upon similar research and techniques. The ability to bypass Secure Boot is a non-trivial feat, requiring deep knowledge of the UEFI specification and the Windows boot process.\n\nThe use of a bootkit indicates a highly motivated and well-resourced threat actor, likely a nation-state group, given the targets (diplomatic agencies) and the sophistication of the tool. The ultimate goal is long-term espionage and intelligence gathering.\n\n**MITRE ATT&CK Mapping:**\n- **[`T1542.003 - Boot or Logon Autostart Execution: Bootkit`](https://attack.mitre.org/techniques/T1542/003/)**: This is the core technique used by BlackX to achieve persistence at the firmware level.\n- **[`T1562.001 - Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/)**: The bootkit's kernel driver is used to disable endpoint security products.\n- **[`T1014 - Rootkit`](https://attack.mitre.org/techniques/T1014/)**: BlackX functions as a rootkit, hiding its presence and the presence of other malware on the system.\n- **[`T1547.006 - Kernel Modules and Extensions`](https://attack.mitre.org/techniques/T1547/006/)**: The bootkit loads a malicious driver to gain kernel-level privileges.\n\n## Impact Assessment\n\nThe discovery of **BlackX** is a significant and worrying development. A successful bootkit infection gives an attacker near-total control over a system. They can intercept all data, bypass all security controls, and remain undetected for extended periods. For the targeted diplomatic agencies, this could mean the complete loss of confidentiality for sensitive government communications and documents.\n\nFor the broader security community, **BlackX** is a reminder that firmware security is a critical and often overlooked part of the attack surface. As operating systems and applications become more secure, attackers are being pushed 'down the stack' to find new ways to gain persistence and evade detection.\n\n## IOCs — Directly from Articles\n\nNo specific Indicators of Compromise (IOCs) such as IP addresses, domains, or file hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nDetecting bootkits is extremely difficult, but here are some potential hunting methods:\n\n| Type | Value | Description | Context |\n|---|---|---|---|\n| log_source | `TPM/Firmware Logs` | Some systems log Secure Boot state and measurements. Changes or integrity failures could be a sign of tampering. | BIOS/UEFI settings, specialized security tools |\n| file_path | `EFI System Partition (ESP)` | Monitor for the creation of new or unrecognized `.efi` files on the ESP. | File Integrity Monitoring, forensic analysis |\n| command_line_pattern | `bcdedit.exe` | Attackers may use `bcdedit.exe` to modify boot configuration data. Monitor for its use. | EDR, Windows Event Logs |\n| other | `Firmware Integrity Check` | Periodically use tools that can dump and verify the integrity of the system's firmware against a known-good baseline. | CHIPSEC, vendor-specific tools |\n\n## Detection & Response\n\n**Detection:**\n- **Firmware-level Scanners:** Use specialized tools like `CHIPSEC` to analyze the security of firmware settings and detect unauthorized modifications.\n- **Endpoint Security with Firmware Protection:** Some advanced EDRs and antivirus solutions have features specifically designed to monitor the integrity of the boot process (e.g., Microsoft's System Guard Secure Launch).\n- **Memory Forensics:** Analyzing a memory dump of a running system may reveal the presence of the malicious kernel driver loaded by BlackX.\n\n**Response:**\n- Responding to a bootkit infection is extremely difficult. Standard remediation steps like reimaging the hard drive are ineffective.\n- **Re-flashing Firmware:** The only reliable way to remove a UEFI bootkit is to re-flash the motherboard's firmware with a clean, trusted image from the hardware manufacturer. This is a high-risk operation that can render the hardware unusable if done incorrectly.\n- **Hardware Replacement:** In many cases, the safest and most practical response is to decommission and replace the affected hardware.\n\n## Mitigation\n\n- **[`M1046 - Boot Integrity`](https://attack.mitre.org/mitigations/M1046/)**: Ensure that Secure Boot is enabled and properly configured on all systems. While BlackX can bypass it, it relies on exploiting a vulnerability, so keeping firmware up-to-date is key.\n- **[`M1051 - Update Software`](https://attack.mitre.org/mitigations/M1051/)**: Regularly update UEFI/BIOS firmware. Firmware patches often contain fixes for vulnerabilities that bootkits like BlackX and BlackLotus exploit.\n- **[`M1026 - Privileged Account Management`](https://attack.mitre.org/mitigations/M1026/)**: Strictly control administrative privileges. Bootkits cannot be installed without administrator-level access, so preventing the initial compromise is the best defense.\n- **[`M1028 - Operating System Configuration`](https://attack.mitre.org/mitigations/M1028/)**: Use modern hardware and operating systems that support virtualization-based security (VBS) and Hypervisor-Protected Code Integrity (HVCI) to protect the kernel from malicious drivers.",
+  "twitter_post": "A new UEFI bootkit 'BlackX' has been found targeting diplomatic agencies. Similar to BlackLotus, it bypasses Secure Boot for ultimate persistence. This marks a dangerous evolution in firmware-level threats. #Bootkit #BlackX #APT #CyberSecurity #UEFI",
+  "meta_description": "Researchers discover BlackX, a new sophisticated UEFI bootkit with similarities to BlackLotus, used in targeted APT attacks to bypass Secure Boot and gain persistence.",
+  "category": [
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "BlackX",
+      "type": "malware"
+    },
+    {
+      "name": "BlackLotus",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.blacklotus"
+    },
+    {
+      "name": "Securelist",
+      "type": "security_organization",
+      "url": "https://securelist.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securelist.com/uefi-bootkit-blackx/121539/",
+      "title": "The return of the infamous bootkit",
+      "date": "2026-10-24",
+      "friendly_name": "Securelist",
+      "website": "securelist.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1542.003",
+      "name": "Boot or Logon Autostart Execution: Bootkit",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1014",
+      "name": "Rootkit",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1562.001",
+      "name": "Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1046",
+      "name": "Boot Integrity",
+      "d3fend_techniques": [
+        {
+          "id": "D3-BA",
+          "name": "Bootloader Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:BootloaderAuthentication"
+        },
+        {
+          "id": "D3-TBI",
+          "name": "TPM Boot Integrity",
+          "url": "https://d3fend.mitre.org/technique/d3f:TPMBootIntegrity"
+        }
+      ],
+      "description": "Ensure Secure Boot is enabled and use hardware/OS features that measure and attest to the integrity of the boot process.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Keep UEFI/BIOS firmware up to date to patch vulnerabilities that allow bootkits to bypass Secure Boot.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Preventing attackers from gaining administrative privileges is the best way to stop them from installing a bootkit in the first place.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-TBI",
+      "technique_name": "TPM Boot Integrity",
+      "url": "https://d3fend.mitre.org/technique/d3f:TPMBootIntegrity",
+      "recommendation": "Defending against a firmware-level threat like BlackX requires leveraging hardware-rooted security. Organizations should deploy systems with a Trusted Platform Module (TPM) 2.0 and enable features like Secure Boot and Measured Boot. While BlackX can bypass Secure Boot by exploiting a vulnerability, Measured Boot provides a way to detect the tampering. During a Measured Boot, the TPM records cryptographic measurements of every component in the boot chain, from the firmware to the OS kernel. This log can be sent to a remote attestation service, which compares the measurements against a known-good baseline. If a discrepancy is found—as would be caused by BlackX—the system can be flagged as untrusted and denied access to the network. This doesn't prevent the infection, but it provides a high-fidelity detection mechanism for an otherwise invisible threat.",
+      "mitre_mitigation_id": "M1046"
+    },
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The attack path for bootkits like BlackX and BlackLotus often involves exploiting a known, patched vulnerability in a legitimate, signed bootloader to bypass Secure Boot. Therefore, firmware patching is a critical mitigation. Organizations must incorporate UEFI/BIOS updates into their standard patch management cycle, treating them with the same urgency as operating system updates. This is often a manual or vendor-specific process, making it more challenging, but it is essential. Keeping firmware up-to-date closes the vulnerabilities that these sophisticated tools rely on for their initial execution. Additionally, a fully patched OS and limiting administrative privileges are crucial to prevent the attacker from gaining the access needed to write to the firmware in the first place.",
+      "mitre_mitigation_id": "M1051"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "\\EFI\\Boot\\bootx64.efi",
+      "description": "The default bootloader path on the EFI System Partition. Attackers may replace or modify this file to insert their malicious bootkit.",
+      "context": "File Integrity Monitoring (FIM) on the ESP",
+      "confidence": "high"
+    },
+    {
+      "type": "registry_key",
+      "value": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecureBoot\\State",
+      "description": "Monitoring this key for unexpected changes might indicate attempts to tamper with Secure Boot settings programmatically.",
+      "context": "Registry monitoring tools",
+      "confidence": "low"
+    },
+    {
+      "type": "other",
+      "value": "DBX Revocation List",
+      "description": "The Secure Boot Forbidden Signature Database (DBX) is used to block known malicious bootloaders. Ensure this is kept up to date via OS and firmware updates.",
+      "context": "Firmware/OS Patch Management",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Bootkit",
+    "UEFI",
+    "Firmware",
+    "APT",
+    "BlackX",
+    "BlackLotus",
+    "Persistence",
+    "Secure Boot"
+  ],
+  "extract_datetime": "2026-10-24T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Tajikistan",
+      "Uzbekistan",
+      "Turkmenistan"
+    ],
+    "governments_affected": [
+      "Diplomatic agencies"
+    ],
+    "industries_affected": [
+      "Government"
+    ]
+  },
+  "pub_date": "2026-10-24",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-10-24T15:00:00.000Z",
+  "updatedAt": "2026-10-24T15:00:00.000Z"
+}

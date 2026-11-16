@@ -1,0 +1,93 @@
+title: Anomalous Snowflake Login from New Geolocation
+id: 4f5b9e1a-8c7d-4f6a-b3e2-1a9c8d7e6f5b
+status: experimental
+description: Detects login activity to a Snowflake environment from an unfamiliar geolocation, which could indicate compromised credentials as seen in the McKesson breach.
+references:
+  - https://www.bleepingcomputer.com/news/security/mckesson-discloses-breach-after-shinyhunters-claims-patient-data-theft/
+author: cyber.netsecops.io
+date: 2026-08-29
+tags:
+  - attack.t1078
+  - attack.initial_access
+level: medium
+logsource:
+  product: snowflake
+  category: authentication
+detection:
+  selection:
+    event_type: 'LOGIN'
+    success: true
+  filter:
+    country|startswith:
+      - 'US'
+  condition: selection and not filter
+---
+title: Potential Data Exfiltration via Snowflake COPY Command
+id: dc8bbfd9-a823-4a01-9eb6-290171f22dbc
+status: experimental
+description: Detects the use of the 'COPY INTO @...' command in Snowflake, which can be used to unload large amounts of data to an external stage for exfiltration, a technique relevant to the McKesson breach.
+references:
+  - https://www.bleepingcomputer.com/news/security/mckesson-discloses-breach-after-shinyhunters-claims-patient-data-theft/
+author: cyber.netsecops.io
+date: 2026-08-29
+tags:
+  - attack.t1530
+  - attack.t1567.002
+  - attack.collection
+  - attack.exfiltration
+level: high
+logsource:
+  product: snowflake
+  category: database
+detection:
+  selection:
+    query_text|startswith: 'COPY INTO @'
+  condition: selection
+---
+title: Potential Data Exfiltration Path Creation in Snowflake
+id: e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: Detects the creation of a new external stage in Snowflake. Attackers may create external stages pointing to their own cloud storage to exfiltrate data, a relevant TTP for data theft from cloud warehouses.
+references:
+  - https://www.bleepingcomputer.com/news/security/mckesson-discloses-breach-after-shinyhunters-claims-patient-data-theft/
+author: cyber.netsecops.io
+date: 2026-08-29
+tags:
+  - attack.t1567.002
+  - attack.exfiltration
+level: medium
+logsource:
+  product: snowflake
+  category: database
+detection:
+  selection:
+    query_text|startswith:
+      - 'CREATE STAGE'
+      - 'CREATE OR REPLACE STAGE'
+  filter:
+    query_text|contains:
+      - 'url = ''s3://my-legit-bucket/'
+  condition: selection and not filter
+---
+title: Suspicious Execution of Snowflake CLI
+id: 6d5e4f3a-2b1c-4d9e-8f7a-6b5c4d3e2f1a
+status: experimental
+description: Detects the execution of the Snowflake command-line tool 'snowsql' from a non-standard location or unauthorized system, which could indicate hands-on-keyboard activity against a Snowflake environment.
+references:
+  - https://www.bleepingcomputer.com/news/security/mckesson-discloses-breach-after-shinyhunters-claims-patient-data-theft/
+author: cyber.netsecops.io
+date: 2026-08-29
+tags:
+  - attack.t1059
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\snowsql.exe'
+  filter:
+    Image|startswith:
+      - 'C:\Program Files\Snowflake SnowSQL\'
+  condition: selection and not filter

@@ -1,0 +1,223 @@
+{
+  "id": "e5679c3b-49c4-4a7e-bfe1-e5f08b353f86",
+  "slug": "critical-flaws-in-dify-ai-platform-expose-cross-tenant-data",
+  "headline": "Critical 'DifyTap' Flaws in Dify AI Platform Expose Cross-Tenant Data in 1M+ Apps",
+  "title": "Vulnerabilities in Dify AI Platform Allow Cross-Tenant Data Exposure and Internal Access",
+  "summary": "Four vulnerabilities, dubbed 'DifyTap,' have been discovered in the popular open-source AI application platform Dify. Two of the flaws are critical (CVE-2026-41947, CVE-2026-41948) and could allow attackers to break tenant isolation, enabling them to read private AI conversations, access documents from other users, and reach internal APIs. The vulnerabilities affect a platform used to build over one million AI applications, posing a significant data exposure risk for enterprises leveraging Dify's cloud service.",
+  "full_report": "## Executive Summary\nResearchers at **Zafran Security** have disclosed a set of four vulnerabilities, collectively named \"DifyTap,\" in **Dify**, a widely used open-source AI application development platform. These flaws pose a significant threat to the confidentiality of data within the more than one million AI applications built on the platform. The most severe issues, **CVE-2026-41947** and **CVE-2026-41948**, are rated **critical** and enable attackers to bypass tenant isolation controls in Dify's cloud environment. This could allow a malicious user to access private AI chat logs, view and use documents uploaded by other tenants, and in some cases, make unauthenticated requests to internal Dify services. The findings highlight the growing security risks in the AI supply chain, where vulnerabilities in orchestration platforms can undermine the security of the AI models they manage. Dify has released patches for the flaws in version 1.14.2.\n\n---\n\n## Vulnerability Details\nThe DifyTap disclosure includes four distinct vulnerabilities, with the most critical ones affecting tenant isolation:\n\n*   **CVE-2026-41947 (Critical):** This flaw allows a user to attach a file belonging to another user within the same tenant to their own chat session. This could lead to unauthorized access to sensitive documents.\n*   **CVE-2026-41948 (Critical):** An unauthenticated vulnerability that could allow an attacker to access internal Plugin Daemon endpoints. This could potentially lead to further compromise of the Dify infrastructure.\n*   **CVE-2026-41949:** A flaw that allowed a user to preview documents uploaded by other tenants, breaking data segregation between different customers on the cloud platform.\n*   **CVE-2026-41950:** A logic flaw where the platform only validated a user's tenant ID when linking a file to a message, but not when accessing the file itself. This could allow a user from one tenant to access files belonging to another tenant if they could guess the file ID.\n\nAdditionally, the research highlighted that Dify was using a version of the PDFium library vulnerable to **CVE-2024-5846**, a use-after-free vulnerability, for over 18 months. This could have allowed an attacker to achieve code execution by uploading a malicious PDF file.\n\n---\n\n## Technical Analysis\nThe core of these vulnerabilities lies in insufficient access control and authorization checks within the Dify platform, particularly in how it handles multi-tenancy and file management. This is a classic example of [`T1087.004 - Valid Accounts: Cloud Accounts`](https://attack.mitre.org/techniques/T1087/004/) being abused, where a low-privileged but valid account in one tenant can access resources from another.\n\nThe ability to access data from other tenants is a form of [`T1530 - Data from Cloud Storage Object`](https://attack.mitre.org/techniques/T1530/). The attackers are not breaking the underlying cloud storage security, but rather exploiting logic flaws in the application layer (Dify) that sits on top of it. The vulnerability where a user could attach another user's file is an Insecure Direct Object Reference (IDOR) flaw, where the application fails to verify that the user is authorized to access the requested object (in this case, a file).\n\nThe unauthenticated access to internal endpoints (`CVE-2026-41948`) is a form of Server-Side Request Forgery (SSRF) or improper network segmentation, allowing an external actor to interact with services that should only be accessible internally. This could be used for [`T1595 - Active Scanning`](https://attack.mitre.org/techniques/T1595/) of the internal network.\n\n---\n\n## Impact Assessment\nThe impact of the DifyTap vulnerabilities is severe, particularly for organizations using Dify's multi-tenant cloud service. The breakdown of tenant isolation is one of the most critical failures for a cloud provider.\n\n*   **Data Breach:** Malicious tenants could systematically steal sensitive data from other customers on the same platform. This could include proprietary business documents, private AI conversations containing intellectual property, and personally identifiable information (PII).\n*   **Loss of Trust:** For a platform like Dify, which is used by major enterprises like Volvo and Panasonic, a breach of tenant isolation can cause irreparable damage to its reputation and lead to customer churn.\n*   **Compliance Violations:** The unauthorized exposure of data could lead to significant regulatory fines under frameworks like GDPR, especially if PII is involved.\n*   **Further Compromise:** The ability to access internal APIs could allow an attacker to pivot from a single compromised tenant to a full compromise of the Dify service infrastructure, affecting all customers.\n*   **AI Supply Chain Risk:** This incident demonstrates that even if the underlying AI models (e.g., from OpenAI or Anthropic) are secure, vulnerabilities in the surrounding orchestration and application layers can create significant security holes.\n\n---\n\n## Cyber Observables — Hunting Hints\nOrganizations using Dify should review historical logs for signs of exploitation:\n\n| Type | Value | Description |\n|---|---|---|\n| `log_source` | `Dify Application Logs` | Look for instances where a user account accessed or attached a file ID that does not belong to its own tenant or user space. This requires correlation of file IDs with user/tenant IDs. |\n| `api_endpoint` | `Dify Plugin Daemon endpoints` | Analyze web server and API gateway logs for any requests to internal Plugin Daemon endpoints that originated from an external, unauthenticated IP address. |\n| `log_source` | `Cloud Storage Access Logs` | Review access logs for the underlying storage (e.g., S3 buckets) for patterns where an object is accessed by a role or user from a different tenant than the one that uploaded it. |\n\n---\n\n## Detection & Response\n*   **Log Analysis:** Organizations self-hosting Dify should centralize application, web server, and infrastructure logs. Search for the anomalous access patterns described above. Correlate API requests with user sessions to identify if a user from Tenant A is making calls for resources belonging to Tenant B.\n*   **Vulnerability Scanning:** Scan container images and server dependencies to identify outdated libraries like the vulnerable version of PDFium. (D3FEND: [`D3-DA - Dynamic Analysis`](https://d3fend.mitre.org/technique/d3f:DynamicAnalysis))\n*   **Incident Response:** If a cross-tenant data access event is detected, the immediate priority is to identify the scope of the exposure. Determine which tenants were affected and what specific data was accessed. Notify affected customers and legal/compliance teams. Isolate the malicious actor's account and preserve all relevant logs for investigation.\n\n---\n\n## Mitigation\n1.  **Update Immediately:** All users of Dify, both cloud and self-hosted, must upgrade to version 1.14.2 or later. This version contains the patches for `CVE-2026-41947`, `CVE-2026-41949`, and `CVE-2026-41950`. (D3FEND: [`D3-SU - Software Update`](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate))\n2.  **Network Segmentation:** For self-hosted deployments, ensure that internal service endpoints like the Plugin Daemon are not exposed to the internet. Use strict network policies and firewalls to isolate internal components. (D3FEND: [`D3-NI - Network Isolation`](https://d3fend.mitre.org/technique/d3f:NetworkIsolation))\n3.  **Code Review and Security Testing:** Developers building on platforms like Dify should conduct their own security testing and code reviews. Do not implicitly trust that the platform is secure. This incident highlights the need for a defense-in-depth approach to application security.\n4.  **Dependency Management:** Regularly scan for and update third-party libraries. The use of a vulnerable PDFium library for 18 months demonstrates a gap in dependency management that could have been caught with automated Software Composition Analysis (SCA) tools.",
+  "twitter_post": "🚨 CRITICAL FLAWS in Dify AI platform! 'DifyTap' vulnerabilities allow cross-tenant data breaches, exposing private AI chats & docs in over 1M apps. Update to v1.14.2 now! #AI #CyberSecurity #Vulnerability #CloudSecurity #Dify",
+  "meta_description": "Critical 'DifyTap' vulnerabilities in the Dify AI platform expose over 1 million applications to cross-tenant data breaches, allowing access to private conversations and documents.",
+  "category": [
+    "Vulnerability",
+    "Cloud Security",
+    "Data Breach"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Dify",
+      "type": "product"
+    },
+    {
+      "name": "Zafran Security",
+      "type": "security_organization"
+    },
+    {
+      "name": "Volvo",
+      "type": "company"
+    },
+    {
+      "name": "Maersk",
+      "type": "company"
+    },
+    {
+      "name": "Panasonic",
+      "type": "company"
+    },
+    {
+      "name": "Thermo Fisher",
+      "type": "company"
+    },
+    {
+      "name": "PDFium",
+      "type": "technology"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-41947",
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-41948",
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-41949"
+    },
+    {
+      "id": "CVE-2026-41950"
+    },
+    {
+      "id": "CVE-2024-5846"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://securitybrief.com.au/story/dify-flaws-expose-cross-tenant-ai-data-zafran-says",
+      "title": "Dify flaws expose cross-tenant AI data, Zafran says",
+      "date": "2026-06-25",
+      "friendly_name": "SecurityBrief Australia"
+    },
+    {
+      "url": "https://bragg.substack.com/p/daily-drop-1325",
+      "title": "Daily Drop (1325)",
+      "date": "2026-06-24",
+      "friendly_name": "Substack"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-25",
+      "summary": "Zafran Security discloses the 'DifyTap' vulnerabilities."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1087.004",
+      "name": "Valid Accounts: Cloud Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage Object",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1595",
+      "name": "Active Scanning",
+      "tactic": "Reconnaissance"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Updating to Dify version 1.14.2 or later is the primary mitigation to fix the flawed access control logic.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1030",
+      "name": "Network Segmentation",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "For self-hosted instances, proper network segmentation can prevent unauthenticated access to internal service endpoints.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-HBPI",
+          "name": "Hardware-based Process Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:Hardware-basedProcessIsolation"
+        }
+      ],
+      "description": "Ensuring strong logical isolation between tenants at the application layer is fundamental to cloud security.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "The most critical action for all Dify users is to immediately upgrade their instances to version 1.14.2 or a later version. This update directly addresses the insecure direct object reference and other access control flaws that lead to cross-tenant data exposure. For Dify Cloud users, the platform provider is responsible for this update. For self-hosted users, this is an urgent, user-initiated action. Before updating, perform a full backup of your Dify instance's data and configuration. After applying the update, verify that the system is running the new version and conduct basic functional testing to ensure your AI applications are still operating correctly. Do not delay this patch, as the public disclosure of these vulnerabilities means that attackers will soon begin scanning for unpatched instances.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-NI",
+      "technique_name": "Network Isolation",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
+      "recommendation": "For organizations self-hosting the Dify platform, proper network isolation is a key compensating control, especially to mitigate threats like CVE-2026-41948 (unauthenticated access to internal daemons). Ensure that only the main web interface of the Dify application is exposed to the internet. All other internal components, such as the Plugin Daemon, database connections, and other microservices, must be placed in a private subnet. Use cloud security groups or traditional firewalls to create strict rules that deny all inbound traffic to these internal components from any source other than the Dify web front-end. This prevents an external attacker from directly reaching and exploiting potential vulnerabilities in these backend services.",
+      "mitre_mitigation_id": "M1035"
+    },
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "To detect potential exploitation of these or similar future flaws, organizations should implement resource access pattern analysis on their Dify application logs. This involves establishing a baseline of normal access patterns. For example, a user in Tenant A should only ever access file IDs associated with Tenant A. Ingest Dify's API and application logs into a SIEM or log analytics platform. Create detection rules that trigger an alert whenever a user's authenticated session attempts to access a resource (like a file or conversation) that is tagged with a different tenant ID. This behavioral analysis can serve as a powerful detection mechanism for any breakdown in tenant isolation logic, providing an early warning of a data exposure incident.",
+      "mitre_mitigation_id": "M1040"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Dify application API logs",
+      "description": "Look for API calls where the authenticated tenant ID in the session token does not match the tenant ID associated with the resource being accessed (e.g., a file ID).",
+      "context": "SIEM, Application Log Analysis",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "/files/preview/*",
+      "description": "Monitor access to the file preview endpoint, correlating the requesting user's tenant with the owner tenant of the file being previewed.",
+      "context": "Web server access logs",
+      "confidence": "medium"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "Dify Plugin Daemon",
+      "description": "Any access attempts to the internal Plugin Daemon service from an external, unauthenticated IP address are a strong indicator of CVE-2026-41948 exploitation.",
+      "context": "API Gateway logs, Firewall logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Dify",
+    "AI Security",
+    "Cloud Security",
+    "Vulnerability",
+    "Data Exposure",
+    "Multi-tenancy",
+    "CVE-2026-41947"
+  ],
+  "extract_datetime": "2026-06-25T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Manufacturing",
+      "Transportation"
+    ],
+    "other_affected": [
+      "Users of the Dify AI application platform",
+      "Enterprises including Volvo, Maersk, Panasonic, and Thermo Fisher"
+    ],
+    "people_affected_estimate": "Over 1 million AI applications may be affected"
+  },
+  "pub_date": "2026-06-25",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-06-25T15:00:00.000Z",
+  "updatedAt": "2026-06-25T15:00:00.000Z"
+}

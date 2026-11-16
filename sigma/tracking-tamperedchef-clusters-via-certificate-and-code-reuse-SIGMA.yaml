@@ -1,0 +1,82 @@
+title: TamperedChef Trojanized Application Execution
+id: 2b8d0c2e-4e4f-4d9a-9e1a-8c1b2d3e4f5a
+status: experimental
+description: Detects the execution of suspicious productivity tools that match the naming convention of TamperedChef malware.
+references:
+  - https://unit42.paloaltonetworks.com/tracking-tampered-chef-clusters/
+author: cyber.netsecops.io
+date: 2026-05-20
+tags:
+  - attack.t1204.002
+  - attack.execution
+falsepositives:
+  - Legitimate, but unusually named, productivity tools.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|contains:
+      - 'pdf-editor'
+      - 'zip-converter'
+    Image|endswith: '.exe'
+  filter:
+    Image|startswith:
+      - 'C:\Program Files\'
+      - 'C:\Program Files (x86)\'
+  condition: selection and not filter
+---
+title: TamperedChef Delayed Execution via Timeout
+id: 5a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects a command-line pattern used by TamperedChef to delay execution of a payload using the timeout command.
+references:
+  - https://unit42.paloaltonetworks.com/tracking-tampered-chef-clusters/
+author: cyber.netsecops.io
+date: 2026-05-20
+tags:
+  - attack.t1678
+  - attack.defense_evasion
+falsepositives:
+  - Legitimate scripts that use timeout for delays.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\cmd.exe'
+    CommandLine|contains|all:
+      - 'timeout '
+      - '/t '
+      - ' && '
+  condition: selection
+---
+title: TamperedChef Persistence via Run Key
+id: f0e1d2c3-b4a5-6f7e-8d9c-0b1a2f3e4d5c
+status: experimental
+description: Detects the creation of registry values in the user's Run key folder, a common persistence technique for TamperedChef.
+references:
+  - https://unit42.paloaltonetworks.com/tracking-tampered-chef-clusters/
+author: cyber.netsecops.io
+date: 2026-05-20
+tags:
+  - attack.t1547.001
+  - attack.persistence
+falsepositives:
+  - Legitimate software installers creating persistence.
+level: medium
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    EventType: 'SetValue'
+    TargetObject|contains: '\Software\Microsoft\Windows\CurrentVersion\Run'
+  filter:
+    Image|startswith:
+      - 'C:\Program Files\'
+      - 'C:\Program Files (x86)\'
+      - 'C:\Windows\System32\'
+  condition: selection and not filter

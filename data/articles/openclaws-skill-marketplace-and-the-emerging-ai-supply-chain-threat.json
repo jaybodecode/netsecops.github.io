@@ -1,0 +1,303 @@
+{
+  "id": "723af441-2054-43c3-941c-35d83839c056",
+  "slug": "openclaws-skill-marketplace-and-the-emerging-ai-supply-chain-threat",
+  "headline": "Malicious AI 'Skills' on OpenClaw's ClawHub Marketplace Bypass Scanners to Deliver Infostealers",
+  "title": "Unit 42 Uncovers Evasive Malicious AI Skills on OpenClaw's ClawHub Marketplace Deploying Infostealers",
+  "summary": "Palo Alto Networks' Unit 42 has identified an ongoing campaign targeting the OpenClaw AI agent ecosystem. Malicious actors are publishing seemingly benign 'skills' on the ClawHub marketplace that contain evasive code designed to bypass security scanners like VirusTotal and ClawScan. These skills use a social engineering technique called a 'paste-site redirect lure' to trick users into executing malicious shell commands. This action downloads and executes infostealer malware, including the known Atomic macOS Stealer (AMOS) and a newly discovered variant dubbed 'cluw'. The campaign demonstrates a significant evolution in software supply chain attacks, specifically tailored to exploit the trust and execution model of agentic AI platforms, granting attackers direct access to a user's system.",
+  "full_report": "## Executive Summary\n\nBetween February and May 2026, **[Unit 42](https://unit42.paloaltonetworks.com)** researchers uncovered a sophisticated threat campaign targeting the **OpenClaw** AI agent ecosystem. Malicious actors are successfully publishing dangerous 'skills' on **ClawHub**, the official marketplace, that bypass integrated security scanners, including **[VirusTotal](https://www.virustotal.com)**. These skills leverage social engineering and obfuscation to trick users into executing commands that deploy infostealer malware, such as **[Atomic macOS stealer (AMOS)](https://malpedia.caad.fkie.fraunhofer.de/details/osx.atomic)** and a new variant named **cluw**. This activity represents a critical evolution of software supply chain attacks, specifically adapted for the unique architecture of agentic AI platforms. The lack of isolation in these environments means a single malicious skill can grant an attacker full control over the agent's permissions and access to the underlying system, posing a severe risk to users and organizations.\n\n---\n\n## Threat Overview\n\n**OpenClaw** is an AI agent designed to execute tasks using third-party plugins called 'skills', which are distributed through its dedicated **ClawHub** marketplace. This model creates a new type of software supply chain. While initial malicious campaigns in early 2026, such as **ClawHavoc**, were identified and led to enhanced scanning with **VirusTotal** and **ClawScan**, threat actors have adapted.\n\nThe latest campaign, observed by **[Unit 42](https://unit42.paloaltonetworks.com)**, uses more evasive techniques. Attackers publish skills, such as `tradingview-ai-indicator-assistant`, that appear legitimate. However, the skill's markdown file contains a 'prerequisite block' that directs the user to an external website (a 'paste-site redirect lure') hosting a malicious command. The user is instructed to copy and paste this command into their terminal to enable the skill. This user-assisted execution bypasses the automated scanners that only analyze the skill package itself. Once executed, the command downloads and runs an infostealer payload, leading to credential theft and potential financial fraud.\n\n> This attack vector exploits the semantic gap in AI agent security. The agent interprets the malicious instructions as a legitimate user request, using its own system privileges to execute the attack. This circumvents traditional security boundaries that might exist in sandboxed application environments like npm or PyPI.\n\n---\n\n## Technical Analysis\n\nThe attack chain primarily relies on user interaction prompted by a malicious skill. \n\n1.  **Lure**: The user installs a malicious skill from **ClawHub**, such as `tradingview-ai-indicator-assistant` (SHA256: `b6c7e0bf573b1c7d9d3a05eb08d26579199515b847df984862805f44a7af8007`).\n2.  **Social Engineering**: The skill's prerequisite instructions direct the user to a paste-site, `hxxps[:]//rentry[.]co/openclaw-code`, which masquerades as a required activation step. This is a form of [`T1189 - Drive-by Compromise`](https://attack.mitre.org/techniques/T1189/).\n3.  **Execution**: The user is instructed to copy a Base64-encoded string and pipe it into a shell. This technique, [`T1059.004 - Command and Scripting Interpreter: Unix Shell`](https://attack.mitre.org/techniques/T1059.004/), is a classic 'curl-pipe-bash' attack. The use of Base64 is a form of [`T1027 - Obfuscated Files or Information`](https://attack.mitre.org/techniques/T1027/).\n4.  **Payload Delivery**: The executed shell command fetches a second-stage payload via [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/). In the case of the `tradingview` skill, the payload `Xuvewuyur` was downloaded from `hxxp[:]//2.26.75[.]16`. This payload was identified as a new macOS infostealer named **cluw** (SHA256: `818aea6143282b352fdfdc0f3ebf77a36e54eb3befb5cad1a355a99ab97c6aa7`).\n5.  **C2 Communication & Data Theft**: Once active, the infostealer harvests credentials and other sensitive data, fulfilling its objective of [`T1555 - Credentials from Password Stores`](https://attack.mitre.org/techniques/T1555/). Older campaigns linked to the `omnicogg` skill (SHA256: `b30eaed1f7478c28f4ec50d07ed5ef014ffbc4b2bc5a38d689ba9f7abb5e19c2`) delivered **[Atomic macOS stealer (AMOS)](https://malpedia.caad.fkie.fraunhofer.de/details/osx.atomic)**, communicating with a C2 server at `91.92.242[.]30`.\n\nThis campaign demonstrates the attackers' persistence, reusing the delivery template from the original **ClawHavoc** attacks but with new backend infrastructure and payloads to evade detection.\n\n---\n\n## Impact Assessment\n\nThe primary impact of this campaign is the theft of sensitive information, including browser cookies, cryptocurrency wallet data, system passwords, and other credentials stored on the victim's machine. The targeting of `TradingView` users suggests a focus on individuals involved in financial markets, increasing the risk of direct financial loss.\n\nFrom a broader perspective, this attack highlights a severe systemic risk in the burgeoning AI agent ecosystem. The lack of robust sandboxing and permission controls for third-party skills creates a trusted pathway for malware directly onto user systems. As AI agents become more integrated into personal and enterprise workflows, this type of supply chain attack could lead to widespread corporate espionage, large-scale data breaches, and significant financial fraud.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n|---|---|---|\n| `ip_address_v4` | `91.92.242.30` | C2 server for AMOS malware dropper. |\n| `ip_address_v4` | `2.26.75.16` | Payload server for 'cluw' infostealer. |\n| `url` | `https://rentry.co/openclaw-code` | Paste-site redirect lure hosting malicious commands. |\n| `file_hash_sha256` | `b6c7e0bf573b1c7d9d3a05eb08d26579199515b847df984862805f44a7af8007` | Malicious skill: `tradingview-ai-indicator-assistant`. |\n| `file_hash_sha256` | `818aea6143282b352fdfdc0f3ebf77a36e54eb3befb5cad1a355a99ab97c6aa7` | 'cluw' macOS infostealer payload. |\n| `file_hash_sha256` | `b30eaed1f7478c28f4ec50d07ed5ef014ffbc4b2bc5a38d689ba9f7abb5e19c2` | Malicious skill: `omnicogg`. |\n| `file_name` | `Xuvewuyur` | Filename of the 'cluw' infostealer payload. |\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns to detect related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| `command_line_pattern` | `curl .* \\| .*bash` | Detects the common curl-pipe-bash execution method. |\n| `command_line_pattern` | `echo .* \\| base64 --decode \\| bash` | Detects execution of Base64-encoded scripts. |\n| `url_pattern` | `rentry.co/*` | Network traffic to the paste-site used in the attack. |\n| `process_name` | `OpenClaw` | Look for child processes spawned by the OpenClaw agent, especially `curl`, `bash`, or `sh`. |\n| `log_source` | `EDR Telemetry / Sysmon / macOS Endpoint Security Framework` | Source for monitoring process creation and command-line arguments. |\n| `network_traffic_pattern` | `Outbound to 91.92.242.30 or 2.26.75.16` | Connections to known malicious IP addresses. |\n\n---\n\n## Detection & Response\n\nDetecting this threat requires monitoring beyond the initial skill download. Security teams should focus on post-installation behavior.\n\n1.  **Process Monitoring**: Implement Endpoint Detection and Response (EDR) rules to monitor for suspicious process chains originating from the **OpenClaw** agent. Specifically, alert on `OpenClaw` spawning shell interpreters like `bash` or `sh`, which then initiate network connections with tools like `curl` or `wget`. This can be achieved through **D3FEND**'s [`D3-PA: Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n\n2.  **Command Line Auditing**: Log all command-line arguments for executed processes. Create SIEM alerts for patterns like `curl | bash` or `base64 --decode | bash`, which are highly indicative of this attack vector.\n\n3.  **Network Traffic Analysis**: Use network security tools and proxies to perform [`D3-NTA: Network Traffic Analysis`](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis). Block outbound connections to the IOCs listed above. Additionally, create alerts for connections to known anonymous paste sites like `rentry.co` or `pastebin.com` from sensitive systems or by unusual processes.\n\n4.  **File Integrity Monitoring**: Monitor for the creation of unexpected executable files in user directories, which may indicate a downloaded payload.\n\nIf a compromise is suspected, immediately isolate the affected host from the network, revoke any credentials that may have been stored on the machine, and begin a forensic investigation to determine the extent of the breach.\n\n---\n\n## Mitigation\n\nMitigating this threat requires a combination of technical controls and user awareness.\n\n1.  **User Training**: This is the most critical defense. Educate users of AI agents about the dangers of third-party skill marketplaces. Specifically, train them to never copy and paste commands from untrusted sources into a terminal, even if presented as a necessary step to enable a feature. This aligns with **MITRE ATT&CK Mitigation** [`M1017 - User Training`](https://attack.mitre.org/mitigations/M1017/).\n\n2.  **Application Control**: Implement application allowlisting policies to prevent the execution of unauthorized scripts and binaries. A strict policy could block shell interpreters from being invoked by applications like **OpenClaw**. This corresponds to **D3FEND**'s [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n\n3.  **Principle of Least Privilege**: Run AI agents like **OpenClaw** with the minimum necessary permissions. If possible, use containerization or sandboxing technologies to isolate the agent and its skills from the underlying operating system and sensitive user data. This relates to [`M1048 - Application Isolation and Sandboxing`](https://attack.mitre.org/mitigations/M1048/).\n\n4.  **Network Filtering**: Implement outbound traffic filtering rules on firewalls and web proxies to block access to the known malicious IPs and the `rentry.co` domain. This is a direct application of **D3FEND**'s [`D3-OTF: Outbound Traffic Filtering`](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering).",
+  "twitter_post": "⚠️ Malicious AI 'skills' on OpenClaw's ClawHub marketplace are bypassing security scanners to deploy infostealers like AMOS & the new 'cluw' malware. Attackers use social engineering lures to gain system access. #AISecurity #SupplyChain #ThreatIntel",
+  "meta_description": "Unit 42 threat research uncovers a new AI supply chain attack where malicious 'skills' on the OpenClaw marketplace evade scanners to deploy infostealers and commit financial fraud.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor",
+      "url": "https://www.paloaltonetworks.com/"
+    },
+    {
+      "name": "OpenClaw",
+      "type": "product"
+    },
+    {
+      "name": "ClawHub",
+      "type": "product"
+    },
+    {
+      "name": "VirusTotal",
+      "type": "product",
+      "url": "https://www.virustotal.com"
+    },
+    {
+      "name": "ClawScan",
+      "type": "product"
+    },
+    {
+      "name": "NVIDIA",
+      "type": "vendor",
+      "url": "https://www.nvidia.com"
+    },
+    {
+      "name": "Bitdefender Labs",
+      "type": "security_organization"
+    },
+    {
+      "name": "Koi Security",
+      "type": "security_organization"
+    },
+    {
+      "name": "Trend Micro",
+      "type": "vendor",
+      "url": "https://www.trendmicro.com"
+    },
+    {
+      "name": "Atomic macOS stealer (AMOS)",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/osx.atomic"
+    },
+    {
+      "name": "cluw",
+      "type": "malware"
+    },
+    {
+      "name": "ClawHavoc",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/openclaw-ai-supply-chain-risk/",
+      "title": "OpenClaw’s Skill Marketplace and the Emerging AI Supply Chain Threat",
+      "date": "2026-06-23",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-02-01T00:00:00Z",
+      "summary": "Initial reports from Bitdefender, Koi Security, and Trend Micro detail the first wave of malicious skills on ClawHub."
+    },
+    {
+      "datetime": "2026-02-15T00:00:00Z",
+      "summary": "Unit 42 begins analysis of the ClawHub marketplace, lasting through May 2026."
+    },
+    {
+      "datetime": "2026-05-17T00:00:00Z",
+      "summary": "The malicious 'tradingview-ai-indicator-assistant' skill is published to ClawHub."
+    },
+    {
+      "datetime": "2026-06-01T00:00:00Z",
+      "summary": "ClawHub announces a partnership with NVIDIA to enhance skill screening."
+    },
+    {
+      "datetime": "2026-06-23T22:00:51Z",
+      "summary": "Unit 42 publishes its research on the evasive malicious skills and the emerging AI supply chain threat."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1204.002",
+      "name": "User Execution: Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1059.004",
+      "name": "Command and Scripting Interpreter: Unix Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1555",
+      "name": "Credentials from Password Stores",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1189",
+      "name": "Drive-by Compromise",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Educate users on the risks of AI marketplaces and the danger of executing commands from untrusted sources.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application control solutions to prevent agents like OpenClaw from spawning shell interpreters or executing arbitrary code.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "description": "Use web filters to block access to known malicious domains and untrusted paste sites.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Deploy endpoint protection to detect and block known infostealer payloads like AMOS and cluw.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Run AI agents in a sandboxed or containerized environment to limit their access to the host system and user data.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable comprehensive logging of command-line activity and process creation to detect suspicious behavior.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "Deploy an Endpoint Detection and Response (EDR) solution capable of deep process inspection on all systems running AI agents like OpenClaw. Configure the EDR to specifically monitor for suspicious process ancestry. A key rule should be to generate a high-severity alert when the 'OpenClaw' process spawns a shell interpreter (e.g., `bash`, `sh`, `zsh`) as a child process, which in turn spawns a networking utility like `curl` or `wget`. This specific chain is highly indicative of the attack pattern described. Establish a baseline of normal OpenClaw behavior; any deviation, especially the execution of arbitrary scripts or direct shell access, should be investigated immediately. This technique directly counters the threat actor's execution method by providing visibility into the otherwise opaque actions taken by the AI agent.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "Implement strict egress filtering rules on perimeter firewalls and web proxies. At a minimum, create an explicit block rule for the known malicious IP addresses `91.92.242.30` and `2.26.75.16`. More strategically, create a category-based filtering policy that blocks access to 'Paste Sites' or 'Anonymizing Services', which would include `rentry.co`. For environments requiring higher security, adopt a default-deny outbound policy and only allowlist traffic to known-good, business-essential domains and IP addresses. This control would have broken the attack chain at two points: preventing the malicious script from being downloaded from the paste site, and blocking the final payload download from the attacker's server. This is a crucial compensating control for novel threats where the payload itself may not yet be detected by antivirus.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "On macOS and other systems where OpenClaw is used, implement an application control solution in enforcement mode. Create a strict policy that prevents the OpenClaw application from executing any child processes that are not part of its core, signed components. Specifically, deny its ability to launch `/bin/bash`, `/bin/sh`, and `/usr/bin/curl`. This prevents the 'curl-pipe-bash' technique from ever succeeding. While this may break some legitimate but poorly designed skills, it provides a powerful defense against this entire class of attack. This effectively hardens the AI agent's execution environment, ensuring that even if a user is tricked into initiating a malicious action, the underlying operating system will block the dangerous behavior before the payload can be downloaded or executed. This moves the defense from detection to prevention.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "91.92.242.30",
+      "description": "C2 server for AMOS malware"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "2.26.75.16",
+      "description": "Payload server for 'cluw' infostealer"
+    },
+    {
+      "type": "url",
+      "value": "https://rentry.co/openclaw-code",
+      "description": "Paste-site redirect lure"
+    },
+    {
+      "type": "file_hash_sha256",
+      "value": "b6c7e0bf573b1c7d9d3a05eb08d26579199515b847df984862805f44a7af8007",
+      "description": "Malicious skill: tradingview-ai-indicator-assistant"
+    },
+    {
+      "type": "file_hash_sha256",
+      "value": "818aea6143282b352fdfdc0f3ebf77a36e54eb3befb5cad1a355a99ab97c6aa7",
+      "description": "'cluw' macOS infostealer payload"
+    },
+    {
+      "type": "file_hash_sha256",
+      "value": "b30eaed1f7478c28f4ec50d07ed5ef014ffbc4b2bc5a38d689ba9f7abb5e19c2",
+      "description": "Malicious skill: omnicogg"
+    },
+    {
+      "type": "file_name",
+      "value": "Xuvewuyur",
+      "description": "Filename of the 'cluw' infostealer payload"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "curl .* \\| .*bash",
+      "description": "Detects the common curl-pipe-bash execution method used to download and run malicious scripts.",
+      "context": "EDR Telemetry, Windows Event ID 4688, Linux auditd logs",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": "rentry.co/*",
+      "description": "The paste-site used as a redirect lure to host malicious commands. Traffic to this domain from non-browser processes is highly suspicious.",
+      "context": "Web proxy logs, DNS query logs, Network Security Monitoring (NSM)",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "OpenClaw",
+      "description": "The parent process of the malicious activity. Monitor for child processes like 'curl', 'bash', or 'sh' being spawned by the OpenClaw agent.",
+      "context": "EDR process creation events",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound TCP traffic to 91.92.242.30",
+      "description": "Network connection to the known C2 server for Atomic macOS Stealer (AMOS).",
+      "context": "Firewall logs, Netflow data, IDS/IPS alerts",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound HTTP traffic to 2.26.75.16",
+      "description": "Network connection to the payload delivery server for the 'cluw' infostealer.",
+      "context": "Firewall logs, Netflow data, IDS/IPS alerts",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "AI Security",
+    "Supply Chain Attack",
+    "Infostealer",
+    "macOS",
+    "OpenClaw",
+    "ClawHub",
+    "AMOS",
+    "Agentic AI",
+    "Unit 42"
+  ],
+  "extract_datetime": "2026-06-24T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance"
+    ],
+    "other_affected": [
+      "AI agent users",
+      "Open-source software users"
+    ]
+  },
+  "pub_date": "2026-06-24",
+  "reading_time_minutes": 9,
+  "createdAt": "2026-06-24T15:00:00.000Z",
+  "updatedAt": "2026-06-24T15:00:00.000Z"
+}

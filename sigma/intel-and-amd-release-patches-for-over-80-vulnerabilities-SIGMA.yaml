@@ -1,0 +1,71 @@
+title: Suspicious Child Process of RyzenMaster.exe
+id: 9e8d7c6b-5a4f-4e3d-8c2b-1a9f8e7d6c5b
+status: experimental
+description: Detects suspicious child processes spawned by the AMD Ryzen Master Utility, which could indicate exploitation of a vulnerability for arbitrary code execution or privilege escalation.
+references:
+  - https://www.securityweek.com/chipmaker-patch-tuesday-intel-amd-fix-over-80-vulnerabilities-combined/amp/
+author: cyber.netsecops.io
+date: 2026-08-14
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith: '\RyzenMaster.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\rundll32.exe'
+      - '\cscript.exe'
+      - '\wscript.exe'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate update or diagnostic processes initiated by the utility.
+---
+title: System Crash Indicating Potential Denial of Service
+id: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects a system crash (bugcheck), which could indicate a denial-of-service attempt against vulnerable firmware or drivers as mentioned in the August 2026 Intel/AMD advisories.
+references:
+  - https://www.securityweek.com/chipmaker-patch-tuesday-intel-amd-fix-over-80-vulnerabilities-combined/amp/
+author: cyber.netsecops.io
+date: 2026-08-14
+tags:
+  - attack.t1499
+  - attack.impact
+level: medium
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID: 1001
+    Provider_Name: 'Microsoft-Windows-WER-SystemErrorReporting'
+  condition: selection
+falsepositives:
+  - System crashes due to hardware failure, driver conflicts, or other software bugs.
+---
+title: AMD Ryzen Master Utility Execution
+id: 2b1a9c8d-f3e4-4d5c-8a7b-1e2f3d4c5b6a
+status: experimental
+description: Detects the execution of the AMD Ryzen Master Utility, which could be exploited due to vulnerabilities mentioned in the August 2026 security updates.
+references:
+  - https://www.securityweek.com/chipmaker-patch-tuesday-intel-amd-fix-over-80-vulnerabilities-combined/amp/
+author: cyber.netsecops.io
+date: 2026-08-14
+tags:
+  - attack.t1204
+level: informational
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\RyzenMaster.exe'
+  condition: selection

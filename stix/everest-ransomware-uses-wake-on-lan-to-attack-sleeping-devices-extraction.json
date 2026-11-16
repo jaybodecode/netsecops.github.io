@@ -1,0 +1,188 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-07-09T14:11:31.235Z",
+    "article_slug": "everest-ransomware-uses-wake-on-lan-to-attack-sleeping-devices",
+    "article_date": "2026-07-09",
+    "token_usage": {
+      "input_tokens": 145850,
+      "output_tokens": 2462,
+      "cached_tokens": 140082,
+      "total_tokens": 148312,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.04934
+    }
+  },
+  "report_name": "Everest Ransomware Awakens Sleeping PCs with Wake-on-LAN to Maximize Attack Surface",
+  "threat_actors": [
+    {
+      "name": "Everest",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A double-extortion ransomware group active since late 2020. The group has been observed using Wake-on-LAN (WoL) functionality to power on dormant computers on a victim's network to maximize the number of encrypted devices.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Remote System Discovery",
+      "mitre_id": "T1018",
+      "description": "The Everest ransomware parses the local Address Resolution Protocol (ARP) cache to discover IP and MAC addresses of other devices on the local network, including those that are offline or sleeping."
+    },
+    {
+      "name": "Disable or Modify Tools",
+      "mitre_id": "T1562.001",
+      "description": "The Everest ransomware disables Windows Defender's Controlled Folder Access feature to evade defenses and allow unauthorized file modification."
+    },
+    {
+      "name": "SMB/Windows Admin Shares",
+      "mitre_id": "T1021.002",
+      "description": "The Everest ransomware enables File and Printer Sharing and re-enables the legacy SMBv1 protocol to facilitate its propagation and encryption of network shares."
+    },
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "After waking dormant devices using Wake-on-LAN and preparing the network, the Everest ransomware maps all discovered local and remote network shares and proceeds with file encryption."
+    },
+    {
+      "name": "File Deletion",
+      "mitre_id": "T1070.004",
+      "description": "After encryption, the Everest ransomware executes a self-deletion script to erase its own executable, hindering forensic analysis."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Everest",
+      "mitre_id": "S0646",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [],
+      "description": "A ransomware variant used by the Everest group that incorporates Wake-on-LAN (WoL) functionality to power on and encrypt dormant network endpoints. It also disables security features and enables insecure protocols to facilitate lateral movement and impact.",
+      "capabilities": [
+        "compromises-data-availability",
+        "degrades-security-software",
+        "probes-network-environment",
+        "cleans-traces-of-infection"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [],
+  "observables": [
+    {
+      "type": "windows-registry-key",
+      "value": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\SMB1"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Suspicious Wake-on-LAN Broadcast Activity",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Suspicious Wake-on-LAN Broadcast Activity\nid: 7e8b1c2d-9a3b-4f5e-8d7c-6a5b4c3d2e1f\nstatus: experimental\ndescription: Detects a potential spike in Wake-on-LAN (WoL) 'magic packets' sent over UDP ports 7 or 9. This activity was observed being used by Everest ransomware to awaken dormant machines before encryption.\nreferences:\n  - https://cyberpress.org/everest-wakes-dormant-hosts/\nauthor: cyber.netsecops.io\ndate: 2026-07-09\ntags:\n  - attack.t1018\nlevel: medium\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    DestinationPort:\n      - 7\n      - 9\n    Protocol: 'udp'\n    Initiated: 'true'\n  condition: selection",
+      "description": "Detects network traffic consistent with Wake-on-LAN (WoL) magic packets, which Everest ransomware uses to power on sleeping devices."
+    },
+    {
+      "name": "ARP Cache Discovery Command Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: ARP Cache Discovery Command Execution\nid: f8a1b2c3-d4e5-4f6a-7b8c-9d0e1f2a3b4c\nstatus: experimental\ndescription: Detects the execution of 'arp -a' to display the ARP cache. This is used by Everest ransomware as a discovery technique to find potential targets on the network.\nreferences:\n  - https://cyberpress.org/everest-wakes-dormant-hosts/\nauthor: cyber.netsecops.io\ndate: 2026-07-09\ntags:\n  - attack.t1018\nlevel: low\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\arp.exe'\n    CommandLine|contains: ' -a'\n  condition: selection",
+      "description": "Detects the execution of the `arp -a` command, which Everest ransomware uses to discover potential targets on the local network."
+    },
+    {
+      "name": "Everest Ransomware SMBv1 Enablement",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[windows-registry-key:key = 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\SMB1']",
+      "x_netsecio_sigma_rule": "title: Everest Ransomware SMBv1 Enablement Registry Modification\nid: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d\nstatus: experimental\ndescription: Detects registry modification to enable the insecure SMBv1 protocol, a tactic used by Everest ransomware to facilitate lateral movement.\nreferences:\n  - https://cyberpress.org/everest-wakes-dormant-hosts/\nauthor: cyber.netsecops.io\ndate: 2026-07-09\ntags:\n  - attack.t1021.002\nlevel: high\nlogsource:\n  category: registry_event\n  product: windows\ndetection:\n  selection:\n    TargetObject|endswith: '\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\SMB1'\n    Details: '1'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the re-enabling of the legacy SMBv1 protocol via registry modification, a technique used by Everest ransomware to prepare for lateral movement."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Everest",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Everest",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Everest",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Remote System Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Everest",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Disable or Modify Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Everest",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "SMB/Windows Admin Shares",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Everest",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Everest",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "File Deletion",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious Wake-on-LAN Broadcast Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Everest",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "ARP Cache Discovery Command Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Remote System Discovery",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Everest Ransomware SMBv1 Enablement",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Everest",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Everest Ransomware SMBv1 Enablement",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\SMB1",
+      "target_type": "windows-registry-key"
+    }
+  ]
+}

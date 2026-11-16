@@ -1,0 +1,35 @@
+# Data Breaches & Critical Vulnerabilities Dominate Cybersecurity News
+
+**Published:** 2026-10-13 | **Articles:** 7
+
+**National Security & Critical Infrastructure Threats:**
+
+*   **Denmark's National Population Register Breached:** A third-party supplier compromise has exposed 8.8 million records from Denmark's Central Register of Persons (CPR), including sensitive personal data, increasing the risk of identity theft and fraud.
+*   **US Seizes Hacking Tools Linked to China:** Allied nations have issued advisories on China-based Integrity Technology Group, detailing new tactics used by Flax Typhoon and Red Juliett, targeting critical infrastructure across North America, Southeast Asia, and Africa.
+*   **Warlock Ransomware Exploits SharePoint Flaws:** The Warlock ransomware group is now confirmed to have targeted at least four U.S. critical infrastructure organizations, including water utilities and telecommunications, using old SharePoint vulnerabilities.
+
+**New Vulnerabilities & Supply Chain Risks:**
+
+*   **Cyberattack Disrupts French Refrigeration Systems:** A cyberattack on refrigeration systems, linked to Danish provider Danfoss, has caused significant food spoilage across hundreds of supermarkets in France, Belgium, and the Netherlands.
+*   **Citrix Discloses Critical NetScaler RCE Flaw:** Citrix has released a security advisory for CVE-2026-107406, a critical memory overflow vulnerability in NetScaler ADC and Gateway products that could lead to remote code execution or denial of service.
+*   **Karaoke Giant Daiichi Kosho Supplier Breach:** A breach at a third-party supplier for Japanese karaoke giant Daiichi Kosho may have exposed the personal information of approximately 8.7 million customers.
+*   **Osaka University Hit by Ransomware:** Osaka Metropolitan University is experiencing widespread disruption due to a suspected ransomware attack impacting around 500 servers and potentially compromising the personal data of over 130,000 individuals.
+
+## Articles in this publication
+- [Denmark's National Population Register Breached, 8.8M Records Exposed](https://cyber.netsecops.io/articles/denmark-national-population-register-breached-exposing-8-8-million/) (high)
+  Danish authorities have disclosed a massive data breach affecting the country's Central Person Register (CPR), exposing the personal information of 8.8 million people. The breach was not caused by a software vulnerability but by attackers misusing the legitimate credentials of a private company authorized to access the database. The compromised data includes names, addresses, and the highly sensitive 10-digit CPR numbers, creating a significant risk of identity theft and fraud for a large portion of the Danish population. An investigation is underway, and the third-party's access has been revoked.
+- [US Seizes Hacking Tools Used by China-Linked Group Flax Typhoon](https://cyber.netsecops.io/articles/us-seizes-hacking-tools-microscan-fishhub-linked-to-china-apt-flax-typhoon/) (high)
+  The U.S. Department of Justice and FBI have seized two hacking tools, 'Microscan' and 'FishHub,' and their controlling domains, linked to the Chinese state-sponsored group Flax Typhoon. The tools, created by the sanctioned firm Integrity Technology Group, were used in global campaigns targeting critical infrastructure, government, and educational institutions, particularly in the U.S. and Taiwan. CISA also added five related CVEs to its KEV catalog.
+- [Warlock Ransomware Hits Critical Sectors via Old SharePoint Flaws](https://cyber.netsecops.io/articles/warlock-ransomware-exploits-sharepoint-flaws-to-breach-critical-infrastructure/) (high)
+  The China-linked Warlock ransomware group has breached at least four organizations by exploiting a year-old set of Microsoft SharePoint vulnerabilities known as 'ToolShell'. The campaign, active in the two months preceding October 1, 2026, targeted a water utility, a telecom provider, a government body, and a university across Europe, Africa, and Latin America. After gaining access via unpatched on-premises SharePoint servers, the attackers deploy web shells and use 'bring your own vulnerable driver' (BYOVD) techniques to disable security software before deploying the Warlock ransomware across the network.
+- [Cyberattack on Refrigeration Systems Spoils Food at French Stores](https://cyber.netsecops.io/articles/cyberattack-spoils-food-at-french-supermarkets-via-refrigeration-hack/) (high)
+  A large-scale cyberattack targeting the refrigeration systems of hundreds of supermarkets in France, Belgium, and the Netherlands has resulted in millions of euros in food spoilage. Attackers remotely triggered forced defrost cycles, raising temperatures to 50°C. The incident is linked to compromised systems from Danish provider Danfoss, highlighting vulnerabilities in industrial control systems (ICS) within the food supply chain. French authorities have launched an investigation into the attack.
+- [Citrix Discloses Critical RCE Flaw in NetScaler ADC and Gateway](https://cyber.netsecops.io/articles/citrix-discloses-critical-rce-flaw-cve-2026-107406-in-netscaler-products/) (critical)
+  Citrix has released a security advisory for a new critical vulnerability, CVE-2026-107406, affecting its NetScaler ADC and Gateway products. The flaw is a memory overflow issue with a CVSS score of 9.5 that could lead to remote code execution or denial of service. It impacts appliances configured as a SAML Service Provider or Identity Provider. CISA has urged customers to apply patches immediately, although there is no evidence of active exploitation yet.
+- [Karaoke Giant Daiichi Kosho Supplier Breach Exposes 8.7M Customers](https://cyber.netsecops.io/articles/daiichi-kosho-karaoke-supplier-breach-exposes-8-7-million-customers/) (high)
+  Japanese karaoke giant Daiichi Kosho has announced a major data breach originating from a third-party supplier, Nippon Columbia Group (NCG). The incident, caused by malware on a supplier employee's PC, may have exposed the personal information of approximately 8.7 million customers. The potentially leaked data includes names, birth dates, and contact information, but not financial details. This event highlights the significant risks posed by supply chain vulnerabilities.
+- [Osaka University Hit by Ransomware; 500 Servers Affected](https://cyber.netsecops.io/articles/osaka-metropolitan-university-crippled-by-major-ransomware-attack/) (high)
+  Osaka Metropolitan University in Japan has been hit by a major suspected ransomware attack, causing widespread operational disruption. The attack has impacted approximately 500 servers, affecting classes, email, and administrative systems. The university has also warned that the personal data of at least 130,000 students, faculty, and staff may have been compromised in the incident. This event highlights the ongoing trend of ransomware groups targeting the education sector.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-10-13/

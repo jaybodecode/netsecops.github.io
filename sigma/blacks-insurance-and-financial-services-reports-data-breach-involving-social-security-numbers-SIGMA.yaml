@@ -1,0 +1,90 @@
+title: Potential Database Exfiltration via Large Query
+id: 2a8b1c9d-f0e1-4d2c-b3a4-5e6f7a8b9c0d
+status: experimental
+description: |
+  Detects unusually large queries or data exports from customer databases.
+  This is a hunting hint for a potential data breach, as seen in the financial services sector.
+  The threshold for 'rows_returned' should be tuned to the specific environment.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/blacks-insurance-and-financial-services-june-2026
+author: cyber.netsecops.io
+date: 2026-06-26
+level: medium
+logsource:
+  category: database
+detection:
+  selection:
+    rows_returned|gt: 10000
+  condition: selection
+---
+title: Potential Data Exfiltration via Large Outbound Transfer
+id: 976fb0b0-d22d-4c9d-8374-a5f222eebff3
+status: experimental
+description: |
+  Detects a sudden spike in data being sent from an internal server to an external IP address.
+  This is a major red flag for data exfiltration. This rule requires tuning for internal server IPs and traffic volume baselines.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/blacks-insurance-and-financial-services-june-2026
+author: cyber.netsecops.io
+date: 2026-06-26
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    SourceIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+    sent_bytes|gt: 100000000
+  filter_legit_dest:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_legit_dest
+---
+title: Anomalous VPN Login From Foreign Country
+id: 479b93e1-737f-4535-8da9-24a0edae0fdf
+status: experimental
+description: |
+  Detects successful VPN logins from unexpected countries. This rule assumes the organization primarily operates within the US and should be tuned.
+  This is a hunting hint for compromised accounts.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/blacks-insurance-and-financial-services-june-2026
+author: cyber.netsecops.io
+date: 2026-06-26
+level: low
+logsource:
+  category: vpn
+detection:
+  selection:
+    status: 'success'
+  filter:
+    source_country: 'US'
+  condition: selection and not filter
+---
+title: Mimikatz Credential Dumping Tool Execution
+id: a49aaa85-2693-4ec4-84fd-902cdb57a419
+status: experimental
+description: Detects the execution of Mimikatz, a tool commonly used for credential dumping, based on command line arguments or process image name.
+references:
+  - https://www.classaction.org/data-breach-lawsuits/blacks-insurance-and-financial-services-june-2026
+author: cyber.netsecops.io
+date: 2026-06-26
+tags:
+  - attack.t1003
+  - attack.credential_access
+level: critical
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_cmd:
+    CommandLine|contains:
+      - 'Invoke-Mimikatz'
+  selection_img:
+    Image|endswith: '\mimikatz.exe'
+    OriginalFileName: 'mimikatz.exe'
+  condition: 1 of them

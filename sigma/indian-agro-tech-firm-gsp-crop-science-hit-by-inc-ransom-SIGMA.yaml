@@ -1,0 +1,92 @@
+title: INC Ransom - PowerShell Download and Execute
+id: 2b1c8d3e-4f5a-4b6c-8d9e-0f1a2b3c4d5e
+status: experimental
+description: Detects the use of PowerShell to download and execute payloads from the internet, a technique commonly used by INC Ransom.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-06-27
+tags:
+  - attack.t1105
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains|all:
+      - 'New-Object'
+      - 'Net.WebClient'
+      - 'DownloadString'
+      - 'IEX'
+  condition: selection
+---
+title: INC Ransom - VSSAdmin Shadow Copy Deletion
+id: 9e8f7a6b-5c4d-4e3f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: Detects the deletion of Volume Shadow Copies using vssadmin.exe, a common precursor to ransomware deployment by groups like INC Ransom.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-06-27
+tags:
+  - attack.t1490
+  - attack.impact
+level: critical
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  condition: selection
+---
+title: INC Ransom - Ransomware File Extension
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the creation of files with the .inc_ransom extension, indicating that the INC Ransom payload has been executed and is encrypting files.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-06-27
+tags:
+  - attack.t1486
+  - attack.impact
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '.inc_ransom'
+  condition: selection
+---
+title: Potential Kerberoasting Activity
+id: 7d6e5f4a-3b2c-4d1e-9f8a-7b6c5d4e3f2a
+status: experimental
+description: Detects a high volume of Kerberos service ticket requests (Event ID 4769), which can be indicative of Kerberoasting attacks used for privilege escalation.
+references:
+  - https://www.breachsense.com/breaches/
+author: cyber.netsecops.io
+date: 2026-06-27
+tags:
+  - attack.t1558.003
+  - attack.credential_access
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4769
+    TicketOptions: '0x40810000'
+    TicketEncryptionType: '0x17'
+  filter:
+    AccountName|endswith: '$'
+  condition: selection and not filter

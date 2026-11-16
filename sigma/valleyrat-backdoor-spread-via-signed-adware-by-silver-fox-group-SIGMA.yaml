@@ -1,0 +1,72 @@
+title: ValleyRAT DLL Sideloading via QnWallpaper.exe
+id: 2b8c1f3a-5d6e-4b9f-8c1d-9e0f1a2b3c4d
+status: experimental
+description: Detects the legitimate 'QnWallpaper.exe' process loading a potentially malicious 'libcef.dll' from its local application directory, a technique used by the Silver Fox group to deploy ValleyRAT.
+references:
+  - https://thehackernews.com/2026/08/valleyrat-backdoor-hides-in-signed.html
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1574.002
+level: high
+logsource:
+  category: image_load
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\QnWallpaper.exe'
+    ImageLoaded|endswith: '\libcef.dll'
+  filter_legit_path:
+    ImageLoaded|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+      - 'C:\Program Files\'
+  condition: selection and not filter_legit_path
+---
+title: Windows Defender Disabled via Registry Modification
+id: f1a2b3c4-d5e6-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects attempts to disable Windows Defender by setting the 'DisableAntiSpyware' registry key to 1. This technique is used by ValleyRAT installers.
+references:
+  - https://thehackernews.com/2026/08/valleyrat-backdoor-hides-in-signed.html
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1562.001
+level: high
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    EventType: 'SetValue'
+    TargetObject|endswith: '\SOFTWARE\Policies\Microsoft\Windows Defender\DisableAntiSpyware'
+    Details: '1'
+  condition: selection
+---
+title: ValleyRAT Sideloading File Artifacts
+id: d9ea5478-d3a5-4c57-830d-388cf0199682
+status: experimental
+description: Detects file or process events involving 'QnWallpaper.exe' or 'libcef.dll', which are used in ValleyRAT DLL sideloading attacks.
+references:
+  - https://thehackernews.com/2026/08/valleyrat-backdoor-hides-in-signed.html
+author: cyber.netsecops.io
+date: 2026-08-31
+tags:
+  - attack.t1574.002
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '\QnWallpaper.exe'
+      - '\libcef.dll'
+  filter_legit_libcef:
+    TargetFilename|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+      - 'C:\Program Files\'
+    TargetFilename|endswith: '\libcef.dll'
+  condition: selection and not filter_legit_libcef

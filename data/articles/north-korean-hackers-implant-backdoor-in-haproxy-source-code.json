@@ -1,0 +1,219 @@
+{
+  "id": "71dd159c-cc41-40db-8700-6dd171bb3b05",
+  "slug": "north-korean-hackers-implant-backdoor-in-haproxy-source-code",
+  "headline": "North Korean Hackers Implant Backdoor Directly into HAProxy Source Code",
+  "title": "North Korea-Linked Group Hides 'ted backdoor' in HAProxy Software",
+  "summary": "A North Korea-linked threat actor has been observed targeting South Korean automotive and media companies with a novel Linux toolkit. The campaign's most sophisticated element is a backdoor, dubbed 'ted backdoor,' which is compiled directly into the source code of the widely-used HAProxy load-balancing software. By integrating as a custom plugin using HAProxy's native APIs, the implant evades traditional detection methods while intercepting HTTP traffic, executing commands, and harvesting credentials. The broader toolkit also includes trojanized versions of common Linux daemons like crond and sshd, enabling long-term persistence and surveillance within compromised networks.",
+  "full_report": "## Executive Summary\nSecurity researchers have uncovered a sophisticated campaign attributed to a **[North Korea](https://en.wikipedia.org/wiki/North_Korea)**-linked threat actor targeting organizations in South Korea's automotive and media industries. The attackers are deploying a novel and highly stealthy Linux toolkit, with the most notable component being a backdoor compiled directly into the source code of **[HAProxy](https://www.haproxy.org/)**, a popular open-source load balancer. This implant, named 'ted backdoor' by **[Rapid7](https://www.rapid7.com/)** researchers, leverages HAProxy's native filter API to remain hidden while providing the attackers with powerful capabilities, including traffic interception and remote command execution. The campaign highlights a growing trend of supply chain and living-off-the-land techniques, where attackers modify legitimate software to create a persistent and difficult-to-detect presence on critical network infrastructure.\n\n---\n\n## Threat Overview\nThe threat actor gains access to a target's environment and, instead of dropping a standalone malicious file, they modify and recompile the legitimate HAProxy software running on a load balancer or edge server. This modified version contains the 'ted backdoor'. Because the backdoor is integrated as a custom plugin using HAProxy's legitimate APIs, it operates within the normal process space of the software, making it invisible to detection methods that look for rogue processes.\n\nThe broader toolkit also includes trojanized versions of essential Linux daemons, such as `crond`, `agetty`, `atd`, `sshd`, and `polkitd`. This demonstrates a comprehensive strategy to establish deep, resilient persistence across multiple system services.\n\n### Technical Analysis\nThe 'ted backdoor' is a masterpiece of stealth. It uses HAProxy's internal memory management and event scheduler, ensuring its operations blend in with the normal functions of the load balancer. Its capabilities include:\n- **HTTP Traffic Interception:** It can inspect, modify, or steal data from web traffic passing through the load balancer.\n- **Remote Command Execution:** It provides a C2 channel for the attackers to execute arbitrary commands on the compromised server.\n- **Malicious Script Injection:** It can inject malicious JavaScript or other content into legitimate web pages served to users.\n- **Credential Harvesting:** It can capture usernames and passwords from unencrypted or decrypted traffic.\n\nBy placing the backdoor on the network edge device (the load balancer), attackers can intercept data before it is encrypted for transit to backend servers and mask their C2 traffic among legitimate web requests.\n\n**MITRE ATT&CK Techniques Observed/Inferred:**\n- **Initial Access:** The initial access vector is not specified, but could include [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/) or [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/).\n- **Execution:** [`T1059.004 - Unix Shell`](https://attack.mitre.org/techniques/T1059/004/)\n- **Persistence:** [`T1543.002 - Systemd Service`](https://attack.mitre.org/techniques/T1543/002/), [`T1505.002 - Transport Agent`](https://attack.mitre.org/techniques/T1505/002/) (by backdooring HAProxy).\n- **Defense Evasion:** [`T1574.006 - Dynamic Linker Hijacking`](https://attack.mitre.org/techniques/T1574/006/), [`T1562.004 - Disable or Modify System Firewall`](https://attack.mitre.org/techniques/T1562/004/). The core technique is a form of Masquerading.\n- **Credential Access:** [`T1555.003 - Credentials from Web Browsers`](https://attack.mitre.org/techniques/T1555/003/) (by intercepting HTTP traffic).\n- **Command and Control:** [`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/) - C2 traffic is likely blended with legitimate HTTP/S traffic.\n\n---\n\n## Impact Assessment\nThe impact of this attack is severe due to its stealth and position in the network:\n- **Long-Term Espionage:** The primary goal appears to be persistent surveillance and data exfiltration from targeted industries.\n- **Data Breach:** The ability to intercept all traffic allows for the theft of sensitive corporate data, intellectual property, and customer information.\n- **Platform for Further Attacks:** The compromised load balancer can be used to inject malware into the organization's web applications, targeting its users and customers.\n- **Difficult Remediation:** Simply removing a malicious file is not enough. Remediation requires replacing the entire compromised HAProxy binary with a clean version and auditing the entire system for other backdoored daemons.\n\n## IOCs — Directly from Articles\nNo specific IOCs like IPs, domains, or hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams should hunt for the following patterns to detect this type of threat:\n\n| Type | Value | Description |\n|---|---|---|\n| file_hash_sha256 | (Varies) | The hash of the `haproxy` binary will differ from the official, vendor-supplied version. Compare file hashes against known-good values. |\n| file_path | `/usr/sbin/haproxy` | Check the modification time and hash of this binary and other system daemons (`crond`, `sshd`, etc.). |\n| network_traffic_pattern | Anomalous outbound connections from HAProxy server | The load balancer should typically only communicate with backend servers. Any outbound connections to unknown internet IPs are highly suspicious. |\n| string_pattern | `ted backdoor` | The debug string was found in the malicious binary. Memory forensics or string analysis on the `haproxy` binary may reveal this artifact. |\n\n## Detection & Response\n1.  **Binary and File Integrity Monitoring:** Use FIM or manual checks to validate the integrity of critical system binaries, including `haproxy`, `sshd`, `crond`, and others. Compare their hashes against official package repositories or a golden image.\n2.  **Behavioral Analysis:** Monitor the behavior of the `haproxy` process. Look for anomalous activities such as writing files to disk, spawning shell processes, or making outbound network connections to non-backend IP addresses.\n3.  **Network Monitoring:** Analyze network traffic originating from the load balancer itself. It should not be initiating connections to the internet unless explicitly configured for a legitimate purpose (e.g., fetching CRLs). Alert on any suspicious outbound traffic.\n4.  **Memory Forensics:** If a compromise is suspected, perform memory analysis on the running `haproxy` process to identify injected code, unexpected loaded libraries, or suspicious strings.\n\n## Mitigation\n1.  **Use Official Packages:** Only install and use software from official, trusted vendor repositories. Avoid compiling from untrusted source code.\n2.  **Harden Servers:** Apply security hardening principles to all servers, especially internet-facing ones. This includes minimizing the software installed, running services with least privilege, and configuring a host-based firewall.\n3.  **Code Signing and Verification:** Where possible, enforce policies that only allow signed and verified binaries to execute.\n4.  **Network Egress Filtering:** Strictly control outbound network traffic from all servers. By default, deny all outbound connections and only allow traffic to specific, known-good destinations required for the server's function.",
+  "twitter_post": "North Korea-linked hackers embed 'ted backdoor' directly into HAProxy source code in attacks on South Korean firms. The stealthy implant intercepts traffic and executes commands, evading detection. #ThreatIntel #Linux #HAProxy #CyberSecurity",
+  "meta_description": "North Korean hackers are targeting South Korean firms by compiling a backdoor directly into HAProxy source code, allowing for stealthy traffic interception and C2.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Supply Chain Attack"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "North Korea",
+      "type": "other"
+    },
+    {
+      "name": "HAProxy",
+      "type": "product",
+      "url": "https://www.haproxy.org/"
+    },
+    {
+      "name": "Rapid7",
+      "type": "vendor",
+      "url": "https://www.rapid7.com/"
+    },
+    {
+      "name": "Linux",
+      "type": "product"
+    },
+    {
+      "name": "ted backdoor",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://securityaffairs.com/198656/apt/north-korea-linked-hackers-hide-a-backdoor-inside-haproxy.html",
+      "title": "North Korea-linked Hackers Hide a Backdoor Inside HAProxy - Security Affairs",
+      "date": "2026-09-08",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1505.002",
+      "name": "Transport Agent",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1574.002",
+      "name": "DLL Side-Loading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        },
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Use file integrity monitoring to detect changes to critical system binaries like HAProxy and compare their hashes against known-good values.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "d3fend_techniques": [
+        {
+          "id": "D3-NI",
+          "name": "Network Isolation",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation"
+        }
+      ],
+      "description": "Implement strict egress filtering rules to block unexpected outbound connections from the load balancer server.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-SBV",
+          "name": "Service Binary Verification",
+          "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification"
+        }
+      ],
+      "description": "Enforce policies that only allow signed, verified binaries to execute, preventing attackers from replacing legitimate software with trojanized versions.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-FH",
+      "technique_name": "File Hashing",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileHashing",
+      "recommendation": "To counter the threat of a backdoored HAProxy binary, organizations must implement robust file integrity monitoring (FIM). This involves establishing a baseline of known-good file hashes for all critical system binaries, including `haproxy`, `sshd`, `crond`, and others mentioned in the report. This baseline should be generated from official, vendor-supplied packages. The FIM system should then continuously or periodically scan these files and compare their current hashes against the trusted baseline. Any mismatch should trigger a high-priority security alert. This is the most direct way to detect the core of this attack: the unauthorized modification of a legitimate program. This technique is crucial for detecting this form of supply chain compromise at the host level.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-OTF",
+      "technique_name": "Outbound Traffic Filtering",
+      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
+      "recommendation": "A critical component of this attack is the backdoor's ability to communicate with a command-and-control server. Implementing strict network egress filtering can neutralize this capability. A load balancer like HAProxy has a very predictable traffic pattern: it receives traffic from the internet and forwards it to a specific set of backend application servers. It should almost never initiate outbound connections to arbitrary IP addresses on the internet. Configure host-based and network firewalls to enforce a 'default deny' policy for outbound traffic from the HAProxy server. Explicitly allow only the necessary connections to backend servers on specific ports. This will prevent the 'ted backdoor' from calling home, effectively isolating the compromised host and preventing data exfiltration or remote command execution.",
+      "mitre_mitigation_id": "M1037"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "While the backdoor runs within the legitimate `haproxy` process, its actions may still create detectable behavioral anomalies. Use an Endpoint Detection and Response (EDR) tool or process auditing (like `auditd` on Linux) to monitor the behavior of the `haproxy` process. Establish a baseline of normal activity. Then, create detection rules to alert on deviations, such as the `haproxy` process spawning a shell (`/bin/sh`), executing unexpected commands (`curl`, `wget`), writing new executable files to disk, or making network connections to IPs outside of the defined backend server pool. This behavioral analysis provides a secondary detection layer that can catch the malicious activity even if the binary modification itself is missed.",
+      "mitre_mitigation_id": "M1049"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "haproxy",
+      "description": "The hash of the HAProxy binary will not match the official version if it has been backdoored. Integrity checks are key.",
+      "context": "File Integrity Monitoring (FIM), comparing file hashes against vendor-supplied checksums.",
+      "confidence": "high"
+    },
+    {
+      "type": "string_pattern",
+      "value": "ted backdoor",
+      "description": "The debug string 'ted backdoor' was discovered in the malicious binary. This string may be present in memory or on disk.",
+      "context": "Memory forensics, static binary analysis with 'strings' utility.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound from Load Balancer",
+      "description": "HAProxy servers should generally not initiate outbound connections to the internet. Any such traffic is highly suspicious and could be C2 communication.",
+      "context": "Firewall egress logs, NetFlow analysis.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "sshd",
+      "description": "The toolkit also includes trojanized versions of common daemons like sshd. Their file hashes should also be verified against official packages.",
+      "context": "File Integrity Monitoring (FIM), system audits.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "North Korea",
+    "APT",
+    "Linux",
+    "HAProxy",
+    "Backdoor",
+    "Supply Chain Attack",
+    "ted backdoor"
+  ],
+  "extract_datetime": "2026-09-08T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "South Korea"
+    ],
+    "industries_affected": [
+      "Manufacturing",
+      "Media and Entertainment",
+      "Technology"
+    ]
+  },
+  "pub_date": "2026-09-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-09-08T15:00:00.000Z",
+  "updatedAt": "2026-09-08T15:00:00.000Z"
+}

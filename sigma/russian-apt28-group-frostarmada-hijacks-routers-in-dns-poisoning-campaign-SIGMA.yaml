@@ -1,0 +1,62 @@
+title: Anomalous M365 Logins from Public Wi-Fi
+id: 7c5d1e8a-4b3f-4e9a-8f0c-1d2e3f4a5b6c
+status: experimental
+description: >
+  Detects successful Microsoft 365 sign-ins from IP addresses associated with public Wi-Fi or hospitality networks, which could indicate credential theft from campaigns like FrostArmada that target travelers.
+references:
+  - https://www.technewsworld.com/story/dns-poisoning-campaign-makes-hospitality-wi-fi-spots-inhospitable-180463.html
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1078.004
+  - attack.initial_access
+falsepositives:
+  - Legitimate user logins while traveling. This rule is intended to flag activity for correlation with travel schedules and other context.
+level: medium
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    ResultType: 0
+    AppDisplayName|contains:
+      - 'Office 365'
+      - 'Microsoft Office'
+  filter_corporate_net:
+    IPAddress|cidr:
+      # Add your corporate IP ranges here
+      - '192.0.2.0/24'
+  condition: selection and not filter_corporate_net
+---
+title: DNS Query to Non-Standard DNS Server
+id: 8d6e2f9b-5c4a-4d8b-9e1d-2e3f4a5b6c7d
+status: experimental
+description: >
+  Detects DNS queries sent to DNS servers that are not on an approved list of corporate or public resolvers. This can indicate DNS hijacking via a compromised router, as seen in the FrostArmada campaign.
+references:
+  - https://www.technewsworld.com/story/dns-poisoning-campaign-makes-hospitality-wi-fi-spots-inhospitable-180463.html
+author: cyber.netsecops.io
+date: 2026-07-29
+tags:
+  - attack.t1557
+  - attack.command_and_control
+falsepositives:
+  - Legitimate use of third-party DNS servers on misconfigured devices or by specific software.
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 53
+    Protocol: 'udp'
+    Image|endswith: '\svchost.exe' # Covers the DNS Client service (Dnscache)
+  filter_known_dns:
+    DestinationIp:
+      # Add approved corporate and public DNS servers
+      - '8.8.8.8'
+      - '8.8.4.4'
+      - '1.1.1.1'
+      - '1.0.0.1'
+      - '9.9.9.9'
+  condition: selection and not filter_known_dns

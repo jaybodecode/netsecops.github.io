@@ -1,0 +1,280 @@
+{
+  "id": "137788ba-51e1-4ed8-91a4-bb7136d5eef0",
+  "slug": "sleepergem-supply-chain-attack-hijacks-dormant-rubygems-accounts",
+  "headline": "'SleeperGem' Supply Chain Attack Hits RubyGems via Dormant Accounts",
+  "title": "SleeperGem Supply Chain Attack on RubyGems",
+  "summary": "A sophisticated supply chain attack named 'SleeperGem' has targeted the RubyGems ecosystem by hijacking dormant maintainer accounts. Attackers published malicious versions of at least three gems, including the popular 'fastlane-plugin-run_tests_firebase_testlab', to distribute a persistent backdoor. The malware was designed to specifically target developer machines while evading detection in automated build environments.",
+  "full_report": "## Executive Summary\nA coordinated software supply chain attack, dubbed **SleeperGem**, has compromised the **[RubyGems](https://rubygems.org/)** package registry. Uncovered between July 18 and July 19, 2026, the campaign involved threat actors hijacking long-dormant maintainer accounts to publish malicious versions of legitimate packages. The primary goal was to install a persistent, multi-stage backdoor onto developer workstations. The attack leveraged a malicious dependency, `git_credential_manager`, which was added to popular gems, including one with over 574,000 downloads, significantly amplifying its reach. This incident highlights the growing threat of account takeovers in open-source registries as a vector for widespread compromise.\n\n---\n\n## Threat Overview\nThe **SleeperGem** attack centered on the hijacking of inactive developer accounts on **RubyGems**, a common repository for Ruby software packages. The attackers used this access to publish trojanized updates to several gems.\n\n*   **Malicious Payload**: A new gem named `git_credential_manager` was created to impersonate the legitimate **[Microsoft Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager)**. This package was the primary malware delivery vehicle.\n*   **Compromised Gems**: At least two other legitimate gems were compromised to add `git_credential_manager` as a dependency:\n    *   `Dendreo` (versions 1.1.3, 1.1.4)\n    *   `fastlane-plugin-run_tests_firebase_testlab` (version 0.3.2), a package with over 574,000 total downloads.\n\nThis dependency confusion technique caused developers who updated or installed the compromised gems to unknowingly pull in the malicious code. The updates were pushed directly to the registry without corresponding source code commits, making the changes harder to spot.\n\n---\n\n## Technical Analysis\nThe attack unfolded in multiple stages, demonstrating increasing sophistication.\n1.  **Initial Compromise**: The attackers gained control of dormant **RubyGems** accounts, such as \"LR-DEV\" and \"pinkroom\". ([`T1195.001 - Compromise Software Dependencies and Development Tools`](https://attack.mitre.org/techniques/T1195/001/)).\n2.  **Dropper Payload**: The malicious `git_credential_manager` gem acted as a first-stage dropper. Early versions fetched a second-stage payload from an attacker-controlled Forgejo (a Git service) host. Later versions embedded the execution logic directly, triggered by a simple `require` statement.\n3.  **Evasion**: The malicious code included checks to determine if it was running in a CI/CD or automated build environment. If so, it would abort execution, indicating a clear intent to target developer machines specifically and evade automated security scanning ([`T1480.001 - Virtualization/Sandbox Evasion: System Checks`](https://attack.mitre.org/techniques/T1480/001/)).\n4.  **Persistence and Privilege Escalation**: Once on a developer's machine, the second-stage payload established persistence using both `systemd` services and `cron` jobs ([`T1543.002 - Create or Modify System Process: Systemd Service`](https://attack.mitre.org/techniques/T1543/002/), [`T1547.006 - Boot or Logon Autostart Execution: Cron`](https://attack.mitre.org/techniques/T1547/006/)). It also attempted to escalate privileges by installing a `setuid root` shell at `/usr/local/sbin/ping6`, giving the attacker persistent root access ([`T1548.003 - SUID and SGID`](https://attack.mitre.org/techniques/T1548/003/)).\n\n---\n\n## Impact Assessment\nAny developer machine that installed the malicious versions of the affected gems should be considered fully compromised. The impact is severe:\n*   **Credential Theft**: The backdoor provides attackers with access to the developer's machine, allowing them to steal SSH keys, API tokens, passwords, and other secrets stored locally.\n*   **Code Poisoning**: An attacker with access to a developer's machine can inject malicious code into the company's private source code repositories, leading to a much larger supply chain compromise.\n*   **Lateral Movement**: The compromised developer machine can be used as a pivot point to move laterally within the corporate network.\n*   **Loss of Trust**: Such attacks erode trust in the open-source ecosystem and place a significant burden on developers to vet every dependency.\n\n---\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| file_name | `git_credential_manager` | Malicious gem impersonating Microsoft's tool. Versions 2.8.0 - 2.8.3 are malicious. |\n| file_name | `Dendreo` | Legitimate gem with malicious versions 1.1.3 and 1.1.4. |\n| file_name | `fastlane-plugin-run_tests_firebase_testlab` | Legitimate gem with malicious version 0.3.2. |\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams and developers should hunt for the following activity:\n\n| Type | Value | Description |\n|---|---|---|\n| File Path | `/usr/local/sbin/ping6` | Check for the existence of this file and if it has the `setuid` bit enabled. |\n| Service Name | `systemd` user services | Look for newly created or suspicious `systemd` services in user directories (`~/.config/systemd/user/`). |\n| Log Source | `cron` logs | Review `cron` logs for the creation of new, unexpected cron jobs. |\n| Network Traffic | Outbound to Forgejo hosts | Monitor for network connections from developer machines to unknown or untrusted Forgejo or Gitea instances. |\n| Command Line Pattern | `gem install git_credential_manager` | Search shell history and build logs for the installation of the malicious gem. |\n\n---\n\n## Detection & Response\n1.  **Dependency Scanning**: Use dependency scanning tools to check `Gemfile.lock` for the presence of the malicious packages and versions. Immediately remove them if found.\n2.  **System Investigation**: If a malicious gem is found, the host must be considered compromised. Isolate the machine from the network and perform a full forensic investigation. Look for the persistence mechanisms (systemd, cron) and the `setuid` binary.\n3.  **Credential Rotation**: All credentials on the compromised machine must be rotated, including SSH keys, GPG keys, API tokens, and browser-stored passwords.\n4.  **Code Review**: Review all recent code commits made from the compromised machine to ensure no malicious code was injected into source code repositories.\n\n---\n\n## Mitigation\n1.  **Use Lockfiles**: Always use `Gemfile.lock` to ensure repeatable builds and prevent unexpected updates to dependencies. This is a form of **D3FEND**'s [`D3-ACH: Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).\n2.  **Vet Dependencies**: Before adding a new dependency, vet the package. Check its download history, maintainer activity, and issue tracker. Be wary of packages from new or long-inactive maintainers. \n3.  **Principle of Least Privilege**: Developers should not run builds or package management tools with root privileges. Run development tasks as a non-privileged user to limit the impact of a compromised dependency.\n4.  **Enable MFA on Registries**: Maintainers should secure their **RubyGems** accounts with multi-factor authentication to prevent takeovers. This aligns with **D3FEND**'s [`D3-MFA: Multi-factor Authentication`](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication).",
+  "twitter_post": "SleeperGem supply chain attack hits RubyGems! Attackers hijacked dormant accounts to publish malicious gems, including one with 574k+ downloads, to backdoor developer machines. #SupplyChain #RubyGems #DevSecOps",
+  "meta_description": "The 'SleeperGem' supply chain attack compromised the RubyGems repository by hijacking dormant maintainer accounts to distribute backdoors via malicious gem versions.",
+  "category": [
+    "Supply Chain Attack",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "RubyGems",
+      "type": "product",
+      "url": "https://rubygems.org/"
+    },
+    {
+      "name": "SleeperGem",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft Git Credential Manager",
+      "type": "product"
+    },
+    {
+      "name": "fastlane-plugin-run_tests_firebase_testlab",
+      "type": "product"
+    },
+    {
+      "name": "Dendreo",
+      "type": "product"
+    },
+    {
+      "name": "Forgejo",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/07/sleepergem-uses-three-malicious.html",
+      "title": "SleeperGem Uses Three Malicious RubyGems Packages to Target Developer Machines",
+      "date": "2026-07-20",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://daily.dev/posts/sleepergem-how-attackers-hijacked-dormant-rubygems-accounts-to-push-a-persistent-backdoor-x253e5cla",
+      "title": "SleeperGem: How attackers hijacked dormant RubyGems accounts to push a persistent backdoor | daily.dev",
+      "date": "2026-07-19",
+      "friendly_name": "daily.dev",
+      "website": "daily.dev"
+    },
+    {
+      "url": "https://aikido.dev/blog/sleepergem-rubygems-supply-chain-attack",
+      "title": "SleeperGem: RubyGems supply chain attack targets dormant maintainer accounts",
+      "date": "2026-07-19",
+      "friendly_name": "Aikido Security",
+      "website": "aikido.dev"
+    },
+    {
+      "url": "https://daily.dev/posts/sleepergem-rubygems-supply-chain-attack-targets-dormant-maintainer-accounts-q90puc15p",
+      "title": "SleeperGem: RubyGems supply chain attack targets dormant maintainer accounts",
+      "date": "2026-07-19",
+      "friendly_name": "daily.dev",
+      "website": "daily.dev"
+    },
+    {
+      "url": "https://mallory.ai/stories/019f79a2-1d28-725b-9e14-d9c191786265",
+      "title": "SleeperGem RubyGems Attack Backdoored Developer Machines via Hijacked Dormant Gems",
+      "date": "2026-07-19",
+      "friendly_name": "Mallory"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-18T00:00:00Z",
+      "summary": "The SleeperGem supply chain attack was first uncovered."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1195.001",
+      "name": "Compromise Software Dependencies and Development Tools",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1543.002",
+      "name": "Create or Modify System Process: Systemd Service",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1547.006",
+      "name": "Boot or Logon Autostart Execution: Cron",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1548.003",
+      "name": "SUID and SGID",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1480.001",
+      "name": "Virtualization/Sandbox Evasion: System Checks",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Using dependency lockfiles (e.g., Gemfile.lock) to pin package versions prevents the automatic installation of newly published malicious versions.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Package maintainers should enable MFA on their registry accounts to prevent takeovers, which was the root cause of this attack.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SFA",
+          "name": "System File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemFileAnalysis"
+        }
+      ],
+      "description": "Auditing developer endpoints for signs of compromise, such as unexpected cron jobs or systemd services, is crucial for detection.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "d3fend_techniques": [
+        {
+          "id": "D3-UAP",
+          "name": "User Account Permissions",
+          "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions"
+        }
+      ],
+      "description": "Enforcing the principle of least privilege on developer machines limits the ability of malware to gain persistence or escalate privileges.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "Enforce the use of dependency lockfiles (`Gemfile.lock` in the Ruby ecosystem) across all development projects. This is a critical configuration hardening step that pins the exact versions of all dependencies. By doing so, running a package installation command like `bundle install` will only install the specific, vetted versions listed in the lockfile. This prevents the build system from automatically fetching a newer, potentially malicious version of a dependency like `fastlane-plugin-run_tests_firebase_testlab:0.3.2`. CI/CD pipelines should be configured to use the `--frozen` or `--deployment` flag, which causes the build to fail if the `Gemfile.lock` is out of sync, ensuring that only explicitly approved package versions are ever used in automated builds.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-DA",
+      "technique_name": "Dynamic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:DynamicAnalysis",
+      "recommendation": "Integrate dynamic analysis or sandboxing into the CI/CD pipeline for testing new or updated dependencies before they are approved for developer use. When a developer proposes adding or updating a gem, the pipeline should automatically pull the package into an isolated sandbox environment. In this environment, the tool would install the gem and monitor its behavior during execution. For the SleeperGem attack, this sandbox would detect suspicious activities like network callouts to an unknown Forgejo host, attempts to write to system directories like `/usr/local/sbin/`, or attempts to create `systemd` or `cron` persistence mechanisms. This provides a behavioral safety net to catch malicious packages that pass static analysis, especially those with evasive logic.",
+      "mitre_mitigation_id": "M1048"
+    },
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "Organizations that maintain open-source packages must enforce a mandatory policy for all maintainers to enable multi-factor authentication (MFA) on their RubyGems, GitHub, and other registry accounts. The root cause of the SleeperGem attack was the takeover of dormant accounts that were likely protected only by a password. By requiring a second factor (e.g., TOTP app, security key), the risk of account hijacking is dramatically reduced. Organizations can use tools to audit their developers' account security settings on public platforms and enforce this policy through internal guidelines and regular checks. This shifts the defense 'left' to prevent the initial compromise of the supply chain itself.",
+      "mitre_mitigation_id": "M1032"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "git_credential_manager:2.8.0",
+      "description": "Malicious RubyGem package version"
+    },
+    {
+      "type": "file_name",
+      "value": "git_credential_manager:2.8.1",
+      "description": "Malicious RubyGem package version"
+    },
+    {
+      "type": "file_name",
+      "value": "git_credential_manager:2.8.2",
+      "description": "Malicious RubyGem package version"
+    },
+    {
+      "type": "file_name",
+      "value": "git_credential_manager:2.8.3",
+      "description": "Malicious RubyGem package version"
+    },
+    {
+      "type": "file_name",
+      "value": "Dendreo:1.1.3",
+      "description": "Compromised RubyGem package version"
+    },
+    {
+      "type": "file_name",
+      "value": "Dendreo:1.1.4",
+      "description": "Compromised RubyGem package version"
+    },
+    {
+      "type": "file_name",
+      "value": "fastlane-plugin-run_tests_firebase_testlab:0.3.2",
+      "description": "Compromised RubyGem package version"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_path",
+      "value": "/usr/local/sbin/ping6",
+      "description": "The location where the malware attempts to install a setuid root shell for privilege escalation.",
+      "context": "File integrity monitoring, filesystem scan.",
+      "confidence": "high"
+    },
+    {
+      "type": "service_name",
+      "value": "systemd user service",
+      "description": "The malware establishes persistence by creating a systemd service under the user's context. Look for new or suspicious services in `~/.config/systemd/user/`.",
+      "context": "Endpoint log analysis, `systemctl --user list-unit-files` command output.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "cron logs",
+      "description": "The malware also uses cron jobs for persistence. Review user and system cron jobs for suspicious entries.",
+      "context": "Log analysis of `/var/log/cron` or equivalent, review of `crontab -l`.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "require 'git_credential_manager'",
+      "description": "The command within Ruby code that triggers the execution of the malicious payload in later versions of the gem.",
+      "context": "Static code analysis, code review.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Supply Chain",
+    "RubyGems",
+    "Backdoor",
+    "Developer Security",
+    "SleeperGem",
+    "Typosquatting"
+  ],
+  "extract_datetime": "2026-07-20T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Software developers using RubyGems"
+    ]
+  },
+  "pub_date": "2026-07-20",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-20T15:00:00.000Z",
+  "updatedAt": "2026-07-20T15:00:00.000Z"
+}

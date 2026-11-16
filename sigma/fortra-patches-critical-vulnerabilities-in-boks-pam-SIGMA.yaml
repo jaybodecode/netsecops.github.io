@@ -1,0 +1,65 @@
+title: BoKS PAM crlserver Suspicious Child Process
+id: 2b9c1a8e-4f5d-4a1e-8c7b-9d0f2a1b3c4d
+status: experimental
+description: |
+  Detects suspicious child processes (e.g., shells) spawned by the BoKS crlserver process. 
+  This could indicate exploitation of the command injection vulnerability CVE-2026-79898.
+references:
+  - https://www.securityweek.com/fortra-patches-critical-vulnerabilities-in-boks/
+author: cyber.netsecops.io
+date: 2026-10-04
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_parent:
+    ParentImage|endswith: '/crlserver'
+  selection_child:
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+      - '/dash'
+      - '/ksh'
+      - '/zsh'
+      - '/csh'
+      - '/powershell'
+      - '/pwsh'
+      - '/cmd.exe'
+  condition: all of selection_*
+falsepositives:
+  - Legitimate administrative scripts.
+---
+title: BoKS PAM API Command Injection Attempt
+id: 8e4d3c2b-1a9f-4d8c-9b7a-6f5d4e3c2b1a
+status: experimental
+description: |
+  Detects web requests to BoKS BCC and WSI API endpoints containing characters indicative of command injection.
+  This could indicate attempts to exploit command injection vulnerability CVE-2026-79898.
+references:
+  - https://www.securityweek.com/fortra-patches-critical-vulnerabilities-in-boks/
+author: cyber.netsecops.io
+date: 2026-10-04
+tags:
+  - attack.t1210
+  - attack.lateral_movement
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection_path:
+    c-uri-stem|contains:
+      - '/bcc/'
+      - '/wsi/'
+  selection_injection:
+    c-uri-query|contains:
+      - ';'
+      - '|'
+      - '&&'
+      - '`'
+  condition: all of selection_*
+falsepositives:
+  - Benign API requests that happen to contain these characters in parameters.

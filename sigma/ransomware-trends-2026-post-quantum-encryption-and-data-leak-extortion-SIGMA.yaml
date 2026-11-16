@@ -1,0 +1,76 @@
+title: Suspicious Driver Load Event
+id: 2b9a1c3d-f4e5-4b6c-8d7e-9f0a1b2c3d4e
+status: experimental
+description: Detects the installation of a new service, which can indicate a new driver being loaded. This is a potential sign of a Bring Your Own Vulnerable Driver (BYOVD) attack.
+references:
+  - https://securelist.com/reviewing-the-trends-in-ransomware-attacks-in-2026/112674/
+author: cyber.netsecops.io
+date: 2026-05-12
+tags:
+  - attack.t1547.006
+  - attack.persistence
+  - attack.privilege_escalation
+level: medium
+falsepositives:
+  - Legitimate software installation or updates.
+logsource:
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID: 7045
+  condition: selection
+---
+title: Potential Data Staging with Archiving Tool
+id: 8e7d6c5b-a4b3-4c2d-1b0a-9f8e7d6c5b4a
+status: experimental
+description: Detects the execution of common archiving tools, which may be used by attackers to stage data for exfiltration, a common tactic in encryptionless extortion.
+references:
+  - https://securelist.com/reviewing-the-trends-in-ransomware-attacks-in-2026/112674/
+author: cyber.netsecops.io
+date: 2026-05-12
+tags:
+  - attack.t1560.001
+  - attack.collection
+level: low
+falsepositives:
+  - Legitimate use of archiving tools by users or administrators.
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\7z.exe'
+      - '\rar.exe'
+      - '\winrar.exe'
+  condition: selection
+---
+title: Security Software Process Termination
+id: 5a4b3c2d-1e0f-9a8b-7c6d-5e4f3a2b1c0d
+status: experimental
+description: Detects attempts to terminate common EDR and antivirus processes. This is a common precursor to ransomware deployment, often performed using 'EDR killers' or BYOVD techniques.
+references:
+  - https://securelist.com/reviewing-the-trends-in-ransomware-attacks-in-2026/112674/
+author: cyber.netsecops.io
+date: 2026-05-12
+tags:
+  - attack.t1562.001
+  - attack.defense_evasion
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_command:
+    Image|endswith:
+      - '\taskkill.exe'
+      - '\pskill.exe'
+    CommandLine|contains: ' /f '
+  selection_process:
+    CommandLine|contains:
+      - 'MsMpEng.exe'
+      - 'SentinelAgent.exe'
+      - 'SAVService.exe'
+      - 'CSFalconService.exe'
+  condition: all of selection_*

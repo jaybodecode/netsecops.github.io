@@ -1,0 +1,54 @@
+title: FamousSparrow Masquerading File Path
+id: 8c3d4e5f-6a7b-8901-cdef-123456789012
+status: experimental
+description: Detects processes executing from a folder path mimicking a LogMeIn Hamachi installation, a TTP used by FamousSparrow to hide the Deed RAT.
+references:
+  - https://industrialcyber.co/news/bitdefender-uncovers-famoussparrow-attacks-on-azerbaijan-energy-sector-using-dll-sideloading-deed-rat-malware/
+author: cyber.netsecops.io
+date: 2026-05-15
+tags:
+  - attack.t1036.005
+  - attack.defense_evasion
+falsepositives:
+  - Legitimate LogMeIn Hamachi installations. Filter if this software is used in the environment.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|startswith: 'C:\Program Files (x86)\LogMeIn Hamachi\'
+  filter_legit:
+    Image|endswith:
+      - '\hamachi-2.exe'
+      - '\hamachi-2-ui.exe'
+  condition: selection and not filter_legit
+---
+title: Potential FamousSparrow Web Shell on Exchange Server
+id: 9d4e5f6a-7b8c-9012-def0-123456789012
+status: experimental
+description: Detects suspicious .aspx files in Microsoft Exchange OWA authentication directories, a potential indicator of web shells deployed by groups like FamousSparrow.
+references:
+  - https://industrialcyber.co/news/bitdefender-uncovers-famoussparrow-attacks-on-azerbaijan-energy-sector-using-dll-sideloading-deed-rat-malware/
+author: cyber.netsecops.io
+date: 2026-05-15
+tags:
+  - attack.t1505.003
+  - attack.persistence
+falsepositives:
+  - Legitimate .aspx files in this path, though uncommon.
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains|all:
+      - '\owa\auth\'
+    TargetFilename|endswith: '.aspx'
+  filter_known_good:
+    TargetFilename|endswith:
+      - '\logon.aspx'
+      - '\error.aspx'
+      - '\expiredpassword.aspx'
+  condition: selection and not filter_known_good

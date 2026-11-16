@@ -1,0 +1,180 @@
+{
+  "id": "a0d3ca9e-1b05-4da9-8d3f-d40d44250ae8",
+  "slug": "connectwise-investigates-screenconnect-partner-account-compromise",
+  "headline": "ConnectWise Probes ScreenConnect Partner Account Compromise",
+  "title": "ConnectWise Investigates ScreenConnect Supply Chain Compromise",
+  "summary": "ConnectWise is actively investigating reports of unauthorized access to its partners' ScreenConnect accounts. The incident is being treated as a supply chain attack, as threat actors have successfully used their access to deploy unauthorized remote-access software into the environments of downstream customers. The compromise of a powerful RMM tool like ScreenConnect represents a significant threat, potentially giving attackers administrative access to a multitude of client networks.",
+  "full_report": "## Executive Summary\n**[ConnectWise](https://www.connectwise.com/)**, a leading provider of software for Managed Service Providers (MSPs), has confirmed it is investigating a security incident involving its **[ScreenConnect](https://screenconnect.connectwise.com/)** remote access solution. Reports indicate that threat actors have gained unauthorized access to the accounts of ConnectWise partners (MSPs) and are using that access to deploy malicious software to the MSPs' downstream customers. This constitutes a significant **[supply chain attack](https://en.wikipedia.org/wiki/Supply_chain_attack)**, leveraging the trusted relationship between MSPs and their clients. Due to the administrative power of Remote Monitoring and Management (RMM) tools like ScreenConnect, this compromise poses a severe risk, potentially enabling widespread, simultaneous intrusions across numerous organizations.\n\n---\n\n## Threat Overview\nOn November 11, 2026, ConnectWise acknowledged the incident after receiving reports from its partners about unauthorized activity. The core of the issue is the compromise of ScreenConnect accounts belonging to MSPs. Once attackers gain control of an MSP's ScreenConnect instance, they inherit the MSP's administrative access to all of their clients' managed endpoints.\n\nThe attackers are exploiting this powerful, trusted access to deploy unauthorized remote-access software within customer environments. This creates a secondary, persistent backdoor that the attacker controls directly, bypassing the MSP's infrastructure. While ConnectWise has not yet confirmed the initial access vector used to compromise the partner accounts, security researchers suspect that vulnerable third-party extensions installed within the ScreenConnect platform may be the root cause.\n\n---\n\n## Technical Analysis\nThis attack leverages the inherent trust and power of RMM platforms, which are considered 'Tier 0' assets because they provide pervasive administrative control.\n\n1.  **Initial Access**: The initial vector is suspected to be the exploitation of a vulnerability in a third-party extension for ScreenConnect. This would fall under [`T1195.002 - Compromise Software Supply Chain`](https://attack.mitre.org/techniques/T1195/002/). Alternatively, if partner credentials were stolen through other means like phishing, it would be [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/).\n2.  **Execution & Lateral Movement**: By using the legitimate functionality of ScreenConnect, attackers can execute commands and deploy software across all managed endpoints. This is a classic example of [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/). The attackers are not breaking into each customer network individually; they are using the RMM as a force multiplier to pivot from one MSP to many clients.\n3.  **Persistence**: The deployment of a secondary, unauthorized remote access tool is a key step for the attackers. This ensures they maintain access to the customer environment even if the compromised ScreenConnect account is discovered and remediated. This aligns with [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/) and [`T1574.002 - Hijack Execution Flow: DLL Side-Loading`](https://attack.mitre.org/techniques/T1574/002/) if the tool is deployed in a stealthy manner.\n\n---\n\n## Impact Assessment\nThe compromise of an RMM platform is one of the most impactful types of cyberattacks due to its cascading effects.\n\n*   **Widespread Customer Compromise**: A single MSP breach can lead to the simultaneous compromise of hundreds or thousands of downstream customers, regardless of their own security posture.\n*   **High-Privilege Access**: RMM tools operate with system-level privileges, giving attackers immediate administrative control over compromised endpoints. This allows for data exfiltration, ransomware deployment, and further lateral movement within the customer's network.\n*   **Systemic Risk to the MSP Ecosystem**: Attacks like this undermine the trust-based model of managed services. Businesses rely on their MSPs for security, and when that trust is broken, it has far-reaching consequences for the entire industry.\n*   **Operational Disruption**: Both the MSP and its clients face significant disruption as they work to identify, contain, and remediate the breach across potentially thousands of systems.\n\n---\n\n## IOCs — Directly from Articles\nNo specific IOCs were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nFor MSPs and their customers, hunting should focus on anomalous use of ScreenConnect.\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| `log_source` | `ScreenConnect Audit Logs` | Review for sessions initiated from unusual IP addresses, new admin accounts created, or sessions occurring outside of business hours. | ConnectWise ScreenConnect server logs. | high |\n| `command_line_pattern` | `powershell.exe -enc` or `certutil.exe -urlcache` | Look for ScreenConnect sessions executing encoded PowerShell commands or using `certutil` to download external files. | EDR or command-line logging on managed endpoints. | high |\n| `process_name` | `AnyDesk.exe`, `Splashtop.exe`, `TeamViewer.exe` | Monitor for the installation or execution of any remote access software that is not part of the corporate standard. | EDR process monitoring and software inventory. | high |\n| `file_name` | `*.mxt`, `*.mxt.zip` | Scrutinize any recently installed or modified third-party extensions for ScreenConnect. | File integrity monitoring on the ScreenConnect server. | medium |\n\n---\n\n## Detection & Response\n1.  **Audit RMM Sessions**: All organizations using ScreenConnect or similar RMM tools must rigorously audit all administrative sessions. Look for logins from unfamiliar IP geolocations, sessions with unusual durations, and commands executed that are outside the norm for your technicians. This aligns with D3FEND's [`D3-RAPA: Resource Access Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis).\n2.  **Inventory Extensions**: MSPs should immediately create an inventory of all third-party extensions installed on their ScreenConnect servers. Check for any unauthorized or recently added extensions and research their reputation.\n3.  **Endpoint Monitoring**: Customers of MSPs should have their own EDR and logging capabilities. Monitor for the installation of new software and the execution of scripts by the RMM agent. Alert on any activity that seems suspicious or is not part of a scheduled maintenance task.\n4.  **Account Security**: Enforce **[MFA](https://en.wikipedia.org/wiki/Multi-factor_authentication)** on all RMM accounts. Regularly review user accounts and permissions, disabling any that are no longer needed.\n\n---\n\n## Mitigation\n1.  **Harden RMM Platforms**: Treat your RMM platform as a Tier 0 asset. Restrict access to the management console to specific IP addresses. Enforce mandatory MFA for all users. This is an application of [`D3-ACH: Application Configuration Hardening`](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening).\n2.  **Vet Third-Party Extensions**: Implement a strict policy for vetting and approving any third-party extensions. Only install extensions from reputable developers and, if possible, review their code for security flaws. This falls under [`M1033 - Limit Software Installation`](https://attack.mitre.org/mitigations/M1033/).\n3.  **Principle of Least Privilege**: Configure RMM roles and permissions to grant technicians only the access they need. Avoid using a single, highly privileged account for all operations.\n4.  **Customer-Side Validation**: End customers should not blindly trust all activity from their MSP's RMM tool. Use on-premises security tools to monitor the RMM agent's behavior and alert on actions that fall outside of the agreed-upon service contract, such as the installation of unknown software.",
+  "twitter_post": "ConnectWise is investigating a supply chain attack where partner ScreenConnect accounts were compromised to deploy malware to downstream customers. RMM tools are a major target. #SupplyChainAttack #CyberSecurity #ConnectWise #ScreenConnect #MSP",
+  "meta_description": "ConnectWise is investigating a supply chain compromise where attackers gained access to partner ScreenConnect accounts to deploy unauthorized software to downstream customers.",
+  "category": [
+    "Supply Chain Attack",
+    "Cyberattack",
+    "Incident Response"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "ConnectWise",
+      "type": "vendor",
+      "url": "https://www.connectwise.com/"
+    },
+    {
+      "name": "ScreenConnect",
+      "type": "product",
+      "url": "https://screenconnect.connectwise.com/"
+    },
+    {
+      "name": "Managed Service Providers (MSP)",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.stingrai.io/blog/recent-cyber-attacks-2026",
+      "title": "A timeline of cyber attacks in 2026",
+      "friendly_name": "StingRAI",
+      "website": "stingrai.io"
+    },
+    {
+      "url": "https://blog.senthorus.ch/posts/weekly_reviews/16_11_2026/",
+      "title": "Senthorus Security Radar: November 9–15, 2026",
+      "friendly_name": "Senthorus",
+      "website": "blog.senthorus.ch"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-11-11",
+      "summary": "ConnectWise discloses it is investigating reports of unauthorized access to partner ScreenConnect accounts."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforce MFA on all RMM accounts to prevent unauthorized access via stolen credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Restrict access to the RMM management console to trusted IP addresses.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Continuously audit RMM session logs for anomalous activity.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1033",
+      "name": "Limit Software Installation",
+      "description": "Implement a strict vetting and approval process for all third-party RMM extensions.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The most effective preventative measure against account takeover is the enforcement of multi-factor authentication (MFA) on all ScreenConnect accounts, especially those with administrative privileges. Even if an attacker manages to steal a partner's password through phishing or other means, MFA provides a critical second barrier to entry. MSPs must mandate non-phishable MFA methods, such as FIDO2 security keys or authenticator apps, for all technicians and administrators. This single control dramatically increases the difficulty for an attacker to gain unauthorized access to the RMM platform, thereby protecting the entire downstream customer base from this type of supply chain attack.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "To detect an active compromise, MSPs must perform continuous analysis of RMM resource access patterns. This involves ingesting ScreenConnect audit logs into a SIEM and establishing a baseline of normal activity for each technician account. Alerts should be configured for deviations from this baseline, such as logins from new or unusual IP addresses/geolocations, access outside of normal working hours, or an abnormally high number of remote sessions. Furthermore, analyzing the types of commands executed during sessions can reveal malicious intent. For example, a technician who normally only performs patching suddenly running discovery scripts or attempting to download files would be highly suspicious. This behavioral analysis can provide early warning of an account takeover.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "MSPs must harden the configuration of their ScreenConnect instances. This includes restricting administrative access to the server console to a whitelist of trusted IP addresses, effectively preventing logins from the open internet. Additionally, a strict vetting process for all third-party extensions must be implemented. Each extension should be reviewed for security and business need before being installed. Disabling or removing unused or risky extensions reduces the attack surface of the platform. Finally, role-based access control (RBAC) should be meticulously configured to ensure technicians have only the minimum necessary privileges to perform their jobs, limiting the potential damage if an account is compromised.",
+      "mitre_mitigation_id": "M1054"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "ScreenConnect Audit Logs",
+      "description": "Review for suspicious login events, such as those from unexpected countries or IP ranges, or new administrative accounts being created.",
+      "context": "Analysis of audit logs on the ConnectWise ScreenConnect server.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "powershell.exe -w hidden -nop -c \"IEX (New-Object Net.WebClient).DownloadString(...)\"",
+      "description": "A common pattern used via RMM tools to download and execute a secondary payload from the internet.",
+      "context": "EDR or command-line logging (Event ID 4688) on endpoints managed by ScreenConnect.",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "ScreenConnect.ClientService.exe",
+      "description": "Monitor the ScreenConnect agent process for spawning unexpected child processes, such as other remote access tools or discovery commands.",
+      "context": "EDR process tree analysis on managed endpoints.",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_name",
+      "value": "*.mxt",
+      "description": "File extension for ConnectWise Automate plugins, which may be analogous to extensions in other ConnectWise products. Monitor for unauthorized additions.",
+      "context": "File Integrity Monitoring on the RMM server.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "ConnectWise",
+    "ScreenConnect",
+    "supply chain attack",
+    "RMM",
+    "MSP",
+    "incident response"
+  ],
+  "extract_datetime": "2026-11-15T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Critical Infrastructure"
+    ],
+    "other_affected": [
+      "Managed Service Providers (MSP)",
+      "Downstream customers of MSPs"
+    ]
+  },
+  "pub_date": "2026-11-15",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-11-15T15:00:00.000Z",
+  "updatedAt": "2026-11-15T15:00:00.000Z"
+}

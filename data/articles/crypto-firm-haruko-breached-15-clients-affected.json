@@ -1,0 +1,162 @@
+{
+  "id": "908d4c2e-460c-41c3-a674-8d6bee909a08",
+  "slug": "crypto-firm-haruko-breached-15-clients-affected",
+  "headline": "Crypto Firm Haruko Breached After Attacker Steals Access Token",
+  "title": "Haruko Crypto Firm Breach Affects 15 Institutional Clients",
+  "summary": "London-based crypto infrastructure provider Haruko has suffered a cyberattack affecting 15 of its institutional clients. An attacker exploited an internal vulnerability to steal a user-access token from a process's memory. This token was then used to capture read-only API keys and trading data for clients who had not enabled IP whitelisting. Despite the keys being read-only, some smaller hedge-fund clients reportedly lost funds, suggesting potential security control weaknesses on their end. Haruko has since patched the vulnerability and rotated its secrets.",
+  "full_report": "## Executive Summary\n\n**[Haruko](https://www.haruko.com/)**, a London-based technology provider for institutional crypto trading, has confirmed it was the victim of a targeted cyberattack. The breach resulted in the exposure of sensitive data belonging to 15 of its clients. The attacker exploited a vulnerability in an internal **[Haruko](https://www.haruko.com/)** process to steal a user-access token from memory. This token was then used to access and exfiltrate other data, including read-only exchange API keys for clients who had not enabled IP whitelisting. Although the compromised keys were read-only, the incident reportedly led to financial losses for some smaller clients, highlighting the cascading risks of even limited-permission credential theft.\n\n---\n\n## Threat Overview\n\nThe attack on **[Haruko](https://www.haruko.com/)** was a sophisticated, targeted operation focused on stealing sensitive API credentials. **[Haruko](https://www.haruko.com/)'s** platform acts as a portfolio management system, aggregating data from various exchanges and DeFi protocols. The attacker identified and exploited a flaw in one of the company's internal services, allowing them to read data directly from the process's memory. This is a highly advanced technique that bypasses many traditional security controls.\n\nThe critical failure point that led to client impact was the lack of IP whitelisting on the affected accounts. This security feature, offered by **[Haruko](https://www.haruko.com/)**, would have restricted the use of the stolen API keys to pre-approved IP addresses. Because the 15 affected clients had not enabled this control, the attacker was able to use the stolen keys from their own infrastructure. The incident underscores the importance of implementing all available security features, especially in the high-stakes environment of cryptocurrency trading.\n\n---\n\n## Technical Analysis\n\nThe attack chain involved several advanced steps:\n\n1.  **Initial Access & Vulnerability Exploitation**: The attacker exploited an unspecified vulnerability in one of **[Haruko](https://www.haruko.com/)'s** internal processes. The exact method of initial access is unknown, but the goal was to gain the ability to interact with a running service.\n2.  **Credential Access via Memory Scraping**: The attacker was able to read the memory of the compromised process. From this memory space, they extracted a valid user-access token ([`T1528 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1528/)). This token granted them the privileges of the user associated with that session.\n3.  **Lateral Movement/Data Access**: Using the stolen token, the attacker was able to access other data held within the same process's memory. This included the read-only API keys that **[Haruko](https://www.haruko.com/)** uses to connect to its clients' exchange accounts ([`T1003.001 - OS Credential Dumping: LSASS Memory`](https://attack.mitre.org/techniques/T1003/001/), though applied to a different process).\n4.  **Use of Stolen Credentials**: The attacker then used these stolen API keys to interact with the clients' accounts on various cryptocurrency exchanges. Since IP whitelisting was not enabled for the affected clients, the exchanges accepted the API calls from the attacker's infrastructure ([`T1078.004 - Valid Accounts: Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/)).\n\nWhile the keys were designated as \"read-only,\" some clients still lost funds. This could be due to several reasons: the keys may have had more permissions than believed, or the attacker may have used the read-only access to gain information (e.g., account balances) to facilitate a separate attack, such as social engineering or exploiting a different vulnerability on the exchange itself.\n\n---\n\n## Impact Assessment\n\nThe breach had a direct financial impact on some of **[Haruko](https://www.haruko.com/)'s** clients, with reported losses ranging from $250,000 to $1.2 million. This demonstrates that even the compromise of \"read-only\" credentials can lead to monetary loss. The incident also carries significant reputational damage for **[Haruko](https://www.haruko.com/)**, as trust is paramount for a firm providing infrastructure for institutional finance. For the affected clients, the exposure of their trading data and API keys necessitates a full security review, credential rotation, and an investigation into how the financial losses occurred. The incident serves as a critical lesson for all institutional crypto participants on the importance of defense-in-depth and enabling all recommended security controls.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific file hashes, domains, or IP addresses were provided in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nFor firms in the crypto space, security teams may want to hunt for the following to detect similar threats:\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | API Gateway / Exchange Logs | Monitor for API key usage from new or unexpected IP addresses or geographical regions. This is the primary indicator that a key has been compromised. | Exchange security logs, SIEM | high |\n| other | API Key Permission Audit | Regularly audit the permissions of all API keys. Alert on any keys, especially read-only keys, that are used to perform actions they shouldn't be capable of. | Internal audit scripts, API security tools | high |\n| process_name | `(Internal Service Name)` | Monitor internal services for unexpected memory access or crashes, which could indicate an attempt to exploit a memory-related vulnerability. | EDR, Application Performance Monitoring (APM) | medium |\n| other | Lack of IP Whitelisting | Proactively identify all external-facing API keys that do not have IP whitelisting enabled. This is a critical security gap. | Configuration management database, security audits | high |\n\n---\n\n## Detection & Response\n\n**Detection:**\n\n*   **API Security**: Deploy API security solutions that can baseline normal usage patterns for each key and alert on anomalies, such as access from new IPs, unusual user agents, or a sudden change in the type or volume of API calls. D3FEND's [`User Geolocation Logon Pattern Analysis (D3-UGLPA)`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis) is directly applicable here.\n*   **Memory Integrity Monitoring**: For critical services, consider solutions that can monitor for unauthorized memory access or process hollowing, although this can be challenging to implement without performance impact.\n*   **Configuration Auditing**: Continuously audit security configurations, such as the status of IP whitelisting on API keys, and alert on any configurations that do not meet the security baseline.\n\n**Response:**\n\n1.  **Revoke Credentials**: Immediately revoke the stolen access token and all potentially compromised API keys.\n2.  **Force Rotation**: Require all clients to rotate their API keys and server-side secrets.\n3.  **Patch Vulnerability**: Identify and patch the internal vulnerability that allowed the memory scraping to occur.\n4.  **Enforce Security Controls**: Mandate the use of security features like IP whitelisting for all clients.\n\n---\n\n## Mitigation\n\n*   **Mandate IP Whitelisting**: Do not treat critical security controls like IP whitelisting as optional. Enforce them as a mandatory part of the service for all clients ([`M1035 - Limit Access to Resource Over Network`](https://attack.mitre.org/mitigations/M1035/)).\n*   **Credential Hardening**: Store sensitive credentials like API keys and access tokens in a secure vault (e.g., HashiCorp Vault, AWS Secrets Manager) rather than in process memory where they could be scraped. Implement short-lived tokens that expire quickly ([`M1043 - Credential Access Protection`](https://attack.mitre.org/mitigations/M1043/)).\n*   **Process Isolation**: Harden internal services to prevent memory leakage between processes. Use sandboxing or other isolation techniques to limit the blast radius if one component is compromised ([`M1048 - Application Isolation and Sandboxing`](https://attack.mitre.org/mitigations/M1048/)).\n*   **Defense-in-Depth**: Assume that any single security control can fail. The fact that read-only keys led to financial loss shows the need for multiple layers of security, both at the infrastructure provider and the client level.",
+  "twitter_post": "Crypto firm Haruko breached after an attacker stole an access token from memory, exposing API keys for 15 clients. Lack of IP whitelisting was a key factor. Some clients reported financial losses. #Haruko #Crypto #DataBreach #APIsecurity",
+  "meta_description": "Crypto infrastructure provider Haruko confirms a cyberattack where a stolen access token led to the exposure of client API keys and some financial losses.",
+  "category": [
+    "Data Breach",
+    "Cyberattack",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Haruko",
+      "type": "company"
+    },
+    {
+      "name": "GSR",
+      "type": "company"
+    },
+    {
+      "name": "Bitcoin Suisse",
+      "type": "company"
+    },
+    {
+      "name": "Flowdesk",
+      "type": "company"
+    },
+    {
+      "name": "3iQ Digital Assets",
+      "type": "company"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://cryptonews.net/news/security/33462044/",
+      "title": "Crypto tech provider Haruko hit by cyberattack affecting 15 clients, some funds lost",
+      "date": "2026-09-18",
+      "friendly_name": "CryptoNews",
+      "website": "cryptonews.net"
+    },
+    {
+      "url": "https://www.altcoinbuzz.io/haruko-breach-hit-15-non-whitelisted-clients-via-stolen-access-token",
+      "title": "Haruko breach hit 15 non-whitelisted clients via stolen access token",
+      "date": "2026-09-18",
+      "friendly_name": "Altcoin Buzz",
+      "website": "altcoinbuzz.io"
+    },
+    {
+      "url": "https://www.crowdfundinsider.com/2026/09/311288-haruko-cyberattack-hits-certain-clients-after-access-token-theft/",
+      "title": "Haruko Cyberattack Hits Certain Clients After Access Token Theft",
+      "date": "2026-09-19",
+      "friendly_name": "Crowdfund Insider",
+      "website": "crowdfundinsider.com"
+    },
+    {
+      "url": "https://goldprice.com/news/navigating-cybersecurity-risks-in-crypto-custody-lessons-from-the-haruko-attack",
+      "title": "Navigating Cybersecurity Risks in Crypto Custody: Lessons From the Haruko Attack",
+      "friendly_name": "GoldPrice.com",
+      "website": "goldprice.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1528",
+      "name": "Steal Application Access Token",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1003.001",
+      "name": "OS Credential Dumping: LSASS Memory",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Valid Accounts: Cloud Accounts",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Strictly enforce IP whitelisting for all API keys to prevent their use from unauthorized locations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1043",
+      "name": "Credential Access Protection",
+      "description": "Use secure credential storage solutions like vaults instead of storing tokens or keys in process memory. Implement short-lived, auto-rotating credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Isolate critical processes to prevent one compromised service from being able to read the memory of another.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Continuously audit API key usage and configurations to proactively identify security gaps like missing IP whitelists.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "other",
+      "value": "API key without IP whitelist",
+      "description": "An API key configured for external access that does not have a restrictive IP whitelist is a major security risk and was the enabling factor in this breach.",
+      "context": "Cloud security posture management (CSPM), configuration audit scripts.",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "API access from non-business IP space",
+      "description": "API key usage originating from residential ISPs, TOR exit nodes, or public VPN services is a strong indicator of compromise.",
+      "context": "API gateway logs, threat intelligence feeds.",
+      "confidence": "high"
+    },
+    {
+      "type": "other",
+      "value": "Process memory access",
+      "description": "Any unauthorized process attempting to read the memory of another critical service process is a red flag for memory scraping attacks.",
+      "context": "EDR alerts, system audit logs.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Haruko",
+    "Cryptocurrency",
+    "Data Breach",
+    "API Security",
+    "Access Token",
+    "Hedge Fund"
+  ],
+  "extract_datetime": "2026-09-22T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Finance",
+      "Technology"
+    ],
+    "other_affected": [
+      "Hedge funds",
+      "Cryptocurrency traders"
+    ]
+  },
+  "pub_date": "2026-09-22",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-09-22T15:00:00.000Z",
+  "updatedAt": "2026-09-22T15:00:00.000Z"
+}

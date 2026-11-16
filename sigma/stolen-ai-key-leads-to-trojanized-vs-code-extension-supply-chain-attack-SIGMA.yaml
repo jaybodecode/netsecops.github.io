@@ -1,0 +1,91 @@
+title: Suspicious SSH Process Spawned by VS Code
+id: 9c5b1a3d-8e4f-4b2a-9c1d-0a1b2c3d4e5f
+status: experimental
+description: Detects an SSH client process being spawned by the Visual Studio Code process, which could indicate a compromised extension establishing a backdoor.
+author: cyber.netsecops.io
+date: 2026-11-15
+references:
+  - https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/
+tags:
+  - attack.t1059.004
+  - attack.command_and_control
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\Code.exe'
+    Image|endswith: '\ssh.exe'
+  condition: selection
+---
+title: Unexpected Outbound SSH from Developer Workstation
+id: f8e7d6c5-b4a3-4f2e-8d1c-ba9876543210
+status: experimental
+description: Monitors for unexpected outbound SSH connections from developer workstations to non-corporate IP space, which could indicate a backdoor connection.
+author: cyber.netsecops.io
+date: 2026-11-15
+references:
+  - https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 22
+    Initiated: true
+  filter_local:
+    DestinationIp|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not filter_local
+---
+title: VS Code Extension File Path Match for Trojanized Claude Code
+id: a7b6c5d4-e3f2-4a1b-9c8d-7e6f5a4b3c2d
+status: experimental
+description: Detects the presence of malicious versions of the Claude Code VS Code extension by file path.
+author: cyber.netsecops.io
+date: 2026-11-15
+references:
+  - https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/
+tags:
+  - attack.t1195.001
+  - attack.initial_access
+level: critical
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|contains:
+      - '\.vscode\extensions\anthropic.claude-code-2.1.312'
+      - '\.vscode\extensions\anthropic.claude-code-2.1.313'
+  condition: selection
+---
+title: Network Tool Execution from VS Code Process
+id: b6c5d4e3-f2a1-4b9c-8d7e-6f5a4b3c2d1e
+status: experimental
+description: Detects network utilities like curl or wget being executed by the Visual Studio Code process, which could indicate a malicious extension downloading a payload.
+author: cyber.netsecops.io
+date: 2026-11-15
+references:
+  - https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/
+tags:
+  - attack.t1105
+  - attack.command_and_control
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\Code.exe'
+    Image|endswith:
+      - '\curl.exe'
+      - '\wget.exe'
+  condition: selection

@@ -1,0 +1,198 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-20T20:31:52.445Z",
+    "article_slug": "wordpress-supply-chain-under-fire-as-shapedplugin-update-flow-is-hacked",
+    "article_date": "2026-06-20",
+    "token_usage": {
+      "input_tokens": 145541,
+      "output_tokens": 2711,
+      "cached_tokens": 139822,
+      "total_tokens": 148252,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.051737
+    }
+  },
+  "report_name": "WordPress Supply Chain Hit Again: ShapedPlugin Update Mechanism Compromised",
+  "threat_actors": [
+    {
+      "name": "Unnamed Threat Actors",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "The unnamed threat actors responsible for the supply-chain attack against the ShapedPlugin WordPress plugin vendor. This group targets trusted software vendors to compromise their update distribution channels, enabling widespread infection of downstream users.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Supply Chain",
+      "mitre_id": "T1195.002",
+      "description": "Threat actors compromised the update infrastructure of ShapedPlugin to distribute malicious updates to customer websites, leveraging the trusted vendor-customer relationship for mass infection."
+    },
+    {
+      "name": "Web Shell",
+      "mitre_id": "T1505.003",
+      "description": "A likely post-exploitation technique used by attackers after compromising a WordPress site, providing persistent access for activities like hosting phishing pages or injecting SEO spam."
+    },
+    {
+      "name": "Valid Accounts",
+      "mitre_id": "T1078",
+      "description": "A common post-exploitation step where attackers create new administrative users in the WordPress database (`wp_users` table) to maintain persistent access to the compromised website."
+    },
+    {
+      "name": "Obfuscated Files or Information",
+      "mitre_id": "T1027",
+      "description": "Attackers likely used obfuscated PHP functions, such as `eval(base64_decode(...))`, within the malicious plugin update to hide their backdoor and evade detection by security scanners."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "ShapedPlugin",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A WordPress plugin vendor whose update distribution system was compromised by threat actors to push malicious updates to its customers."
+    },
+    {
+      "name": "WordPress",
+      "identity_class": "organization",
+      "sectors": [
+        "technology",
+        "non-profit"
+      ],
+      "description": "The content management system and ecosystem targeted by the supply-chain attack. The incident affects the trust in its automatic update mechanism."
+    },
+    {
+      "name": "UpdraftPlus",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A WordPress plugin vendor mentioned as a victim of a similar, recent supply-chain attack."
+    },
+    {
+      "name": "OptinMonster",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "A WordPress plugin vendor mentioned as a victim of a similar, recent supply-chain attack."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "ShapedPlugin Update Infrastructure",
+      "infrastructure_types": [
+        "hosting-malware",
+        "command-and-control"
+      ],
+      "description": "The legitimate update distribution server for ShapedPlugin products, which was compromised by attackers to serve trojanized plugin versions to customer websites."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "New or Modified PHP File in WordPress Plugin Directory",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: New or Modified PHP File in WordPress Plugin Directory\nid: 2b1a9c8d-e3f4-4a5b-8c6d-7e8f9a0b1c2d\nstatus: experimental\ndescription: |\n  Detects the creation of new or recently modified PHP files within a WordPress plugin directory. This can be an indicator of a supply-chain attack where a malicious update is installed, or a web shell is dropped.\nreferences:\n  - https://techmaniacs.com/2026/06/19/cybersecurity-daily-briefing-june-19-2026/\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1195.002\n  - attack.t1505.003\nlogsource:\n  category: file_event\n  product: linux\ndetection:\n  selection:\n    TargetFilename|contains: '/wp-content/plugins/'\n    TargetFilename|endswith: '.php'\n  condition: selection\nfalsepositives:\n  - Legitimate plugin updates or installations.\nlevel: medium",
+      "description": "Detects new or modified PHP files in WordPress plugin directories, a common sign of a compromised update or web shell."
+    },
+    {
+      "name": "Outbound Connection from Web Server Process",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Outbound Connection from Web Server Process\nid: 8c7b6a5d-4e3f-4d2c-1b0a-987654321fed\nstatus: experimental\ndescription: |\n  Detects an outbound network connection initiated by a common web server process. Web servers should generally not initiate outbound connections, and this behavior can indicate a compromised website (e.g., a web shell) calling out to a C2 server.\nreferences:\n  - https://techmaniacs.com/2026/06/19/cybersecurity-daily-briefing-june-19-2026/\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1505.003\n  - attack.command_and_control\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    Image|endswith:\n      - '/apache2'\n      - '/httpd'\n      - '/nginx'\n      - '/php-fpm'\n    Initiated: true\n  filter_local:\n    DestinationIp|cidr:\n      - 127.0.0.0/8\n      - 10.0.0.0/8\n      - 172.16.0.0/12\n      - 192.168.0.0/16\n  condition: selection and not filter_local\nfalsepositives:\n  - Legitimate server-side requests to external APIs, update servers, or other services.\nlevel: medium",
+      "description": "Detects suspicious outbound network connections from web server processes, which may indicate a web shell or backdoor communicating with a C2 server."
+    },
+    {
+      "name": "Obfuscated PHP Code Execution via Command Line",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Obfuscated PHP Code Execution via Command Line\nid: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: |\n  Detects the execution of obfuscated PHP code, specifically using `eval(base64_decode(...))`, from the command line. This is a common technique used by attackers to execute backdoors and malicious scripts while evading simple signature-based detection.\nreferences:\n  - https://techmaniacs.com/2026/06/19/cybersecurity-daily-briefing-june-19-2026/\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1027\n  - attack.execution\nlogsource:\n  category: process_creation\n  product: linux\ndetection:\n  selection:\n    CommandLine|contains|all:\n      - 'eval'\n      - 'base64_decode'\n  condition: selection\nfalsepositives:\n  - Highly unlikely, but some legitimate administration scripts might use this for esoteric reasons.\nlevel: high",
+      "description": "Detects the execution of obfuscated PHP code from the command line, a strong indicator of malicious activity."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Unnamed Threat Actors",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Threat Actors",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Web Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Threat Actors",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Valid Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Threat Actors",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Obfuscated Files or Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Unnamed Threat Actors",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "ShapedPlugin",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Unnamed Threat Actors",
+      "source_type": "threat-actor",
+      "relationship_type": "compromises",
+      "target_name": "ShapedPlugin Update Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "New or Modified PHP File in WordPress Plugin Directory",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Compromise Software Supply Chain",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Outbound Connection from Web Server Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Web Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Obfuscated PHP Code Execution via Command Line",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Obfuscated Files or Information",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

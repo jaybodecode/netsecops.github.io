@@ -1,0 +1,67 @@
+title: Anomalous Canvas Free-For-Teacher Account Activity
+id: 2b1c8e9f-4d5a-4f6b-8c7d-1e2f3a4b5c6d
+status: experimental
+description: 'Detects unusual login or API activity from accounts associated with the Canvas ''Free-For-Teacher'' program, which was identified as the initial access vector in a major breach.'
+references:
+  - https://www.cbc.ca/news/science/canvas-cyberattack-shinyhunters-1.7200213
+author: cyber.netsecops.io
+date: 2026-05-10
+tags:
+  - attack.t1190
+level: medium
+logsource:
+  category: application
+  product: canvas
+detection:
+  keywords:
+    - 'Free-For-Teacher'
+    - 'account created'
+    - 'logged in'
+  condition: keywords
+falsepositives:
+  - Legitimate account creation and usage.
+---
+title: Potential Canvas Data Enumeration or Exfiltration
+id: 8d9e0f1a-2b3c-4d5e-6f7a-8b9c0d1e2f3a
+status: experimental
+description: 'Hunts for web server log requests to API endpoints that could indicate large-scale data enumeration or downloading, similar to the activity in the Canvas breach.'
+references:
+  - https://www.cbc.ca/news/science/canvas-cyberattack-shinyhunters-1.7200213
+author: cyber.netsecops.io
+date: 2026-05-10
+tags:
+  - attack.t1567
+level: medium
+logsource:
+  category: webserver
+detection:
+  selection:
+    cs-method: 'GET'
+    c-uri|startswith:
+      - '/api/v1/accounts/'
+      - '/api/v1/users/'
+      - '/api/v1/courses/'
+  timeframe: 10m
+  condition: selection | count() > 1000
+falsepositives:
+  - Legitimate administrative scripts or data synchronization tools.
+---
+title: Canvas Ransom Note Defacement Detection
+id: 5c6d7e8f-9a0b-4c1d-2e3f-4a5b6c7d8e9f
+status: experimental
+description: 'Detects the specific ransom note text used by ShinyHunters to deface Canvas login portals.'
+references:
+  - https://www.govtech.com/education/higher-ed/some-canvas-users-receive-ransomware-threat-after-data-breach
+author: cyber.netsecops.io
+date: 2026-05-10
+tags:
+  - attack.t1491.001
+level: high
+logsource:
+  category: file_event
+detection:
+  selection:
+    Contents|contains: 'Make the right decision, don''t be the next headline.'
+  condition: selection
+falsepositives:
+  - Unlikely, but could trigger on incident reports or articles discussing the note.

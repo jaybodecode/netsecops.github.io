@@ -1,0 +1,83 @@
+title: Anomalous Outbound TURN Traffic
+id: 88031db4-888c-448a-962b-afc7518c7ee4
+status: experimental
+description: Monitors for unexpected or high-volume outbound traffic on UDP port 3478 (STUN/TURN) from servers or endpoints that do not typically use real-time communication applications. This may indicate abuse of TURN servers for C2, as seen with DragonForce's Backdoor.Turn.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1071.001
+  - attack.t1090.002
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 3478
+    Protocol: 'udp'
+    Initiated: true
+  filter_teams:
+    Image|endswith:
+      - '\Teams.exe'
+      - '\ms-teams.exe'
+  condition: selection and not filter_teams
+---
+title: Anomalous QUIC Session to Non-Microsoft IP
+id: 9c4ebeff-d426-4c82-9dfc-90de7a97197a
+status: experimental
+description: Detects direct QUIC (UDP/443) sessions to non-Microsoft IP addresses, which could indicate a relayed C2 channel like the one used by Backdoor.Turn after an initial TURN handshake.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+level: low
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 443
+    Protocol: 'udp'
+    Initiated: true
+  filter_microsoft:
+    # This rule requires enrichment with known Microsoft IP ranges to be effective.
+    DestinationIp|cidr:
+      - '13.64.0.0/11'
+      - '20.32.0.0/12'
+      - '20.64.0.0/10'
+      - '40.72.0.0/13'
+      - '40.96.0.0/12'
+      - '51.103.0.0/16'
+      - '52.96.0.0/11'
+      - '52.132.0.0/14'
+      - '52.224.0.0/11'
+  condition: selection and not filter_microsoft
+---
+title: Abused DbgView64.exe Execution
+id: 9b1f3c4d-5e6a-4b78-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects the execution of DbgView64.exe, a legitimate Sysinternals tool that was abused by DragonForce for DLL side-loading.
+references:
+  - https://www.securityweek.com/microsoft-teams-relay-servers-abused-in-dragonforce-ransomware-attack/
+author: cyber.netsecops.io
+date: 2026-06-18
+tags:
+  - attack.t1574.002
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\DbgView64.exe'
+  filter_legit_path:
+    Image|startswith:
+      - 'C:\Program Files\'
+      - 'C:\Windows\System32\'
+      - 'C:\Program Files (x86)\'
+  condition: selection and not filter_legit_path

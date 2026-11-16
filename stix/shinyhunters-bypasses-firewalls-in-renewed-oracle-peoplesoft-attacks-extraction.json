@@ -1,0 +1,307 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-27T12:31:32.408Z",
+    "article_slug": "shinyhunters-bypasses-firewalls-in-renewed-oracle-peoplesoft-attacks",
+    "article_date": "2026-09-26",
+    "token_usage": {
+      "input_tokens": 148946,
+      "output_tokens": 4012,
+      "cached_tokens": 0,
+      "total_tokens": 152958,
+      "cache_hit": false,
+      "estimated_cost_usd": 0.226303
+    }
+  },
+  "report_name": "ShinyHunters Bypasses WAFs in Renewed Oracle PeopleSoft Attacks",
+  "threat_actors": [
+    {
+      "name": "ShinyHunters",
+      "mitre_id": "",
+      "aliases": [
+        "UNC6240"
+      ],
+      "description": "Resumed mass exploitation of CVE-2026-35273 in Oracle PeopleSoft, using a URL-encoding trick to bypass WAFs. The campaign targets healthcare, technology, and government sectors, deploying the SIDEEYE backdoor and MeshCentral for persistence.",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "The threat actor exploited CVE-2026-35273, a remote code execution vulnerability in internet-facing Oracle PeopleSoft servers, to gain initial access."
+    },
+    {
+      "name": "Obfuscated Files or Information",
+      "mitre_id": "T1027",
+      "description": "Used URL encoding (e.g., replacing 'P' with '%50') to obfuscate the malicious request path `/PSEMHUB/` and bypass pattern-matching Web Application Firewall (WAF) rules."
+    },
+    {
+      "name": "Server Software Component: Web Shell",
+      "mitre_id": "T1505.003",
+      "description": "Deployed web shells on compromised PeopleSoft servers for initial persistence after successful exploitation."
+    },
+    {
+      "name": "Remote Access Software",
+      "mitre_id": "T1219",
+      "description": "Installed the legitimate remote management tool MeshCentral to maintain persistent access and for command and control."
+    },
+    {
+      "name": "Ingress Tool Transfer",
+      "mitre_id": "T1105",
+      "description": "Transferred and deployed the SIDEEYE backdoor and MeshCentral remote access tool onto compromised servers."
+    },
+    {
+      "name": "OS Credential Dumping",
+      "mitre_id": "T1003",
+      "description": "The deployed SIDEEYE backdoor has the capability to perform credential theft from the compromised system."
+    },
+    {
+      "name": "Proxy",
+      "mitre_id": "T1090",
+      "description": "The SIDEEYE backdoor is capable of acting as a network proxy on the compromised server."
+    },
+    {
+      "name": "Command and Scripting Interpreter: PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "Used PowerShell with encoded commands for execution, as suggested by hunting hints for `powershell.exe -enc`."
+    }
+  ],
+  "malware": [
+    {
+      "name": "SIDEEYE",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": false,
+      "aliases": [],
+      "description": "A new multi-stage backdoor deployed on compromised Windows PeopleSoft servers by ShinyHunters. It provides capabilities for credential theft, file/process management, and acting as a network proxy.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "controls-local-machine",
+        "communicates-with-c2"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "MeshCentral",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Legitimate remote management tool installed by ShinyHunters for secondary access, persistence, and command and control on compromised PeopleSoft servers.",
+      "tool_types": [
+        "remote-access"
+      ]
+    }
+  ],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-35273",
+      "cve": "CVE-2026-35273",
+      "description": "A critical unauthenticated remote code execution (RCE) vulnerability in Oracle PeopleSoft, exploited by ShinyHunters using a URL-encoding WAF bypass technique.",
+      "affected_products": [
+        "Oracle PeopleSoft",
+        "Oracle WebLogic Server"
+      ],
+      "cvss_score": 9.8,
+      "severity": "critical"
+    }
+  ],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "MeshCentral C2 Infrastructure",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "Command and control infrastructure used by the legitimate remote management tool MeshCentral, which was abused by ShinyHunters for persistence and C2."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "MeshCentral.exe"
+    },
+    {
+      "type": "domain-name",
+      "value": "meshcentral.com"
+    },
+    {
+      "type": "file",
+      "name": "sideeye.dll"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "ShinyHunters PeopleSoft WAF Bypass Pattern",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: ShinyHunters PeopleSoft WAF Bypass Pattern\nid: 4d9f1c8a-6b3e-4f8d-9a2c-1b7e5a0d9f6e\nstatus: experimental\ndescription: Detects URL-encoded patterns used to bypass WAF rules targeting the Oracle PeopleSoft /PSEMHUB/ endpoint, as seen in ShinyHunters campaigns.\nreferences:\n  - https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-renewed-mass-exploitation-campaign-targeting-oracle-peoplesoft\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1190\n  - attack.t1027\nlevel: high\nlogsource:\n  category: webserver\ndetection:\n  selection:\n    c-uri-stem|contains:\n      - '/%50SEMHUB/'\n      - '/P%53EMHUB/'\n      - '/PSE%4dHUB/'\n  condition: selection",
+      "description": "Detects URL-encoded requests to the /PSEMHUB/ endpoint, a technique used by ShinyHunters to bypass WAF rules."
+    },
+    {
+      "name": "Suspicious MeshCentral Installation or Activity",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'MeshCentral.exe'] OR [domain-name:value = 'meshcentral.com']",
+      "x_netsecio_sigma_rule": "title: Suspicious MeshCentral Installation or Activity\nid: 9e8d7c6b-5a4f-4e3d-8b1a-0f9e8d7c6b5a\nstatus: experimental\ndescription: Detects the presence of MeshCentral.exe or network connections to meshcentral.com from servers not expected to use this tool, such as Oracle PeopleSoft servers.\nreferences:\n  - https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-renewed-mass-exploitation-campaign-targeting-oracle-peoplesoft\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1219\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_process:\n    Image|endswith: '\\MeshCentral.exe'\n  condition: selection_process\n--- \ntitle: Suspicious MeshCentral DNS Query\nid: 9e8d7c6b-5a4f-4e3d-8b1a-0f9e8d7c6b5b\nstatus: experimental\ndescription: Detects DNS queries for meshcentral.com from servers not expected to use this tool, such as Oracle PeopleSoft servers.\nreferences:\n  - https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-renewed-mass-exploitation-campaign-targeting-oracle-peoplesoft\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1219\nlevel: medium\nlogsource:\n  category: dns_query\n  product: windows\ndetection:\n  selection_dns:\n    QueryName: 'meshcentral.com'\n  condition: selection_dns",
+      "pattern": "",
+      "description": "Detects the execution of MeshCentral.exe or network traffic to meshcentral.com, which are indicators of compromise in this campaign."
+    },
+    {
+      "name": "SIDEEYE Backdoor File Artifact",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'sideeye.dll']",
+      "x_netsecio_sigma_rule": "title: SIDEEYE Backdoor File Artifact\nid: 1a2b3c4d-5e6f-4a9b-8c7d-6e5f4a3b2c1d\nstatus: experimental\ndescription: Detects the presence of sideeye.dll, a file artifact associated with the SIDEEYE backdoor used by ShinyHunters.\nreferences:\n  - https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-renewed-mass-exploitation-campaign-targeting-oracle-peoplesoft\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1105\nlevel: high\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '\\sideeye.dll'\n  condition: selection",
+      "pattern": "",
+      "description": "Detects the creation of sideeye.dll, the file associated with the SIDEEYE backdoor."
+    },
+    {
+      "name": "PowerShell Encoded Command Execution",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: PowerShell Encoded Command Execution\nid: f8e7d6c5-4b3a-4e2d-8c1b-0a9f8e7d6c5b\nstatus: experimental\ndescription: Detects the use of PowerShell with the '-enc' flag, which is often used by attackers to obfuscate malicious scripts.\nreferences:\n  - https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-renewed-mass-exploitation-campaign-targeting-oracle-peoplesoft\nauthor: cyber.netsecops.io\ndate: 2026-09-26\ntags:\n  - attack.t1059.001\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection:\n    Image|endswith: '\\powershell.exe'\n    CommandLine|contains: ' -enc '\n  condition: selection",
+      "description": "Detects the use of `powershell.exe -enc`, a common technique for obfuscating malicious commands."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-35273",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "SIDEEYE",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "MeshCentral",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Obfuscated Files or Information",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Server Software Component: Web Shell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Remote Access Software",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SIDEEYE",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "OS Credential Dumping",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "SIDEEYE",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Proxy",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "MeshCentral",
+      "source_type": "tool",
+      "relationship_type": "beacons-to",
+      "target_name": "MeshCentral C2 Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "ShinyHunters PeopleSoft WAF Bypass Pattern",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Suspicious MeshCentral Installation or Activity",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "MeshCentral",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Suspicious MeshCentral Installation or Activity",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "MeshCentral.exe",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Suspicious MeshCentral Installation or Activity",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "meshcentral.com",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "SIDEEYE Backdoor File Artifact",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "SIDEEYE",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "SIDEEYE Backdoor File Artifact",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "sideeye.dll",
+      "target_type": "file"
+    },
+    {
+      "source_name": "PowerShell Encoded Command Execution",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Command and Scripting Interpreter: PowerShell",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-04-27T16:37:27.778Z",
+    "article_slug": "eu-commission-data-breach-attributed-to-teampcp-via-trivy-supply-chain-attack",
+    "article_date": "2026-04-11",
+    "token_usage": {
+      "input_tokens": 142120,
+      "output_tokens": 2580,
+      "cached_tokens": 135916,
+      "total_tokens": 144700,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.050544
+    }
+  },
+  "report_name": "EU Commission Data Breach Attributed to TeamPCP Hacking Group via Trivy Supply Chain Attack",
+  "threat_actors": [
+    {
+      "name": "TeamPCP",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A hacking group that conducted a sophisticated supply chain attack against the European Commission by compromising the Trivy vulnerability scanner. They exfiltrated 92GB of data from an AWS account and collaborated with ShinyHunters to sell it.",
+      "goals": "Exfiltrate and sell sensitive data from government entities for financial profit.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "advanced"
+    },
+    {
+      "name": "ShinyHunters",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A notorious data breach broker group that collaborated with TeamPCP by advertising the stolen European Commission data for sale on their dark web forum.",
+      "goals": "Broker and sell stolen data on dark web forums.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Compromise Software Dependencies and Development Tools",
+      "mitre_id": "T1195.001",
+      "description": "The attackers compromised the distribution mechanism for the Trivy vulnerability scanner to inject malicious code into an update, which was then delivered to the European Commission."
+    },
+    {
+      "name": "Malicious File",
+      "mitre_id": "T1204.002",
+      "description": "The European Commission unknowingly executed malicious code by installing a trojanized version of the Trivy scanner through its standard software update procedures."
+    },
+    {
+      "name": "Cloud Instance Metadata API",
+      "mitre_id": "T1552.005",
+      "description": "The malicious code within the compromised Trivy scanner scanned its cloud environment to find and exfiltrate a secret AWS API key."
+    },
+    {
+      "name": "Transfer Data to Cloud Account",
+      "mitre_id": "T1537",
+      "description": "The attackers used the stolen AWS API key to access the European Commission's AWS services and exfiltrate approximately 92GB of data."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Trivy Backdoor",
+      "mitre_id": "",
+      "type": "backdoor",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious backdoor injected into a legitimate version of the Trivy vulnerability scanner. The backdoor was designed to find and exfiltrate AWS API keys from the environment it was executed in.",
+      "capabilities": [
+        "steals-authentication-credentials",
+        "exfiltrates-data"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "Trivy",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A popular open-source vulnerability scanner that was compromised in a supply chain attack and used as the vector to breach the European Commission's AWS environment.",
+      "tool_types": [
+        "vulnerability-scanning"
+      ]
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "European Commission",
+      "identity_class": "organization",
+      "sectors": [
+        "government"
+      ],
+      "description": "The primary victim of the data breach. The attackers exfiltrated 92GB of data from its Amazon Web Services (AWS) account."
+    },
+    {
+      "name": "European Union Entities",
+      "identity_class": "class",
+      "sectors": [
+        "government"
+      ],
+      "description": "A class of victims whose data, including names and email information from at least 29 different EU entities, was compromised in the breach."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Europe",
+      "region": "europe"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Compromised Trivy Distribution Infrastructure",
+      "infrastructure_types": [
+        "hosting-malware",
+        "staging"
+      ],
+      "description": "The software update mechanism for the Trivy scanner that was compromised by TeamPCP to distribute a backdoored version of the tool."
+    },
+    {
+      "name": "Compromised AWS Account",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "The European Commission's Amazon Web Services account that was accessed by attackers using a stolen API key to exfiltrate data."
+    },
+    {
+      "name": "ShinyHunters Dark Web Forum",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "A dark web forum operated by the ShinyHunters group where the data stolen from the European Commission was advertised for sale."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Unexpected Egress from Trivy Scanner",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Unexpected Egress from Trivy Scanner\nid: 2f8b1c9a-7d3e-4f5a-8b1c-9d0e1f2a3b4c\nstatus: experimental\ndescription: Detects unexpected outbound network connections from the Trivy vulnerability scanner, which could indicate a compromised version exfiltrating data like API keys.\nreferences:\n  - https://www.securityweek.com/european-commission-data-breach-linked-to-trivy-supply-chain-attack/\nauthor: cyber.netsecops.io\ndate: 2026-04-07\ntags:\n  - attack.t1195.001\n  - attack.initial_access\nfalsepositives:\n  - Legitimate outbound connections made by Trivy for updates or to access vulnerability databases.\nlevel: medium\nlogsource:\n  category: network_connection\n  product: linux\ndetection:\n  selection:\n    Image|endswith: '/trivy'\n    Initiated: true\n  filter_expected:\n    DestinationHostname:\n      - 'ghcr.io'\n      - 'pkg-containers.github.io'\n      - 'registry.k8s.io'\n      - 'docker.io'\n      - 'registry-1.docker.io'\n  condition: selection and not filter_expected",
+      "description": "Detects unexpected outbound network connections originating from the Trivy process. A compromised version of Trivy would need to make an external connection to exfiltrate stolen credentials, such as an AWS API key."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Malicious File",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Transfer Data to Cloud Account",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "European Commission",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "European Union Entities",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "collaborates-with",
+      "target_name": "ShinyHunters",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Trivy",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Trivy",
+      "source_type": "tool",
+      "relationship_type": "delivers",
+      "target_name": "Trivy Backdoor",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Trivy Backdoor",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Cloud Instance Metadata API",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "controls",
+      "target_name": "Compromised Trivy Distribution Infrastructure",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "controls",
+      "target_name": "ShinyHunters Dark Web Forum",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "TeamPCP",
+      "source_type": "threat-actor",
+      "relationship_type": "compromises",
+      "target_name": "Compromised AWS Account",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "European Commission",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "Europe",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Unexpected Egress from Trivy Scanner",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Compromise Software Dependencies and Development Tools",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

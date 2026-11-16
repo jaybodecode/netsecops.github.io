@@ -1,0 +1,74 @@
+title: Suspicious Mshta.exe Execution by LNK File
+id: 2b3c1a9e-8d7f-4c6a-b5e4-f3a2b1c0d9e8
+status: experimental
+description: Detects mshta.exe being launched with a command line, potentially from a malicious LNK file, as seen in the APT-C-60 SpyGlace campaign.
+references:
+  - https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda
+author: cyber.netsecops.io
+date: 2026-07-13
+tags:
+  - attack.t1218.005
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\mshta.exe'
+    CommandLine|contains:
+      - 'javascript:'
+      - '.hta'
+  filter_parent:
+    ParentImage|endswith:
+      - '\explorer.exe'
+      - '\OUTLOOK.EXE'
+      - '\WINWORD.EXE'
+      - '\EXCEL.EXE'
+  condition: selection and filter_parent
+---
+title: Anomalous Git Execution for Payload Retrieval
+id: 60aa1f4b-bd13-4807-8519-6d691b3dfb56
+status: experimental
+description: Detects git.exe running from a non-standard directory, which could indicate its use for downloading malicious payloads as seen in the APT-C-60 campaign.
+references:
+  - https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda
+author: cyber.netsecops.io
+date: 2026-07-13
+tags:
+  - attack.t1105
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\git.exe'
+  filter_legit_paths:
+    Image|startswith:
+      - 'C:\Program Files\Git\'
+      - 'C:\Program Files (x86)\Git\'
+  condition: selection and not filter_legit_paths
+---
+title: APT-C-60 Trusted Service Abuse
+id: 7da297bd-5beb-4109-b9ce-0fef064aad11
+status: experimental
+description: Detects DNS queries to legitimate services known to be abused by APT-C-60 for payload delivery. This rule is for hunting and may be noisy.
+references:
+  - https://mallory.ai/stories/019f59e0-245f-7119-b412-fd2d64c58eda
+author: cyber.netsecops.io
+date: 2026-07-13
+tags:
+  - attack.t1071.001
+level: low
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection:
+    QueryName:
+      - 'jsdelivr.net'
+      - 'proton.me'
+      - 'codeberg.org'
+      - 'github.com'
+      - 'gitlab.com'
+  condition: selection

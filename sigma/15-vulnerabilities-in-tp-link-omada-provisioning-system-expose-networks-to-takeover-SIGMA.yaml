@@ -1,0 +1,67 @@
+title: Inbound Connection to TP-Link Omada Management Port
+id: 2b8c1f9d-e4a1-4b7c-8d3f-9a1b0c2d3e4f
+status: experimental
+description: Detects inbound network connections to TP-Link Omada controller management ports (29810, 29814). While legitimate for provisioning, connections from unexpected or external IP addresses may indicate scanning or exploitation attempts related to recently disclosed vulnerabilities.
+references:
+  - https://www.forescout.com/blog/new-tp-link-router-vulnerabilities-exploiting-zero-touch-provisioning/
+author: cyber.netsecops.io
+date: 2026-08-05
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port:
+      - 29810
+      - 29814
+  filter_internal:
+    src_ip:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+---
+title: TP-Link Omada Login API Access
+id: 5d1e2f3a-b4c5-4d6e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Detects web requests to the TP-Link Omada controller login API endpoint (/api/v2/login). A high volume of requests or requests from unusual user agents or source IPs could indicate credential harvesting or brute-force attempts.
+references:
+  - https://www.forescout.com/blog/new-tp-link-router-vulnerabilities-exploiting-zero-touch-provisioning/
+author: cyber.netsecops.io
+date: 2026-08-05
+tags:
+  - attack.t1190
+  - attack.t1110
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri-stem|endswith: '/api/v2/login'
+  condition: selection
+---
+title: Potential XSS Attempt on TP-Link Omada Web Interface
+id: 3cec3d29-a4d1-4874-bf83-62044a4d25dc
+status: experimental
+description: 'Detects web requests containing common Cross-Site Scripting (XSS) patterns targeting a TP-Link Omada controller. This may indicate an attempt to exploit CVE-2025-9289.'
+references:
+  - https://www.forescout.com/blog/new-tp-link-router-vulnerabilities-exploiting-zero-touch-provisioning/
+author: cyber.netsecops.io
+date: 2026-08-05
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: high
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|contains:
+      - '<script>'
+      - 'javascript:'
+      - 'onload='
+      - 'onerror='
+  condition: selection

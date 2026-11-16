@@ -1,0 +1,203 @@
+{
+  "id": "ad7b611a-9413-462f-916c-ad0ef69c3d07",
+  "slug": "operation-cameraswarm-compromises-over-14500-dahua-devices",
+  "headline": "Over 14,500 Dahua Cameras Compromised in 'Operation CameraSwarm'",
+  "title": "Operation CameraSwarm Hacks 14,500 Dahua Devices",
+  "summary": "A hacking campaign dubbed \"Operation CameraSwarm\" compromised over 14,500 Dahua IP cameras and NVRs in a 35-day period, primarily in Ukraine and Russia. Researchers at Hunt.io discovered the campaign after the attacker left tools and logs on an exposed server. The operation used a combination of brute-force attacks on port 37777, exploitation of two known authentication-bypass vulnerabilities (CVE-2021-33044 and CVE-2021-33045), and a novel abuse of Dahua's P2P cloud service to compromise devices behind NAT.",
+  "full_report": "## Executive Summary\nResearchers at **Hunt.io** have uncovered a large-scale hacking campaign, named \"Operation CameraSwarm,\" that compromised at least 14,530 **[Dahua](https://www.dahuasecurity.com/)**-manufactured surveillance devices between June and July 2026. The campaign, discovered via an operational security failure by the attacker, utilized a multi-pronged strategy involving brute-force attacks, exploitation of known vulnerabilities, and abuse of Dahua's P2P cloud architecture. The compromised devices, mostly IP cameras and Network Video Recorders (NVRs), were concentrated in Ukraine and Russia. The attack highlights the persistent risks associated with internet-exposed IoT devices, especially those with weak credentials or unpatched firmware.\n\n## Threat Overview\nThe threat actor behind Operation CameraSwarm systematically targeted Dahua devices using three distinct methods. The campaign's details were exposed when the attacker left a working directory containing exploit scripts, logs, and compromised device lists on an open HTTP server. The compromised devices can be leveraged for various malicious purposes, including serving as a proxy network, launching DDoS attacks, or as a pivot point for deeper intrusions into connected corporate networks.\n\n**Attack Vectors:**\n1.  **Brute-Force Attack:** The most effective method, compromising 12,324 devices by targeting default or weak credentials on TCP port `37777`.\n2.  **Vulnerability Exploitation:** The attacker used a tool named `p2pwn` to exploit two critical authentication-bypass flaws, **[CVE-2021-33044](https://nvd.nist.gov/vuln/detail/CVE-2021-33044)** and **[CVE-2021-33045](https://nvd.nist.gov/vuln/detail/CVE-2021-33045)**. This method compromised 1,923 cameras and installed a persistent backdoor account.\n3.  **P2P Architecture Abuse:** A novel technique allowed the attacker to connect to 283 devices behind NAT firewalls by abusing Dahua's P2P cloud relay service, using only the device serial numbers.\n\n## Technical Analysis\nThe attacker's toolkit, found on the exposed server at `154.86.119.60`, provided clear insight into their TTPs.\n\n- **Reconnaissance:** The attacker used `masscan` to perform broad scans for open TCP port `37777`, the default port for Dahua devices. This is an example of [`T1595.002 - Vulnerability Scanning`](https://attack.mitre.org/techniques/T1595/002/).\n- **Initial Access (Brute Force):** A primary script attempted to log in using a list of common and default credentials, a classic [`T1110.001 - Password Guessing`](https://attack.mitre.org/techniques/T1110/001/) technique against an exposed service.\n- **Initial Access (Exploitation):** The `p2pwn` tool exploited **CVE-2021-33044** and **CVE-2021-33045**. These vulnerabilities allow an attacker to bypass authentication and create a new admin-level user account. This is a direct application of [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/).\n- **Persistence:** The `p2pwn` tool created a backdoor user account named `p2pwn` with the password `p2password`. On many firmware versions, this account would persist even after a factory reset, demonstrating [`T1098 - Account Manipulation`](https://attack.mitre.org/techniques/T1098/).\n- **Command and Control:** The abuse of the P2P relay service to connect to devices behind NAT represents a creative use of [`T1105 - Ingress Tool Transfer`](https://attack.mitre.org/techniques/T1105/) and abuse of a legitimate protocol for C2.\n\n### MITRE ATT&CK Techniques\n- [`T1110 - Brute Force`](https://attack.mitre.org/techniques/T1110/)\n- [`T1190 - Exploit Public-Facing Application`](https://attack.mitre.org/techniques/T1190/)\n- [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/)\n- [`T1098 - Account Manipulation`](https://attack.mitre.org/techniques/T1098/)\n- [`T1595.002 - Vulnerability Scanning`](https://attack.mitre.org/techniques/T1595/002/)\n\n## Impact Assessment\nThe compromise of over 14,500 cameras creates a significant botnet that can be used for malicious activities. For the owners of these devices, the immediate impact is a loss of privacy and the potential for espionage. For the broader internet community, these devices can be used to launch large-scale DDoS attacks, act as proxies to anonymize other criminal activities, and serve as initial access points into more secure corporate or home networks. The persistence of the backdoor account makes remediation difficult for non-technical users.\n\n## IOCs — Directly from Articles\n| Type | Value | Description |\n|---|---|---|\n| ip_address_v4 | `154.86.119.60` | Exposed HTTP server hosting attacker's tools and logs. |\n| user_agent | `p2pwn` | Username of the backdoor account created by the exploit tool. |\n| other | `p2password` | Password for the backdoor `p2pwn` account. |\n\n## Cyber Observables — Hunting Hints\nOrganizations using Dahua devices should hunt for the following indicators:\n\n| Type | Value | Description |\n|---|---|---|\n| Port | `37777` | Inbound connection attempts to the default Dahua management port from unknown IPs. |\n| User Account Pattern | `p2pwn` | Presence of an unauthorized user account with this name in the device's user list. |\n| Log Source | Dahua device system logs | Look for multiple failed login attempts followed by a success from an unknown IP, or logs showing the creation of the `p2pwn` user. |\n| Network Traffic Pattern | Outbound connections from cameras to unusual destinations | May indicate use of the camera as part of a botnet or proxy. |\n\n## Detection & Response\n- **User Account Auditing:** Regularly audit user accounts on all Dahua devices. Immediately remove any unauthorized accounts, especially one named `p2pwn`. This aligns with **[D3-LAM: Local Account Monitoring](https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring)**.\n- **Network Monitoring:** Monitor for and alert on inbound connection attempts to TCP port `37777` from the internet. If the port must be exposed, restrict access to a small set of known-good IP addresses.\n- **Vulnerability Scanning:** Scan for devices vulnerable to **CVE-2021-33044** and **CVE-2021-33045**. Both are included in CISA's KEV catalog and should be prioritized for remediation.\n\n## Mitigation\n- **Firmware Updates:** Immediately update all Dahua devices to the latest firmware version to patch **CVE-2021-33044** and **CVE-2021-33045**. This is a critical step of **[M1051 - Update Software](https://attack.mitre.org/mitigations/M1051/)**.\n- **Credential Hardening:** Change all default passwords to strong, unique passwords. Disable any default accounts that are not needed. This aligns with **[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027/)**.\n- **Network Isolation:** Do not expose camera management interfaces directly to the internet. Place them on a segmented network and use a secure VPN with MFA for remote access. This is an application of **[M1035 - Limit Access to Resource Over Network](https://attack.mitre.org/mitigations/M1035/)**.\n- **Factory Reset and Re-flash:** For devices suspected of compromise, a factory reset followed by a manual firmware re-flash is recommended to ensure removal of any persistent backdoors.",
+  "twitter_post": "“Operation CameraSwarm” compromises 14,500+ Dahua cameras & NVRs using brute-force, auth bypass CVEs, and P2P abuse. Devices in Ukraine & Russia were primary targets. CISA KEVs CVE-2021-33044/33045 exploited. #IoT #Dahua #CyberAttack #Botnet",
+  "meta_description": "A hacking campaign named Operation CameraSwarm has compromised over 14,500 Dahua surveillance devices using brute-force, known CVEs, and P2P service abuse.",
+  "category": [
+    "IoT Security",
+    "Cyberattack",
+    "Vulnerability"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Dahua Technology",
+      "type": "vendor",
+      "url": "https://www.dahuasecurity.com/"
+    },
+    {
+      "name": "Hunt.io",
+      "type": "security_organization"
+    },
+    {
+      "name": "CISA",
+      "type": "government_agency",
+      "url": "https://www.cisa.gov"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2021-33044",
+      "kev": true
+    },
+    {
+      "id": "CVE-2021-33045",
+      "kev": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.bleepingcomputer.com/news/security/hackers-compromise-14-500-dahua-web-cameras-in-35-day-campaign/",
+      "title": "Hackers compromise 14,500 Dahua web cameras in 35-day campaign",
+      "date": "2026-08-19",
+      "friendly_name": "BleepingComputer",
+      "website": "bleepingcomputer.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/08/hackers-compromised-14500-dahua-devices.html",
+      "title": "Hackers Compromised 14,500+ Dahua Devices Using Credential Attacks, Auth Bypasses, and P2P",
+      "date": "2026-08-19",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://securityaffairs.com/197527/iot/inside-operation-cameraswarm-how-one-actor-took-over-14000-dahua-cameras.html",
+      "title": "Inside Operation CameraSwarm: How One Actor Took Over 14,000 Dahua Cameras",
+      "date": "2026-08-19",
+      "friendly_name": "Security Affairs",
+      "website": "securityaffairs.com"
+    },
+    {
+      "url": "https://securityarsenal.com/blog/operation-cameraswarm-14500-dahua-devices-compromised-via-credential-attacks-auth-bypasses-and-p2p-relay-detection-and-hardening-guide",
+      "title": "Operation CameraSwarm: 14,500+ Dahua Devices Compromised via Credential Attacks, Auth Bypasses, and P2P Relay — Detection and Hardening Guide",
+      "date": "2026-08-19",
+      "friendly_name": "Security Arsenal",
+      "website": "securityarsenal.com"
+    },
+    {
+      "url": "https://www.cybersecurity-help.cz/blog/5575.html",
+      "title": "14K+ Dahua cameras across Ukraine and Russia compromised; Slovakia found backdoor in traffic speed cameras",
+      "date": "2026-08-19",
+      "friendly_name": "Cybersecurity Help CZ",
+      "website": "cybersecurity-help.cz"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-17T00:00:00Z",
+      "summary": "Operation CameraSwarm campaign begins."
+    },
+    {
+      "datetime": "2026-07-22T00:00:00Z",
+      "summary": "Operation CameraSwarm campaign ends after 35 days."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1110.001",
+      "name": "Password Guessing",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1098",
+      "name": "Account Manipulation",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1595.002",
+      "name": "Vulnerability Scanning",
+      "tactic": "Reconnaissance"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "Update device firmware to patch the exploited authentication bypass vulnerabilities.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1027",
+      "name": "Password Policies",
+      "description": "Enforce strong, unique passwords for all device accounts and disable default credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1035",
+      "name": "Limit Access to Resource Over Network",
+      "description": "Prevent direct internet access to device management interfaces. Use a segmented network and VPN for remote access.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1018",
+      "name": "User Account Management",
+      "description": "Regularly audit for and remove any unauthorized or suspicious user accounts.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [
+    {
+      "type": "ip_address_v4",
+      "value": "154.86.119.60",
+      "description": "Exposed HTTP server hosting attacker's tools and logs."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "port",
+      "value": "37777",
+      "description": "Default TCP port for Dahua device management interface, targeted by brute-force attacks.",
+      "context": "Firewall logs, network scans",
+      "confidence": "high"
+    },
+    {
+      "type": "user_account_pattern",
+      "value": "p2pwn",
+      "description": "Username of the persistent backdoor account created by the p2pwn exploit tool.",
+      "context": "Device user account lists, authentication logs",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Dahua NVR/IPC System Logs",
+      "description": "Device logs may contain evidence of brute-force attempts, unauthorized logins, or the creation of the 'p2pwn' user account.",
+      "context": "SIEM, log management platform",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "/RPC2_Login",
+      "description": "Common login endpoint for Dahua devices that would show repeated access attempts during a brute-force attack.",
+      "context": "Web server logs on the device, network traffic analysis.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Dahua",
+    "IoT",
+    "CameraSwarm",
+    "Brute Force",
+    "CVE-2021-33044",
+    "CVE-2021-33045",
+    "Botnet"
+  ],
+  "extract_datetime": "2026-08-20T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "countries_affected": [
+      "Ukraine",
+      "Russia",
+      "Mexico",
+      "Vietnam"
+    ],
+    "other_affected": [
+      "Dahua device owners"
+    ],
+    "people_affected_estimate": "14,530+ devices compromised"
+  },
+  "pub_date": "2026-08-20",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-08-20T15:00:00.000Z",
+  "updatedAt": "2026-08-20T15:00:00.000Z"
+}

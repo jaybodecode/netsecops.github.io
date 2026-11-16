@@ -1,0 +1,49 @@
+title: Anomalous API Activity from Third-Party Service Provider
+id: 7e5d8f1a-9c0b-4d2e-8f1a-9c0b4d2e8f1a
+status: experimental
+description: Detects unusual API calls to or from third-party service providers, especially those with financial transaction capabilities, which could indicate a supply chain compromise.
+references:
+  - https://shattered.io/zachxbt-credit-mutuel-arkea-133m-crypto-theft-engineering-lessons-2026/
+author: cyber.netsecops.io
+date: 2026-11-05
+tags:
+  - attack.t1199
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    cs-host: 
+      - 'service-provider-api.example.com' # Placeholder for actual service provider domains
+    c-uri|contains:
+      - '/initiate_transfer'
+      - '/create_payment'
+  filter_known_source:
+    c-ip:
+      - '1.2.3.4' # Placeholder for known legitimate source IPs
+  condition: selection and not filter_known_source
+---
+title: Anomalous Large Fiat to Crypto Exchange Transfers
+id: 8b2c4a9d-1e3f-4b5a-8c9d-1e3f4b5a8c9d
+status: experimental
+description: Detects large, unexpected wire transfers to accounts at known cryptocurrency exchanges, followed by rapid conversion and withdrawal, which is a key TTP from the Crédit Mutuel Arkéa heist.
+references:
+  - https://shattered.io/zachxbt-credit-mutuel-arkea-133m-crypto-theft-engineering-lessons-2026/
+author: cyber.netsecops.io
+date: 2026-11-05
+tags:
+  - attack.t1567
+level: high
+logsource:
+  category: application
+  product: generic
+detection:
+  selection_transfer:
+    event_type: 'wire_transfer_initiated'
+    destination_entity_type: 'cryptocurrency_exchange'
+    amount_usd|gt: 100000
+  selection_conversion:
+    event_type: 'fiat_to_crypto_conversion'
+    amount_usd|gt: 100000
+  timeframe: 1h
+  condition: selection_transfer and selection_conversion

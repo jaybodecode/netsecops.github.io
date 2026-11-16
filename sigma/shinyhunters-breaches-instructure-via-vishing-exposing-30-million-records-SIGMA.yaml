@@ -1,0 +1,57 @@
+title: Anomalous Microsoft Entra Sign-in by Privileged Account
+id: 9b1b3b1e-7b1b-4b1b-8b1b-1b1b1b1b1b1b
+status: experimental
+description: Detects sign-ins for helpdesk or privileged accounts from unfamiliar IP addresses, locations, or devices, which could indicate credential abuse as seen in the ShinyHunters attack on Instructure.
+references:
+  - https://mashable.com/tech/biggest-cybersecurity-data-breaches-2026
+author: cyber.netsecops.io
+date: 2026-07-11
+tags:
+  - attack.t1078
+  - attack.defense_evasion
+level: medium
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    UserPrincipalName|contains:
+      - 'helpdesk@'
+      - 'admin@'
+    ResultType: 0
+  filter_known_corp:
+    IpAddress|cidr:
+      - 192.168.0.0/16 # Replace with actual corporate IP ranges
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+  condition: selection and not filter_known_corp
+---
+title: Anomalous Kerberos Authentication for Privileged Account
+id: 8a2a2a2e-6a2a-4a2a-9a2a-2a2a2a2a2a2a
+status: experimental
+description: Detects anomalous Kerberos authentication events (TGT requests), especially for privileged accounts from unusual locations, which could indicate credential abuse.
+references:
+  - https://mashable.com/tech/biggest-cybersecurity-data-breaches-2026
+author: cyber.netsecops.io
+date: 2026-07-11
+tags:
+  - attack.t1078
+  - attack.credential_access
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID:
+      - 4768
+      - 4769
+    TargetUserName|contains:
+      - 'helpdesk'
+      - 'admin'
+  filter_local:
+    IpAddress:
+      - '::1'
+      - '127.0.0.1'
+      - '-'
+  condition: selection and not filter_local

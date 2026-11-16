@@ -1,0 +1,77 @@
+title: Anomalous High-Volume Cloud Storage Object Access
+id: 2b1a9c8d-4e5f-4a3b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: >
+  Detects an unusually high volume of GetObject API calls from a single source IP or user agent in a short period, which could indicate a data exfiltration attempt from a cloud storage bucket.
+references:
+  - https://www.bleepingcomputer.com/news/security/amgen-says-cloud-data-breach-exposed-patient-health-proprietary-info/
+author: cyber.netsecops.io
+date: 2026-07-31
+tags:
+  - attack.t1530
+  - attack.collection
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: s3.amazonaws.com
+    eventName: GetObject
+  condition: selection | count(sourceIpAddress) by sourceIpAddress > 1000
+falsepositives:
+  - Legitimate high-volume data processing applications or services.
+---
+title: Anomalous AWS IAM User Access Key Creation
+id: 8e7f6d5c-4b3a-4c2d-8e7f-6d5c4b3a2e1f
+status: experimental
+description: >
+  Detects the creation of a new access key for an IAM user. While a legitimate administrative action, it can also indicate an attacker creating a persistent backdoor after compromising an account.
+references:
+  - https://www.bleepingcomputer.com/news/security/amgen-says-cloud-data-breach-exposed-patient-health-proprietary-info/
+author: cyber.netsecops.io
+date: 2026-07-31
+tags:
+  - attack.t1098.001
+  - attack.persistence
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName: CreateAccessKey
+  condition: selection
+falsepositives:
+  - Legitimate creation of access keys by administrators or automated processes.
+---
+title: Anomalous AWS STS AssumeRole Call from Unknown Source
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects an attempt to assume an IAM role from an unexpected or untrusted source IP address. This can be an indicator of lateral movement or privilege escalation within a cloud environment.
+references:
+  - https://www.bleepingcomputer.com/news/security/amgen-says-cloud-data-breach-exposed-patient-health-proprietary-info/
+author: cyber.netsecops.io
+date: 2026-07-31
+tags:
+  - attack.t1078.004
+  - attack.privilege_escalation
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: sts.amazonaws.com
+    eventName: AssumeRole
+  filter:
+    sourceIpAddress:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      # Add known corporate/VPN IP ranges here
+  condition: selection and not filter
+falsepositives:
+  - Legitimate role assumption from new or unlisted IP addresses.

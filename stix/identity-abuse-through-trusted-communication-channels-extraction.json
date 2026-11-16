@@ -1,0 +1,308 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-08-20T13:35:54.435Z",
+    "article_slug": "identity-abuse-through-trusted-communication-channels",
+    "article_date": "2026-08-20",
+    "token_usage": {
+      "input_tokens": 147394,
+      "output_tokens": 3697,
+      "cached_tokens": 140742,
+      "total_tokens": 151091,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.062878
+    }
+  },
+  "report_name": "Attackers Exploit Enterprise Collaboration Tools for Phishing & Malware",
+  "threat_actors": [
+    {
+      "name": "APT29",
+      "mitre_id": "G0016",
+      "aliases": [],
+      "description": "Observed using compromised Microsoft Teams accounts to send messages impersonating IT support, which contained links to credential harvesting pages.",
+      "sophistication": "expert"
+    },
+    {
+      "name": "Collaboration Platform Abusers",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A general classification for threat actors who exploit enterprise collaboration platforms like Microsoft Teams and Slack for malicious activities, including phishing, credential theft, and malware delivery. This activity is characterized by the abuse of trust in authenticated communication channels.",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Phishing",
+      "mitre_id": "T1566",
+      "description": "Threat actors, including APT29, used identity phishing through compromised Microsoft Teams accounts to send messages with links to credential harvesting pages."
+    },
+    {
+      "name": "Adversary-in-the-Middle",
+      "mitre_id": "T1557",
+      "description": "Attackers created their own Slack workspaces to impersonate administrators and employees, sending phishing links that redirect victims to adversary-in-the-middle (AitM) phishing proxies to capture credentials and MFA tokens."
+    },
+    {
+      "name": "Ingress Tool Transfer",
+      "mitre_id": "T1105",
+      "description": "Malicious files, such as .rar archives containing malware, were sent directly to victims via chat platforms like Microsoft Teams and Slack."
+    },
+    {
+      "name": "User Execution",
+      "mitre_id": "T1204",
+      "description": "Attacks relied on the user to execute a malicious payload, for example by opening a malicious .rar file received in a chat message."
+    },
+    {
+      "name": "DLL Side-Loading",
+      "mitre_id": "T1574.002",
+      "description": "A legitimate application (WinRAR.exe) was used to load a malicious lpk.dll extracted from a .rar archive, a form of DLL side-loading."
+    },
+    {
+      "name": "Masquerading",
+      "mitre_id": "T1036",
+      "description": "Attackers masqueraded their malicious activity as legitimate collaboration by operating from compromised accounts or impersonating trusted entities like IT support."
+    },
+    {
+      "name": "PowerShell",
+      "mitre_id": "T1059.001",
+      "description": "Collaboration tools like Teams.exe were observed launching powershell.exe, indicating potential malicious script execution for follow-on actions."
+    }
+  ],
+  "malware": [
+    {
+      "name": "lpk.dll",
+      "mitre_id": "",
+      "type": "trojan",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious DLL named lpk.dll delivered via a .rar archive in a chat message. It is loaded by a legitimate application like WinRAR.exe through DLL side-loading to execute malicious code.",
+      "capabilities": []
+    }
+  ],
+  "tools": [
+    {
+      "name": "Microsoft Teams",
+      "mitre_id": "",
+      "aliases": [
+        "Teams"
+      ],
+      "description": "Abused as a trusted communication channel to deliver phishing links and malicious files by threat actors.",
+      "tool_types": [
+        "remote-access"
+      ]
+    },
+    {
+      "name": "Slack",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "Abused as a trusted communication channel. Attackers created their own workspaces to impersonate employees and send phishing links to AitM proxies.",
+      "tool_types": [
+        "remote-access"
+      ]
+    },
+    {
+      "name": "WinRAR",
+      "mitre_id": "",
+      "aliases": [
+        "WinRAR.exe"
+      ],
+      "description": "Legitimate archive utility used to inadvertently load a malicious lpk.dll via DLL side-loading when a user opens a malicious .rar archive.",
+      "tool_types": []
+    }
+  ],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Credential Harvesting Site",
+      "infrastructure_types": [
+        "phishing"
+      ],
+      "description": "Phishing pages linked from malicious messages sent via collaboration tools to steal user credentials."
+    },
+    {
+      "name": "Adversary-in-the-Middle Phishing Proxy",
+      "infrastructure_types": [
+        "phishing",
+        "anonymization"
+      ],
+      "description": "Phishing proxies used to intercept credentials and MFA tokens from victims who were redirected from malicious links sent via Slack."
+    }
+  ],
+  "observables": [
+    {
+      "type": "file",
+      "name": "lpk.dll"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Malicious Side-Loading DLL lpk.dll File Creation",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[file:name = 'lpk.dll']",
+      "x_netsecio_sigma_rule": "title: Malicious Side-Loading DLL lpk.dll File Creation\nid: 9c5b1a3d-8f7e-4b1c-9d5a-6f8b3a2c1d0e\nstatus: experimental\ndescription: Detects the creation of a file named lpk.dll, which is commonly used in DLL side-loading attacks, as observed in campaigns abusing collaboration tools.\nreferences:\n  - https://unit42.paloaltonetworks.com/communication-channel-identity-risks/\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1574.002\nlevel: medium\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|endswith: '\\lpk.dll'\n  filter:\n    Image|endswith:\n      - '\\csrss.exe'\n      - '\\winlogon.exe'\n      - '\\wininit.exe'\n    TargetFilename|startswith:\n      - 'C:\\Windows\\System32\\'\n      - 'C:\\Windows\\SysWOW64\\'\n  condition: selection and not filter",
+      "pattern": "",
+      "description": "Detects the creation of lpk.dll, a common name for a malicious library used in DLL side-loading attacks."
+    },
+    {
+      "name": "Collaboration Tool Spawning Archive Utility",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Collaboration Tool Spawning Archive Utility\nid: 1e8d4c6a-0b3c-4e9a-8b1d-9c0a2f8b4d6e\nstatus: experimental\ndescription: Detects a collaboration tool like Microsoft Teams or Slack spawning an archive utility. This may indicate a user opening a malicious archive delivered via chat.\nreferences:\n  - https://unit42.paloaltonetworks.com/communication-channel-identity-risks/\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1204\n  - attack.t1105\nlevel: medium\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_parent:\n    ParentImage|endswith:\n      - '\\Teams.exe'\n      - '\\slack.exe'\n  selection_child:\n    Image|endswith:\n      - '\\WinRAR.exe'\n      - '\\7z.exe'\n      - '\\WinZip.exe'\n  condition: all of selection_*",
+      "description": "Detects a process creation event where a collaboration tool (Teams, Slack) is the parent of an archive utility (WinRAR, 7z), which can indicate a user opening a malicious file from a chat."
+    },
+    {
+      "name": "Collaboration Tool Spawning Script Interpreter",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Collaboration Tool Spawning Script Interpreter\nid: f5a2b1c0-3d4e-4f5a-6b7c-8d9e0f1a2b3c\nstatus: experimental\ndescription: Detects a collaboration tool like Microsoft Teams or Slack spawning a script interpreter, which is highly suspicious and could indicate code execution from a malicious file or link.\nreferences:\n  - https://unit42.paloaltonetworks.com/communication-channel-identity-risks/\nauthor: cyber.netsecops.io\ndate: 2026-08-20\ntags:\n  - attack.t1059\nlevel: high\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_parent:\n    ParentImage|endswith:\n      - '\\Teams.exe'\n      - '\\slack.exe'\n  selection_child:\n    Image|endswith:\n      - '\\powershell.exe'\n      - '\\pwsh.exe'\n      - '\\cmd.exe'\n      - '\\cscript.exe'\n      - '\\wscript.exe'\n  condition: all of selection_*",
+      "description": "Detects a process creation event where a collaboration tool (Teams, Slack) is the parent of a command-line interpreter, a strong indicator of malicious execution."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "APT29",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Phishing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "APT29",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Microsoft Teams",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Phishing",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Adversary-in-the-Middle",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Ingress Tool Transfer",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "User Execution",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "DLL Side-Loading",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Masquerading",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Microsoft Teams",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Slack",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "WinRAR",
+      "target_type": "tool"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "lpk.dll",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "controls",
+      "target_name": "Credential Harvesting Site",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Collaboration Platform Abusers",
+      "source_type": "threat-actor",
+      "relationship_type": "controls",
+      "target_name": "Adversary-in-the-Middle Phishing Proxy",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Malicious Side-Loading DLL lpk.dll File Creation",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "lpk.dll",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Malicious Side-Loading DLL lpk.dll File Creation",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "lpk.dll",
+      "target_type": "file"
+    },
+    {
+      "source_name": "Collaboration Tool Spawning Archive Utility",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "User Execution",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Collaboration Tool Spawning Script Interpreter",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "PowerShell",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

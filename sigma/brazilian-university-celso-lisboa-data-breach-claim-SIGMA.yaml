@@ -1,0 +1,65 @@
+title: Anomalous Student Information System (SIS) Access
+id: 2b8a1c9d-4f5e-4b6c-8d9a-0e1f2a3b4c5d
+status: experimental
+description: >
+  Detects potentially anomalous access to a Student Information System (SIS) database. This is a hunting rule to look for broad queries that could be part of a data theft attempt. True detection of high-volume queries often requires SIEM correlation logic.
+references:
+  - https://www.bitsight.com/underground/data-breaches
+author: cyber.netsecops.io
+date: 2026-11-15
+tags:
+  - attack.t1213
+level: low
+logsource:
+  category: database
+detection:
+  selection:
+    statement|re: '(?i)SELECT .* FROM .*(student|user|employee|person).*'
+  filter:
+    user:
+      - 'backup_user'
+      - 'reporting_service'
+  condition: selection and not filter
+---
+title: Anomalous Large Data Transfer from SIS Server
+id: 12a3fb3a-9545-4b36-b3d0-5c9d839a6cd2
+status: experimental
+description: >
+  Detects a large volume of outbound data from a known Student Information System (SIS) server, which could indicate data exfiltration. Thresholds should be tuned for the specific environment.
+references:
+  - https://www.bitsight.com/underground/data-breaches
+author: cyber.netsecops.io
+date: 2026-11-15
+tags:
+  - attack.t1041
+level: medium
+logsource:
+  category: firewall
+detection:
+  selection:
+    src_ip: 
+      - 192.168.1.10 # Placeholder for SIS server IP
+    bytes_out|gt: 100000000 # Example: > 100MB
+  condition: selection
+---
+title: Dormant Account Logon
+id: ad597287-b813-4fdd-a528-914f33ad9a43
+status: experimental
+description: >
+  Detects a logon from an account that has been inactive for a long period (e.g., > 90 days). This is a common TTP as attackers often use compromised, forgotten accounts to blend in. This rule is conceptual and requires a SIEM capable of tracking last logon times.
+references:
+  - https://www.bitsight.com/underground/data-breaches
+author: cyber.netsecops.io
+date: 2026-11-15
+tags:
+  - attack.t1078
+level: medium
+logsource:
+  category: authentication
+  product: windows
+detection:
+  selection:
+    EventID: 4624
+    # This logic is conceptual and depends on the SIEM's ability to enrich events with user account age or last logon data.
+    # For example, a field like 'user_days_since_last_logon' > 90
+  condition: selection

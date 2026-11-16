@@ -1,0 +1,249 @@
+{
+  "id": "b4124aef-06c4-48ce-8327-f61dbdaf0954",
+  "slug": "goddamn-ransomware-uses-signed-poisonx-driver-to-disable-edr",
+  "headline": "GodDamn Ransomware Deploys Microsoft-Signed 'PoisonX' Driver to Blindside EDR",
+  "title": "GodDamn Ransomware, a Rebrand of Beast, Uses Signed 'PoisonX' Driver to Terminate Endpoint Security",
+  "summary": "A new ransomware strain named 'GodDamn' has been identified by Symantec researchers as a rebrand of the Beast and Monster ransomware families. This operation, attributed to the 'Hyadina' threat actor, employs a sophisticated and dangerous technique: using a malicious, Microsoft-signed kernel driver called 'PoisonX' to disable endpoint security products like CrowdStrike Falcon. This 'bring-your-own-vulnerable-driver' (BYOVD) style attack allows the ransomware to operate unimpeded. The attack chain also involves the use of AnyDesk for remote access and a comprehensive toolkit for credential harvesting before encryption begins.",
+  "full_report": "## Executive Summary\n\nResearchers from **[Symantec](https's://www.broadcom.com/products/software/security/endpoint')** have uncovered a new ransomware operation dubbed **GodDamn**, identifying it as the latest evolution of the Beast and Monster ransomware families developed by a threat actor they track as **Hyadina**. The most alarming aspect of this new strain is its method for evading defenses: it deploys a custom, malicious kernel driver named **PoisonX** that has been legitimately signed by **[Microsoft](https://www.microsoft.com/en-us/security)**. This allows the attackers to terminate endpoint detection and response (EDR) processes from the kernel level, effectively blinding security solutions before encrypting files. This tactic, a variation of a 'bring-your-own-vulnerable-driver' (BYOVD) attack, represents a significant escalation in ransomware capabilities and poses a grave threat to organizations.\n\n## Threat Overview\n\nThe **GodDamn** ransomware, first seen in May 2026, is the latest iteration from the **Hyadina** threat actor. The operation's standout feature is the use of the `g11.sys` driver, which they've named **PoisonX**. This is not a case of exploiting a vulnerability in a legitimate third-party driver; it is a purpose-built malicious driver that the attackers successfully submitted to and had signed by **[Microsoft](https://www.microsoft.com/en-us/security)**'s driver signing program. This allows the driver to be loaded into the Windows kernel without triggering security warnings.\n\nOnce loaded, the ransomware uses the driver to send specially crafted I/O control (IOCTL) requests to terminate the processes of security products, such as **[CrowdStrike](https://www.crowdstrike.com/)** Falcon. This defense evasion technique, [`T1562.001 - Impair Defenses: Disable or Modify Tools`](https://attack.mitre.org/techniques/T1562/001/), is highly effective because the termination command comes from the trusted kernel space, bypassing user-mode protections.\n\n## Technical Analysis\n\nThe attack chain observed by **[Symantec](https's://www.broadcom.com/products/software/security/endpoint')** is methodical:\n1.  **Initial Access & Remote Control**: The attackers gain remote access using **[AnyDesk](https://anydesk.com/)**, which they often install in a non-standard location to avoid detection and configure for persistence. This aligns with [`T1219 - Remote Access Software`](https://attack.mitre.org/techniques/T1219/).\n2.  **Credential Harvesting**: They deploy a toolkit based on NirSoft utilities to perform extensive credential theft ([`T1003 - OS Credential Dumping`](https://attack.mitre.org/techniques/T1003/)). This toolkit targets credentials from web browsers, Windows Credential Manager, VNC sessions, and email clients.\n3.  **Defense Evasion**: The core of the operation. The `PoisonX` driver (`g11.sys`) is dropped and loaded. The ransomware executable then communicates with this driver to kill EDR and antivirus processes.\n4.  **Impact**: With defenses disabled, the ransomware proceeds to encrypt files across the system and network shares ([`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/)). Encrypted files are appended with extensions like `.God8Damn` or a victim-specific name.\n\nThis use of a signed malicious driver is a significant evolution from typical BYOVD attacks, which rely on finding and exploiting flaws in existing, legitimate drivers. Here, the attackers have weaponized the trust model of Microsoft's own driver signing process.\n\n## Impact Assessment\n\nThe use of a signed kernel driver to disable security tools makes this ransomware strain particularly dangerous. Organizations that rely solely on EDR/antivirus for protection are left completely vulnerable once the driver is executed. The attack effectively renders the primary defense mechanism inert, guaranteeing the success of the encryption phase. This forces a complete reliance on secondary controls like backups and network segmentation. The incident also puts pressure on **[Microsoft](https://www.microsoft.com/en-us/security)** to tighten its driver signing verification process to prevent malicious code from receiving a stamp of legitimacy.\n\n## IOCs — Directly from Articles\n\n- **File Name**: `g11.sys` (PoisonX driver)\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams should hunt for the following patterns:\n\n| Type | Value | Description |\n|---|---|---|\n| File Name | `g11.sys` | The name of the malicious PoisonX driver. Its presence on any system is a critical indicator of compromise. |\n| Certificate Subject | (Suspicious/Unknown Publisher) | Monitor for newly loaded drivers signed by infrequent or unknown publishers, even if the signature is valid. |\n| Process Name | `AnyDesk.exe` | The presence of AnyDesk running from unusual paths (e.g., `C:\\Users\\Public\\`) can indicate malicious use. |\n| Event ID | 7045 (System Log) | A new service was installed. Correlate this with the loading of a new driver (`.sys` file). |\n| Command Line Pattern | `sc create ... type= kernel` | Command to create a new kernel driver service. Monitor for this activity outside of legitimate software installations. |\n\n## Detection & Response\n\n- **Driver Load Monitoring**: Enable and monitor logs related to driver loading (e.g., System Log Event IDs 7045, 600). Use a SIEM to alert on the loading of new, unsigned, or suspiciously signed drivers. This is a form of [`D3-DLIC: Driver Load Integrity Checking`](https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking).\n- **Tamper Protection**: Ensure that the tamper protection features of your EDR/antivirus solution are enabled and configured to their highest level. While kernel-level attacks can bypass some of these, they can still provide some resistance or at least generate alerts.\n- **Behavioral Monitoring**: Look for the sequence of behaviors: `AnyDesk.exe` execution, followed by credential dumping tool activity (e.g., NirSoft tools), followed by the creation of a new kernel service. This chain is a strong indicator of this specific attack.\n- **Memory Analysis**: In a suspected compromise, memory analysis may be able to identify the loaded `g11.sys` driver and related malicious processes, even if endpoint tools have been terminated.\n\n## Mitigation\n\n- **Application Control**: Use application control solutions like Windows Defender Application Control (WDAC) to create a policy that only allows known, trusted drivers to be loaded. This can block the execution of the `PoisonX` driver, even if it is signed, if it's not on your allowlist. This is a direct implementation of [`D3-EAL: Executable Allowlisting`](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting).\n- **Restrict Remote Access Software**: Block the use of remote access tools like **[AnyDesk](https://anydesk.com/)** on corporate networks, except for specific, authorized use cases. Use corporate-managed remote access solutions that are centrally logged and monitored.\n- **Credential Protection**: Implement measures to protect credentials, such as Windows Credential Guard, to make it harder for tools like NirSoft to dump passwords from memory.\n- **Immutable Backups**: As with all ransomware, having offline, immutable backups is the ultimate safety net, ensuring you can restore data without paying the ransom.",
+  "twitter_post": "New 'GodDamn' ransomware uses a Microsoft-signed driver named 'PoisonX' to kill EDR/AV software at the kernel level before encryption. 💀 This tactic, a major escalation, bypasses endpoint defenses. #Ransomware #CyberSecurity #Malware #EDR",
+  "meta_description": "The GodDamn ransomware, a rebrand of Beast, uses a Microsoft-signed malicious driver called PoisonX to disable endpoint security tools, making it highly effective and dangerous.",
+  "category": [
+    "Ransomware",
+    "Malware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "GodDamn",
+      "type": "malware"
+    },
+    {
+      "name": "Beast",
+      "type": "malware"
+    },
+    {
+      "name": "Monster",
+      "type": "malware"
+    },
+    {
+      "name": "PoisonX",
+      "type": "malware"
+    },
+    {
+      "name": "Hyadina",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Symantec",
+      "type": "security_organization"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "AnyDesk",
+      "type": "product",
+      "url": "https://anydesk.com/"
+    },
+    {
+      "name": "CrowdStrike",
+      "type": "vendor",
+      "url": "https://www.crowdstrike.com/"
+    },
+    {
+      "name": "NirSoft",
+      "type": "other"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.security.com/blog-post/goddamn-ransomware-beast-rebrand",
+      "title": "GodDamn Ransomware: Latest Beast Rebrand Uses Malicious Driver to Disable Defenses",
+      "date": "2026-07-09",
+      "friendly_name": "Symantec",
+      "website": "security.com"
+    },
+    {
+      "url": "https://thehackernews.com/2026/07/goddamn-ransomware-uses-poisonx-driver.html",
+      "title": "GodDamn Ransomware Uses PoisonX Driver to Disable Endpoint Defenses",
+      "date": "2026-07-09",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-05-21",
+      "summary": "GodDamn ransomware is first observed in the wild."
+    },
+    {
+      "datetime": "2026-05-29",
+      "summary": "Symantec begins investigating a detailed attack chain involving the ransomware."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1562.001",
+      "name": "Impair Defenses: Disable or Modify Tools",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1219",
+      "name": "Remote Access Software",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1003",
+      "name": "OS Credential Dumping",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    },
+    {
+      "id": "T1112",
+      "name": "Modify Registry",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "Use application control policies like WDAC to restrict which drivers can be loaded, preventing malicious drivers like PoisonX from running.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1040",
+      "name": "Behavior Prevention on Endpoint",
+      "d3fend_techniques": [
+        {
+          "id": "D3-RAPA",
+          "name": "Resource Access Pattern Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis"
+        }
+      ],
+      "description": "Monitor for suspicious chains of behavior, such as remote access software launching credential dumpers, which can indicate an attack in progress.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "d3fend_techniques": [
+        {
+          "id": "D3-LAM",
+          "name": "Local Account Monitoring",
+          "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring"
+        }
+      ],
+      "description": "Audit and alert on the installation of new kernel-mode drivers to quickly identify suspicious activity.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Block unauthorized remote access software like AnyDesk from running in the environment.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "The most effective defense against the GodDamn ransomware's core tactic is to implement a strict driver and application allowlisting policy using a tool like Windows Defender Application Control (WDAC). Since the malicious 'PoisonX' driver is legitimately signed by Microsoft, signature-based blocking is ineffective. However, a WDAC policy configured in enforcement mode would prevent this unknown driver from loading because it would not be on the pre-approved list of drivers for the organization. This 'default-deny' posture is crucial. Security teams would need to build and maintain a catalog of all legitimate drivers and software required for business operations (a 'golden image'). While this requires a significant upfront investment in testing and maintenance, it provides a powerful defense that would have stopped this attack vector completely, preventing the EDR from being disabled and allowing it to detect and block the subsequent ransomware execution.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DLIC",
+      "technique_name": "Driver Load Integrity Checking",
+      "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking",
+      "recommendation": "Organizations should implement enhanced monitoring focused on driver loading events. This goes beyond just checking for valid signatures. Security teams should use their SIEM and EDR to monitor Windows System Event Logs (specifically Event ID 7045 for new service installation and driver load events) and correlate this data. Create alerts for any new kernel-mode driver that is loaded if it is not on a pre-vetted list of known good drivers. The alert should be high-priority if the driver is signed by a publisher that has never been seen in the environment before. While the 'PoisonX' driver is signed by Microsoft, its specific certificate and attributes would be novel. This monitoring provides a critical detection opportunity at the exact moment the attacker attempts to deploy their defense evasion tool, allowing for rapid incident response to isolate the host before the EDR is terminated and encryption begins.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "file_name",
+      "value": "g11.sys",
+      "description": "Malicious PoisonX kernel driver"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "g11.sys",
+      "description": "The malicious PoisonX driver used to terminate security products. Its presence is a definitive indicator of compromise.",
+      "context": "File system scan, EDR logs",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "sc create g11 type= kernel",
+      "description": "Command used to create the service for the malicious kernel driver. Monitor for creation of kernel services with suspicious names.",
+      "context": "Windows Event ID 4688, SIEM",
+      "confidence": "high"
+    },
+    {
+      "type": "process_name",
+      "value": "AnyDesk.exe",
+      "description": "The presence of AnyDesk running from non-standard paths (e.g., C:\\Users\\Public\\, C:\\Temp\\) can indicate malicious use for remote access.",
+      "context": "EDR logs, Process monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "event_id",
+      "value": "7045",
+      "description": "Windows System Event Log ID indicating a new service was installed. Correlate with the loading of a new driver (.sys file).",
+      "context": "Windows Event Log, SIEM",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Ransomware",
+    "GodDamn",
+    "Hyadina",
+    "PoisonX",
+    "BYOVD",
+    "EDR",
+    "Malware",
+    "Microsoft"
+  ],
+  "extract_datetime": "2026-07-09T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ]
+  },
+  "pub_date": "2026-07-09",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-07-09T15:00:00.000Z",
+  "updatedAt": "2026-07-09T15:00:00.000Z"
+}

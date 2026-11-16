@@ -1,0 +1,75 @@
+title: Anomalous Large Data Egress from SFTP Server
+id: 2b9a1c3d-e4f5-4a8b-9c1d-ef0123456789
+status: experimental
+description: Detects network connections using SFTP/FTP protocols which should be monitored for unusually large data transfers that deviate from baseline activity, as seen in the ETS data breach.
+references:
+  - https://www.latimes.com/california/story/2026-10-16/state-testing-student-data-hack
+author: cyber.netsecops.io
+date: 2026-10-18
+tags:
+  - attack.t1530
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort:
+      - 21
+      - 22
+    Initiated: 'true'
+  condition: selection
+falsepositives:
+  - Legitimate large file transfers.
+---
+title: Unusual SFTP Server Login
+id: 8d7c6b5a-4f3e-4d2c-b1a0-987654321fed
+status: experimental
+description: Detects SFTP server authentications, which should be correlated with source IP, geolocation, and time to identify activity indicative of credential compromise.
+references:
+  - https://www.latimes.com/california/story/2026-10-16/state-testing-student-data-hack
+author: cyber.netsecops.io
+date: 2026-10-18
+tags:
+  - attack.t1078
+  - attack.initial_access
+level: medium
+logsource:
+  product: linux
+  service: sshd
+detection:
+  selection:
+    keywords:
+      - 'subsystem request for sftp'
+  condition: selection
+falsepositives:
+  - Legitimate remote logins by authorized users.
+---
+title: Interactive Login by Service Account
+id: f1e0d9c8-7b6a-4987-8654-3210fedcba98
+status: experimental
+description: Detects interactive logins by accounts typically used for automated services. This could indicate account misuse or compromise.
+references:
+  - https://www.latimes.com/california/story/2026-10-16/state-testing-student-data-hack
+author: cyber.netsecops.io
+date: 2026-10-18
+tags:
+  - attack.t1078
+  - attack.defense_evasion
+level: high
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType: 2
+    TargetUserName|endswith:
+      - '$'
+    TargetUserName|contains:
+      - 'svc_'
+      - 'srv_'
+  condition: selection
+falsepositives:
+  - Administrators performing interactive maintenance using a service account.

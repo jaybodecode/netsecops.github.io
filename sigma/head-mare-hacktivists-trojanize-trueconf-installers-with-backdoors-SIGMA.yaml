@@ -1,0 +1,69 @@
+title: Unsigned TrueConf Client Execution
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects the execution of an unsigned TrueConf client installer, which is a strong indicator of the Head Mare supply-chain attack.
+references:
+  - https://thehackernews.com/2026/08/head-mare-exploits-trueconf-flaws-to.html
+author: cyber.netsecops.io
+date: 2026-08-10
+tags:
+  - attack.t1195.002
+  - attack.t1204.002
+  - attack.supply_chain_compromise
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|startswith: 'TrueConf-Client-'
+    Image|endswith: '.exe'
+    SignatureStatus: 'Unsigned'
+  condition: selection
+---
+title: Suspicious Inbound Connection to TrueConf Server Port
+id: e2f3a4b5-c6d7-4e8f-9a0b-1c2d3e4f5a6b
+status: experimental
+description: Detects inbound network connections to the default TrueConf server port (TCP/4307) from external, non-private IP addresses, which could indicate scanning or exploitation attempts by groups like Head Mare.
+references:
+  - https://thehackernews.com/2026/08/head-mare-exploits-trueconf-flaws-to.html
+author: cyber.netsecops.io
+date: 2026-08-10
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 4307
+    Initiated: 'false'
+  filter_private:
+    SourceIp|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      - 127.0.0.0/8
+  condition: selection and not filter_private
+---
+title: Head Mare Webshell File Creation
+id: d3e4f5a6-b7c8-4d9a-8b0c-1d2e3f4a5b6c
+status: experimental
+description: Detects the creation or modification of locale.php in a path associated with TrueConf servers, which is indicative of the Head Mare webshell persistence technique.
+references:
+  - https://thehackernews.com/2026/08/head-mare-exploits-trueconf-flaws-to.html
+author: cyber.netsecops.io
+date: 2026-08-10
+tags:
+  - attack.t1505.003
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\web\locale\locale.php'
+  condition: selection

@@ -1,0 +1,111 @@
+title: High Volume of Failed Logins from Single IP
+id: 2b9e1f3a-7c4d-4b8a-9f0e-1d2c3b4a5e6f
+status: experimental
+description: Detects a high volume of failed login attempts from a single source IP address, which could indicate a password spraying attack against VPN or other authentication services.
+references:
+  - https://thehackernews.com/2026/08/us-sanctions-iran-linked-hackers-behind.html
+author: cyber.netsecops.io
+date: 2026-08-27
+tags:
+  - attack.t1110.003
+  - attack.initial_access
+level: medium
+logsource:
+  category: authentication
+  product: vpn
+detection:
+  selection:
+    action: 'failure'
+  condition: selection | count(user) by source_ip > 20
+---
+title: Microsoft Exchange OWA Exploit Attempt
+id: 8d7c6b5a-4f3e-4d2c-8b9a-0e1f2d3c4b5a
+status: experimental
+description: Detects web requests to /owa/auth/logon.aspx, which is a common target for exploitation by Iranian threat actors.
+references:
+  - https://thehackernews.com/2026/08/us-sanctions-iran-linked-hackers-behind.html
+author: cyber.netsecops.io
+date: 2026-08-27
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|contains: '/owa/auth/logon.aspx'
+  condition: selection
+---
+title: PowerShell Network Connection and Script Download
+id: 5a4b3c2d-1f0e-4b8a-9f7c-6d5e4f3a2b1c
+status: experimental
+description: Detects PowerShell executing commands to download remote scripts or payloads.
+references:
+  - https://thehackernews.com/2026/08/us-sanctions-iran-linked-hackers-behind.html
+author: cyber.netsecops.io
+date: 2026-08-27
+tags:
+  - attack.t1059.001
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    CommandLine|contains:
+      - 'DownloadString'
+      - 'DownloadFile'
+      - 'Net.WebClient'
+      - 'iwr '
+      - 'iex '
+  condition: selection
+---
+title: LSASS Memory Dumping with Procdump
+id: 1c2d3b4a-5e6f-4a9f-8e7d-6c5b4a3f2e1d
+status: experimental
+description: Detects the use of procdump.exe to dump the memory of the LSASS process, a common credential access technique.
+references:
+  - https://thehackernews.com/2026/08/us-sanctions-iran-linked-hackers-behind.html
+author: cyber.netsecops.io
+date: 2026-08-27
+tags:
+  - attack.t1003.001
+  - attack.credential_access
+level: critical
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\procdump.exe'
+    CommandLine|contains|all:
+      - '-ma'
+      - 'lsass.exe'
+  condition: selection
+---
+title: Suspicious RAR Archive Creation
+id: 9f8e7d6c-5b4a-4f3e-8d7c-6b5a4f3e2d1c
+status: experimental
+description: Detects the creation of large RAR archives on sensitive servers, which could be a precursor to data exfiltration.
+references:
+  - https://thehackernews.com/2026/08/us-sanctions-iran-linked-hackers-behind.html
+author: cyber.netsecops.io
+date: 2026-08-27
+tags:
+  - attack.t1560.001
+  - attack.collection
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\rar.exe'
+      - '\7z.exe'
+      - '\winrar.exe'
+    CommandLine|contains: ' a '
+  condition: selection

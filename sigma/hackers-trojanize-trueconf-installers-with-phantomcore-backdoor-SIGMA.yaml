@@ -1,0 +1,75 @@
+title: Suspicious Outbound Connection to OneDrive from Server
+id: f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects network connections from common server processes to Microsoft OneDrive, which may indicate the use of OneDrive for C2 by malware like PhantomGraph.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1102
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Initiated: true
+    DestinationHostname|contains:
+      - 'onedrive.live.com'
+      - '1drv.com'
+  filter_server_procs:
+    Image|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+      - '\nginx.exe'
+      - '\tomcat.exe'
+      - '\TrueConf-Server.exe'
+  condition: selection and filter_server_procs
+---
+title: Reverse SSH Tunnel Creation
+id: a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects the creation of a reverse SSH tunnel using the 'ssh -R' command, a technique used by malware like PhantomGraph to establish a persistent backdoor into a network.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1090.002
+  - attack.command_and_control
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\ssh.exe'
+    CommandLine|contains: ' -R '
+  condition: selection
+---
+title: Suspicious Child Process of TrueConf Web Server
+id: e3493958-7ef1-48f2-a278-9d7a13dbb795
+status: experimental
+description: Detects suspicious child processes (e.g., cmd.exe, powershell.exe) spawned by the TrueConf web server process (e.g., w3wp.exe), which could indicate web shell execution.
+references:
+  - https://www.bleepingcomputer.com/news/security/hackers-breach-trueconf-to-trojanize-client-installers-with-backdoors/
+author: cyber.netsecops.io
+date: 2026-08-08
+tags:
+  - attack.t1505.003
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '\w3wp.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\sh.exe'
+      - '\bash.exe'
+  condition: selection

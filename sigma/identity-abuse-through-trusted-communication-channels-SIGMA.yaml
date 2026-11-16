@@ -1,0 +1,81 @@
+title: Collaboration Tool Spawning Archive Utility
+id: 1e8d4c6a-0b3c-4e9a-8b1d-9c0a2f8b4d6e
+status: experimental
+description: Detects a collaboration tool like Microsoft Teams or Slack spawning an archive utility. This may indicate a user opening a malicious archive delivered via chat.
+references:
+  - https://unit42.paloaltonetworks.com/communication-channel-identity-risks/
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1204
+  - attack.t1105
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\Teams.exe'
+      - '\slack.exe'
+  selection_child:
+    Image|endswith:
+      - '\WinRAR.exe'
+      - '\7z.exe'
+      - '\WinZip.exe'
+  condition: all of selection_*
+---
+title: Collaboration Tool Spawning Script Interpreter
+id: 86a1c4b4-fefb-4e19-b769-9b0a3ea34837
+status: experimental
+description: Detects a collaboration tool like Microsoft Teams or Slack spawning a script interpreter, which is highly suspicious and could indicate code execution from a malicious file or link.
+references:
+  - https://unit42.paloaltonetworks.com/communication-channel-identity-risks/
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1059
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\Teams.exe'
+      - '\slack.exe'
+  selection_child:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\cmd.exe'
+      - '\cscript.exe'
+      - '\wscript.exe'
+  condition: all of selection_*
+---
+title: Malicious Side-Loading DLL lpk.dll File Creation
+id: 9c5b1a3d-8f7e-4b1c-9d5a-6f8b3a2c1d0e
+status: experimental
+description: Detects the creation of a file named lpk.dll, which is commonly used in DLL side-loading attacks, as observed in campaigns abusing collaboration tools.
+references:
+  - https://unit42.paloaltonetworks.com/communication-channel-identity-risks/
+author: cyber.netsecops.io
+date: 2026-08-20
+tags:
+  - attack.t1574.002
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\lpk.dll'
+  filter:
+    Image|endswith:
+      - '\csrss.exe'
+      - '\winlogon.exe'
+      - '\wininit.exe'
+    TargetFilename|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+  condition: selection and not filter
