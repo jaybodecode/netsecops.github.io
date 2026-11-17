@@ -15,6 +15,14 @@
   "severity": "high",
   "entities": [
     {
+      "name": "Anthropic",
+      "type": "company"
+    },
+    {
+      "name": "Claude Code",
+      "type": "product"
+    },
+    {
       "name": "Cursor",
       "type": "company"
     },
@@ -23,23 +31,12 @@
       "type": "company"
     },
     {
-      "name": "Uber",
-      "type": "company",
-      "url": "https://www.uber.com/"
-    },
-    {
       "name": "Notion",
-      "type": "company",
-      "url": "https://www.notion.so/"
+      "type": "company"
     },
     {
-      "name": "Anthropic",
-      "type": "company",
-      "url": "https://www.anthropic.com/"
-    },
-    {
-      "name": "Claude Code",
-      "type": "product"
+      "name": "Uber",
+      "type": "company"
     },
     {
       "name": "Visual Studio Code",
@@ -51,32 +48,36 @@
     {
       "url": "https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/",
       "title": "How a Single Stolen AI Provider Key Poisoned a Developer Marketplace: The Cursor–Fireworks AI Supply Chain Attack",
-      "friendly_name": "Aviatrix",
-      "website": "aviatrix.ai",
-      "x_url": "https://x.com/AviatrixInc"
+      "date": null,
+      "website": "aviatrix.ai"
     },
     {
       "url": "https://www.youtube.com/watch?v=MWv6OfJvSNc",
       "title": "Global Cybersecurity Briefing 2026-11-15 | Top 4 Security Stories",
-      "friendly_name": "YouTube",
+      "date": null,
       "website": "youtube.com"
     }
   ],
   "events": [
     {
-      "datetime": "2026-10-29T00:00:00Z",
-      "summary": "The trojanized Claude Code extension was served to users for approximately 11 hours."
-    },
-    {
       "datetime": "2026-10",
       "summary": "Attackers leverage stolen API key from Fireworks AI."
+    },
+    {
+      "datetime": "2026-10-29T00:00:00Z",
+      "summary": "The trojanized Claude Code extension was served to users for approximately 11 hours."
     }
   ],
   "mitre_techniques": [
     {
-      "id": "T1199",
-      "name": "Trusted Relationship",
-      "tactic": "Initial Access"
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "tactic": "Command and Control"
     },
     {
       "id": "T1195.001",
@@ -84,129 +85,73 @@
       "tactic": "Initial Access"
     },
     {
-      "id": "T1078",
-      "name": "Valid Accounts",
-      "tactic": "Defense Evasion"
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
     },
     {
       "id": "T1552.006",
       "name": "Stored Information",
       "tactic": "Credential Access"
-    },
-    {
-      "id": "T1105",
-      "name": "Ingress Tool Transfer",
-      "tactic": "Command and Control"
-    }
-  ],
-  "mitre_mitigations": [
-    {
-      "id": "M1026",
-      "name": "Privileged Account Management",
-      "description": "Strictly manage and rotate API keys and other credentials, treating them as privileged accounts.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1045",
-      "name": "Code Signing",
-      "description": "Enforce policies to only allow installation of digitally signed and verified software extensions.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1037",
-      "name": "Filter Network Traffic",
-      "description": "Implement egress filtering to block unauthorized outbound connections from developer workstations.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1048",
-      "name": "Application Isolation and Sandboxing",
-      "description": "Run development tools and their extensions in sandboxed environments to limit their access to the underlying system.",
-      "domain": "enterprise"
-    }
-  ],
-  "d3fend_countermeasures": [
-    {
-      "technique_id": "D3-OTF",
-      "technique_name": "Outbound Traffic Filtering",
-      "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering",
-      "recommendation": "To mitigate the impact of a compromised developer workstation, organizations must implement strict outbound traffic filtering. In the context of this attack, the SSH backdoor needed to connect to an external C2 server. A default-deny egress policy on developer endpoints would have blocked this connection. Security teams should configure perimeter firewalls and endpoint security solutions to block all outbound traffic by default, only allowing connections to known-good, business-required destinations on specific ports. For SSH, outbound access should be restricted to a corporate jump host or specific code repositories, not the open internet. This countermeasure effectively contains the threat by preventing the backdoor from establishing its C2 channel, rendering it useless.",
-      "mitre_mitigation_id": "M1037"
-    },
-    {
-      "technique_id": "D3-SBV",
-      "technique_name": "Service Binary Verification",
-      "url": "https://d3fend.mitre.org/technique/d3f:ServiceBinaryVerification",
-      "recommendation": "To prevent the execution of trojanized components, organizations should implement service binary verification for development tools and extensions. This involves creating a manifest of known-good file hashes for all approved VS Code extensions and their constituent files. An EDR or file integrity monitoring (FIM) solution on the developer workstation can then continuously compare the hashes of installed extension files against this manifest. Any mismatch would trigger an immediate alert, indicating that a file has been tampered with or replaced, as was the case with the Claude Code extension. This provides a high-fidelity detection method for software supply chain attacks where attackers modify legitimate software.",
-      "mitre_mitigation_id": "M1045"
-    },
-    {
-      "technique_id": "D3-LAM",
-      "technique_name": "Local Account Monitoring",
-      "url": "https://d3fend.mitre.org/technique/d3f:LocalAccountMonitoring",
-      "recommendation": "The SSH backdoor likely created or modified local user accounts or SSH authorized_keys files for persistence. Continuous monitoring of local account activity on developer workstations is a crucial detection strategy. Security teams should use an EDR or SIEM to monitor for and alert on the creation of new local user accounts, modifications to the `~/.ssh/authorized_keys` file, or changes to SSH daemon configurations (`sshd_config`). Establishing a baseline of normal account configurations and user SSH keys allows for the rapid detection of anomalies that could indicate an attacker establishing a persistent foothold.",
-      "mitre_mitigation_id": "M1026"
-    }
-  ],
-  "iocs": [],
-  "cyber_observables": [
-    {
-      "type": "process_name",
-      "value": "ssh",
-      "description": "Suspicious SSH processes spawned as a child of the VS Code process ('Code.exe' or 'code').",
-      "context": "EDR logs or process creation events (Windows Event ID 4688, Linux auditd).",
-      "confidence": "high"
-    },
-    {
-      "type": "network_traffic_pattern",
-      "value": "Outbound TCP connections on port 22 from developer workstations to unknown internet IPs.",
-      "description": "Potential C2 communication channel for the SSH backdoor.",
-      "context": "Firewall logs, proxy logs, or NetFlow analysis.",
-      "confidence": "high"
-    },
-    {
-      "type": "file_path",
-      "value": ".vscode/extensions/anthropic.claude-code-2.1.312/",
-      "description": "Directory containing the malicious version of the Claude Code extension.",
-      "context": "File system scanning or asset inventory tools on developer endpoints.",
-      "confidence": "high"
-    },
-    {
-      "type": "file_path",
-      "value": ".vscode/extensions/anthropic.claude-code-2.1.313/",
-      "description": "Directory containing the malicious version of the Claude Code extension.",
-      "context": "File system scanning or asset inventory tools on developer endpoints.",
-      "confidence": "high"
     }
   ],
   "tags": [
-    "supply chain attack",
+    "API key",
+    "Cursor",
+    "Fireworks AI",
     "VS Code",
-    "malware",
     "backdoor",
     "developer tools",
-    "API key",
-    "Fireworks AI",
-    "Cursor"
+    "malware",
+    "supply chain attack"
   ],
-  "extract_datetime": "2026-11-15T15:00:00.000Z",
+  "extract_datetime": "2026-11-15",
   "article_type": "NewsArticle",
   "impact_scope": {
     "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Manufacturing"
+    ],
     "companies_affected": [
       "Cursor",
       "Fireworks AI",
       "Uber",
       "Notion"
     ],
-    "industries_affected": [
-      "Technology",
-      "Manufacturing"
-    ],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [],
     "people_affected_estimate": "5,000 developers"
   },
+  "keywords": [
+    "API key",
+    "Cursor",
+    "Fireworks AI",
+    "VS Code",
+    "backdoor",
+    "developer tools",
+    "malware",
+    "supply chain attack"
+  ],
   "pub_date": "2026-11-15",
-  "reading_time_minutes": 6,
+  "reading_time_minutes": null,
   "createdAt": "2026-11-15T15:00:00.000Z",
-  "updatedAt": "2026-11-15T15:00:00.000Z"
+  "updatedAt": "2026-11-17T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-11-17T12:00:00Z",
+      "summary": "New details on Cursor attack: Fireworks AI breached twice, specific key stolen, privilege escalation path clarified. Uninstalling extension may not be enough.",
+      "content": "Further investigation into the Cursor supply chain attack reveals that Fireworks AI was compromised twice in October, leading to the theft of a specific Cursor access key. Attackers used this key to access a read-only Cursor storage bucket, where they found additional unredacted credentials, enabling privilege escalation within Cursor's environment. It was also clarified that Anthropic was not directly hacked, and Cursor has advised that simply uninstalling the malicious extension may not be sufficient for full remediation, indicating potential persistence.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://www.securityweek.com/cursor-supply-chain-attack-started-at-fireworks/",
+          "title": "Cursor Hit by Supply-Chain Attack via Fireworks AI Hack",
+          "website": "",
+          "date": "2026-11-17T12:00:00Z"
+        }
+      ]
+    }
+  ]
 }

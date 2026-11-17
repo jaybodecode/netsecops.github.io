@@ -1,6 +1,6 @@
 # Ransomware Gangs Qilin and Barracuda Claim New Corporate Victims
 
-**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-11-01 | **Reading time:** 5 min
+**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-11-17
 
 The ransomware landscape remains highly active, with the Qilin and Barracuda groups claiming new victims on November 1, 2026. The Qilin gang, one of 2026's most prolific groups, added U.S.-based company Danser to its list of victims. Meanwhile, the Barracuda ransomware group announced it had breached EVINOKS, a Turkish technology and manufacturing firm. Barracuda threatened to release the stolen data from EVINOKS for free on its dark web leak site. These incidents are part of a broader surge in ransomware attacks, which saw a 45% increase in the first half of 2026, with the manufacturing sector being the most frequent target.
 
@@ -65,12 +65,12 @@ To detect ransomware activity early, security teams should hunt for:
 3.  **Multi-Factor Authentication (MFA):** Enforce MFA on all remote access services (VPNs, RDP), email accounts, and privileged accounts to prevent credential-based attacks.
 4.  **User Training:** Train users to identify and report phishing emails, which remain a primary initial access vector for ransomware.
 
-**Tags:** Ransomware, Qilin, Barracuda, Data Breach, Manufacturing
+**Tags:** Barracuda, Data Breach, Manufacturing, Qilin, Ransomware
 
 ## Sources
-- [Ransomware Group Qilin hits Danser](https://www.hookphish.com/blog/ransomware-group-qilin-hits-danser/) — HookPhish (2026-11-01)
-- [Ransomware Group Barracuda hits EVINOKS](https://www.hookphish.com/blog/ransomware-group-barracuda-hits-evinoks/) — HookPhish (2026-11-01)
-- [Ransomware in the Age of AI: How Defenders Can Break the Attack Chain](https://www.cybersecurity-insiders.com/ransomware-in-the-age-of-ai-how-defenders-can-break-the-attack-chain/) — Cybersecurity Insiders (2026-11-01)
+- [Ransomware Group Qilin hits Danser](https://www.hookphish.com/blog/ransomware-group-qilin-hits-danser/) (2026-11-01)
+- [Ransomware Group Barracuda hits EVINOKS](https://www.hookphish.com/blog/ransomware-group-barracuda-hits-evinoks/) (2026-11-01)
+- [Ransomware in the Age of AI: How Defenders Can Break the Attack Chain](https://www.cybersecurity-insiders.com/ransomware-in-the-age-of-ai-how-defenders-can-break-the-attack-chain/) (2026-11-01)
 
 ---
 Source: https://cyber.netsecops.io/articles/ransomware-gangs-qilin-and-barracuda-claim-new-victims/

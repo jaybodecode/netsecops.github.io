@@ -1,6 +1,6 @@
 # Stolen AI Key at Fireworks AI Triggers Supply Chain Attack on Cursor
 
-**Severity:** high | **Category:** Supply Chain Attack,Malware,Data Breach | **Updated:** 2026-11-15 | **Reading time:** 6 min
+**Severity:** high | **Category:** Supply Chain Attack,Malware,Data Breach | **Updated:** 2026-11-17
 
 A sophisticated supply chain attack began with a stolen API key from AI provider Fireworks AI, allowing attackers to breach developer tool company Cursor. The threat actors then injected a trojanized version of the popular 'Claude Code' VS Code extension into Cursor's marketplace. For 11 hours, approximately 5,000 developers downloaded the malicious extension, which installed a persistent SSH backdoor on their systems, highlighting the cascading risks in AI-powered development workflows.
 
@@ -74,11 +74,11 @@ Security teams may want to hunt for the following patterns to detect related act
 3.  **Code and Extension Signing**: Where possible, enforce policies that only allow the installation of properly signed and verified VS Code extensions. This is a form of [`M1045 - Code Signing`](https://attack.mitre.org/mitigations/M1045/).
 4.  **Developer Endpoint Hardening**: Developer workstations should be treated as privileged access workstations. Apply endpoint hardening policies, limit administrative rights, and use application control to restrict the execution of unauthorized software.
 
-**Tags:** supply chain attack, VS Code, malware, backdoor, developer tools, API key, Fireworks AI, Cursor
+**Tags:** API key, Cursor, Fireworks AI, VS Code, backdoor, developer tools, malware, supply chain attack
 
 ## Sources
-- [How a Single Stolen AI Provider Key Poisoned a Developer Marketplace: The Cursor–Fireworks AI Supply Chain Attack](https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/) — Aviatrix
-- [Global Cybersecurity Briefing 2026-11-15 | Top 4 Security Stories](https://www.youtube.com/watch?v=MWv6OfJvSNc) — YouTube
+- [How a Single Stolen AI Provider Key Poisoned a Developer Marketplace: The Cursor–Fireworks AI Supply Chain Attack](https://aviatrix.ai/threat-research-center/stolen-fireworks-ai-key-cursor-trojanized-claude-code-extension-2026/)
+- [Global Cybersecurity Briefing 2026-11-15 | Top 4 Security Stories](https://www.youtube.com/watch?v=MWv6OfJvSNc)
 
 ---
 Source: https://cyber.netsecops.io/articles/stolen-ai-key-leads-to-trojanized-vs-code-extension-supply-chain-attack/

@@ -1,0 +1,110 @@
+title: Suspicious Child Process of Web Server
+id: f1a2b3c4-d5e6-4a7b-8c9d-e0f1a2b3c4d5
+status: experimental
+description: Detects web server processes (w3wp.exe, httpd.exe) spawning command-line interpreters, which may indicate web shell execution or exploitation.
+references:
+  - https://unit42.paloaltonetworks.com/custom-rats-target-southeast-asia-governments/
+author: cyber.netsecops.io
+date: 2026-11-17
+tags:
+  - attack.t1505.003
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+  condition: all of selection_*
+---
+title: Anomalous Outbound QUIC from Server
+id: aabbccdd-eeff-4001-9234-567890123456
+status: experimental
+description: Detects outbound UDP traffic on port 443 (QUIC) from servers that are not expected to be QUIC clients, such as web or database servers. This may indicate C2 communication using HTTP/3 as seen with PerfectPioneer and KUKURAT.
+references:
+  - https://unit42.paloaltonetworks.com/custom-rats-target-southeast-asia-governments/
+author: cyber.netsecops.io
+date: 2026-11-17
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationPort: 443
+    Protocol: 'udp'
+    Initiated: true
+  filter_client:
+    Image|endswith:
+      - '\chrome.exe'
+      - '\msedge.exe'
+      - '\firefox.exe'
+  filter_server_procs:
+    Image|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+      - '\sqlservr.exe'
+      - '\dns.exe'
+  condition: selection and filter_server_procs and not filter_client
+---
+title: Web Server Reconnaissance Commands
+id: 9c5bb7d3-d1b9-43c4-bcc2-89ee38564edb
+status: experimental
+description: Detects web server processes executing common reconnaissance commands, which could indicate post-exploitation activity by groups like TGR-STA-0049.
+references:
+  - https://unit42.paloaltonetworks.com/custom-rats-target-southeast-asia-governments/
+author: cyber.netsecops.io
+date: 2026-11-17
+tags:
+  - attack.t1033
+  - attack.t1016
+  - attack.t1087
+  - attack.discovery
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+  selection_child:
+    Image|endswith:
+      - '\whoami.exe'
+      - '\ipconfig.exe'
+      - '\net.exe'
+      - '\net1.exe'
+  condition: all of selection_*
+---
+title: TGR-STA-0049 Web Shell Filenames
+id: 11223344-5566-4778-899a-abbccddeeff0
+status: experimental
+description: Detects the presence of web shell files with names used by the TGR-STA-0049 group, such as Bysunue.aspx and Suo5.
+references:
+  - https://unit42.paloaltonetworks.com/custom-rats-target-southeast-asia-governments/
+author: cyber.netsecops.io
+date: 2026-11-17
+tags:
+  - attack.t1505.003
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '\Bysunue.aspx'
+      - '\Suo5'
+  condition: selection
