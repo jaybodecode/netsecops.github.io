@@ -1,0 +1,166 @@
+{
+  "id": "779e2ec4-085b-4a71-afd4-69c5ddae7bc4",
+  "slug": "uchealth-data-breach-affects-129000-patients-triggers-lawsuit",
+  "headline": "UCHealth Breach Affects 129,000 Patients, Triggers Class-Action Lawsuit",
+  "title": "UCHealth Notifies 129,000 of Data Breach from Cloud Account Hack",
+  "summary": "Colorado-based UCHealth is notifying approximately 129,000 individuals that their personal and health information was exposed in a data breach discovered in July 2026. The incident involved unauthorized access to two employee Microsoft cloud accounts. Exposed data could include names, Social Security numbers, and health information. Following the disclosure, a class-action lawsuit was filed against UCHealth on November 18, 2026, alleging failure to protect patient data and criticizing the nearly four-month delay in notifying victims, which may violate HIPAA's 60-day notification rule.",
+  "full_report": "## Executive Summary\n**[UCHealth](https://www.uchealth.org/)** (University of Colorado Health) is in the process of notifying approximately 129,000 patients of a data breach that resulted from the compromise of two employee **[Microsoft](https://www.microsoft.com/en-us/security)** cloud accounts. The healthcare provider discovered the unauthorized access on July 27, 2026. The breach exposed a range of patient data, including names, Social Security numbers, driver's license numbers, and protected health information (PHI). In response to the disclosure, a proposed class-action lawsuit was filed, citing UCHealth's failure to secure patient data and the significant delay in notification, which at nearly four months, appears to exceed the 60-day window mandated by the **[HIPAA](https://en.wikipedia.org/wiki/Health_Insurance_Portability_and_Accountability_Act)** Breach Notification Rule.\n\n---\n\n## Threat Overview\nThe incident was an account takeover attack where an unauthorized third party gained access to two employee email or cloud service accounts within UCHealth's Microsoft cloud environment. The breach was discovered internally on July 27, 2026. While UCHealth stated that its primary electronic health record (EHR) system was not accessed, the attackers were able to access files stored within the compromised cloud accounts. \n\nThe scope of exposed data varies per individual but potentially includes a highly sensitive mix of Personally Identifiable Information (PII) and Protected Health Information (PHI):\n- Full Names\n- Social Security numbers\n- Driver's license numbers\n- Health and billing information\n\nThe delay in public notification is a significant aspect of this incident. The breach was discovered in late July, but notification letters were not sent until mid-November. This delay is a central claim in the subsequent class-action lawsuit, which alleges negligence and violations of federal regulations.\n\n---\n\n## Technical Analysis\nThe root cause of the breach was the compromise of employee credentials for Microsoft cloud services, likely Microsoft 365. This could have occurred through various methods, such as a phishing attack, password spraying, or the reuse of credentials stolen from another breach. Once the attacker had access, they were able to search for and exfiltrate files containing sensitive patient data stored in the employees' accounts (e.g., in OneDrive or SharePoint).\n\nThis attack pattern highlights a common vulnerability in enterprise environments: the decentralized and often poorly governed storage of sensitive data in individual user cloud accounts. Even if the core EHR system is secure, data extracts, reports, and spreadsheets saved by employees can create a shadow IT problem and a rich target for attackers.\n\n### Analyst-Assessed MITRE ATT&CK Techniques\n- **Initial Access**: Likely [`T1566 - Phishing`](https://attack.mitre.org/techniques/T1566/) or [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/) (using previously stolen credentials).\n- **Defense Evasion**: [`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/). By using legitimate credentials, the attacker's initial activity may have blended in with normal user behavior.\n- **Discovery**: [`T1530 - Data from Cloud Storage Object`](https://attack.mitre.org/techniques/T1530/) and [`T1119 - Automated Collection`](https://attack.mitre.org/techniques/T1119/). The attacker likely searched the compromised accounts for files containing keywords like 'patient', 'SSN', or 'billing'.\n- **Collection**: The attacker collected sensitive files from the employees' cloud storage.\n- **Exfiltration**: [`T1567.002 - Exfiltration to Cloud Storage`](https://attack.mitre.org/techniques/T1567/002/). Data may have been exfiltrated by downloading it directly or transferring it to an attacker-controlled cloud account.\n\n---\n\n## Impact Assessment\nThe impact on the 129,000 affected individuals is severe, placing them at high risk for identity theft, financial fraud, and targeted medical scams. The exposure of Social Security numbers is particularly damaging. For UCHealth, the consequences are multifaceted. The organization faces significant legal liability from the class-action lawsuit and potential regulatory fines from the U.S. Department of Health and Human Services (HHS) for HIPAA violations, especially concerning the notification delay. The breach also causes substantial reputational damage, eroding patient trust in the healthcare provider's ability to protect their most sensitive information.\n\n---\n\n## IOCs — Directly from Articles\nNo specific Indicators of Compromise (IOCs) were mentioned in the source articles.\n\n---\n\n## Cyber Observables — Hunting Hints\nTo detect similar cloud account takeovers, security teams should hunt for:\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| `log_source` | Microsoft 365 Unified Audit Log | Look for impossible travel alerts, logins from suspicious IP addresses or anonymizing services (VPNs, Tor), and unusual mailbox rule creation. |\n| `api_endpoint` | `FileDownloaded` | Monitor for high-volume or unusual `FileDownloaded` events in cloud audit logs, especially for users who do not typically perform bulk downloads. |\n| `command_line_pattern` | `Set-Mailbox -ForwardingSmtpAddress` | In Exchange Online audit logs, look for the creation of new email forwarding rules, a common attacker technique to maintain persistence and monitor communications. |\n| `other` | Mass file sharing events | An attacker might change permissions on a large number of files or folders to 'public' or share them with an external account to facilitate exfiltration. |\n\n---\n\n## Detection & Response\n### Detection\n- **Cloud Access Security Broker (CASB)**: Deploy a CASB to monitor and analyze user activity within cloud applications like Microsoft 365. This can help baseline normal behavior and detect anomalies indicative of a compromise.\n- **Impossible Travel Alerts**: Configure and monitor impossible travel alerts in your identity provider (e.g., Azure AD). A single account logging in from geographically distant locations in a short time is a strong indicator of a compromise.\n- **D3FEND**: Utilize [`D3-UGLPA: User Geolocation Logon Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:UserGeolocationLogonPatternAnalysis) to automatically detect and alert on suspicious login patterns.\n\n### Response\n- **Account Lockdown**: Upon detecting a compromise, immediately force a password reset, revoke all active sessions for the user, and temporarily disable the account to evict the attacker.\n- **Audit Log Review**: Forensically analyze the user's activity in the unified audit log to determine the scope of the breach: what files were accessed, modified, or downloaded.\n- **Timely Notification**: Adhere to all regulatory and legal requirements for breach notification. Delays can increase legal liability and regulatory penalties, as seen in this case.\n\n---\n\n## Mitigation\n### Strategic Mitigation\n- **Data Governance**: Implement strong data governance policies and technical controls to prevent the storage of sensitive data (PII/PHI) in unsecured locations like individual user cloud drives. Use DLP tools to discover and quarantine sensitive data found outside of approved repositories.\n- **Zero Trust Architecture**: Adopt a zero-trust mindset. Assume that any account can be compromised and require re-authentication and verification for access to sensitive resources.\n- **D3FEND**: Implement [`D3-SPP: Strong Password Policy`](https://d3fend.mitre.org/technique/d3f:StrongPasswordPolicy) and [`D3-MFA: Multi-factor Authentication`](https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication) as foundational security controls.\n\n### Tactical Mitigation\n- **Enforce MFA**: Mandate the use of phishing-resistant **[MFA](https://www.cisa.gov/mfa)** for all accounts, especially those with access to cloud services. This is the single most effective control against credential-based account takeovers.\n- **User Training**: Continuously train employees to recognize and report phishing attempts. This remains a critical layer of defense against initial access.\n- **Limit Session Timeouts**: Configure shorter session timeouts for cloud applications to reduce the window of opportunity for an attacker using a stolen session token.",
+  "twitter_post": "UCHealth notifies 129,000 patients of a data breach after two employee Microsoft cloud accounts were hacked. Exposed data includes SSNs & health info. A class-action lawsuit has been filed, citing a 4-month notification delay. #DataBreach #HIPAA",
+  "meta_description": "UCHealth is notifying 129,000 patients of a data breach stemming from compromised Microsoft cloud accounts, exposing PII and PHI and leading to a class-action lawsuit.",
+  "category": [
+    "Data Breach",
+    "Cloud Security",
+    "Regulatory"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "UCHealth",
+      "type": "company",
+      "url": "https://www.uchealth.org/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/"
+    },
+    {
+      "name": "Microsoft Cloud",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://openclassactions.com/news/data-breaches/uchealth-data-breach.php",
+      "title": "UCHealth Data Breach",
+      "friendly_name": "Open Class Actions",
+      "website": "openclassactions.com"
+    },
+    {
+      "url": "https://www.emeryreddy.com/blog/data-breach/uchealth-data-breach",
+      "title": "UCHealth Data Breach",
+      "friendly_name": "Emery Reddy",
+      "website": "emeryreddy.com"
+    },
+    {
+      "url": "https://www.globenewswire.com/news-release/2026/11/13/3402924/0/en/uchealth-notifies-individuals-of-data-security-incident.html",
+      "title": "UCHealth Notifies Individuals of Data Security Incident",
+      "friendly_name": "GlobeNewswire",
+      "website": "globenewswire.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-27T00:00:00Z",
+      "summary": "UCHealth discovers unauthorized access to two employee cloud accounts."
+    },
+    {
+      "datetime": "2026-11-13T00:00:00Z",
+      "summary": "UCHealth publicly posts a notice about the data security incident."
+    },
+    {
+      "datetime": "2026-11-18T00:00:00Z",
+      "summary": "A proposed class-action lawsuit is filed against UCHealth in federal court."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1566",
+      "name": "Phishing",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1530",
+      "name": "Data from Cloud Storage Object",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "description": "Enforcing MFA is the most effective control to prevent account takeovers resulting from compromised credentials.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Training users to identify and report phishing attempts can prevent the initial credential compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Robust logging and monitoring of cloud account activity are essential for detecting suspicious behavior.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Implementing Data Loss Prevention (DLP) policies to prevent sensitive data from being stored in user cloud drives is a key preventative measure.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Microsoft 365 Unified Audit Log",
+      "description": "Primary source for investigating cloud account compromises. Events like 'FileAccessed', 'FileDownloaded', and 'Add-MailboxPermission' are critical.",
+      "context": "SIEM, Microsoft Purview",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "Azure AD Risky Sign-ins",
+      "description": "Azure Active Directory's risk detection engine can flag suspicious sign-ins, such as those from anonymous IP addresses or indicating impossible travel.",
+      "context": "Azure Portal, SIEM integration",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "New-InboxRule",
+      "description": "Attackers often create inbox rules in compromised mailboxes to hide their tracks (e.g., delete security alerts) or forward sensitive emails.",
+      "context": "Exchange Online audit logs",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "UCHealth",
+    "Data Breach",
+    "Healthcare",
+    "HIPAA",
+    "Cloud Security",
+    "Microsoft 365",
+    "Class Action Lawsuit",
+    "PII",
+    "PHI"
+  ],
+  "extract_datetime": "2026-11-19T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Healthcare"
+    ],
+    "people_affected_estimate": "129,000"
+  },
+  "pub_date": "2026-11-19",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-11-19T15:00:00.000Z",
+  "updatedAt": "2026-11-19T15:00:00.000Z"
+}

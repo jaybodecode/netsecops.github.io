@@ -1,11 +1,11 @@
 # N0N Extortion Group Claims Breach of 830M Expedia Loyalty Records
 
-**Severity:** high | **Category:** Data Breach,Threat Actor,Ransomware | **Updated:** 2026-11-09 | **Reading time:** 5 min
+**Severity:** high | **Category:** Data Breach,Threat Actor,Ransomware | **Updated:** 2026-11-19
 
 The data extortion group N0N has listed Expedia Group on its dark web leak site, claiming to have exfiltrated 830 million records from the company's loyalty program. The group alleges the data includes customer emails, loyalty IDs, and booking values. However, as of November 9, 2026, N0N has not provided any proof to substantiate its claims. Expedia Group has not issued a public statement or filed a material incident report regarding the alleged data exposure. Security analysts advise caution, as such claims are sometimes exaggerated or fabricated.
 
 ## Executive Summary
-The data extortion group **N0N** has publicly claimed on its dark web leak site to have breached **Expedia Group**, a global travel technology company. The group alleges it has obtained 800 files containing 830 million rows of data from Expedia's loyalty program. The claim, posted on November 9, 2026, describes the incident as a "data exposure" rather than a ransomware encryption event. At present, the claim is entirely unverified, as **N0N** has not released any sample data or proof. **Expedia Group** has remained silent on the matter, and no official confirmation of a breach exists. Organizations should treat this as a potential threat and monitor for further intelligence, but avoid taking drastic action based on uncorroborated information.
+The data extortion group **[N0N](null)** has publicly claimed on its dark web leak site to have breached **[Expedia Group](null)**, a global travel technology company. The group alleges it has obtained 800 files containing 830 million rows of data from Expedia's loyalty program. The claim, posted on November 9, 2026, describes the incident as a "data exposure" rather than a ransomware encryption event. At present, the claim is entirely unverified, as **N0N** has not released any sample data or proof. **Expedia Group** has remained silent on the matter, and no official confirmation of a breach exists. Organizations should treat this as a potential threat and monitor for further intelligence, but avoid taking drastic action based on uncorroborated information.
 
 ## Threat Overview
 On November 9, 2026, the **N0N** data extortion group added **Expedia Group** to its list of victims. The group's post specified the theft of 830 million records related to the company's customer loyalty program. The allegedly compromised data includes sensitive customer details such as email addresses, loyalty member IDs, points balances, membership tiers, and booking values. The post was reportedly marked "not paid, exposed," indicating a shift from encryption-for-ransom to pure data theft and extortion.
@@ -44,10 +44,10 @@ While the breach is unconfirmed, organizations can use this event as a catalyst 
 - **Insider Threat Program**: A robust insider threat program can help detect anomalous data access by legitimate accounts that may have been compromised.
 - **Incident Response Plan**: Review and update the incident response plan to specifically address data extortion scenarios, including communication strategies for unverified claims.
 
-**Tags:** data extortion, leak site, unverified claim, travel industry, loyalty program
+**Tags:** data extortion, leak site, loyalty program, travel industry, unverified claim
 
 ## Sources
-- [cypro.co.uk](https://cypro.co.uk/insights/cyber-bulletins/expedia-ransomware-claim-n0n-provides-no-proof/) — Cypro
+- [cypro.co.uk](https://cypro.co.uk/insights/cyber-bulletins/expedia-ransomware-claim-n0n-provides-no-proof/)
 
 ---
 Source: https://cyber.netsecops.io/articles/n0n-extortion-group-claims-expedia-data-breach-without-proof/
