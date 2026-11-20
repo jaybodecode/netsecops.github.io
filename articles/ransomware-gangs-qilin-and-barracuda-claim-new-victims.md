@@ -1,6 +1,6 @@
 # Ransomware Gangs Qilin and Barracuda Claim New Corporate Victims
 
-**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-11-17
+**Severity:** high | **Category:** Ransomware,Threat Actor,Cyberattack | **Updated:** 2026-11-20
 
 The ransomware landscape remains highly active, with the Qilin and Barracuda groups claiming new victims on November 1, 2026. The Qilin gang, one of 2026's most prolific groups, added U.S.-based company Danser to its list of victims. Meanwhile, the Barracuda ransomware group announced it had breached EVINOKS, a Turkish technology and manufacturing firm. Barracuda threatened to release the stolen data from EVINOKS for free on its dark web leak site. These incidents are part of a broader surge in ransomware attacks, which saw a 45% increase in the first half of 2026, with the manufacturing sector being the most frequent target.
 

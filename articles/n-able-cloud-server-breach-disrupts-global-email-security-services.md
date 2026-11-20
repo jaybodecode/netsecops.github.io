@@ -1,6 +1,6 @@
 # N-able Confirms Server Breach Caused Email Security Service Outage
 
-**Severity:** high | **Category:** Cyberattack,Data Breach,Cloud Security | **Updated:** 2026-11-19 | **Reading time:** 6 min
+**Severity:** high | **Category:** Cyberattack,Data Breach,Cloud Security | **Updated:** 2026-11-20
 
 N-able has confirmed a security incident involving unauthorized access to a server supporting its Mail Assure and SpamExperts hosted cloud platforms. The breach, which began on November 16, 2026, led to a multi-day service disruption across the Americas, Europe, and APAC. As a precaution, N-able disabled management interfaces, APIs, and quarantine access. While core email filtering remained operational, administrators were unable to manage the services. An investigation is ongoing to determine the attack vector and full impact, though N-able has stated there is currently no evidence of customer data compromise. This incident is reportedly separate from a recent vulnerability in its N-central RMM product.
 
@@ -86,13 +86,13 @@ While the breach was internal to N-able, customers can take steps to mitigate th
 - **Enable MFA Everywhere**: Ensure multi-factor authentication is enforced on all administrative accounts for third-party services, including the N-able portal itself once it is restored.
 - **Credential Rotation**: Once access is restored, immediately rotate all passwords and API keys associated with the N-able services as a precautionary measure.
 
-**Tags:** N-able, Mail Assure, SpamExperts, Service Disruption, Cloud Security, MSP, Email Security
+**Tags:** Cloud Security, Email Security, MSP, Mail Assure, N-able, Service Disruption, SpamExperts
 
 ## Sources
-- [N-able Confirms Hackers Accessed Cloud Server That Powers Its Email Security Tools](https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html) — The Hacker News
-- [N-able Confirms Server Breach Behind Recent Multi-Day Outage](https://cybersecuritynews.com/n-able-confirms-server-breach/) — Cybersecurity News
-- [N-able Mail Assure and SpamExperts Cloud Incident: What We Know](https://brandefense.io/security-news/nable-mail-assure-spamexperts-cloud-incident/) — Brandefense
-- [All regions - Mail Assure - Service Disruption](https://uptime.n-able.com/event/202672/) — N-able
+- [N-able Confirms Hackers Accessed Cloud Server That Powers Its Email Security Tools](https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html)
+- [N-able Confirms Server Breach Behind Recent Multi-Day Outage](https://cybersecuritynews.com/n-able-confirms-server-breach/)
+- [N-able Mail Assure and SpamExperts Cloud Incident: What We Know](https://brandefense.io/security-news/nable-mail-assure-spamexperts-cloud-incident/)
+- [All regions - Mail Assure - Service Disruption](https://uptime.n-able.com/event/202672/)
 
 ---
 Source: https://cyber.netsecops.io/articles/n-able-cloud-server-breach-disrupts-global-email-security-services/

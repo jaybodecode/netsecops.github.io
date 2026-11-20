@@ -15,20 +15,19 @@
   "severity": "high",
   "entities": [
     {
-      "name": "N-able",
-      "type": "vendor",
-      "url": "https://www.n-able.com/"
-    },
-    {
       "name": "Mail Assure",
       "type": "product"
     },
     {
-      "name": "SpamExperts",
-      "type": "product"
+      "name": "N-able",
+      "type": "vendor"
     },
     {
       "name": "N-central",
+      "type": "product"
+    },
+    {
+      "name": "SpamExperts",
       "type": "product"
     }
   ],
@@ -37,25 +36,25 @@
     {
       "url": "https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html",
       "title": "N-able Confirms Hackers Accessed Cloud Server That Powers Its Email Security Tools",
-      "friendly_name": "The Hacker News",
+      "date": null,
       "website": "thehackernews.com"
     },
     {
       "url": "https://cybersecuritynews.com/n-able-confirms-server-breach/",
       "title": "N-able Confirms Server Breach Behind Recent Multi-Day Outage",
-      "friendly_name": "Cybersecurity News",
+      "date": null,
       "website": "cybersecuritynews.com"
     },
     {
       "url": "https://brandefense.io/security-news/nable-mail-assure-spamexperts-cloud-incident/",
       "title": "N-able Mail Assure and SpamExperts Cloud Incident: What We Know",
-      "friendly_name": "Brandefense",
+      "date": null,
       "website": "brandefense.io"
     },
     {
       "url": "https://uptime.n-able.com/event/202672/",
       "title": "All regions - Mail Assure - Service Disruption",
-      "friendly_name": "N-able",
+      "date": null,
       "website": "uptime.n-able.com"
     }
   ],
@@ -71,13 +70,13 @@
   ],
   "mitre_techniques": [
     {
-      "id": "T1190",
-      "name": "Exploit Public-Facing Application",
+      "id": "T1078",
+      "name": "Valid Accounts",
       "tactic": "Initial Access"
     },
     {
-      "id": "T1078",
-      "name": "Valid Accounts",
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
       "tactic": "Initial Access"
     },
     {
@@ -91,106 +90,80 @@
       "tactic": "Collection"
     }
   ],
-  "mitre_mitigations": [
-    {
-      "id": "M1051",
-      "name": "Update Software",
-      "description": "Ensuring all public-facing applications and underlying server software are patched is critical to prevent exploitation.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1032",
-      "name": "Multi-factor Authentication",
-      "description": "Enforcing MFA on all administrative accounts would prevent unauthorized access via stolen credentials.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1030",
-      "name": "Network Segmentation",
-      "description": "Properly segmenting management planes from data planes can limit the impact of a breach, as seen by core filtering remaining active.",
-      "domain": "enterprise"
-    },
-    {
-      "id": "M1047",
-      "name": "Audit",
-      "description": "Comprehensive logging of administrative actions, logins, and network traffic is essential for detecting and investigating unauthorized access.",
-      "domain": "enterprise"
-    }
-  ],
-  "d3fend_countermeasures": [
-    {
-      "technique_id": "D3-MFA",
-      "technique_name": "Multi-factor Authentication",
-      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
-      "recommendation": "For a service provider like N-able, enforcing hardware-based MFA (FIDO2/WebAuthn) for all administrative access to the production cloud environment is paramount. This technique would have likely prevented a credential-based takeover of the management server. Implementation should prioritize privileged accounts with access to the control plane and management interfaces of the Mail Assure and SpamExperts infrastructure. This defense directly counters the `T1078 - Valid Accounts` technique, making it significantly harder for an attacker to gain initial access even if they manage to acquire a password. This should be a non-negotiable standard for any accounts that can alter system configurations or access customer data.",
-      "mitre_mitigation_id": "M1032"
-    },
-    {
-      "technique_id": "D3-NI",
-      "technique_name": "Network Isolation",
-      "url": "https://d3fend.mitre.org/technique/d3f:NetworkIsolation",
-      "recommendation": "The fact that core email filtering continued to operate suggests some level of network segmentation was in place. To further enhance this, N-able should ensure strict network isolation between the management plane and the data plane. The compromised management server should have had no network path to access or exfiltrate data from the mail processing pipeline or tenant mail storage. Implementing granular firewall rules and network security groups that deny all traffic by default and only allow specific, required communication paths would limit an attacker's ability to pivot or cause wider impact. This D3FEND technique directly supports the `M1030 - Network Segmentation` mitigation and is crucial for building resilient multi-tenant cloud services.",
-      "mitre_mitigation_id": "M1030"
-    },
-    {
-      "technique_id": "D3-ITF",
-      "technique_name": "Inbound Traffic Filtering",
-      "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering",
-      "recommendation": "Access to the management interfaces of the Mail Assure and SpamExperts cloud infrastructure should be heavily restricted using inbound traffic filtering. Administrative portals should not be exposed directly to the public internet. Instead, access should be limited to specific corporate IP address ranges or require connection through a bastion host or VPN with strong authentication. This would drastically reduce the attack surface available for exploiting a public-facing application (`T1190`) or conducting brute-force attacks. Implementing a Web Application Firewall (WAF) in front of these interfaces could also provide an additional layer of protection by filtering out common web attack patterns.",
-      "mitre_mitigation_id": "M1037"
-    }
-  ],
-  "iocs": [],
-  "cyber_observables": [
-    {
-      "type": "url_pattern",
-      "value": "/ControlPanel/Login",
-      "description": "Common login path for SpamExperts/Mail Assure control panels. Monitoring access logs for brute-force attempts or logins from unusual IPs can be an indicator of compromise.",
-      "context": "Web server access logs, SIEM",
-      "confidence": "medium"
-    },
-    {
-      "type": "log_source",
-      "value": "uptime.n-able.com",
-      "description": "Official status page for N-able services. Monitoring this source provides early warning of service disruptions that may be security-related.",
-      "context": "Service monitoring tools, RSS feeds",
-      "confidence": "high"
-    },
-    {
-      "type": "network_traffic_pattern",
-      "value": "Anomalous egress traffic from mail gateway management IPs",
-      "description": "Unexpected data flows from the management plane of a security service to the internet could indicate data exfiltration by an attacker.",
-      "context": "Firewall logs, NetFlow data",
-      "confidence": "medium"
-    }
-  ],
   "tags": [
-    "N-able",
-    "Mail Assure",
-    "SpamExperts",
-    "Service Disruption",
     "Cloud Security",
+    "Email Security",
     "MSP",
-    "Email Security"
+    "Mail Assure",
+    "N-able",
+    "Service Disruption",
+    "SpamExperts"
   ],
-  "extract_datetime": "2026-11-19T15:00:00.000Z",
+  "extract_datetime": "2026-11-19",
+  "article_type": "NewsArticle",
   "impact_scope": {
     "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
     "countries_affected": [
       "Americas",
       "Europe",
       "Asia-Pacific"
     ],
-    "industries_affected": [
-      "Technology",
-      "Other"
-    ],
     "other_affected": [
       "Managed Service Providers (MSP)"
-    ]
+    ],
+    "people_affected_estimate": null
   },
+  "keywords": [
+    "Cloud Security",
+    "Email Security",
+    "MSP",
+    "Mail Assure",
+    "N-able",
+    "Service Disruption",
+    "SpamExperts"
+  ],
   "pub_date": "2026-11-19",
-  "reading_time_minutes": 6,
+  "reading_time_minutes": null,
   "createdAt": "2026-11-19T15:00:00.000Z",
-  "updatedAt": "2026-11-19T15:00:00.000Z"
+  "updatedAt": "2026-11-20T12:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-11-20T12:00:00Z",
+      "summary": "N-able confirms cyberattack on single web server, details response including credential rotation and token invalidation.",
+      "content": "N-able has confirmed the service disruption was caused by a cyberattack involving unauthorized access to a single web server in their hosted cloud environment. In response, N-able took the compromised server offline and initiated a comprehensive credential reset. This included rotating internal platform credentials, revoking customer API tokens, invalidating OAuth tokens, and resetting local user passwords. The company also noted that the threat actor may have accessed certain credentials stored on the platform. Core email filtering services remained operational, and there is still no evidence of customer data or mailbox compromise.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://www.bleepingcomputer.com/news/microsoft/n-able-says-recent-security-breach-led-to-major-service-outage/",
+          "title": "N-able says recent security breach led to major service outage",
+          "website": "",
+          "date": "2026-11-20T12:00:00Z"
+        },
+        {
+          "url": "https://www.securityweek.com/n-able-blames-service-disruption-on-cyberattack/",
+          "title": "N-able Blames Service Disruption on Cyberattack",
+          "website": "",
+          "date": "2026-11-20T12:00:00Z"
+        },
+        {
+          "url": "https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html",
+          "title": "N-able Confirms Hackers Accessed Cloud Server in Recent Security Breach",
+          "website": "",
+          "date": "2026-11-20T12:00:00Z"
+        },
+        {
+          "url": "https://cybersecurityjournal.ca/trends/85365-n-able-mail-assure-spamexperts-breach-2026-11-19/",
+          "title": "N-able Mail Assure/SpamExperts Breach",
+          "website": "",
+          "date": "2026-11-20T12:00:00Z"
+        }
+      ]
+    }
+  ]
 }
