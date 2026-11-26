@@ -1,0 +1,89 @@
+title: ROADtools Default User-Agent
+id: 9b1c7f8c-1a2b-4c3d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects the default User-Agent string 'roadlib/*' used by the ROADtools framework. While this can be changed by an attacker, its presence is a strong indicator of the tool's usage.
+references:
+  - https://unit42.paloaltonetworks.com/roadtools-cloud-attacks/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1071.001
+  - attack.t1098.005
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-useragent|startswith: 'roadlib/'
+  condition: selection
+---
+title: Anomalous Entra ID Device Registration
+id: 2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a
+status: experimental
+description: Detects device registration events in Microsoft Entra ID, which could indicate malicious use of tools like ROADtools to establish persistence and bypass MFA. Focus on events initiated by non-administrative users or from unusual locations.
+references:
+  - https://unit42.paloaltonetworks.com/roadtools-cloud-attacks/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1098.005
+  - attack.persistence
+level: medium
+logsource:
+  product: m365
+  service: audit.azuread
+detection:
+  selection:
+    Operation|contains:
+      - 'Add registered owner to device'
+      - 'Add registered users to device'
+  filter_admin:
+    Actor.user.roles:
+      - 'Global Administrator'
+      - 'Cloud Device Administrator'
+  condition: selection and not filter_admin
+---
+title: ROADtools Script Execution on Endpoint
+id: 7c8d9e0f-1a2b-4c3d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects the command-line execution of ROADtools scripts 'roadtx.py' and 'roadrecon.py'. This is a high-fidelity indicator of the tool's use on an endpoint.
+references:
+  - https://unit42.paloaltonetworks.com/roadtools-cloud-attacks/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1059.006
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - 'python roadtx.py'
+      - 'python roadrecon.py'
+      - 'roadtx.py'
+      - 'roadrecon.py'
+  condition: selection
+---
+title: Anomalous Azure DRS Token Request
+id: 3e4f5a6b-7c8d-4e9f-0a1b-2c3d4e5f6a7b
+status: experimental
+description: Detects anomalous OAuth token requests for the Azure Device Registration Service (DRS) endpoint. This can indicate an attacker using a tool like ROADtools to register a rogue device.
+references:
+  - https://unit42.paloaltonetworks.com/roadtools-cloud-attacks/
+author: cyber.netsecops.io
+date: 2026-05-22
+tags:
+  - attack.t1098.005
+  - attack.persistence
+level: medium
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    resourceDisplayName: 'Windows Azure Active Directory'
+    resourceId: 'urn:ms-drs:enterpriseregistration.windows.net'
+  condition: selection

@@ -1,0 +1,213 @@
+{
+  "id": "11136ca6-8737-4740-b49f-b4f1ef71bb83",
+  "slug": "microsoft-details-cloud-destruction-tactics-of-jadepuffer-ransomware-group",
+  "headline": "Microsoft Details Destructive Cloud Tactics of JADEPUFFER",
+  "title": "Microsoft Details JADEPUFFER's Destructive Azure Attacks",
+  "summary": "Microsoft has detailed a destructive cloud campaign in Microsoft Azure by the threat actor Storm-3168 (JADEPUFFER). This 'agentic ransomware' group used compromised service principals for automated attacks. After a 15-hour reconnaissance phase, the actor executed a destructive phase lasting just seven minutes, deleting storage accounts, an Azure Key Vault, and attempting to wipe recovery backups. The attack highlights a shift towards highly automated, rapid-destruction cloud attacks that aim to cripple victims and prevent recovery.",
+  "full_report": "## Executive Summary\n**[Microsoft](https://www.microsoft.com/security)** Security Research has released a detailed analysis of a highly destructive cloud attack campaign targeting **[Microsoft Azure](https://azure.microsoft.com/)** environments. The campaign is attributed to **Storm-3168**, a threat actor also known as **JADEPUFFER**, which has been described as the first \"agentic ransomware\" group due to its use of automation. The attack leveraged compromised Azure service principals to conduct rapid, automated reconnaissance and destruction. In a destructive phase lasting only seven minutes, the actor wiped numerous cloud resources, including storage accounts and an Azure Key Vault, and critically, attempted to delete Azure backups to prevent recovery. This incident signifies a dangerous evolution in cloud attacks, where automated scripts can cause catastrophic damage in minutes, leaving little time for human-led intervention.\n\n---\n\n## Threat Overview\nThe threat actor, **Storm-3168**/**JADEPUFFER**, gained initial access by compromising at least two service principals within a single Azure tenant. **Microsoft** notes one of these may have been compromised via credentials accidentally exposed in a public **[GitHub](https://github.com)** issue. This highlights the critical risk of secret leakage in public code repositories.\n\nThe attack proceeded in two distinct phases:\n1.  **Reconnaissance (15 hours):** Using a compromised identity, the actor performed over 300 successful read operations. This slow, low-profile activity was designed to map the victim's entire cloud environment, enumerating virtual machines, subscriptions, resource groups, and storage accounts ([`T1526 - Cloud Service Discovery`](https://attack.mitre.org/techniques/T1526/)).\n2.  **Destruction (7 minutes):** The attack then switched to a high-speed, automated destructive phase. In just seven minutes, the attacker used scripted commands to issue over 100 deletion requests for storage accounts, successfully deleting most of them. They also deleted an Azure Key Vault, a Function App, and an App Service plan. This rapid deletion of resources is a form of [`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/).\n\nCrucially, the attackers' actions aligned with a ransomware objective. They specifically targeted and attempted to delete Azure Site Recovery locks and Azure Backup protection ([`T1561 - Disk Wipe`](https://attack.mitre.org/techniques/T1561/)). This shows a clear intent to not only destroy data but also to eliminate the victim's ability to recover, thereby increasing leverage for a ransom demand.\n\n## Technical Analysis\nThe attack's effectiveness stemmed from the abuse of legitimate, high-privilege cloud identities—service principals.\n\n**Key TTPs:**\n-   **Initial Access:** The attack began with [`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/), specifically compromised service principals. This is a shift from user-centric attacks to machine-identity-centric attacks.\n-   **Automated Reconnaissance:** The long reconnaissance phase using read-only operations was likely scripted to avoid detection thresholds while building a complete picture of the target environment.\n-   **Automated Destruction:** The speed and parallelism of the destructive phase (100+ deletion attempts in 7 minutes) strongly indicate the use of an automated script or tool—an \"agentic\" attack. The script likely iterated through the list of resources gathered during reconnaissance and issued deletion commands for each.\n-   **Impairing Defenses:** The targeting of Azure Key Vault ([`T1552.005 - Cloud-based Password Stores`](https://attack.mitre.org/techniques/T1552/005/)) and Azure Backup protection demonstrates a sophisticated understanding of cloud environments and a focus on maximizing damage and preventing recovery.\n\n**MITRE ATT&CK Techniques Observed:**\n- [`T1078.004 - Cloud Accounts`](https://attack.mitre.org/techniques/T1078/004/)\n- [`T1526 - Cloud Service Discovery`](https://attack.mitre.org/techniques/T1526/)\n- [`T1485 - Data Destruction`](https://attack.mitre.org/techniques/T1485/)\n- [`T1561 - Disk Wipe`](https://attack.mitre.org/techniques/T1561/)\n- [`T1552.005 - Cloud-based Password Stores`](https://attack.mitre.org/techniques/T1552/005/)\n- [`T1114.002 - Remote Data Staging`](https://attack.mitre.org/techniques/T1114/002/) (implied by retrieving storage account keys)\n\n## Impact Assessment\nThe impact of such an attack is catastrophic and immediate. The destruction of primary storage accounts and backups can lead to irreversible data loss and prolonged business outage. For a cloud-native organization, this is an extinction-level event. The speed of the attack makes manual response nearly impossible. By the time an alert is triaged, the damage is already done. This incident serves as a stark warning for all organizations using public cloud services: the security of machine identities (like service principals) is as critical, if not more so, than the security of user identities. The financial and reputational damage from such an attack would be immense.\n\n## IOCs — Directly from Articles\nNo specific IOCs were provided in the public reports.\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns which could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| log_source | `Azure Activity Logs` | Monitor for service principals performing an unusually high number of read operations across different resource types (VMs, storage, networking). |\n| command_line_pattern | `az storage account delete` | Look for rapid, successive deletion commands for critical resources, especially when initiated by a service principal. |\n| api_endpoint | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | Monitor for API calls attempting to delete or disable backup protection. This is a highly malicious indicator. |\n| event_id | `Get Storage Account Keys` | An alert should be triggered when a service principal, especially one not associated with a secrets management role, retrieves storage account keys. |\n\n## Detection & Response\n- **Identity-Based Anomaly Detection:** Implement user and entity behavior analytics (UEBA) for cloud identities. Baseline the normal activity of service principals and alert on deviations, such as a dormant account becoming active or an application identity suddenly performing broad reconnaissance. This aligns with D3FEND's [`D3-RAPA - Resource Access Pattern Analysis`](https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis).\n- **Automated Response:** The speed of this attack necessitates automated responses. For example, an alert for a service principal attempting to delete a backup could automatically trigger a temporary suspension of that identity's permissions pending review.\n- **Log Monitoring:** Ingest Azure Activity Logs, Azure AD sign-in logs, and other cloud logs into a SIEM. Create high-severity alerts for deletion events on critical resources (storage accounts, databases, backups, key vaults).\n\n## Mitigation\n1.  **Secure Service Principals:** Treat service principals like privileged user accounts. Apply the principle of least privilege, granting them only the specific permissions needed for their function. Regularly audit their permissions. This aligns with D3FEND's [`D3-UAP - User Account Permissions`](https://d3fend.mitre.org/technique/d3f:UserAccountPermissions).\n2.  **Implement MFA for Service Principals:** Where possible, use certificate-based authentication for service principals instead of client secrets, as secrets are more easily leaked. Use Azure AD Conditional Access policies to restrict their use to trusted locations.\n3.  **Protect Backups:** Use Azure's built-in features like resource locks (`CanNotDelete`) and soft delete for backups and critical resources. This can prevent accidental or malicious deletion and provide a recovery window.\n4.  **Secrets Management:** Do not hardcode credentials or secrets in code. Use a secure secrets management solution like Azure Key Vault and scan code repositories for exposed secrets.",
+  "twitter_post": "Microsoft details a destructive Azure attack by JADEPUFFER (Storm-3168). The 'agentic' ransomware actor used compromised service principals to wipe cloud resources, including backups, in just 7 minutes. #CloudSecurity #Azure #Ransomware",
+  "meta_description": "Microsoft details a destructive, automated cloud attack in Azure by the JADEPUFFER (Storm-3168) group, which used compromised service principals.",
+  "category": [
+    "Cloud Security",
+    "Ransomware",
+    "Threat Actor"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Storm-3168",
+      "type": "threat_actor"
+    },
+    {
+      "name": "JADEPUFFER",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Microsoft Azure",
+      "type": "product",
+      "url": "https://azure.microsoft.com/"
+    },
+    {
+      "name": "Sysdig",
+      "type": "company"
+    },
+    {
+      "name": "GitHub",
+      "type": "product",
+      "url": "https://github.com"
+    },
+    {
+      "name": "Azure Key Vault",
+      "type": "product"
+    },
+    {
+      "name": "Azure Site Recovery",
+      "type": "product"
+    },
+    {
+      "name": "Azure Backup",
+      "type": "product"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/09/25/storm-3168-agentic-driven-cloud-attacks-using-compromised-service-principals/",
+      "title": "Storm-3168: Agentic-driven cloud attacks using compromised service principals",
+      "date": "2026-09-25",
+      "friendly_name": "Microsoft Security",
+      "website": "microsoft.com"
+    },
+    {
+      "url": "https://gbhackers.com/storm-3168-hackers-abuse-compromised-service-principals/amp/",
+      "title": "Microsoft Uncovers Destructive Azure Campaign by Abusing Service Principals",
+      "date": "2026-09-26",
+      "friendly_name": "GBHackers on Security"
+    },
+    {
+      "url": "https://cyberpress.org/storm-3168-uses-compromised-service-principals/",
+      "title": "Storm-3168 Uses Compromised Service Principals",
+      "friendly_name": "Cyberpress"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-07-01",
+      "summary": "Sysdig first documents JADEPUFFER as an 'agentic ransomware' operation (approximate date)."
+    },
+    {
+      "datetime": "2026-09-25",
+      "summary": "Microsoft publishes its detailed analysis of Storm-3168's destructive Azure campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1078.004",
+      "name": "Cloud Accounts"
+    },
+    {
+      "id": "T1526",
+      "name": "Cloud Service Discovery"
+    },
+    {
+      "id": "T1485",
+      "name": "Data Destruction"
+    },
+    {
+      "id": "T1561",
+      "name": "Disk Wipe"
+    },
+    {
+      "id": "T1552.005",
+      "name": "Cloud-based Password Stores"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1026",
+      "name": "Privileged Account Management",
+      "description": "Apply strict lifecycle and permissions management to service principals, treating them as highly privileged accounts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "description": "Harden Azure AD by implementing least-privilege access for service principals and using Conditional Access policies to restrict their usage.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Implement comprehensive auditing of Azure Activity Logs and Azure AD sign-in logs to detect anomalous behavior from service principals.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1053",
+      "name": "Data Backup",
+      "description": "Use immutable storage for backups and resource locks to prevent malicious or accidental deletion of recovery data.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-UAP",
+      "technique_name": "User Account Permissions",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserAccountPermissions",
+      "recommendation": "The core of this attack was the abuse of over-privileged service principals. The most critical countermeasure is to enforce the principle of least privilege on all non-human identities in Azure. Do not grant service principals broad roles like 'Contributor' or 'Owner' at the subscription level. Instead, assign them custom roles with the absolute minimum permissions required for their specific task, scoped to a specific resource or resource group. For example, if a service principal only needs to write to a single storage account, its role should only contain the `Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write` permission for that specific resource. Regularly audit these permissions using Azure PIM (Privileged Identity Management) or third-party Cloud Security Posture Management (CSPM) tools. This granular control dramatically limits the blast radius if a service principal's credential is compromised.",
+      "mitre_mitigation_id": "M1018"
+    },
+    {
+      "technique_id": "D3-RAPA",
+      "technique_name": "Resource Access Pattern Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ResourceAccessPatternAnalysis",
+      "recommendation": "The attacker's behavior had two distinct phases: slow reconnaissance and rapid destruction. Both can be detected with robust behavioral analytics. Configure your cloud security tools (like Microsoft Defender for Cloud or a UEBA solution) to baseline the normal behavior of each service principal. An alert should be triggered if a service principal that is normally dormant or has a very narrow activity pattern suddenly begins performing hundreds of read operations across the entire environment. This is the reconnaissance phase. For the destruction phase, create high-severity, non-suppressible alerts for any deletion attempts on critical resource types (e.g., `Microsoft.Storage/storageAccounts/delete`, `Microsoft.RecoveryServices/vaults/delete`). Chaining these alerts—reconnaissance followed by deletion from the same identity—should trigger an automated response, such as disabling the account.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-DE",
+      "technique_name": "Decoy Environment",
+      "url": "https://d3fend.mitre.org/technique/d3f:DecoyEnvironment",
+      "recommendation": "To detect the reconnaissance phase earlier, seed your environment with decoy resources and identities. Create a decoy service principal with a name like `prod-backup-admin-spn` and credentials that are placed in a plausible but monitored location (e.g., a 'private' but misconfigured GitHub repo or a developer's Confluence page). This decoy identity should have no actual permissions but should be heavily monitored. Any attempt to use this credential is a high-fidelity indicator of an attacker in your environment. Similarly, create decoy storage accounts or key vaults named `legacy-financials-do-not-touch`. Any access to these decoy resources provides an early warning that an attacker is enumerating your assets, giving you time to respond before they reach your real production systems.",
+      "mitre_mitigation_id": "M1056"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Azure Activity Logs",
+      "description": "The primary source for detecting this attack. Monitor for anomalous patterns of 'Read' operations followed by a burst of 'Delete' or 'Write' operations from a single identity.",
+      "context": "Azure Monitor, Microsoft Sentinel, or any SIEM ingesting Azure logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "Microsoft.Storage/storageAccounts/delete",
+      "description": "API call to delete a storage account. A high volume of these calls in a short period is a major red flag.",
+      "context": "Azure Activity Logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "api_endpoint",
+      "value": "Microsoft.RecoveryServices/vaults/backupPolicies/delete",
+      "description": "API call to delete a backup policy. This is a key indicator of an attacker attempting to impair defenses and prevent recovery.",
+      "context": "Azure Activity Logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "Get-AzAccessToken -ResourceUrl",
+      "description": "PowerShell command used to get tokens. An attacker might use this as part of a script to authenticate and carry out actions.",
+      "context": "PowerShell logging on administrative workstations or servers.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "Agentic Ransomware",
+    "Cloud Attack",
+    "Service Principal",
+    "Data Destruction",
+    "Azure"
+  ],
+  "extract_datetime": "2026-09-26T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Other"
+    ],
+    "other_affected": [
+      "Microsoft Azure customers"
+    ]
+  },
+  "pub_date": "2026-09-26",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-09-26T15:00:00.000Z",
+  "updatedAt": "2026-09-26T15:00:00.000Z"
+}

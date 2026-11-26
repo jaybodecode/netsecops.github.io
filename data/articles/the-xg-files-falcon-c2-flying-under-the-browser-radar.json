@@ -1,0 +1,213 @@
+{
+  "id": "7d85232b-8bdb-4a85-a3a6-ca44c44f452f",
+  "slug": "the-xg-files-falcon-c2-flying-under-the-browser-radar",
+  "headline": "Falcon C2 Framework Compromises Browsers to Target Governments",
+  "title": "Falcon C2: Browser-Based Framework Targets Governments",
+  "summary": "Unit 42 has identified a browser-based command and control (C2) framework named Falcon (also known as XG or Xiàng Gē). The threat actor leverages this framework to compromise government webmail portals and applications by injecting malicious JavaScript. Operating entirely within the browser, Falcon can sideload malicious Chrome extensions and exfiltrate sensitive information. The campaign, observed between March and May 2026, targeted government ministries in the Middle East and Southeast Asia. The framework also serves as a delivery mechanism for a secondary implant called Antino, which uses Microsoft OneDrive for C2 communications. Analysis reveals a high-confidence link between Falcon and the PeckBirdy framework previously reported by Trend Micro.",
+  "full_report": "## Executive Summary\n\nResearchers from **[Palo Alto Networks](https://www.paloaltonetworks.com)**' **[Unit 42](https://unit42.paloaltonetworks.com/)** have uncovered a sophisticated, browser-based command and control (C2) framework dubbed **[Falcon](https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/)** (also known as XG or Xiàng Gē). This threat is designed for strategic intelligence collection, primarily targeting government entities. By injecting malicious JavaScript into legitimate government web applications and webmail portals, attackers gain a persistent foothold directly within the victim's browser. This allows for the theft of sensitive information and the deployment of additional malware.\n\nObserved campaigns between March and May 2026 impacted ministries of foreign affairs, defense, and interior, as well as law enforcement agencies in one Middle Eastern and four Southeast Asian countries. The **Falcon** framework also delivers a secondary implant known as **[Antino](https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/)**, which utilizes **[Microsoft](https://www.microsoft.com/security)** **[OneDrive](https://www.microsoft.com/en-us/microsoft-365/onedrive/online-cloud-storage)** for its C2 communications. Technical analysis indicates with high confidence that **Falcon** is a variant of the **[PeckBirdy](https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/)** framework, previously detailed by **[Trend Micro](https://www.trendmicro.com)**, based on extensive overlaps in URL structure, payload delivery, and communication protocols. The framework's stealthy design, which includes hidden management panels and encrypted communication channels, underscores the operator's focus on operational security (OPSEC).\n\n---\n\n## Threat Overview\n\n**Falcon** represents a significant evolution in in-browser threats, moving beyond simple data skimming to a full-fledged C2 framework. The primary attack vector involves compromising legitimate websites, such as government webmail portals, and injecting malicious JavaScript. When a user visits the compromised site, their browser executes the script, establishing a connection to the **Falcon** C2 server.\n\nThe framework operates entirely in the browser context, making it difficult to detect with traditional endpoint security solutions that focus on filesystem and process activity. Its main objectives are data exfiltration and payload delivery. In the observed campaigns, the threat actor targeted government bodies to achieve strategic intelligence collection goals. The geographic focus on the Middle East and Southeast Asia suggests a nation-state-aligned threat actor with specific regional interests.\n\nThe delivery of the **Antino** implant marks a second stage of the attack, moving from browser-based compromise to a more persistent presence on the host system. The use of a legitimate cloud service like **OneDrive** for C2 helps this secondary payload blend in with normal network traffic, complicating detection efforts.\n\n---\n\n## Technical Analysis\n\nThe **Falcon** framework demonstrates a strong emphasis on stealth and evasion. Its components are designed to avoid detection by both automated security tools and casual human inspection.\n\n### C2 Management Panel OPSEC\n\nThe actor protects the C2 management panel with several OPSEC measures:\n1.  **Hidden Interface**: The panel's URL (`TCP/8080`) initially displays a blank page.\n2.  **Anti-Analysis**: The page disables the right-click context menu to deter inspection.\n3.  **Keystroke Trigger**: The login form is only revealed after the `F9` key is pressed three consecutive times. Any other keypress resets the counter.\n\nThis multi-layered approach effectively hides the login interface from web scanners and bots.\n\n### Implant Generation and Obfuscation\n\nWhen a victim visits a compromised site, the **Falcon** server dynamically generates a unique JavaScript implant. This implant is created by combining two files, `victim_common.js` (configuration) and `victim.js` (core functions). The combined script is then obfuscated using a simple XOR cipher with a one-byte key, with the output converted to a list of integers. This per-session obfuscation helps evade signature-based detection.\n\n### Persistence Mechanisms\n\nThe implant establishes persistence within the browser session using a three-tiered strategy to store a 32-character session ID:\n1.  **`storageApi`**: A dictionary within the malicious **[Chrome](https://www.google.com/chrome/)** browser extension, if installed.\n2.  **`localStorage`**: The primary method for persistent storage across browser sessions.\n3.  **`sessionStorage`**: For storage within a single session.\n4.  **Cookies**: As a final fallback.\n\nThe session ID is notably stored using a key named `Baidu-Fid`, mimicking a legitimate service from **[Baidu](https://www.baidu.com)** to evade suspicion. This technique is identical to that used by the **PeckBirdy** framework.\n\n### C2 Communication\n\n**Falcon** primarily uses a TLS-encrypted WebSocket for persistent C2 communication, sending a `{\"heartbeat\":\"1\"}` message every minute. All data exchanged over the WebSocket is further encrypted using AES via the browser's native Web Crypto API. The key exchange is secured with RSA, where the server provides its public key and the client generates and sends an AES session key encrypted with it.\n\nIf WebSockets or the Web Crypto API are unavailable, the implant falls back to an unencrypted Comet-based protocol and uses Base64 encoding. This layered communication approach ensures resilience across different browser environments.\n\n### MITRE ATT&CK Techniques\n\n| Tactic | Technique ID | Name | Description |\n|---|---|---|---|\n| Initial Access | [`T1189`](https://attack.mitre.org/techniques/T1189/) | Drive-by Compromise | Malicious JavaScript is placed on legitimate government websites, infecting visitors. |\n| Execution | [`T1059.007`](https://attack.mitre.org/techniques/T1059/007/) | Command and Scripting Interpreter: JavaScript | The core of the framework relies on executing malicious JavaScript within the victim's browser. |\n| Persistence | [`T1564.006`](https://attack.mitre.org/techniques/T1564/006/) | Hide Artifacts: Web Session Cookie | The implant uses `localStorage`, `sessionStorage`, and cookies to maintain a persistent session identifier. |\n| Defense Evasion | [`T1140`](https://attack.mitre.org/techniques/T1140/) | Deobfuscate/Decode Files or Information | The implant decodes itself at runtime from a XOR-encoded integer array. |\n| Defense Evasion | [`T1027`](https://attack.mitre.org/techniques/T1027/) | Obfuscated Files or Information | The JavaScript implant is dynamically obfuscated per session to evade signature-based detection. |\n| Command and Control | [`T1071.001`](https://attack.mitre.org/techniques/T1071/001/) | Application Layer Protocol: Web Protocols | C2 communication is established over WebSockets and a fallback Comet protocol. |\n| Command and Control | [`T1573.002`](https://attack.mitre.org/techniques/T1573/002/) | Encrypted Channel: Asymmetric Cryptography | RSA is used to securely exchange the AES session key for C2 communications. |\n| Command and Control | [`T1573.001`](https://attack.mitre.org/techniques/T1573/001/) | Encrypted Channel: Symmetric Cryptography | AES is used to encrypt all data exchanged over the WebSocket C2 channel. |\n\n---\n\n## Impact Assessment\n\nThe primary impact of the **Falcon** framework is strategic espionage against government targets. By compromising sensitive web portals, the threat actor can intercept communications, steal credentials, and access confidential documents processed through these applications. The targeted entities—ministries of foreign affairs, defense, and interior—are high-value intelligence sources, indicating that the campaign's objective is likely nation-state level intelligence gathering rather than financial gain.\n\nThe compromise of these organizations could lead to significant national security risks, including the exposure of diplomatic communications, military plans, and law enforcement data. The ability to sideload malicious browser extensions creates a highly persistent and powerful surveillance platform within the target's environment. Furthermore, the deployment of the **Antino** implant escalates the threat from a browser-level compromise to a system-level intrusion, providing the actor with a deeper foothold for lateral movement and further data exfiltration.\n\n---\n\n## IOCs — Directly from Articles\n\nNo specific file hashes, IP addresses, or domains were provided in the source article.\n\n---\n\n## Cyber Observables — Hunting Hints\n\nSecurity teams may want to hunt for the following patterns which could indicate related activity:\n\n| Type | Value | Description |\n|---|---|---|\n| Cookie Name | `Baidu-Fid` | The implant uses this name for its session ID stored in cookies or `localStorage`. |\n| Local Storage Key | `Baidu-Fid` | The implant uses this name for its session ID stored in cookies or `localStorage`. |\n| JavaScript Event | `contextmenu` | The C2 panel disables the right-click menu. Malicious scripts may use similar code to hinder analysis. |\n| Keyboard Event | `F9` | The C2 panel listens for three consecutive `F9` key presses. While specific, monitoring for unusual keyboard listeners in web applications could be a valuable hunting technique. |\n| Network Protocol | `WebSocket` | Monitor for persistent WebSocket connections originating from sensitive internal web applications to external IP addresses. |\n| URL Path | `/config/` | This path prefix was noted as a differentiator between **Falcon** and **PeckBirdy**. |\n\n---\n\n## Detection & Response\n\nDetecting **Falcon** requires a focus on network traffic analysis and browser-level activity.\n\n1.  **Network Monitoring**: Monitor for anomalous WebSocket connections originating from browsers, especially from pages that do not typically use them. Egress filtering and traffic analysis can help spot connections to suspicious endpoints. Pay close attention to traffic from sensitive web applications to external IP addresses. The use of **[D3FEND Network Traffic Analysis (D3-NTA)](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)** is critical.\n\n2.  **Web Proxy and DNS Logs**: Analyze proxy logs for unusual GET requests that could be part of the fallback Comet C2 protocol. While the report does not mention specific domains, hunting for newly registered or low-reputation domains being accessed from government web portals is a sound strategy.\n\n3.  **Endpoint and Browser Security**: Deploy browser security solutions that can control JavaScript execution and detect the hooking of events like `contextmenu` or keyboard inputs. Enterprise browser security management tools can enforce policies to prevent the installation of unauthorized extensions.\n\n4.  **Incident Response**: If a compromise is suspected, incident response teams should focus on capturing browser artifacts, including `localStorage`, `sessionStorage`, cookies, and cache, to identify the `Baidu-Fid` session identifier or other malicious scripts. Network captures should be analyzed for the described RSA/AES handshake over WebSockets.\n\n---\n\n## Mitigation\n\nDefending against threats like **Falcon** requires a multi-layered approach that combines web security, network controls, and user awareness.\n\n1.  **Web Application Firewall (WAF)**: Organizations hosting web applications should deploy a WAF to detect and block attempts to inject malicious JavaScript into their sites. This is a primary defense against the initial compromise vector.\n\n2.  **Software Updates**: Ensure all browsers and their extensions are kept up-to-date. Applying patches promptly reduces the attack surface available to threat actors. This aligns with **[D3FEND Software Update (D3-SU)](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.\n\n3.  **Network Segmentation and Egress Filtering**: Implement network segmentation to prevent a compromised browser from accessing sensitive internal resources. Use outbound traffic filtering to block connections to known malicious or uncategorized domains and IP addresses. This is a key implementation of **[D3FEND Outbound Traffic Filtering (D3-OTF)](https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering)**.\n\n4.  **Browser Hardening**: Use browser security policies to restrict the installation of unapproved extensions. Configure browsers to disable or limit the execution of JavaScript from untrusted sources where possible. This corresponds to **[D3FEND Application Configuration Hardening (D3-ACH)](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)**.\n\n5.  **User Training**: While **Falcon**'s initial vector is a compromised website, training users to be aware of and report unusual browser behavior (e.g., unexpected pop-ups, slow performance) can provide early warnings.",
+  "twitter_post": "Unit 42 uncovers Falcon C2, a browser-based framework targeting governments in the Middle East & SE Asia. It uses malicious JS, sideloads extensions, and delivers the Antino implant via OneDrive C2. #FalconC2 #ThreatIntel #CyberSecurity",
+  "meta_description": "Unit 42 analysis of Falcon (XG), a browser-based C2 framework used to compromise government web portals and exfiltrate data via malicious JavaScript and browser extensions.",
+  "category": [
+    "Malware",
+    "Threat Actor",
+    "Threat Intelligence"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Antino",
+      "type": "malware"
+    },
+    {
+      "name": "Baidu",
+      "type": "company"
+    },
+    {
+      "name": "Chrome",
+      "type": "product"
+    },
+    {
+      "name": "Falcon",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor"
+    },
+    {
+      "name": "OneDrive",
+      "type": "product"
+    },
+    {
+      "name": "Palo Alto Networks",
+      "type": "vendor"
+    },
+    {
+      "name": "PeckBirdy",
+      "type": "malware"
+    },
+    {
+      "name": "Trend Micro",
+      "type": "security_organization"
+    },
+    {
+      "name": "Unit 42",
+      "type": "security_organization"
+    },
+    {
+      "name": "XG",
+      "type": "malware"
+    },
+    {
+      "name": "Xiàng Gē",
+      "type": "malware"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+      "title": "The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+      "date": "2026-11-11",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-01",
+      "summary": "Trend Micro published a report on the PeckBirdy scripting framework, which shares significant overlaps with Falcon."
+    },
+    {
+      "datetime": "2026-03",
+      "summary": "Falcon C2 campaigns targeting government entities in the Middle East and Southeast Asia began."
+    },
+    {
+      "datetime": "2026-05",
+      "summary": "Observed Falcon C2 campaigns concluded."
+    },
+    {
+      "datetime": "2026-11-11T15:00:23Z",
+      "summary": "Unit 42 published its research on the Falcon C2 framework."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1059.007",
+      "name": "Command and Scripting Interpreter: JavaScript",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1173",
+      "name": "Dynamic-Link Library Sideloading",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1189",
+      "name": "Drive-by Compromise",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1564.006",
+      "name": "Hide Artifacts: Web Session Cookie",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1573.001",
+      "name": "Encrypted Channel: Symmetric Cryptography",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1573.002",
+      "name": "Encrypted Channel: Asymmetric Cryptography",
+      "tactic": "Command and Control"
+    }
+  ],
+  "tags": [
+    "Antino",
+    "Browser-based C2",
+    "Cyber Espionage",
+    "Drive-by Compromise",
+    "Falcon C2",
+    "Government Targeting",
+    "JavaScript Malware",
+    "PeckBirdy",
+    "Threat Intelligence",
+    "WebSockets"
+  ],
+  "extract_datetime": "2026-11-12",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "regional",
+    "industries_affected": [
+      "Government",
+      "Defense"
+    ],
+    "companies_affected": [],
+    "governments_affected": [],
+    "countries_affected": [],
+    "other_affected": [
+      "law enforcement agencies"
+    ],
+    "people_affected_estimate": null
+  },
+  "keywords": [
+    "Antino",
+    "Browser-based C2",
+    "Cyber Espionage",
+    "Drive-by Compromise",
+    "Falcon C2",
+    "Government Targeting",
+    "JavaScript Malware",
+    "PeckBirdy",
+    "Threat Intelligence",
+    "WebSockets"
+  ],
+  "pub_date": "2026-11-12",
+  "reading_time_minutes": 24,
+  "createdAt": "2026-11-12T15:00:00.000Z",
+  "updatedAt": "2026-11-14T00:00:00Z",
+  "updates": [
+    {
+      "datetime": "2026-11-14T00:00:00Z",
+      "summary": "New details emerge on Falcon C2, specifying Roundcube webmail compromise, Rust-based Antino backdoor, and additional payload delivery methods.",
+      "content": "Further analysis of the Falcon C2 framework reveals specific targeting of Roundcube webmail servers through JavaScript injection. The secondary Antino implant is identified as Rust-based, utilizing Microsoft OneDrive for C2. Attackers also used malicious Chrome/Firefox 'PDF Viewer' extensions and fake Adobe Flash Player updates for payload delivery. New MITRE ATT&CK techniques like T1528 (Steal Application Access Token) and T1114.002 (Email Collection) are associated with the campaign, alongside enhanced detection strategies including File Integrity Monitoring and Content Security Policy.",
+      "severity_change": "unchanged",
+      "sources": [
+        {
+          "url": "https://securityonline.info/falcon-c2-framework-browser-antino/",
+          "title": "securityonline.info",
+          "website": "",
+          "date": "2026-11-14T00:00:00Z"
+        },
+        {
+          "url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+          "title": "unit42.paloaltonetworks.com",
+          "website": "",
+          "date": "2026-11-14T00:00:00Z"
+        },
+        {
+          "url": "https://mallory.ai/stories/01a1cb61-56f1-70f2-9884-2721123a2ad2",
+          "title": "mallory.ai",
+          "website": "",
+          "date": "2026-11-14T00:00:00Z"
+        },
+        {
+          "url": "https://socradar.io/free-tools/campaigns/1988",
+          "title": "socradar.io",
+          "website": "",
+          "date": "2026-11-14T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

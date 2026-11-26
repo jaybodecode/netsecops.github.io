@@ -1,0 +1,49 @@
+title: Suspicious Git Clone with Embedded Credentials
+id: 1e9a4c2b-8f7d-4b6c-9a3e-1b2c3d4e5f6a
+status: experimental
+description: Detects git clone commands that include credentials directly in the URL, which can indicate credential exposure or misuse.
+references:
+  - https://thehackernews.com/2026/05/trellix-confirms-source-code-breach.html
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1528
+  - attack.t1552.001
+  - attack.credential_access
+falsepositives:
+  - Some automated scripts or CI/CD systems might use this method, although it is not a recommended practice.
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\git.exe'
+    CommandLine|contains|all:
+      - 'clone'
+      - 'https://'
+      - '@'
+  condition: selection
+---
+title: Anomalous Source Code Repository Cloning
+id: 5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d
+status: experimental
+description: Detects cloning of source code repositories from audit logs, which could be indicative of unauthorized data exfiltration. This rule should be tuned to filter for anomalous activity, such as cloning from new or untrusted locations or by unusual users.
+references:
+  - https://thehackernews.com/2026/05/trellix-confirms-source-code-breach.html
+author: cyber.netsecops.io
+date: 2026-05-04
+tags:
+  - attack.t1530
+  - attack.collection
+falsepositives:
+  - Legitimate developer activity. This rule requires baselining and correlation with other signals (e.g., source IP geolocation) to be effective.
+level: low
+logsource:
+  category: audit
+detection:
+  selection:
+    keywords:
+      - 'repo.clone' # GitHub audit log event for cloning
+      - 'project.git_access' # GitLab audit log event for cloning/fetching
+  condition: selection

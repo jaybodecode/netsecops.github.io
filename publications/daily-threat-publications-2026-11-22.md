@@ -1,0 +1,38 @@
+# AI Exploits Medical Software, Critical Flaws Added to CISA KEV List
+
+**Published:** 2026-11-22 | **Articles:** 8
+
+**Critical Vulnerabilities Under Active Exploitation:**
+
+*   **[UPDATE] Chinese Hackers Use AI to Exploit Medical Software Zero-Day in 11 Minutes:** Chinese hackers leveraged AI, including large language models, to discover and exploit a zero-day vulnerability in medical software MONAI Label within 11 minutes. The flaw, CVE-2026-133968 (CVSS 9.8), was exploited between September 8-10, 2026, and while a fix is in the source code, a formal patch is pending.
+*   **[UPDATE] CISA Adds Actively Exploited Cisco, Apache, VMware Flaws to KEV Catalog:** CISA has added four actively exploited vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog. These include Apache Roller (CVE-2026-129448, CVSS 9.8) and Cisco Expressway (CVE-2026-76466, CVSS 9.8), alongside a SAP NetWeaver JNDI injection flaw (CVE-2025-42884, CVSS 6.5).
+
+**New Threats and Advisories:**
+
+*   **[NEW] OpenRouter Removes AI Providers After Private Prompts Leaked:** OpenRouter has removed AI inference providers and revoked ZDR status for numerous endpoints after a Dragos investigation found private user prompts were improperly stored and potentially stolen, highlighting AI supply chain risks.
+*   **[NEW] Austrian Foreign Ministry Confirms Breach, Staff Data Exposed:** The Austrian Foreign Ministry confirmed a cyberattack between November 12-13, 2026, on a website managed by an external provider, resulting in the exposure of professional contact details for ministry employees.
+*   **[NEW] Critical GnuPG Library Flaw Could Lead to Data Exfiltration:** A critical double-free vulnerability, CVE-2026-129975, in the GnuPG Made Easy (GPGME) library affects all versions before 2.3.0 and could lead to data exfiltration from applications relying on the library.
+*   **[NEW] Researchers Hijack Meta's Muse AI, Access Private Chats:** Security firm NebuSec demonstrated an attack against Meta's Muse AI, allowing researchers to extract private conversations, access credentials, and control the agent's cloud machine by luring it to a malicious webpage; vulnerabilities have since been patched.
+*   **[NEW] Bell Canada Confirms Breach by "Agentic" Hacker, Data Stolen:** Bell Canada confirmed a data breach on November 17, 2026, where an "agentic threat actor" accessed a pre-production environment and exfiltrated enterprise customer data, including business contact details and circuit order information.
+*   **[NEW] XSS and Auth Bypass Flaws Found in WooCommerce Plugin:** Two vulnerabilities, CVE-2026-131774 (Stored XSS) and CVE-2026-131773 (Missing Authorization), have been disclosed in the "WooCommerce Fortnox Integration" WordPress plugin, affecting all versions up to 4.8.1.
+
+## Articles in this publication
+- [Chinese Hackers Use AI to Exploit Medical Software Zero-Day in 11 Minutes](https://cyber.netsecops.io/articles/china-linked-hackers-use-ai-to-exploit-medical-zero-day/) (critical)
+  Amazon Threat Intelligence has disclosed a novel attack where China-linked hackers used an AI penetration framework named 'Cairn' to autonomously discover and exploit a zero-day vulnerability in MONAI Label, an open-source medical imaging tool. The AI agent achieved full root control on a server at an East Asian university in just 11 minutes, demonstrating a significant leap in the speed and automation of offensive cyber capabilities.
+- [CISA Adds Actively Exploited Cisco, Apache, VMware Flaws to KEV Catalog](https://cyber.netsecops.io/articles/cisa-warns-of-exploited-flaws-in-cisco-apache-vmware/) (critical)
+  The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added five actively exploited vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog. The flaws affect widely used enterprise products from Cisco, Apache, VMware, and SAP, and include critical remote code execution and authentication bypass vulnerabilities. Federal agencies are now under a strict deadline to apply patches or mitigations.
+- [OpenRouter Removes AI Providers After Private Prompts Leaked](https://cyber.netsecops.io/articles/openrouter-ai-supply-chain-risk-exposed-by-prompt-leaks/) (high)
+  The AI routing platform OpenRouter has removed three third-party inference providers and revoked "Zero Data Retention" (ZDR) status for 125 endpoints. This action follows a Dragos investigation revealing that private user prompts sent through these providers were being improperly stored and, in some cases, stolen by attackers for months, highlighting significant supply chain risks in the AI ecosystem.
+- [Austrian Foreign Ministry Confirms Breach, Staff Data Exposed](https://cyber.netsecops.io/articles/austrian-foreign-ministry-hacked-diplomatic-staff-data-exposed/) (medium)
+  The Austrian Foreign Ministry has confirmed it was the target of a cyberattack between November 12 and 13, 2026. The breach, which occurred on a website managed by an external provider, resulted in the exposure of professional contact details for ministry employees. While no sensitive data was reportedly stolen, the incident raises concerns about the security of government contractors and potential targeting of diplomatic staff.
+- [Critical GnuPG Library Flaw Could Lead to Data Exfiltration](https://cyber.netsecops.io/articles/critical-gnupg-library-flaw-exposes-apps-to-data-theft/) (critical)
+  The GnuPG project has disclosed a critical double-free vulnerability, CVE-2026-129975, in its GnuPG Made Easy (GPGME) library. The flaw, present in all versions before 2.3.0, can be triggered when processing a malicious OpenPGP key. This could lead to memory corruption, potentially allowing data exfiltration from a wide range of popular applications that rely on the library, including email clients, Samba, and Flatpak. Users are urged to update immediately.
+- [Researchers Hijack Meta's Muse AI, Access Private Chats](https://cyber.netsecops.io/articles/researchers-hijack-meta-muse-ai-accessing-private-data/) (high)
+  Security firm NebuSec has demonstrated a powerful proof-of-concept attack against Meta's personal AI assistant, Muse. By luring the agent to a single malicious webpage, the researchers were able to trigger a chain of exploits that allowed them to extract private conversations, access stored credentials for connected accounts, and gain full control of the agent's underlying cloud machine, bypassing Meta's 'Sentinel' security layer. The vulnerabilities have since been patched.
+- [Bell Canada Confirms Breach by "Agentic" Hacker, Data Stolen](https://cyber.netsecops.io/articles/bell-canada-confirms-breach-by-agentic-hacker/) (high)
+  Canadian telecommunications giant Bell Canada has confirmed it suffered a data breach on November 17, 2026. The company stated an "agentic threat actor" accessed a pre-production environment and exfiltrated enterprise customer data. The compromised information includes business contact details and information related to telecom circuit orders. Bell has contained the incident and is notifying affected customers.
+- [XSS and Auth Bypass Flaws Found in WooCommerce Plugin](https://cyber.netsecops.io/articles/vulnerabilities-disclosed-in-woocommerce-fortnox-plugin/) (medium)
+  Two new vulnerabilities have been disclosed in the "WooCommerce Fortnox Integration" WordPress plugin, affecting all versions up to and including 4.8.1. The flaws, published on November 22, 2026, consist of a Stored Cross-Site Scripting (XSS) issue (CVE-2026-131774) and a Missing Authorization vulnerability (CVE-2026-131773), which could expose e-commerce sites to script injection and unauthorized actions.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-11-22/

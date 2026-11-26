@@ -1,0 +1,50 @@
+title: PowerShell Execution from LNK File
+id: 5e8f1c2a-3b4d-5e6f-7a8b-9c0d1e2f3a4b
+status: experimental
+description: Detects the execution of PowerShell launched from a Windows shortcut (LNK) file, a technique used in a recent North Korean campaign.
+references:
+  - https://gbhackers.com/github-backed-malware-spread-via-lnk-files-in-south-korea/
+author: cyber.netsecops.io
+date: 2026-04-06
+tags:
+  - attack.t1204.002
+  - attack.t1059.001
+  - attack.execution
+falsepositives:
+  - Legitimate administrative scripts launched via shortcuts, though this is uncommon.
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith: '.lnk'
+    Image|endswith: '\powershell.exe'
+  condition: selection
+---
+title: PowerShell Script Making Web Request to GitHub API
+id: 9a8b7c6d-5e4f-3a2b-1c0d-9f8e7d6c5b4a
+status: experimental
+description: 'Detects PowerShell script blocks (via Event ID 4104) containing web requests to api.github.com, indicating potential C2 activity.'
+references:
+  - https://gbhackers.com/github-backed-malware-spread-via-lnk-files-in-south-korea/
+author: cyber.netsecops.io
+date: 2026-04-06
+tags:
+  - attack.t1102.002
+  - attack.t1059.001
+  - attack.command_and_control
+falsepositives:
+  - Legitimate administrative or developer scripts that interact with the GitHub API.
+level: high
+logsource:
+  product: windows
+  service: powershell
+  category: ps_script
+detection:
+  selection:
+    ScriptBlockText|contains:
+      - 'api.github.com'
+      - 'Invoke-RestMethod'
+      - 'Invoke-WebRequest'
+  condition: all of selection

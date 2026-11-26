@@ -1,0 +1,32 @@
+# Major Breaches at Bell Canada, Radware, and Azure Highlight API Security Risks
+
+**Published:** 2026-11-26 | **Articles:** 6
+
+**Major Data Breaches and Vulnerabilities:**
+
+*   **Bell Canada Confirms Breach by "Agentic" Hacker, Data Stolen:** Bell Canada has confirmed that a data breach, initially thought to affect only enterprise customers, has now expanded to include residential customers of Bell and its subsidiaries. Stolen residential data includes personal and account information. The update also provides technical analysis and mitigation strategies.
+*   **Radware Breach Exposes Customer Cloud Keys Via Public API:** Cybersecurity provider Radware experienced a breach on November 19, 2026, due to an unauthenticated Cloud WAF management API. Attackers accessed customer contact information and cloud storage credentials, prompting Radware to urge affected customers to rotate their keys.
+*   **Azure API Flaw Exploited to Steal Secrets from Energy Firms:** Microsoft has patched a vulnerability in Azure API Management (APIM) that was actively exploited to steal credentials and configuration secrets from organizations, including Norwegian energy firms. Affected customers are advised to rotate all secrets stored in APIM.
+*   **EU Commission Confirms Data Leak from 'AI-Assisted' Attack:** The European Commission confirmed a data breach on its EU Academy online learning platform, attributed to an 'AI-assisted' cyberattack. The incident exposed names and email addresses of users outside EU institutions, and the platform will remain offline until January 2027 for remediation.
+
+**New Ransomware and Credential Compromise Incidents:**
+
+*   **New Ransomware Group 'Inception' Claims 1TB Data Theft from Verisk:** A new ransomware group, 'Inception,' has claimed responsibility for exfiltrating 1.01 TB of sensitive data from data analytics firm Verisk, including client insurance contracts and proprietary models. The company has not yet confirmed the claim.
+*   **1Password Discloses Security Breach; Customer Vaults Safe:** Password manager 1Password reported a security incident where an employee's GitHub account was compromised, leading to access to backend systems and a limited amount of customer administrative data. 1Password states that customer vault data, passwords, and secret keys remain protected due to its zero-knowledge architecture.
+
+## Articles in this publication
+- [Bell Canada Confirms Breach by "Agentic" Hacker, Data Stolen](https://cyber.netsecops.io/articles/bell-canada-confirms-breach-by-agentic-hacker/) (high)
+  Canadian telecommunications giant Bell Canada has confirmed it suffered a data breach on November 17, 2026. The company stated an "agentic threat actor" accessed a pre-production environment and exfiltrated enterprise customer data. The compromised information includes business contact details and information related to telecom circuit orders. Bell has contained the incident and is notifying affected customers.
+- [Radware Breach Exposes Customer Cloud Keys Via Public API](https://cyber.netsecops.io/articles/radware-breach-exposes-customer-cloud-keys-via-unauthenticated-api/) (high)
+  Cybersecurity provider Radware suffered a data breach on November 19, 2026, after an internal Cloud WAF management API was left exposed to the internet without authentication. Attackers accessed the API, exfiltrating customer contact information and, for some, cloud storage credentials for AWS S3 and Azure Blob. Radware detected the access after ten hours and has since secured the API, but is urging affected customers to rotate their cloud keys immediately as they are reportedly being actively targeted.
+- [Azure API Flaw Exploited to Steal Secrets from Energy Firms](https://cyber.netsecops.io/articles/microsoft-azure-apim-flaw-exploited-to-steal-secrets-from-energy-firms/) (critical)
+  Microsoft has patched a vulnerability in the classic tiers of Azure API Management (APIM) that was actively exploited to steal credentials and configuration secrets. The flaw, identified on November 18, 2026, allowed unauthorized access to management functions. Attackers targeted several organizations, including Norwegian energy firms Equinor and Skagerak Energi. Microsoft has closed the access path but warns that credentials may have been compromised and is urging affected customers to rotate all secrets stored in APIM.
+- [EU Commission Confirms Data Leak from 'AI-Assisted' Attack](https://cyber.netsecops.io/articles/european-commission-confirms-data-leak-from-ai-assisted-cyberattack/) (medium)
+  The European Commission has confirmed that an 'AI-assisted' cyberattack on its EU Academy online learning platform led to a data breach. The incident, first detected in October 2026, exposed the names and email addresses of users from outside EU institutions. The EU Academy website has been taken offline until January 2027 for remediation. While details are scarce, it is considered 'highly likely' that an AI penetration testing tool called ARTEX was used in the attack.
+- [New Ransomware Group 'Inception' Claims 1TB Data Theft from Verisk](https://cyber.netsecops.io/articles/new-ransomware-group-inception-claims-attack-on-verisk/) (high)
+  A newly emerged ransomware group named 'Inception' has claimed responsibility for a major cyberattack against Verisk, a leading data analytics and risk assessment firm. In a leak site post on November 26, 2026, the group alleges it exfiltrated 1.01 TB of highly sensitive data, including millions of client insurance contracts, database records, and proprietary loss models. The claim, which mentions major Verisk clients, has not yet been confirmed by the company. The group has set a short deadline for contact before releasing the data.
+- [1Password Discloses Security Breach; Customer Vaults Safe](https://cyber.netsecops.io/articles/1password-discloses-security-breach-of-backend-systems/) (high)
+  Password manager 1Password disclosed a security incident on November 25, 2026, where an attacker compromised an employee's GitHub account to access backend systems. The breach, which began on November 19, exposed a limited amount of customer administrative data, including names and emails. 1Password asserts that its zero-knowledge architecture protected all customer vault data, passwords, and secret keys, which were not accessed. The company has revoked access, rotated credentials, and is cautioning users about potential phishing attempts.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-11-26/

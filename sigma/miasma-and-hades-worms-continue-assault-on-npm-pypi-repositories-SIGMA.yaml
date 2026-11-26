@@ -1,0 +1,81 @@
+title: Hades Worm Persistence via .pth File
+id: e1c2a3b4-d5e6-4f7a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: Detects the creation of a .pth file containing executable code, a technique used by the Hades worm for persistence in Python environments. Legitimate .pth files should only contain paths.
+references:
+  - https://securityboulevard.com/2026/07/the-streak-continues-four-more-supply-chain-attacks-hit-npm-and-pypi/
+author: cyber.netsecops.io
+date: 2026-07-22
+tags:
+  - attack.t1546
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '-setup.pth'
+    TargetFilename|contains: '\site-packages\'
+  condition: selection
+falsepositives:
+  - Unlikely, but some niche packages might use a similar naming convention.
+---
+title: Anomalous Bun Execution by Hades Worm
+id: a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects the execution of the Bun JavaScript runtime (bun.exe), which may be anomalous in some environments. The Hades worm was observed fetching and using Bun to execute its payload.
+references:
+  - https://securityboulevard.com/2026/07/the-streak-continues-four-more-supply-chain-attacks-hit-npm-and-pypi/
+author: cyber.netsecops.io
+date: 2026-07-22
+tags:
+  - attack.t1059
+  - attack.execution
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\bun.exe'
+  filter_legit_parent:
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\explorer.exe'
+      - '\code.exe'
+  condition: selection and not filter_legit_parent
+falsepositives:
+  - Legitimate use of the Bun runtime by developers. The rule is tuned to detect execution by non-interactive or unexpected parent processes.
+---
+title: Potential Credential Exfiltration to GitHub
+id: 27c60957-ef6e-4f22-a979-9ac80abeacfe
+status: experimental
+description: Detects potentially anomalous network connections to api.github.com, particularly from non-interactive processes, which could indicate credential exfiltration as seen with the Hades worm.
+references:
+  - https://securityboulevard.com/2026/07/the-streak-continues-four-more-supply-chain-attacks-hit-npm-and-pypi/
+author: cyber.netsecops.io
+date: 2026-07-22
+tags:
+  - attack.t1537
+  - attack.exfiltration
+level: low
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    DestinationHostname: 'api.github.com'
+    Initiated: 'true'
+  filter:
+    Image|endswith:
+      - '\git.exe'
+      - '\gh.exe'
+      - '\Code.exe'
+      - '\chrome.exe'
+      - '\firefox.exe'
+      - '\msedge.exe'
+  condition: selection and not filter
+falsepositives:
+  - Legitimate tools and scripts interacting with the GitHub API. This rule requires significant tuning for a specific environment.

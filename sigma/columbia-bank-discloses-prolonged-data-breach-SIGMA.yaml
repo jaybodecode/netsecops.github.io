@@ -1,0 +1,54 @@
+title: Dormant User Account Logon
+id: 9c5b1f3a-8d4e-4b1f-8c2a-9e3d7f5a1b3c
+status: experimental
+description: Detects a successful logon from a user account that is potentially dormant. This rule is intended to be used in conjunction with a list of known dormant accounts for correlation to reduce false positives.
+references:
+  - https://www.classaction.org/blog/columbia-bank-data-breach-reported-lawsuit-possible
+author: cyber.netsecops.io
+date: 2026-04-20
+tags:
+  - attack.t1078
+level: informational
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType: 
+      - 2
+      - 3
+      - 10
+  condition: selection
+falsepositives:
+  - Legitimate user logons. This rule is a baseline and requires correlation with an external list of dormant accounts to be effective.
+---
+title: External Logon to Internal System via Remote Service
+id: e4a2b1d0-c3f5-4e8a-b9d7-f6a2c1d0b3e4
+status: experimental
+description: Detects a successful logon to an internal system using a remote service (like RDP) originating from a non-internal IP address. This could indicate compromised credentials being used for lateral movement or initial access.
+references:
+  - https://www.classaction.org/blog/columbia-bank-data-breach-reported-lawsuit-possible
+author: cyber.netsecops.io
+date: 2026-04-20
+tags:
+  - attack.t1078
+  - attack.t1021
+level: medium
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4624
+    LogonType: 10
+  filter_internal:
+    SourceNetworkAddress|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '::1/128'
+      - 'fc00::/7'
+  condition: selection and not filter_internal
+falsepositives:
+  - Legitimate remote administration from external partners or administrators.

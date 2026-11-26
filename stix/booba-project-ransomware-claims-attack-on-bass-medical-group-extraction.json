@@ -1,0 +1,200 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-10-29T12:50:14.197Z",
+    "article_slug": "booba-project-ransomware-claims-attack-on-bass-medical-group",
+    "article_date": "2026-10-29",
+    "token_usage": {
+      "input_tokens": 146290,
+      "output_tokens": 2684,
+      "cached_tokens": 137734,
+      "total_tokens": 148974,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.054752
+    }
+  },
+  "report_name": "Booba Project Ransomware Claims Attack on BASS Medical Group",
+  "threat_actors": [
+    {
+      "name": "Booba Project",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A ransomware group that claimed responsibility for a cyberattack on BASS Medical Group, alleging the exfiltration of 100GB of data, including patient information. The group operates using double extortion tactics.",
+      "goals": "To extort money from victim organizations by stealing sensitive data and threatening to leak it.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Data from Information Repositories",
+      "mitre_id": "T1213",
+      "description": "The Booba Project ransomware group targets and collects sensitive data from databases and file servers, which likely contained patient records at BASS Medical Group."
+    },
+    {
+      "name": "Exfiltration Over Alternative Protocol",
+      "mitre_id": "T1048",
+      "description": "The Booba Project group exfiltrated 100 GB of data from BASS Medical Group's network to be used for extortion."
+    },
+    {
+      "name": "Data Encrypted for Impact",
+      "mitre_id": "T1486",
+      "description": "Booba Project follows the typical ransomware pattern which includes data encryption on the victim's network to disrupt operations and increase pressure for ransom payment."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Booba Project Ransomware",
+      "mitre_id": "",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [],
+      "description": "The ransomware used by the Booba Project group to encrypt victim networks and facilitate data exfiltration for double extortion schemes.",
+      "capabilities": [
+        "exfiltrates-data",
+        "compromises-data-availability"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "BASS Medical Group",
+      "identity_class": "organization",
+      "sectors": [
+        "healthcare"
+      ],
+      "description": "A large healthcare provider in California's San Francisco Bay Area that was targeted by the Booba Project ransomware group. The group claimed to have stolen 100 GB of data, including patient medical and insurance information."
+    }
+  ],
+  "locations": [
+    {
+      "name": "United States",
+      "country": "United States",
+      "region": "northern-america"
+    },
+    {
+      "name": "California",
+      "country": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "Booba Project Leak Site",
+      "infrastructure_types": [
+        "hosting-malware"
+      ],
+      "description": "A dark web leak site used by the Booba Project ransomware group to post claims of attacks and threaten to leak stolen data from victims like BASS Medical Group."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Anomalous EHR/EMR Database Access",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Anomalous EHR/EMR Database Access\nid: 2a9e3b1f-8c7d-4e6a-9b1f-3d4c5e6a7b8c\nstatus: experimental\ndescription: |\n  Detects unusual queries against Electronic Health Record (EHR) or Electronic Medical Record (EMR) databases, such as a single user account exporting an abnormally large number of patient records. This can be an indicator of data collection prior to exfiltration.\nauthor: cyber.netsecops.io\ndate: 2026-10-29\nreferences:\n  - https://www.hookphish.com/blog/ransomware-group-booba-project-hits-bass-medical-group/\nlevel: medium\nlogsource:\n  category: database\ndetection:\n  selection:\n    query|contains:\n      - 'SELECT * FROM patients'\n      - 'SELECT * FROM medical_records'\n    user_account: 'service_account_export' # Example, should be tailored\n    records_returned|gt: 1000 # Example threshold\n  condition: selection\ntags:\n  - attack.t1213",
+      "description": "Detects unusual queries against Electronic Health Record (EHR) or Electronic Medical Record (EMR) databases, such as a single user account exporting an abnormally large number of patient records, which could indicate data collection."
+    },
+    {
+      "name": "Large Data Egress from Patient Data Servers",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Large Data Egress from Patient Data Servers\nid: 5b1c8d2e-9a3b-4f5e-8c7d-6e5f4d3c2b1a\nstatus: experimental\ndescription: |\n  Detects large outbound data transfers from servers known to host patient data (EHR/EMR systems). This is a primary indicator of data exfiltration.\nauthor: cyber.netsecops.io\ndate: 2026-10-29\nreferences:\n  - https://www.hookphish.com/blog/ransomware-group-booba-project-hits-bass-medical-group/\nlevel: high\nlogsource:\n  category: network_connection\n  product: windows\ndetection:\n  selection:\n    SourceIp: \n      - '10.1.2.3' # IP of EHR server\n      - '10.1.2.4' # IP of patient database server\n    Initiated: true\n  filter_internal:\n    DestinationIp|cidr:\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n  timeframe: 1h\n  condition: selection and not filter_internal | count() > 1000 # Example: more than 1000 outbound connections in an hour\ntags:\n  - attack.t1048",
+      "description": "Detects large outbound data transfers from servers known to host patient data, which is a primary indicator of data exfiltration."
+    },
+    {
+      "name": "Mass File Access on Network Share by Single Process",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Mass File Access on Network Share by Single Process\nid: 8c7d6e5f-4d3c-4b1a-9e8f-1a2b3c4d5e6f\nstatus: experimental\ndescription: |\n  Detects a single process rapidly accessing an unusually high number of files on a network share, which often precedes data staging, exfiltration, and encryption by ransomware.\nauthor: cyber.netsecops.io\ndate: 2026-10-29\nreferences:\n  - https://www.hookphish.com/blog/ransomware-group-booba-project-hits-bass-medical-group/\nlevel: medium\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|startswith: '\\\\\\\\server\\share\\'\n  timeframe: 1m\n  condition: selection | count(TargetFilename) by Image > 1000 # Example: process accesses >1000 files in 1 minute\ntags:\n  - attack.t1213",
+      "description": "Detects a single process rapidly reading thousands of files on network shares, which often precedes exfiltration and encryption."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Booba Project",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Booba Project Ransomware",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Booba Project",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "BASS Medical Group",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Booba Project",
+      "source_type": "threat-actor",
+      "relationship_type": "controls",
+      "target_name": "Booba Project Leak Site",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Booba Project Ransomware",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data from Information Repositories",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Booba Project Ransomware",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Booba Project Ransomware",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data Encrypted for Impact",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "BASS Medical Group",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "California",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Anomalous EHR/EMR Database Access",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data from Information Repositories",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Large Data Egress from Patient Data Servers",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Mass File Access on Network Share by Single Process",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Data from Information Repositories",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

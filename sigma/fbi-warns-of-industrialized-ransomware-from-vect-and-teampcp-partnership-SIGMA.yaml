@@ -1,0 +1,82 @@
+title: Unusual Outbound Network Connection from Build Agent
+id: 9c5b1a3d-8f6e-4b2c-9d1a-5e7f8a9b0c1d
+status: experimental
+description: Detects unusual outbound network connections from CI/CD build agents, which could indicate exfiltration of stolen credentials by a compromised developer tool as seen in TeamPCP attacks.
+references:
+  - https://www.infosecurity-magazine.com/news/industrialized-cyberattacks/
+author: cyber.netsecops.io
+date: 2026-07-03
+tags:
+  - attack.t1195.001
+  - attack.exfiltration
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image|contains:
+      - 'jenkins'
+      - 'gitlab-runner'
+      - 'build-agent'
+      - 'runner'
+  filter:
+    DestinationIp:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter
+falsepositives:
+  - Legitimate connections from build agents to new or uncategorized services.
+level: medium
+---
+title: Anomalous AWS GetCallerIdentity API Call
+id: f4e3d2c1-b0a9-4f8e-8d7c-6b5a4f3e2d1c
+status: experimental
+description: Detects anomalous usage of the AWS STS GetCallerIdentity API call, which can be used by attackers to validate stolen credentials as seen in the TeamPCP and VECT campaign.
+references:
+  - https://www.infosecurity-magazine.com/news/industrialized-cyberattacks/
+author: cyber.netsecops.io
+date: 2026-07-03
+tags:
+  - attack.t1078.004
+  - attack.discovery
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventName: 'GetCallerIdentity'
+  condition: selection
+falsepositives:
+  - Legitimate scripts and services validating their own identity.
+level: low
+---
+title: Credential Searching via Command Line
+id: a8b7c6d5-e4f3-4a2b-8c1d-0e9f8a7b6c5d
+status: experimental
+description: Detects command line patterns used to search for environment variables containing secrets, a technique used by credential harvesting malware like that used by TeamPCP.
+references:
+  - https://www.infosecurity-magazine.com/news/industrialized-cyberattacks/
+author: cyber.netsecops.io
+date: 2026-07-03
+tags:
+  - attack.t1552
+  - attack.credential_access
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection:
+    CommandLine|contains|all:
+      - 'env'
+      - '|'
+      - 'grep'
+    CommandLine|contains:
+      - 'SECRET'
+      - 'TOKEN'
+      - 'KEY'
+      - 'PASSWORD'
+  condition: selection
+falsepositives:
+  - Legitimate administrative or debugging scripts.
+level: medium

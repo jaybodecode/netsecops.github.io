@@ -1,0 +1,38 @@
+# Data Breaches & Exploited Vulnerabilities Dominate Cybersecurity News
+
+**Published:** 2026-10-19 | **Articles:** 7
+
+**Critical Vulnerabilities Under Active Exploitation**:
+
+- **[UPDATE] China-Linked Group Exploits BeyondTrust Zero-Day in Espionage Attacks**: CISA has added CVE-2026-102764, a BeyondTrust Remote Support authentication bypass, to its KEV catalog, mandating patching for federal agencies. The China-linked ARMORY CASTLE group has been actively exploiting this zero-day since August 2026 for initial access and privilege escalation.
+
+**Data Breaches and Exposed Information**:
+
+- **[UPDATE] Burger King Japan App Breach Exposes 11.18 Million Member Records**: User passwords were not compromised in the Burger King Japan app data breach. The exposed PII now explicitly includes 'Prefecture of residence', with potential attack techniques like SQL injection and exploitation of public-facing applications identified.
+- **[UPDATE] Millions of California Students' Data Exposed in Breach at Testing Provider**: Class-action lawsuits have been filed against Educational Testing Service (ETS) following a data breach that exposed demographic information, program participation status, and statewide assessment results. The breach was detected on September 25, 2026.
+- **[NEW] OpenCode Breach Exposes OpenAI, Anthropic API Keys, Leads to Fraud**: The open-source AI coding agent OpenCode experienced a breach exposing API keys for OpenAI, Anthropic, and Google. Attackers used these keys in a 'distillation attack' to incur fraudulent charges on user accounts.
+- **[NEW] Helix Ransomware Group Claims Attack on American Campus**: The Helix ransomware group has claimed responsibility for a cyberattack on American Campus, a student housing provider. The group threatened to release exfiltrated data, employing a double extortion strategy.
+- **[NEW] Gîtes de France Breach Data Added to Have I Been Pwned**: Data from a May 2026 breach at Gîtes de France, attributed to hacker 'ChimeraZ,' has been added to HIBP. The incident exposed personal and booking details of hundreds of thousands of customers, including email addresses, names, phone numbers, and physical addresses.
+
+**Industry Trends and Phishing Activity**:
+
+- **[NEW] Microsoft Remains Top Impersonated Brand in Q3 2026 Phishing Attacks**: A Check Point Research report indicates Microsoft was the most impersonated brand in Q3 2026 phishing attacks, accounting for 33% of attempts. The report also notes a rise in impersonations of AI and developer platforms.
+
+## Articles in this publication
+- [Burger King Japan App Breach Exposes 11.18 Million Member Records](https://cyber.netsecops.io/articles/burger-king-japan-app-breach-exposes-11-million-records/) (medium)
+  BK Japan, the operator of Burger King in Japan, has disclosed a data breach affecting its official mobile app, exposing the records of approximately 11.18 million members. The breach, which occurred between October 2 and October 7, compromised personally identifiable information including names, email addresses, phone numbers, and dates of birth. The company has confirmed that credit card information was not stored and therefore not exposed.
+- [China-Linked Group Exploits BeyondTrust Zero-Day in Espionage Attacks](https://cyber.netsecops.io/articles/china-linked-hackers-exploit-beyondtrust-zero-day-in-espionage-campaign/) (critical)
+  A China-linked cyber espionage group known as Armory Castle (UNC5221) has been exploiting a critical zero-day vulnerability, CVE-2026-102764, in BeyondTrust Remote Support appliances. The flaw, with a CVSS score of 9.3, allows unauthenticated attackers to gain root-level control. The campaign, which began in late August 2026, involved deploying custom malware like the SAWFLY web shell and BARECLAW tunneler to achieve persistence, escalate privileges, and exfiltrate credentials from the device's secrets database. The attackers also wiped logs to cover their tracks. BeyondTrust has released patches and urges self-hosted customers to update immediately, rebuild compromised appliances from clean images, and rotate all associated credentials. The campaign targeted legal, technology, and government sectors, consistent with intelligence collection motives.
+- [Millions of California Students' Data Exposed in Breach at Testing Provider](https://cyber.netsecops.io/articles/california-student-data-breach-ets-contractor-exposes-millions/) (high)
+  A massive data breach at Educational Testing Service (ETS), a contractor for California's public school system, has compromised the personal information of millions of current and former students. The breach, which occurred between May and September 2026, exposed names, birth dates, addresses, and sensitive disability information. The attackers gained access using a compromised login credential for a secure file transfer protocol (SFTP) site. State officials confirmed that Social Security numbers were not exposed, and ETS is offering identity protection services to all affected individuals.
+- [OpenCode Breach Exposes OpenAI, Anthropic API Keys, Leads to Fraud](https://cyber.netsecops.io/articles/opencode-ai-agent-breach-exposes-user-api-keys/) (high)
+  The open-source AI coding agent OpenCode has disclosed a security breach that exposed user API keys for OpenAI, Anthropic, and Google. The incident, which affected 1.4% of its Console users, resulted from unauthorized access to a legacy system. Attackers used the stolen keys in a 'distillation attack,' running up significant fraudulent charges on user accounts to likely train their own AI models. OpenCode has notified affected users and advised them to revoke and replace the compromised keys.
+- [Helix Ransomware Group Claims Attack on American Campus](https://cyber.netsecops.io/articles/helix-ransomware-group-claims-attack-on-american-campus/) (high)
+  The Helix ransomware group has claimed responsibility for a cyberattack on American Campus, a major US-based student housing provider with an estimated annual revenue of $1 billion. The group posted the claim on its dark web leak site on October 19, 2026, threatening to release exfiltrated data within hours. This attack is part of a recent wave of high-profile targets claimed by the Helix group, employing a double extortion strategy.
+- [Gîtes de France Breach Data Added to Have I Been Pwned](https://cyber.netsecops.io/articles/gites-de-france-data-breach-added-to-have-i-been-pwned/) (medium)
+  Data from a May 2026 breach at the French holiday rental network Gîtes de France has been added to the Have I Been Pwned (HIBP) notification service. The incident, attributed to the hacker 'ChimeraZ,' exposed the personal and booking details of hundreds of thousands of customers. The indexed dataset includes 117,574 unique email addresses, along with names, phone numbers, and physical addresses, putting affected individuals at high risk of targeted phishing scams.
+- [Microsoft Remains Top Impersonated Brand in Q3 2026 Phishing Attacks](https://cyber.netsecops.io/articles/microsoft-remains-top-impersonated-brand-in-phishing-attacks/) (medium)
+  According to a Q3 2026 report from Check Point Research, Microsoft continues to be the most impersonated brand in phishing attacks, accounting for 33% of all such attempts. This is a significant jump from the previous quarter and far exceeds other commonly spoofed brands like Apple and Google. The report also highlights a new trend of attackers impersonating AI and developer platforms, such as Anthropic's Claude and Google's Antigravity, to steal credentials, payment details, and achieve remote code execution.
+
+---
+Source: https://cyber.netsecops.io/publications/daily-threat-publications-2026-10-19/

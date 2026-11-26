@@ -1,0 +1,35 @@
+title: Anomalous Outbound DNS Queries to Unauthorized Servers
+id: 7e8b1c2a-3d4e-4f5a-8b9c-0d1e2f3a4b5c
+status: experimental
+description: |
+  Detects DNS queries sent to DNS servers not on an approved list. This can be an indicator of DNS hijacking, where a compromised device (like a SOHO router in the FrostArmada campaign) redirects DNS traffic to a malicious resolver for Adversary-in-the-Middle attacks.
+references:
+  - https://blog.lumen.com/frostarmada-apt28-compromises-soho-routers/
+author: cyber.netsecops.io
+date: 2026-04-08
+tags:
+  - attack.t1557
+  - attack.credential_access
+level: medium
+falsepositives:
+  - Legitimate use of third-party DNS resolvers by users or software.
+  - Misconfigured network settings.
+logsource:
+  category: dns
+detection:
+  selection:
+    # This selection should be adapted to your environment's logging capabilities for the DNS server that handled the query.
+    # The logic is to detect queries to any server that is NOT in the allowed list.
+    # As Sigma lacks a standard field for the destination DNS server, this rule is conceptual.
+    # A practical implementation would be in a SIEM monitoring firewall logs for outbound traffic on port 53/udp to non-approved IPs.
+    - c-ip: '1.1.1.1' # Placeholder for a SIEM field representing the destination IP of the DNS query
+  filter:
+    c-ip:
+      - '8.8.8.8'    # Google DNS
+      - '8.8.4.4'    # Google DNS
+      - '1.1.1.1'    # Cloudflare DNS
+      - '1.0.0.1'    # Cloudflare DNS
+      - '9.9.9.9'    # Quad9 DNS
+      - '208.67.222.222' # OpenDNS
+      - '192.168.1.1' # Example internal DNS
+  condition: selection and not filter

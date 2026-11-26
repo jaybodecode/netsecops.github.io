@@ -1,0 +1,258 @@
+{
+  "id": "cc774840-c6c0-45ab-bab4-e0611c948e6d",
+  "slug": "spring-ring-voice-phishing-campaigns-microsoft-teams",
+  "headline": "Spring Ring Campaign Abuses Microsoft Teams for Voice Phishing Attacks",
+  "title": "Spring Ring: Voice Phishing via Microsoft Teams Targets Enterprises",
+  "summary": "Between January and April 2026, a threat campaign dubbed 'Spring Ring' targeted over 150 employees across at least 10 companies by abusing Microsoft Teams. Attackers, impersonating IT support personnel from external tenants, initiated voice phishing (vishing) calls to manipulate victims. The objectives were twofold: either trick users into executing remote management tools and custom malware or, in a more advanced variant, escalate the attack to perform NTLM relay attacks against the organization's domain controllers using tools like PetitPotam. This campaign signifies a tactical evolution, blending social engineering with real-time voice interaction on trusted collaboration platforms to bypass traditional security controls and gain deep network access.",
+  "full_report": "## Executive Summary\n\nBetween January and April 2026, Palo Alto Networks' **[Unit 42](https://unit42.paloaltonetworks.com/)** identified a coordinated social engineering campaign named **Spring Ring**. The operation leverages external **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** accounts to impersonate corporate IT help desk staff. Attackers initiate voice phishing (vishing) calls to coerce employees into executing malicious payloads, such as remote monitoring and management (RMM) tools or custom malware. In a more sophisticated attack chain, the threat actors escalate from a vishing call to a full NTLM relay attack targeting enterprise domain controllers. The campaign has impacted over 150 employees across at least 10 organizations, demonstrating a significant shift towards using trusted communication platforms as a primary vector for initial access and privilege escalation.\n\n---\n\n## Threat Overview\n\nThe Spring Ring campaign represents a notable evolution in social engineering tactics, moving beyond traditional email-based phishing to the real-time, interactive environment of **[Microsoft](https://www.microsoft.com/security)** Teams. Unlike previous Teams-based attacks from groups like **[Cloaked Ursa (APT29)](https://attack.mitre.org/groups/G0016/)** that relied on malicious links or fake **[Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)** tenants, Spring Ring's methodology is centered on live voice interaction. This allows attackers to dynamically adapt their approach based on the victim's responses, building trust and manipulating them into compromising their own systems.\n\nThe attackers operate from externally provisioned `.onmicrosoft[.]com` tenants, using professional-sounding display names like \"help desk\" or \"IT assistance\" to appear legitimate. Despite **Microsoft Teams** displaying a warning banner for communications from external accounts, the attackers successfully exploit the inherent trust employees place in the platform. Once a voice call is established, the attacker guides the target through steps to either install a payload or trigger a forced authentication sequence, paving the way for a domain-level compromise.\n\n---\n\n## Technical Analysis\n\nThe Spring Ring attack lifecycle combines social engineering with technical exploitation in a multi-stage process.\n\n### 1. Initial Access and Impersonation\nThe attack begins with the creation of external **Microsoft Teams** accounts within attacker-controlled **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** tenants. These accounts are configured with display names designed to impersonate internal IT support. The attackers then initiate a direct chat with a targeted employee, which triggers a notification in the victim's Teams client.\n\n### 2. Social Engineering via Vishing\nImmediately after creating the chat, the attacker initiates a voice call. This is the core vishing element of the campaign. By engaging in a live conversation, the attacker builds a rapport of trust and authority. Telemetry shows these calls varied in duration from under a minute to over ten minutes, indicating persistent and adaptive social engineering efforts.\n\n### 3. Payload Execution or Forced Authentication\nOnce trust is established, the campaign diverges into two primary attack vectors:\n*   **Payload Delivery:** The attacker coerces the victim into downloading and executing a malicious file, often a legitimate RMM tool or a custom PowerShell-based payload. This provides the attacker with remote access to the victim's machine.\n*   **NTLM Relay Attack:** In the more advanced variant, the attacker tricks the user into initiating an action that triggers a forced authentication event. The threat actors were observed preparing to leverage tools like **[PetitPotam](https://github.com/topotam/PetitPotam)**, which coerces a machine to authenticate to an attacker-controlled listener. This allows the attacker to capture and relay the NTLM authentication hash to another service, such as Active Directory Certificate Services (AD CS) or a domain controller, to gain elevated privileges.\n\n### MITRE ATT&CK TTPs\nThe Spring Ring campaign utilizes the following MITRE ATT&CK techniques:\n- **[`T1585 - Establish Accounts`](https://attack.mitre.org/techniques/T1585/):** Attackers provision their own `.onmicrosoft.com` tenants to stage the attack.\n- **[`T1566.004 - Phishing: Spearphishing Voice`](https://attack.mitre.org/techniques/T1566/004/):** The core of the campaign relies on vishing calls via Microsoft Teams to manipulate victims.\n- **[`T1204.002 - User Execution: Malicious File`](https://attack.mitre.org/techniques/T1204/002/):** Attackers persuade users to run malicious software or RMM tools.\n- **[`T1187 - Forced Authentication`](https://attack.mitre.org/techniques/T1187/):** The advanced attack path involves coercing NTLM authentication from the victim's machine for relay attacks.\n- **[`T1059.001 - Command and Scripting Interpreter: PowerShell`](https://attack.mitre.org/techniques/T1059/001/):** Custom payloads observed in the campaign were delivered via PowerShell.\n\n---\n\n## Impact Assessment\nA successful Spring Ring attack poses a severe risk to an organization. Initial access via an RMM tool can lead to data theft, deployment of ransomware, or lateral movement across the network. The more advanced NTLM relay variant is significantly more dangerous, as it can lead to a full domain compromise. By targeting a domain controller, attackers can create privileged accounts, deploy group policies to distribute malware, and exfiltrate the entire Active Directory database. The targeting of over 150 employees indicates a scalable operation that can cause widespread disruption and significant data breaches if not detected and mitigated early.\n\n---\n\n## IOCs — Directly from Articles\nThe following domains were used by attackers to provision malicious Microsoft 365 tenants for this campaign.\n\n| Type   | Value                           |\n|--------|---------------------------------|\n| Domain | `helpdesk-global.onmicrosoft.com` |\n| Domain | `it-servicedesk.onmicrosoft.com`  |\n| Domain | `support-help.onmicrosoft.com`    |\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams may want to hunt for the following patterns to detect activity related to the Spring Ring campaign:\n\n| Type                   | Value                                                               |\n|------------------------|---------------------------------------------------------------------|\n| Log Source             | `Microsoft Teams Audit Logs (in Microsoft 365 Purview)`             |\n| Log Pattern            | `ChatCreated` events where `IsGuest` is `true` and the external user's display name contains keywords like \"IT\", \"Support\", or \"Help Desk\". |\n| Process Execution      | `Teams.exe` as a parent process for `powershell.exe` or common RMM tools (`AnyDesk.exe`, `TeamViewer.exe`, etc.). |\n| Network Traffic        | Outbound RPC/SMB traffic (TCP port 445) from end-user workstations to non-corporate IP addresses. |\n| Authentication Events  | A spike in NTLM authentication failures (Event ID 4625) on domain controllers, which could indicate relay attempts. |\n\n---\n\n## Detection & Response\nDefenders should focus on a combination of log analysis, endpoint monitoring, and network security to counter this threat.\n\n1.  **Monitor Teams Activity:** Regularly audit Microsoft Teams logs for suspicious external chat initiations. Create alerts for new conversations from external `.onmicrosoft.com` domains, especially those with generic IT support names. This can be achieved using D3FEND's `User Behavior Analysis` techniques.\n2.  **Endpoint Detection (EDR):** Deploy EDR solutions to monitor for the execution of unauthorized RMM software. Create detection rules for suspicious process chains, such as **Microsoft Teams** spawning `PowerShell` or other scripting engines. Utilize `File Analysis` ([D3-FA](https://d3fend.mitre.org/technique/d3f:FileAnalysis)) on any downloaded executables.\n3.  **Network Traffic Analysis:** Implement `Network Traffic Analysis` ([D3-NTA](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)) to detect anomalous NTLM authentication patterns. Monitor for and alert on authentication attempts against domain controllers originating from unexpected sources or involving user accounts that should not be performing such actions.\n4.  **Incident Response Playbook:** Develop a specific playbook for responding to Teams-based social engineering. This should include steps to immediately restrict the compromised user account, analyze Teams and endpoint logs, and scan the environment for signs of lateral movement or forced authentication activity.\n\n---\n\n## Mitigation\nStrategic and tactical mitigations can significantly reduce the risk of a successful Spring Ring attack.\n\n1.  **User Training and Awareness:** Conduct regular training focused on modern social engineering tactics, including vishing and platform-based impersonation. Teach users to be skeptical of unsolicited Teams messages from external accounts and to verify any requests to execute software or provide credentials through a separate, trusted communication channel.\n2.  **Harden Microsoft Teams Configuration:** If business needs permit, disable or restrict the ability for external users to initiate chats with internal employees. This can be configured in the Teams Admin Center. This falls under `Application Configuration Hardening` ([D3-ACH](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)).\n3.  **Prevent NTLM Relay Attacks:** Implement robust protections against NTLM relay. This includes enforcing SMB signing on all devices, enabling Extended Protection for Authentication (EPA) on servers (especially AD CS), and considering policies to disable NTLM where possible in favor of Kerberos. This aligns with `Platform Hardening` ([D3-PH](https://d3fend.mitre.org/technique/d3f:PlatformHardening)).\n4.  **Application Control:** Use application allowlisting technologies to prevent the execution of unauthorized RMM tools and other software. This is a core principle of `Executable Allowlisting` ([D3-EAL](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)) and is highly effective at stopping this attack chain.",
+  "twitter_post": "Unit 42 uncovers the 'Spring Ring' campaign using Microsoft Teams for voice phishing (vishing) to deploy malware & target domain controllers via NTLM relay attacks. Attackers impersonate IT support from external tenants. #Vishing #MicrosoftTeams #CyberSecurity",
+  "meta_description": "Unit 42 analysis of the Spring Ring campaign, a voice phishing (vishing) operation that abuses Microsoft Teams to impersonate IT and deploy malware or launch NTLM relay attacks.",
+  "category": [
+    "Phishing",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Palo Alto Networks Unit 42",
+      "type": "security_organization",
+      "url": "https://unit42.paloaltonetworks.com/"
+    },
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Microsoft Teams",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/"
+    },
+    {
+      "name": "Entra ID",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id"
+    },
+    {
+      "name": "Cloaked Ursa",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0016/"
+    },
+    {
+      "name": "PetitPotam",
+      "type": "technology"
+    },
+    {
+      "name": "KnowBe4",
+      "type": "company",
+      "url": "https://www.knowbe4.com/"
+    },
+    {
+      "name": "Cortex",
+      "type": "product",
+      "url": "https://www.paloaltonetworks.com/cortex"
+    },
+    {
+      "name": "PowerShell",
+      "type": "technology",
+      "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+      "name": "NTLM",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://unit42.paloaltonetworks.com/spring-ring-voice-phishing-campaigns/",
+      "title": "Spring Ring: An Inside Look at Voice Phishing Campaigns in Microsoft Teams",
+      "date": "2026-08-31",
+      "friendly_name": "Unit 42",
+      "website": "unit42.paloaltonetworks.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-01-01T00:00:00Z",
+      "summary": "The Spring Ring vishing campaign begins, running through April 2026."
+    },
+    {
+      "datetime": "2026-08-31T10:00:36Z",
+      "summary": "Unit 42 publishes its research findings on the Spring Ring campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.004",
+      "name": "Spearphishing Voice",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1585",
+      "name": "Establish Accounts",
+      "tactic": "Resource Development"
+    },
+    {
+      "id": "T1204.002",
+      "name": "User Execution: Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1187",
+      "name": "Forced Authentication",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1059.001",
+      "name": "PowerShell",
+      "tactic": "Execution"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report social engineering attempts, including vishing calls made through collaboration platforms like Teams."
+    },
+    {
+      "id": "M1054",
+      "name": "Software Configuration",
+      "description": "Harden Microsoft Teams configuration to restrict or disable chat capabilities with external, unmanaged tenants if not required for business operations.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1028",
+      "name": "Operating System Configuration",
+      "description": "Harden systems against NTLM relay attacks by enforcing SMB signing and enabling Extended Protection for Authentication (EPA).",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use application allowlisting to prevent the execution of unauthorized Remote Monitoring and Management (RMM) tools.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Enable and actively monitor audit logs for Microsoft Teams and Active Directory to detect suspicious chat creation and authentication patterns.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1015",
+      "name": "Active Directory Configuration",
+      "description": "Implement security configurations in Active Directory to mitigate credential-based attacks, such as disabling NTLM where feasible.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-ACH",
+      "technique_name": "Application Configuration Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening",
+      "recommendation": "In the context of the Spring Ring campaign, Application Configuration Hardening should be applied directly to the Microsoft Teams environment. Administrators should navigate to the Teams Admin Center and review the 'External access' policies. If business operations do not depend on open federation, switch the policy from 'Allow all external domains' to 'Allow only specific external domains' and maintain an explicit allowlist. For organizations that require broader external communication, ensure that the setting 'External users with Teams accounts not managed by an organization' is disabled. This prevents users from unmanaged tenants, a key TTP of the Spring Ring actors, from initiating contact. This hardening measure directly disrupts the initial access vector by preventing the unsolicited chat from reaching the employee in the first place, forcing attackers to find a different entry point.",
+      "mitre_mitigation_id": "M1054"
+    },
+    {
+      "technique_id": "D3-PH",
+      "technique_name": "Platform Hardening",
+      "url": "https://d3fend.mitre.org/technique/d3f:PlatformHardening",
+      "recommendation": "To counter the NTLM relay variant of the Spring Ring attack, Platform Hardening must be implemented across the Windows environment. The highest priority action is to enforce SMB Signing on all clients and servers via Group Policy (GPO). This can be set under 'Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies > Security Options' by enabling 'Microsoft network client: Digitally sign communications (always)' and 'Microsoft network server: Digitally sign communications (always)'. Additionally, enable Extended Protection for Authentication (EPA) on critical services like Active Directory Certificate Services (AD CS) to bind the authentication channel to the service, mitigating relay attacks. These steps directly break the attack chain that leverages tools like PetitPotam, as the relayed NTLM credentials would be rejected by the hardened target service.",
+      "mitre_mitigation_id": "M1028"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "To prevent the payload execution vector of the Spring Ring campaign, organizations should implement Executable Allowlisting using tools like Windows Defender Application Control (WDAC) or AppLocker. The immediate focus should be on preventing the execution of common, and often abused, remote monitoring and management (RMM) tools from user-writable locations like 'Downloads' or '%APPDATA%'. A baseline policy should be created that only permits corporately approved applications to run. For RMM tools that are required for legitimate IT support, the policy should be configured to only allow execution of the specific, signed binaries used by the IT department. This directly mitigates the risk of a user being tricked into running a malicious executable, as the operating system will block the execution attempt, breaking the attack chain at the execution phase.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "helpdesk-global.onmicrosoft.com",
+      "description": "Attacker-controlled tenant domain used for impersonation"
+    },
+    {
+      "type": "domain",
+      "value": "it-servicedesk.onmicrosoft.com",
+      "description": "Attacker-controlled tenant domain used for impersonation"
+    },
+    {
+      "type": "domain",
+      "value": "support-help.onmicrosoft.com",
+      "description": "Attacker-controlled tenant domain used for impersonation"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Microsoft 365 audit logs",
+      "description": "Source for monitoring Microsoft Teams chat and user activity.",
+      "context": "SIEM and log management platforms.",
+      "confidence": "high"
+    },
+    {
+      "type": "url_pattern",
+      "value": ".onmicrosoft.com",
+      "description": "Domain suffix used by attackers to provision external tenants. Legitimate external tenants also use this, so context is key.",
+      "context": "Microsoft Teams audit logs, email gateway logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "AnyDesk.exe --silent",
+      "description": "Example command line for silent installation of a remote management tool, which could be guided by an attacker.",
+      "context": "Windows Event ID 4688, EDR process creation logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Outbound TCP/445",
+      "description": "Outbound SMB traffic from a client workstation to an external, non-corporate IP address could indicate an NTLM relay attempt.",
+      "context": "Firewall logs, NetFlow data, IDS/IPS alerts.",
+      "confidence": "high"
+    },
+    {
+      "type": "event_id",
+      "value": "4625",
+      "description": "Logon Failure events on a Domain Controller, particularly for high-privilege accounts, can indicate NTLM relay or brute-force attempts.",
+      "context": "Windows Security Event Log on Domain Controllers.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Spring Ring",
+    "Vishing",
+    "Social Engineering",
+    "Microsoft Teams",
+    "NTLM Relay",
+    "PetitPotam",
+    "Threat Research",
+    "Initial Access"
+  ],
+  "extract_datetime": "2026-08-31T15:00:00.000Z",
+  "article_type": "Report",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Other"
+    ],
+    "other_affected": [
+      "Organizations using Microsoft Teams"
+    ],
+    "people_affected_estimate": "more than 150 employees"
+  },
+  "pub_date": "2026-08-31",
+  "reading_time_minutes": 13,
+  "createdAt": "2026-08-31T15:00:00.000Z",
+  "updatedAt": "2026-08-31T15:00:00.000Z"
+}

@@ -1,0 +1,74 @@
+title: Suspicious Marketing or Loyalty Data File Access
+id: 8c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f
+status: experimental
+description: Detects access to or creation of files with names commonly associated with marketing campaigns, loyalty programs, or member lists, which could indicate staging for data exfiltration.
+references:
+  - https://cybernews.com/security/visa-card-data-breach/
+author: cyber.netsecops.io
+date: 2026-11-19
+tags:
+  - attack.t1213
+  - attack.collection
+level: low
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection_keywords:
+    TargetFilename|contains:
+      - 'campaign'
+      - 'loyalty'
+      - 'members'
+  selection_extensions:
+    TargetFilename|endswith:
+      - '.csv'
+      - '.sql'
+      - '.zip'
+  condition: 1 of selection_*
+---
+title: Anomalous Data Transfer from Marketing Server
+id: 9d5e6f7a-8b9c-4d0e-8f1a-2b3c4d5e6f7a
+status: experimental
+description: Detects potentially anomalous outbound network traffic from marketing or CRM servers to unknown external IP addresses, which could indicate data exfiltration. Analyst should customize SourceImage with known marketing application process names.
+references:
+  - https://cybernews.com/security/visa-card-data-breach/
+author: cyber.netsecops.io
+date: 2026-11-19
+tags:
+  - attack.t1041
+  - attack.exfiltration
+level: medium
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    SourceImage|contains:
+      - 'crm_service.exe'
+      - 'marketing_app.exe'
+    Initiated: 'true'
+  filter_internal:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_internal
+---
+title: n0n Leaked Data File Creation
+id: 2b1a8f3c-7a9e-4d1f-8b5a-9c3d0e1f2a3b
+status: experimental
+description: Detects the creation of a file named 'campaign_directory.csv', which was the name of the data file leaked by the n0n extortion group in the Visa breach.
+references:
+  - https://cybernews.com/security/visa-card-data-breach/
+author: cyber.netsecops.io
+date: 2026-11-19
+tags:
+  - attack.t1213
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\campaign_directory.csv'
+  condition: selection

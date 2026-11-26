@@ -1,0 +1,50 @@
+title: Potential Cloud Storage Data Exfiltration via GetObject
+id: 7c5b9f8a-1d2e-4f3c-8a9b-0e1f2a3b4c5d
+status: experimental
+description: Detects anomalous usage of GetObject API call, which could indicate data exfiltration from cloud storage buckets. This rule should be tuned with known good source IPs, user agents, or roles.
+references:
+  - https://therecord.media/idscan-data-breach-notice-drivers-licenses
+author: cyber.netsecops.io
+date: 2026-09-19
+tags:
+  - attack.t1530
+level: medium
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: s3.amazonaws.com
+    eventName: GetObject
+  filter_known_good:
+    sourceIPAddress:
+      - 192.0.2.1 # Placeholder for known good IPs
+    userAgent:
+      - KnownGoodUserAgent # Placeholder for known good user agents
+  condition: selection and not filter_known_good
+---
+title: Public S3 Bucket ACL or Policy Modification
+id: 8d6c0a9b-2e3f-4d5a-9b0c-1f2a3b4c5d6e
+status: experimental
+description: Detects when an S3 bucket's Access Control List (ACL) or bucket policy is modified to allow public access, a critical misconfiguration.
+references:
+  - https://therecord.media/idscan-data-breach-notice-drivers-licenses
+author: cyber.netsecops.io
+date: 2026-09-19
+tags:
+  - attack.t1530
+level: high
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection_put_policy:
+    eventName: PutBucketPolicy
+    requestParameters.bucketPolicy.Statement.Effect: 'Allow'
+    requestParameters.bucketPolicy.Statement.Principal.AWS: '*'
+  selection_put_acl:
+    eventName: PutBucketAcl
+    requestParameters.AccessControlPolicy.Grant.Grantee.URI:
+      - http://acs.amazonaws.com/groups/global/AllUsers
+      - http://acs.amazonaws.com/groups/global/AuthenticatedUsers
+  condition: 1 of them

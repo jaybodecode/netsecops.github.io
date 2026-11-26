@@ -1,0 +1,195 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-06-20T20:33:14.306Z",
+    "article_slug": "jcpenney-employee-data-leaked-in-shinyhunters-extortion-campaign",
+    "article_date": "2026-06-20",
+    "token_usage": {
+      "input_tokens": 145673,
+      "output_tokens": 2488,
+      "cached_tokens": 139822,
+      "total_tokens": 148161,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.049672
+    }
+  },
+  "report_name": "ShinyHunters Leaks Data of 368,000 JCPenney Employees in Extortion Attack",
+  "threat_actors": [
+    {
+      "name": "ShinyHunters",
+      "mitre_id": "G1004",
+      "aliases": [],
+      "description": "A prolific threat group specializing in large-scale data breaches followed by 'pay or leak' extortion schemes. The group claimed responsibility for the JCPenney breach, leaking employee data after a ransom was not paid.",
+      "goals": "Financial extortion of large organizations by stealing and threatening to leak sensitive data.",
+      "primary_motivation": "personal-gain",
+      "resource_level": "team",
+      "sophistication": "advanced"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Exploit Public-Facing Application",
+      "mitre_id": "T1190",
+      "description": "ShinyHunters gained initial access to JCPenney's network by exploiting a zero-day vulnerability in the internet-facing Oracle PeopleSoft HR platform."
+    },
+    {
+      "name": "Data from Information Repositories",
+      "mitre_id": "T1213",
+      "description": "After gaining access, ShinyHunters accessed and collected sensitive personal information from backend HR and payroll databases connected to the Oracle PeopleSoft application."
+    },
+    {
+      "name": "Exfiltration Over Alternative Protocol",
+      "mitre_id": "T1048",
+      "description": "The threat actor exfiltrated the database containing 368,000 employees' personal information to their own attacker-controlled infrastructure."
+    }
+  ],
+  "malware": [],
+  "tools": [],
+  "vulnerabilities": [
+    {
+      "name": "CVE-2026-35273",
+      "cve": "CVE-2026-35273",
+      "description": "A zero-day vulnerability in Oracle PeopleSoft that was allegedly exploited by ShinyHunters to gain initial access to JCPenney's servers and backend databases.",
+      "affected_products": [
+        "Oracle PeopleSoft"
+      ]
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "ShinyHunters Oracle PeopleSoft Extortion Campaign",
+      "description": "A 'pay or leak' extortion campaign conducted by ShinyHunters targeting organizations that use vulnerable instances of the Oracle PeopleSoft enterprise software.",
+      "aliases": []
+    }
+  ],
+  "identities": [
+    {
+      "name": "JCPenney",
+      "identity_class": "organization",
+      "sectors": [
+        "retail"
+      ],
+      "description": "A major US retail company that was the victim of a data breach where the personal data of 368,000 current and former employees was stolen and leaked by ShinyHunters."
+    }
+  ],
+  "locations": [
+    {
+      "name": "United States",
+      "region": "northern-america"
+    }
+  ],
+  "infrastructure": [
+    {
+      "name": "ShinyHunters Data Exfiltration Infrastructure",
+      "infrastructure_types": [
+        "exfiltration",
+        "hosting-malware"
+      ],
+      "description": "Attacker-controlled infrastructure used by ShinyHunters to receive and subsequently leak the exfiltrated database of JCPenney employee data."
+    }
+  ],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Potential Oracle PeopleSoft Data Enumeration",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Potential Oracle PeopleSoft Data Enumeration\nid: 1a9b8c7d-6e5f-4d3c-2b1a-0987654321fe\nstatus: experimental\ndescription: Detects web requests to Oracle PeopleSoft URLs that may indicate enumeration or exploitation attempts, similar to the methods used by ShinyHunters. This is a behavioral rule and requires tuning.\nreferences:\n  - https://www.classaction.org/data-breach-lawsuits/jcpenney-june-2026\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1190\n  - attack.initial_access\nlevel: low\nlogsource:\n  category: webserver\ndetection:\n  selection:\n    cs-uri-stem|startswith: '/psp/ps/'\n    cs-uri-query|contains:\n      - 'SELECT'\n      - 'UNION'\n      - 'FROM'\n  filter:\n    c-ip:\n      - '127.0.0.1'\n      - '192.168.0.0/16'\n      - '10.0.0.0/8'\n      - '172.16.0.0/12'\n  condition: selection and not filter\nfalsepositives:\n  - Legitimate but unusual application usage.\n  - Vulnerability scanning.",
+      "description": "Detects web requests to Oracle PeopleSoft URLs that may indicate enumeration or exploitation attempts, based on detection guidance in the report."
+    },
+    {
+      "name": "Large Network Egress from Internal HR System",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Large Network Egress from Internal HR System\nid: 2b1a0987-6e5f-4d3c-8c7d-1a9b8c7d6e5f\nstatus: experimental\ndescription: Detects a single large outbound network connection from an internal server, potentially an HR system like Oracle PeopleSoft, to an external address. This could indicate a large file transfer as part of data exfiltration.\nreferences:\n  - https://www.classaction.org/data-breach-lawsuits/jcpenney-june-2026\nauthor: cyber.netsecops.io\ndate: 2026-06-20\ntags:\n  - attack.t1048\n  - attack.exfiltration\nlevel: low\nlogsource:\n  category: firewall\ndetection:\n  selection:\n    src_ip:\n      - '10.0.0.0/8'      # Placeholder for internal HR/PeopleSoft server IPs\n      - '172.16.0.0/12'\n      - '192.168.0.0/16'\n    bytes_out|gt: 100000000 # 100MB in a single flow\n  condition: selection\nfalsepositives:\n  - Legitimate large file transfers to partners or cloud services.\n  - Large software updates.",
+      "description": "Detects unusually large data transfers from internal servers, which could indicate data exfiltration as described in the report's detection section."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Data from Information Repositories",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "JCPenney",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "ShinyHunters",
+      "source_type": "threat-actor",
+      "relationship_type": "exploits",
+      "target_name": "CVE-2026-35273",
+      "target_type": "vulnerability"
+    },
+    {
+      "source_name": "ShinyHunters Oracle PeopleSoft Extortion Campaign",
+      "source_type": "campaign",
+      "relationship_type": "attributed-to",
+      "target_name": "ShinyHunters",
+      "target_type": "threat-actor"
+    },
+    {
+      "source_name": "ShinyHunters Oracle PeopleSoft Extortion Campaign",
+      "source_type": "campaign",
+      "relationship_type": "uses",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "ShinyHunters Oracle PeopleSoft Extortion Campaign",
+      "source_type": "campaign",
+      "relationship_type": "targets",
+      "target_name": "JCPenney",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "JCPenney",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "United States",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Potential Oracle PeopleSoft Data Enumeration",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exploit Public-Facing Application",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Large Network Egress from Internal HR System",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

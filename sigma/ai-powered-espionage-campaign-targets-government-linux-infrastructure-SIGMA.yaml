@@ -1,0 +1,91 @@
+title: CL-UNK-1211 Sudo Hijacking via .bashrc Modification
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects modification of .bashrc files to include a malicious 'sudo' alias, a technique used by CL-UNK-1211 for password theft.
+author: cyber.netsecops.io
+date: 2026-10-16
+references:
+  - https://unit42.paloaltonetworks.com/ai-campaign-targets-linux-infrastructure/
+tags:
+  - attack.t1546.004
+  - attack.t1056.001
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection_filename:
+    TargetFilename|endswith: '/.bashrc'
+  selection_content:
+    Contents|contains: 'alias sudo='
+  condition: all of selection_*
+---
+title: CL-UNK-1211 PHP auto_prepend_file Persistence
+id: 28a30e88-f51e-400e-9ce1-7d17667fe598
+status: experimental
+description: Detects modifications to PHP configuration files to set the 'auto_prepend_file' directive, a persistence technique used by CL-UNK-1211.
+author: cyber.netsecops.io
+date: 2026-10-16
+references:
+  - https://unit42.paloaltonetworks.com/ai-campaign-targets-linux-infrastructure/
+tags:
+  - attack.t1574
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection_path:
+    TargetFilename|contains:
+      - '/etc/php/'
+      - '/opt/plesk/php/'
+  selection_content:
+    Contents|contains: 'auto_prepend_file'
+  condition: all of selection_*
+---
+title: Suspicious Shell Spawned from PHP-FPM
+id: c05c55cb-af06-4ab3-bded-2086bb7362d8
+status: experimental
+description: Detects a PHP-FPM process spawning a shell, which could indicate web shell execution as seen in the CL-UNK-1211 campaign.
+author: cyber.netsecops.io
+date: 2026-10-16
+references:
+  - https://unit42.paloaltonetworks.com/ai-campaign-targets-linux-infrastructure/
+tags:
+  - attack.t1505.003
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  selection_parent:
+    ParentImage|endswith: '/php-fpm'
+  selection_child:
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+      - '/zsh'
+      - '/csh'
+      - '/ksh'
+  condition: all of selection_*
+---
+title: CL-UNK-1211 Masquerading File Creation
+id: 7c5b1a3d-8e4f-4b2a-9c1d-0f8a7b6c5d4e
+status: experimental
+description: Detects the creation of files with names used by the CL-UNK-1211 actor to masquerade their tools.
+author: cyber.netsecops.io
+date: 2026-10-16
+references:
+  - https://unit42.paloaltonetworks.com/ai-campaign-targets-linux-infrastructure/
+tags:
+  - attack.t1036.005
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|endswith:
+      - '/plesk_sys_driver.php'
+      - '/Solarwinds.StatusLog.txt'
+  condition: selection

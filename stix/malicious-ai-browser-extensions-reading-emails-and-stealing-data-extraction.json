@@ -1,0 +1,260 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-05-01T15:19:36.064Z",
+    "article_slug": "malicious-ai-browser-extensions-reading-emails-and-stealing-data",
+    "article_date": "2026-05-01",
+    "token_usage": {
+      "input_tokens": 144730,
+      "output_tokens": 3084,
+      "cached_tokens": 137731,
+      "total_tokens": 147814,
+      "cache_hit": true,
+      "estimated_cost_usd": 0.056805
+    }
+  },
+  "report_name": "Unit 42 Uncovers Malicious AI Browser Extensions Acting as RATs and Infostealers",
+  "threat_actors": [],
+  "attack_patterns": [
+    {
+      "name": "Browser Extensions",
+      "mitre_id": "T1176",
+      "description": "The primary entry vector is tricking users into installing a malicious browser extension masquerading as a Generative AI productivity tool."
+    },
+    {
+      "name": "JavaScript",
+      "mitre_id": "T1059.007",
+      "description": "The 'Chrome MCP Server - AI Browser Control' RAT extension uses the 'new Function()' pattern to execute arbitrary JavaScript received from its C2 server, allowing it to perform actions within the user's active browser session."
+    },
+    {
+      "name": "Data from Local System",
+      "mitre_id": "T1005",
+      "description": "Malicious extensions read sensitive data from browser storage, cookies, and rendered page content (DOM)."
+    },
+    {
+      "name": "Email Collection: Local Email Collection",
+      "mitre_id": "T1114.001",
+      "description": "The 'Supersonic AI' Attacker-in-the-Browser extension scrapes email content, including sender, recipients, subject, and body, directly from the webmail interface's DOM."
+    },
+    {
+      "name": "Credentials from Web Browsers",
+      "mitre_id": "T1555.003",
+      "description": "The malicious extensions leverage broad permissions to access and exfiltrate saved passwords and session cookies from the browser."
+    },
+    {
+      "name": "Web Protocols",
+      "mitre_id": "T1071.001",
+      "description": "The 'Chrome MCP Server - AI Browser Control' RAT uses a WebSocket (wss://) for persistent, bidirectional communication with its C2 server."
+    },
+    {
+      "name": "Exfiltration Over C2 Channel",
+      "mitre_id": "T1041",
+      "description": "Stolen data, including credentials and proprietary information, is sent back to the attacker-controlled server over the established C2 channel."
+    }
+  ],
+  "malware": [
+    {
+      "name": "Chrome MCP Server - AI Browser Control",
+      "mitre_id": "",
+      "type": "remote-access-trojan",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious browser extension masquerading as an AI tool that functions as a full-featured Remote Access Trojan (RAT). It establishes a persistent WebSocket C2 channel to execute arbitrary JavaScript commands received from the C2 server.",
+      "capabilities": [
+        "communicates-with-c2",
+        "controls-local-machine",
+        "steals-authentication-credentials",
+        "exfiltrates-data"
+      ]
+    },
+    {
+      "name": "Supersonic AI",
+      "mitre_id": "",
+      "type": "infostealer",
+      "is_family": false,
+      "aliases": [],
+      "description": "A malicious browser extension disguised as an AI email assistant for Gmail and Outlook. It uses an Attacker-in-the-Browser (AitB) technique to scrape and exfiltrate email content, including sender, recipients, subject, and body, directly from the web page's DOM.",
+      "capabilities": [
+        "exfiltrates-data",
+        "steals-authentication-credentials"
+      ]
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Palo Alto Networks Unit 42",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The security research organization that discovered and reported on the malicious AI browser extensions."
+    },
+    {
+      "name": "Google",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "The company that was notified of the malicious extensions and subsequently removed or flagged them from its web store."
+    },
+    {
+      "name": "Gmail",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "An email service targeted by the 'Supersonic AI' malicious browser extension."
+    },
+    {
+      "name": "Outlook",
+      "identity_class": "organization",
+      "sectors": [
+        "technology"
+      ],
+      "description": "An email service targeted by the 'Supersonic AI' malicious browser extension."
+    }
+  ],
+  "locations": [],
+  "infrastructure": [
+    {
+      "name": "Chrome MCP Server C2",
+      "infrastructure_types": [
+        "command-and-control"
+      ],
+      "description": "WebSocket C2 server at wss://mcp-browser.qubecare.ai used by the 'Chrome MCP Server - AI Browser Control' RAT extension for persistent, bidirectional communication."
+    }
+  ],
+  "observables": [
+    {
+      "type": "domain-name",
+      "value": "mcp-browser.qubecare.ai"
+    }
+  ],
+  "indicators": [
+    {
+      "name": "Chrome MCP Server RAT C2 Communication",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "[domain-name:value = 'mcp-browser.qubecare.ai'] OR [url:value = 'wss://mcp-browser.qubecare.ai/chrome']",
+      "x_netsecio_sigma_rule": "title: Chrome MCP Server RAT C2 DNS Query\nid: 9c5d8e7f-1b2a-4c3d-8e9f-0a1b2c3d4e5f\nstatus: experimental\ndescription: Detects DNS queries to the C2 domain mcp-browser.qubecare.ai used by the Chrome MCP Server RAT extension.\nreferences:\n  - https://unit42.paloaltonetworks.com/high-risk-gen-ai-browser-extensions/\nauthor: cyber.netsecops.io\ndate: 2026-05-01\ntags:\n  - attack.t1071.001\n  - attack.command_and_control\nlogsource:\n  category: dns_query\n  product: windows\ndetection:\n  selection:\n    QueryName|contains:\n      - 'mcp-browser.qubecare.ai'\n  condition: selection\nfalsepositives:\n  - None known.\nlevel: high",
+      "pattern": "",
+      "description": "Detects network communication with the command and control infrastructure of the 'Chrome MCP Server - AI Browser Control' RAT extension."
+    },
+    {
+      "name": "Browser Launched with Remote Debugging Port",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Browser Launched with Remote Debugging Port\nid: 8b4a7c6d-0f9e-4d8c-bf1a-2b3c4d5e6f7a\nstatus: experimental\ndescription: Detects a browser process (chrome.exe, msedge.exe) launched with a remote debugging port enabled, which can be abused by malicious extensions or local attackers.\nreferences:\n  - https://unit42.paloaltonetworks.com/high-risk-gen-ai-browser-extensions/\nauthor: cyber.netsecops.io\ndate: 2026-05-01\ntags:\n  - attack.t1176\nlogsource:\n  category: process_creation\n  product: windows\ndetection:\n  selection_process:\n    Image|endswith:\n      - '\\chrome.exe'\n      - '\\msedge.exe'\n  selection_flag:\n    CommandLine|contains:\n      - '--remote-debugging-port='\n  condition: all of selection_*\nfalsepositives:\n  - Legitimate use by web developers for debugging purposes.\nlevel: medium",
+      "description": "Detects browsers being launched with the remote debugging port enabled, a condition that can be abused by malicious extensions as noted in the Unit 42 research."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "Chrome MCP Server - AI Browser Control",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "JavaScript",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Chrome MCP Server - AI Browser Control",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Web Protocols",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Chrome MCP Server - AI Browser Control",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over C2 Channel",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Chrome MCP Server - AI Browser Control",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials from Web Browsers",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Chrome MCP Server - AI Browser Control",
+      "source_type": "malware",
+      "relationship_type": "beacons-to",
+      "target_name": "Chrome MCP Server C2",
+      "target_type": "infrastructure"
+    },
+    {
+      "source_name": "Supersonic AI",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Data from Local System",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Supersonic AI",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Email Collection: Local Email Collection",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Supersonic AI",
+      "source_type": "malware",
+      "relationship_type": "uses",
+      "target_name": "Credentials from Web Browsers",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "Supersonic AI",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "Gmail",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Supersonic AI",
+      "source_type": "malware",
+      "relationship_type": "targets",
+      "target_name": "Outlook",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "Chrome MCP Server C2",
+      "source_type": "infrastructure",
+      "relationship_type": "communicates-with",
+      "target_name": "mcp-browser.qubecare.ai",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "Chrome MCP Server RAT C2 Communication",
+      "source_type": "indicator",
+      "relationship_type": "based-on",
+      "target_name": "mcp-browser.qubecare.ai",
+      "target_type": "domain-name"
+    },
+    {
+      "source_name": "Chrome MCP Server RAT C2 Communication",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Chrome MCP Server - AI Browser Control",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "Browser Launched with Remote Debugging Port",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Browser Extensions",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

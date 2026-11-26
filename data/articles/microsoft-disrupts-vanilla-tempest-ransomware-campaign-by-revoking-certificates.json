@@ -1,0 +1,253 @@
+{
+  "id": "473606c9-f272-475b-87cf-94cbf3c8fdc8",
+  "slug": "microsoft-disrupts-vanilla-tempest-ransomware-campaign-by-revoking-certificates",
+  "headline": "Microsoft Thwarts Ransomware Campaign by Revoking 200+ Malicious Code-Signing Certificates",
+  "title": "Microsoft Disrupts Vanilla Tempest (Vice Society) by Revoking Over 200 Code-Signing Certificates Used to Sign Fake Microsoft Teams Installers",
+  "summary": "Microsoft has taken decisive action to disrupt a ransomware campaign by the threat group Vanilla Tempest (also known as Vice Society), which has been targeting education and healthcare. The group was using over 200 fraudulently obtained code-signing certificates to sign counterfeit Microsoft Teams installers. These fake installers delivered the Oyster backdoor, which in turn deployed the Rhysida ransomware. By revoking the certificates from providers like DigiCert, SSL.com, and its own Trusted Signing service, Microsoft has significantly hindered the malware's ability to evade detection.",
+  "full_report": "## Executive Summary\nOn October 16, 2025, **[Microsoft](https://www.microsoft.com/security)** announced a successful disruption of a ransomware campaign orchestrated by the financially motivated threat actor **Vanilla Tempest** (also tracked as **Vice Society** and Vice Spider). This group, known for targeting the education and healthcare sectors, was leveraging a sophisticated TTP to gain initial access: distributing fake **[Microsoft Teams](https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)** installers. To appear legitimate and bypass security controls, the malware was signed using over 200 code-signing certificates obtained from various trusted authorities. Microsoft, in collaboration with these authorities, revoked the certificates, crippling the campaign's primary delivery mechanism. The attack chain involved luring victims to download the fake installer, which deployed a backdoor called **Oyster**, leading to the final deployment of the **[Rhysida](https://malpedia.caad.fkie.fraunhofer.de/details/win.rhysida)** ransomware.\n\n---\n\n## Threat Overview\nThe **Vanilla Tempest** group has been active since at least 2021 and has a history of double-extortion attacks. This recent campaign demonstrates an evolution in their tactics to abuse the trust inherent in digitally signed software.\n\n**Attack Chain:**\n1.  **Distribution:** The threat actors used SEO poisoning or similar techniques to lure victims to malicious domains like `teams-download.buzz` and `teams-install.run` that impersonated official Microsoft Teams download pages.\n2.  **Initial Payload:** Victims downloaded a counterfeit `Teams.exe` installer. This executable was signed with a valid code-signing certificate, making it appear authentic to both the user and some security software.\n3.  **Backdoor Deployment:** Upon execution, the fake installer acted as a loader, deploying a signed version of the **Oyster** backdoor. This backdoor has been in use by the group since at least June 2025.\n4.  **Ransomware Execution:** The **Oyster** backdoor provided the attackers with persistent access and control over the compromised system, which they then used to deploy the **Rhysida** ransomware, encrypting files and exfiltrating data.\n\nTo acquire the digital signatures, **Vanilla Tempest** abused multiple code signing services, including Microsoft's Trusted Signing, **[DigiCert](https://www.digicert.com/)**, **[SSL.com](https://www.ssl.com/)**, and **[GlobalSign](https://www.globalsign.com)**. Microsoft's action of revoking over 200 of these certificates makes the malicious files immediately untrusted, allowing antivirus and EDR solutions to more easily detect and block them.\n\n---\n\n## Technical Analysis\nThis campaign relies heavily on social engineering and abusing trust mechanisms. The use of signed malware is a key defense evasion technique.\n\n### MITRE ATT&CK Techniques:\n- **Initial Access:** [`T1566.001 - Phishing: Spearphishing Link`](https://attack.mitre.org/techniques/T1566/001/) (likely vector to malicious sites) and [`T1189 - Drive-by Compromise`](https://attack.mitre.org/techniques/T1189/).\n- **Execution:** [`T1204.002 - User Execution: Malicious File`](https://attack.mitre.org/techniques/T1204/002/). The user is tricked into running the fake installer.\n- **Defense Evasion:** [`T1553.002 - Subvert Trust Controls: Code Signing`](https://attack.mitre.org/techniques/T1553/002/). This is the core TTP of the campaign. The valid signature helps the malware bypass security checks.\n- **Persistence:** [`T1136.001 - Create Account: Local Account`](https://attack.mitre.org/techniques/T1136/001/) or [`T1547.001 - Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder`](https://attack.mitre.org/techniques/T1547/001/) are common methods used by backdoors like **Oyster**.\n- **Command and Control:** The **Oyster** backdoor establishes a C2 channel, likely using [`T1071.001 - Application Layer Protocol: Web Protocols`](https://attack.mitre.org/techniques/T1071/001/).\n- **Impact:** [`T1486 - Data Encrypted for Impact`](https://attack.mitre.org/techniques/T1486/) (Rhysida ransomware) and [`T1490 - Inhibit System Recovery`](https://attack.mitre.org/techniques/T1490/).\n\n---\n\n## Impact Assessment\nThis campaign primarily targets the education and healthcare sectors, which are often under-resourced and highly susceptible to disruption. The impact of a successful **Rhysida** ransomware attack is severe:\n- **Operational Disruption:** Encryption of critical systems in schools and hospitals can halt operations, cancel classes, and delay patient care, posing a risk to safety.\n- **Data Breach:** **Vanilla Tempest** engages in double extortion, meaning they exfiltrate sensitive data (student records, patient information) before encryption and threaten to leak it if the ransom is not paid.\n- **Financial Loss:** The costs include ransom payments, recovery efforts, regulatory fines (e.g., HIPAA), and reputational damage.\n\nMicrosoft's disruption is a significant blow to this specific campaign, but the underlying TTP of using signed malware will persist. Organizations must remain vigilant.\n\n---\n\n## IOCs\n| Type | Value | Description |\n|---|---|---|\n| `domain` | `teams-download.buzz` | Malicious domain impersonating Microsoft Teams. |\n| `domain` | `teams-install.run` | Malicious domain impersonating Microsoft Teams. |\n\n---\n\n## Detection & Response\n1.  **Executable Analysis:** Scrutinize any new executables, especially those related to popular software like Microsoft Teams. Even if signed, check the signer's reputation and the file's origin. Use **[D3FEND File Analysis (D3-FA)](https://d3fend.mitre.org/technique/d3f:FileAnalysis)**.\n2.  **Endpoint Detection and Response (EDR):** EDR tools are crucial for detecting the post-execution behavior of the loader and the **Oyster** backdoor. Look for processes that drop and execute other files, establish suspicious network connections, or attempt to enumerate system information.\n3.  **Network Filtering:** Block the known malicious domains at the DNS or proxy level. Use **[D3FEND DNS Denylisting (D3-DNSDL)](https://d3fend.mitre.org/technique/d3f:DNSDenylisting)**.\n4.  **Certificate Revocation Checking:** Ensure that endpoint security settings are configured to check for certificate revocation status. Microsoft's action is only effective if clients honor the revocation.\n\n---\n\n## Mitigation\n1.  **User Training:** This is a primary defense. Train users to only download software from official vendor websites and to be suspicious of unsolicited links or search engine results. This aligns with **MITRE Mitigation M1017 (User Training)**.\n2.  **Application Control:** Implement application allowlisting policies using tools like AppLocker or WDAC. This prevents unauthorized executables, signed or not, from running. This is a form of **[D3FEND Executable Allowlisting (D3-EAL)](https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting)**.\n3.  **Restrict Installation Privileges:** Users should not have administrative rights to install software. This prevents the initial execution of the fake installer.\n4.  **Endpoint Protection:** Keep antivirus and EDR solutions up to date. While signatures can be bypassed, behavioral detection engines are more likely to catch the malicious activity of the backdoor and ransomware.",
+  "twitter_post": "Microsoft disrupts a major ransomware campaign by Vanilla Tempest (Vice Society). 🛡️ The group used 200+ revoked code-signing certs to sign fake Teams installers that deployed Rhysida ransomware. ⚠️ #Ransomware #CyberSecurity #Microsoft",
+  "meta_description": "Microsoft has disrupted a ransomware campaign by Vanilla Tempest (Vice Society) by revoking over 200 code-signing certificates used to sign malicious Microsoft Teams installers deploying Rhysida ransomware.",
+  "category": [
+    "Ransomware",
+    "Threat Actor",
+    "Malware"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "Microsoft",
+      "type": "vendor",
+      "url": "https://www.microsoft.com/security"
+    },
+    {
+      "name": "Vanilla Tempest",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Vice Society",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Vice Spider",
+      "type": "threat_actor"
+    },
+    {
+      "name": "Rhysida",
+      "type": "malware",
+      "url": "https://malpedia.caad.fkie.fraunhofer.de/details/win.rhysida"
+    },
+    {
+      "name": "Oyster",
+      "type": "malware"
+    },
+    {
+      "name": "Microsoft Teams",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+    },
+    {
+      "name": "Microsoft Trusted Signing",
+      "type": "product"
+    },
+    {
+      "name": "SSL.com",
+      "type": "vendor",
+      "url": "https://www.ssl.com/"
+    },
+    {
+      "name": "DigiCert",
+      "type": "vendor",
+      "url": "https://www.digicert.com/"
+    },
+    {
+      "name": "GlobalSign",
+      "type": "vendor",
+      "url": "https://www.globalsign.com"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/microsoft-revokes-over-200-certificates-to-disrupt-ransomware-campaign/",
+      "title": "Microsoft Revokes Over 200 Certificates to Disrupt Ransomware Campaign",
+      "date": "2025-10-16",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2025-06-01T00:00:00Z",
+      "summary": "Vanilla Tempest begins using the Oyster backdoor in its campaigns."
+    },
+    {
+      "datetime": "2025-10-16T00:00:00Z",
+      "summary": "Microsoft announces the revocation of over 200 code-signing certificates to disrupt the campaign."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1553.002",
+      "name": "Subvert Trust Controls: Code Signing",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1204.002",
+      "name": "User Execution: Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1189",
+      "name": "Drive-by Compromise",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Application Layer Protocol: Web Protocols",
+      "tactic": "Command and Control"
+    },
+    {
+      "id": "T1486",
+      "name": "Data Encrypted for Impact",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        }
+      ],
+      "description": "Application control policies that only allow known, approved applications to run can prevent the execution of the fake installer, regardless of whether it is signed.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Training users to identify social engineering tactics, such as fake download sites, and to only download software from official sources is a critical preventative measure.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        }
+      ],
+      "description": "While attackers abused code signing, defenders can use it for protection by creating policies that only allow executables signed by specific, trusted publishers.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DNSDL",
+          "name": "DNS Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:DNSDenylisting"
+        },
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        }
+      ],
+      "description": "Using web filters and DNS blocklists to prevent access to known malicious domains and newly registered domains can block the initial download vector.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "Implement application control, such as Windows Defender Application Control (WDAC) or AppLocker, to enforce a strict policy of executable allowlisting. This is the most effective technical control against this attack vector. Instead of relying on blocklists, which are easily bypassed, an allowlist ensures that only pre-approved, legitimate applications can execute. For this specific threat, you would create rules that only permit the official Microsoft-signed Teams installer to run. Any other executable, even one with a valid but non-approved signature like those used by Vanilla Tempest, would be blocked by default. This approach moves beyond checking for a valid signature and instead enforces trust based on a specific, known-good publisher and file hash. This neutralizes the threat actor's core tactic of using fraudulently obtained certificates.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-DNSDL",
+      "technique_name": "DNS Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:DNSDenylisting",
+      "recommendation": "Deploy a DNS filtering service that blocks access to known malicious domains and categorizes newly registered domains as high-risk. This countermeasure targets the initial distribution phase of the attack. By blocking access to domains like `teams-download.buzz` and `teams-install.run`, users are prevented from ever reaching the malicious download page, even if they click a link from a phishing email or poisoned search result. Configure the policy to block categories such as 'malware', 'phishing', and 'newly seen domains'. This proactive measure can disrupt a wide range of threats that rely on luring users to malicious websites for initial compromise. Regularly update the blocklists with threat intelligence feeds to ensure protection against the latest campaign infrastructure.",
+      "mitre_mitigation_id": "M1021"
+    },
+    {
+      "technique_id": "D3-FA",
+      "technique_name": "File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileAnalysis",
+      "recommendation": "Enhance endpoint security to perform deeper analysis of downloaded executables, regardless of their signature status. Configure EDR and antivirus solutions to submit all newly seen executables, especially those purporting to be installers for common software like Microsoft Teams, to a sandbox for dynamic analysis. The sandbox can execute the file in an isolated environment and observe its behavior, such as dropping other files (the Oyster backdoor), making network callbacks, or attempting to modify system settings. This behavioral analysis can identify the malicious intent that a simple signature check would miss. Alert security teams immediately if a signed file exhibits any suspicious behavior during sandboxed analysis.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "teams-download.buzz",
+      "description": "Malicious domain hosting fake Microsoft Teams installers."
+    },
+    {
+      "type": "domain",
+      "value": "teams-install.run",
+      "description": "Malicious domain hosting fake Microsoft Teams installers."
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "Teams.exe",
+      "description": "The filename used for the counterfeit Microsoft Teams installer. Scrutinize properties of any file with this name, especially its digital signature and origin.",
+      "context": "EDR, file system monitoring",
+      "confidence": "medium"
+    },
+    {
+      "type": "certificate_subject",
+      "value": "CN=*",
+      "description": "Analyze digital signatures of newly executed files. While specific subjects are now revoked, attackers will acquire new ones. Look for newly-issued certificates from lesser-known publishers signing common software names.",
+      "context": "EDR, code signing logs (Sysmon Event ID 24)",
+      "confidence": "low"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "HTTP/HTTPS connections from unexpected processes",
+      "description": "The Oyster backdoor will initiate C2 connections. A process masquerading as a Teams installer making outbound connections to non-Microsoft domains is highly suspicious.",
+      "context": "Proxy logs, firewall logs, NetFlow",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Ransomware",
+    "Vanilla Tempest",
+    "Vice Society",
+    "Rhysida",
+    "Code Signing",
+    "Microsoft Teams",
+    "Malware",
+    "Microsoft"
+  ],
+  "extract_datetime": "2025-10-16T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Education",
+      "Healthcare"
+    ]
+  },
+  "pub_date": "2025-10-16",
+  "reading_time_minutes": 5,
+  "createdAt": "2025-10-16T15:00:00.000Z",
+  "updatedAt": "2025-10-16T15:00:00.000Z"
+}

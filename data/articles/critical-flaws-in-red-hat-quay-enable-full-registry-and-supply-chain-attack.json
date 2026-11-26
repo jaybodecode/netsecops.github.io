@@ -1,0 +1,185 @@
+{
+  "id": "b8616ae1-9c18-4fb7-b654-87b9ee6d9a64",
+  "slug": "critical-flaws-in-red-hat-quay-enable-full-registry-and-supply-chain-attack",
+  "headline": "Critical Flaws in Red Hat Quay Enable Full Registry and Supply Chain Attack",
+  "title": "Critical Red Hat Quay Flaws (CVSS 9.9) Allow Container Registry Takeover",
+  "summary": "Red Hat has patched two critical vulnerabilities in its Quay container registry, CVE-2026-123710 (CVSS 9.8) and CVE-2026-110697 (CVSS 9.9). These flaws could allow an attacker to achieve a full supply chain compromise by injecting malicious container images. The vulnerabilities enable an unauthenticated attacker to gain read/write access to any repository or a low-privileged user to steal tokens and manipulate images across tenants. All users of Quay 3 and 5 are urged to patch immediately.",
+  "full_report": "## Executive Summary\n**[Red Hat](https://www.redhat.com)** has disclosed and patched two **critical vulnerabilities** in its **Quay** container registry, a popular platform for storing, building, and deploying container images. The vulnerabilities, **[CVE-2026-123710](https://nvd.nist.gov/vuln/detail/CVE-2026-123710)** (CVSS 9.8) and **[CVE-2026-110697](https://nvd.nist.gov/vuln/detail/CVE-2026-110697)** (CVSS 9.9), create a severe risk of a software supply chain attack. When combined, they could allow a remote attacker to read, overwrite, and inject malicious code into any container image stored in the registry. This would lead to the deployment of compromised images into production environments. All versions of Quay 3 and Quay 5 are affected, and administrators are strongly advised to apply the available patches immediately.\n\n---\n\n## Vulnerability Details\nThe two vulnerabilities can be chained together or exploited separately to achieve a full compromise of the container registry.\n\n### CVE-2026-123710: Trust-Key Injection (CVSS 9.8)\nThis is a critical flaw that allows a remote, unauthenticated attacker to install their own service signing key into the Quay registry. Due to improper input validation, an attacker can craft a request that causes the registry to accept and store a malicious, non-expiring key. Using this key, the attacker can then sign and issue their own registry tokens, granting them full read and write access to **any repository** on the Quay instance. This would allow them to, for example, replace the `latest` tag of a legitimate application image with a malicious one.\n\n### CVE-2026-110697: SQL Injection leading to Token Theft (CVSS 9.9)\nThis vulnerability is an SQL injection flaw in the namespace lookup function, specifically related to an unescaped SQL `LIKE` wildcard. It allows any authenticated user, even one with very low privileges, to craft a query that can steal robot account tokens belonging to other tenants on the same multi-tenant Quay instance. Once an attacker has these tokens, they can impersonate the robot account and use its permissions to manipulate images, potentially poisoning a CI/CD pipeline.\n\n---\n\n## Affected Systems\n- **Red Hat Quay 3:** All versions are affected.\n- **Red Hat Quay 5:** All versions are affected.\n\nGiven Quay's role as a central artifact repository, it is often integrated with CI/CD platforms like **[OpenShift](https://www.redhat.com/en/technologies/cloud-computing/openshift)**, Jenkins, or GitLab. A compromise of Quay can therefore lead to a widespread compromise of an organization's entire software delivery pipeline.\n\n---\n\n## Exploitation Status\nAs of November 13, 2026, there are no public reports of these vulnerabilities being exploited in the wild. However, given their critical severity and the detailed public disclosure, the risk of exploitation is high. Security researchers and threat actors will likely move quickly to develop exploits.\n\n---\n\n## Cyber Observables — Hunting Hints\nThe following patterns may help identify vulnerable systems or exploitation attempts:\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| log_source | `Quay registry audit logs` | Monitor for the creation of new service signing keys, especially if they are unexpected or have unusual properties (e.g., non-expiring). | Quay application logs, SIEM. | high |\n| log_source | `Quay database logs` | Monitor for malformed SQL queries containing wildcards (`%`, `_`) in unexpected places, which could indicate an SQLi attempt. | Database audit logs. | medium |\n| network_traffic_pattern | `Anomalous image pushes` | An alert on an image being pushed to a repository from an unknown IP address or by an account that does not normally contribute to it. | Quay audit logs, network monitoring. | medium |\n\n---\n\n## Detection Methods\n- **Version Scanning:** The most reliable method of detection is to check the version of your Quay instances. Use asset management or vulnerability scanning tools to identify all deployed Quay registries and verify if they are running a patched version.\n- **Audit Log Review:** Actively review Quay's audit logs for any unauthorized or suspicious activity, such as unexpected token generation, key injection, or image pushes to critical repositories.\n- **Image Signing and Verification:** If you are using image signing (e.g., Cosign), monitor for any images that are not signed or are signed with an untrusted key. An attacker might replace a signed image with an unsigned one.\n\n---\n\n## Remediation Steps\n1.  **Patch Immediately:** The primary and most urgent action is to upgrade all Quay instances to a patched version as released by Red Hat. This is a critical vulnerability that requires immediate attention.\n2.  **Rotate Credentials:** After patching, it is highly recommended to rotate all secrets, robot account tokens, and signing keys associated with the Quay registry as a precautionary measure. Assume that if your system was vulnerable, tokens may have been compromised.\n3.  **Audit Repositories:** Review critical repositories and image tags (especially `latest`) to ensure that the image digests are what you expect them to be. Check the history of recent pushes for any signs of tampering.\n4.  **Enforce Image Signing:** As a long-term mitigation, implement a strict policy of signing all container images and configuring your container runtime (e.g., Kubernetes) to only pull and run images that are signed with a trusted key. This is a key defense against supply chain attacks.",
+  "twitter_post": "CRITICAL: Red Hat patches two severe flaws (CVSS 9.9) in Quay container registry. CVE-2026-123710 & CVE-2026-110697 allow full registry takeover and supply chain attacks. All Quay 3 & 5 users must patch immediately. #Quay #RedHat #CVE",
+  "meta_description": "Red Hat has patched two critical vulnerabilities (CVE-2026-123710, CVE-2026-110697) in its Quay container registry that could lead to a full supply chain compromise.",
+  "category": [
+    "Vulnerability",
+    "Supply Chain Attack",
+    "Cloud Security"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "Red Hat",
+      "type": "vendor",
+      "url": "https://www.redhat.com/"
+    },
+    {
+      "name": "Quay",
+      "type": "product"
+    },
+    {
+      "name": "OpenShift",
+      "type": "product",
+      "url": "https://www.redhat.com/en/technologies/cloud-computing/openshift"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-123710",
+      "cvss_score": 9.8,
+      "cvss_version": "3.1",
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-110697",
+      "cvss_score": 9.9,
+      "cvss_version": "3.1",
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://aviatrix.ai/threat-research-center/critical-red-hat-quay-flaw-cve-2026-123710-cve-2026-110697-container-registry-compromise/",
+      "title": "Critical Red Hat Quay CVEs (CVSS 9.8/9.9): Comprehensive Threat Summary",
+      "friendly_name": "Aviatrix",
+      "website": "aviatrix.ai",
+      "date": "2026-11-13"
+    },
+    {
+      "url": "https://nflo.tech/knowledge-base/2026-11-11-cve-2026-123710-en/",
+      "title": "CVE-2026-123710 (Red Hat Quay)",
+      "friendly_name": "nflo.tech",
+      "website": "nflo.tech",
+      "date": "2026-11-11"
+    },
+    {
+      "url": "https://www.ionix.io/threat-center/cve-2026-123710/",
+      "title": "CVE-2026-123710",
+      "friendly_name": "Ionix",
+      "website": "ionix.io",
+      "date": "2026-11-12"
+    },
+    {
+      "url": "https://wizardcyber.com/november-2026-patch-tuesday-outlook-ntlm-zero-day/",
+      "title": "wizardcyber.com",
+      "website": "wizardcyber.com"
+    },
+    {
+      "url": "https://www.rapid7.com/blog/post/em-patch-tuesday-november-2026/",
+      "title": "rapid7.com",
+      "website": "rapid7.com"
+    },
+    {
+      "url": "https://threatdefence.com/article/microsoft-outlook-cve-2026-124194-ntlm-zero-day-patching-hunting",
+      "title": "threatdefence.com",
+      "website": "threatdefence.com"
+    },
+    {
+      "url": "https://www.zerodayinitiative.com/blog/2026/11/10/the-november-2026-security-update-review",
+      "title": "zerodayinitiative.com",
+      "website": "zerodayinitiative.com"
+    },
+    {
+      "url": "https://socprime.com/blog/cve-2026-124194-microsoft-outlook-zero-day-exploited-to-steal-ntlm-hashes/",
+      "title": "socprime.com",
+      "website": "socprime.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1199",
+      "name": "Trusted Relationship",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1554",
+      "name": "Compromise Client Software Binary",
+      "tactic": "Impact"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "The most critical mitigation is to upgrade all vulnerable Quay instances to a patched version provided by Red Hat.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1047",
+      "name": "Audit",
+      "description": "Regularly audit Quay logs for suspicious activities such as unexpected key generation or token usage to detect potential compromise.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1045",
+      "name": "Code Signing",
+      "description": "Implementing container image signing and verification ensures that only images from trusted sources can be deployed, mitigating the impact of a registry compromise.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Quay registry audit logs",
+      "description": "Monitor for the creation of new service signing keys, especially if they are unexpected or have unusual properties (e.g., non-expiring). This could indicate exploitation of CVE-2026-123710.",
+      "context": "Quay application logs, SIEM.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Quay database logs",
+      "description": "Monitor for malformed SQL queries containing wildcards (`%`, `_`) in unexpected places, which could indicate an SQLi attempt related to CVE-2026-110697.",
+      "context": "Database audit logs.",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Anomalous image pushes",
+      "description": "An alert on an image being pushed to a repository from an unknown IP address or by an account that does not normally contribute to it.",
+      "context": "Quay audit logs, network monitoring.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "Vulnerability",
+    "Red Hat",
+    "Quay",
+    "CVE-2026-123710",
+    "CVE-2026-110697",
+    "Supply Chain Attack",
+    "Container Security"
+  ],
+  "extract_datetime": "2026-11-13T15:00:00.000Z",
+  "article_type": "Advisory",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology",
+      "Finance",
+      "Healthcare",
+      "Government"
+    ],
+    "other_affected": [
+      "Users of containerized applications",
+      "Organizations with CI/CD pipelines"
+    ]
+  },
+  "pub_date": "2026-11-13",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-11-13T15:00:00.000Z",
+  "updatedAt": "2026-11-13T15:00:00.000Z"
+}

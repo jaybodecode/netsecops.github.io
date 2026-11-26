@@ -1,0 +1,236 @@
+{
+  "id": "ccee78e8-9734-455d-8acb-bf37a656f311",
+  "slug": "bigbear-2-0-phishing-service-bypasses-mfa-in-global-m365-campaign",
+  "headline": "'BigBear 2.0' Phishing Service Bypasses MFA in Global M365 Campaign",
+  "title": "'BigBear 2.0' PhaaS Targets Microsoft 365 Users with MFA Bypass",
+  "summary": "A large-scale phishing-as-a-service (PhaaS) operation, named 'BigBear 2.0,' is targeting hundreds of organizations globally with Microsoft 365 credential theft attacks. Researched by CloudSEK, the service uses a customized version of the Evilginx2 adversary-in-the-middle (AiTM) framework to bypass multi-factor authentication (MFA) and steal session cookies. The operation, managed by an actor named 'General Boss,' has compromised over 5,000 records across 40+ countries. The framework uses advanced techniques like custom JavaScript to disable FIDO2/WebAuthn and residential proxies to evade detection. IT service providers and MSPs are primary targets, indicating a potential for supply chain attacks.",
+  "full_report": "## Executive Summary\nResearchers at **[CloudSEK](https://cloudsek.com/)** have uncovered a large-scale, sophisticated Phishing-as-a-Service (PhaaS) operation named 'BigBear 2.0'. Active since June 2026, the service provides threat actors with a toolkit to conduct adversary-in-the-middle (AiTM) attacks specifically designed to bypass multi-factor authentication (MFA) for **[Microsoft 365](https://www.microsoft.com/en-us/microsoft-365)** accounts. The framework is a customized version of the notorious **[Evilginx2](https://github.com/kgretzky/evilginx2)** toolkit. The operation, allegedly run by an individual known as 'General Boss', has already resulted in the theft of thousands of credential records and session cookies from victims in over 40 countries. The primary targets appear to be IT service providers and MSPs, suggesting a strategic focus on enabling downstream supply chain attacks.\n\n---\n\n## Threat Overview\n'BigBear 2.0' operates as a turnkey PhaaS platform. The operator, 'General Boss', manages the infrastructure and leases access to at least five affiliate operators. These affiliates launch phishing campaigns, and the stolen credentials and session cookies are delivered to them in real-time via **[Telegram](https://telegram.org/)** bots.\n\nThe attack employs an AiTM technique. The victim receives a phishing email and clicks a link to a malicious server that proxies the legitimate Microsoft login page. The victim enters their credentials and completes their MFA challenge on what appears to be the real site. However, because all traffic is passing through the attacker's server, the framework is able to intercept the username, password, and, most importantly, the session cookie that is generated *after* the successful MFA-authenticated login.\n\n### Technical Analysis\nThe 'BigBear 2.0' framework includes several advanced features:\n- **Custom Evilginx2:** The core of the service is a modified version of Evilginx2.\n- **MFA Bypass:** It specializes in session cookie theft to bypass all but the most advanced forms of MFA.\n- **FIDO2/WebAuthn Disablement:** The framework uses custom JavaScript injections to attempt to disable or downgrade modern, phishing-resistant MFA methods.\n- **Residential Proxies:** It uses geo-matched residential proxy pools to make login attempts appear legitimate and bypass bot detection and location-based Conditional Access policies.\n- **Infrastructure:** The operation was observed using 42 VPS nodes, primarily hosted at **[Vultr](https://www.vultr.com/)**.\n\n**MITRE ATT&CK Techniques Observed/Inferred:**\n- **Initial Access:** [`T1566.002 - Spearphishing Link`](https://attack.mitre.org/techniques/T1566/002/)\n- **Credential Access:** [`T1539 - Steal Web Session Cookie`](https://attack.mitre.org/techniques/T1539/), [`T1606.002 - Steal Application Access Token`](https://attack.mitre.org/techniques/T1606/002/)\n- **Defense Evasion:** [`T1078 - Valid Accounts`](https://attack.mitre.org/techniques/T1078/), [`T1611 - Adversary-in-the-Middle`](https://attack.mitre.org/techniques/T1611/)\n- **Command and Control:** [`T1071.001 - Web Protocols`](https://attack.mitre.org/techniques/T1071/001/)\n\n---\n\n## Impact Assessment\nCloudSEK's investigation into the operator's panel revealed the scale of the operation:\n- **5,137** credential records exfiltrated.\n- **4,148** session cookies stolen.\n- **474** complete MFA-bypassed authentications.\n- Victims from **3,331** unique IP addresses across more than 40 countries.\n\nThe impact of a successful attack is severe:\n- **Full Account Takeover:** Attackers gain complete access to the victim's M365 account, including email, files, and connected applications.\n- **Supply Chain Risk:** By targeting MSPs, attackers can potentially pivot from a compromised MSP account to attack their downstream clients.\n- **Business Email Compromise (BEC):** The compromised account can be used to launch convincing BEC attacks, leading to financial fraud.\n\n## IOCs — Directly from Articles\nNo specific IOCs like domains or hashes were provided in the source articles.\n\n## Cyber Observables — Hunting Hints\nSecurity teams should hunt for signs of AiTM phishing and session hijacking:\n\n| Type | Value | Description |\n|---|---|---|\n| log_source | Microsoft Entra ID Sign-in logs | Look for sign-ins with `MFA requirement satisfied by claim in the token` where the IP address, location, or device information is anomalous. This indicates a replayed session token. |\n| network_traffic_pattern | Logins from Vultr ASN | The campaign used Vultr hosting. While not definitive, logins from Vultr's ASN (AS20473) to non-admin accounts should be scrutinized. |\n| url_pattern | Lookalike domains | Phishing links will use domains that are visually similar to `microsoft.com`, `office.com`, or the target company's domain. |\n\n## Detection & Response\n1.  **Monitor Sign-in Logs:** Continuously monitor Microsoft Entra ID (Azure AD) sign-in logs for suspicious activity. Pay close attention to the `MFA detail` and `Conditional Access` policies applied to a login. A successful login that bypasses an expected policy is a major red flag.\n2.  **Token Replay Detection:** Look for impossible travel scenarios or session logins from multiple, disparate locations in a short period. Microsoft's Identity Protection has built-in capabilities for this.\n3.  **User-Reported Phishing:** Implement a robust process for users to report suspicious emails. Analyze these reports quickly to identify phishing domains and block them at the network perimeter.\n\n## Mitigation\n1.  **Phishing-Resistant MFA:** The most effective mitigation is to deploy phishing-resistant MFA, such as FIDO2 security keys. These methods are not vulnerable to AiTM attacks because they bind the session to the hardware and origin, preventing token replay.\n2.  **Conditional Access Policies:** Strengthen Conditional Access policies to block logins from known malicious or anonymizing infrastructure (like certain data center IP ranges) and to enforce device compliance. A compliant, managed device is harder to compromise.\n3.  **User Training:** Train users to be vigilant about login prompts and to inspect URLs carefully before entering credentials. They should be suspicious of any unexpected requests to re-authenticate.\n4.  **Email Security:** Use advanced email security solutions that can detect and block phishing links, including those using lookalike domains and other evasion techniques.",
+  "twitter_post": "Global PhaaS 'BigBear 2.0' uses custom Evilginx2 to bypass MFA in Microsoft 365 attacks. The service steals session cookies, targeting MSPs and IT firms. Phishing-resistant MFA is the key defense. #PhaaS #MFA #M365 #Phishing #CyberSecurity",
+  "meta_description": "A Phishing-as-a-Service (PhaaS) operation named 'BigBear 2.0' is using a custom Evilginx2 framework to bypass MFA and steal Microsoft 365 session cookies globally.",
+  "category": [
+    "Phishing",
+    "Threat Actor",
+    "Cloud Security"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "BigBear 2.0",
+      "type": "malware"
+    },
+    {
+      "name": "General Boss",
+      "type": "threat_actor"
+    },
+    {
+      "name": "CloudSEK",
+      "type": "security_organization",
+      "url": "https://cloudsek.com/"
+    },
+    {
+      "name": "Microsoft 365",
+      "type": "product",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/"
+    },
+    {
+      "name": "Evilginx2",
+      "type": "malware"
+    },
+    {
+      "name": "Telegram",
+      "type": "product"
+    },
+    {
+      "name": "Vultr",
+      "type": "company",
+      "url": "https://www.vultr.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.cloudsek.com/blog/tracking-bigbear-2-0-evilginx2-phishing-campaign",
+      "title": "Tracking BigBear 2.0 Evilginx2 Phishing Campaign - CloudSEK",
+      "date": "2026-09-07",
+      "friendly_name": "CloudSEK",
+      "website": "cloudsek.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-06-01T00:00:00Z",
+      "summary": "The 'BigBear 2.0' phishing campaign begins."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1566.002",
+      "name": "Spearphishing Link",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1611",
+      "name": "Adversary-in-the-Middle",
+      "tactic": "Defense Evasion"
+    },
+    {
+      "id": "T1539",
+      "name": "Steal Web Session Cookie",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Defense Evasion"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1032",
+      "name": "Multi-factor Authentication",
+      "d3fend_techniques": [
+        {
+          "id": "D3-MFA",
+          "name": "Multi-factor Authentication",
+          "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication"
+        }
+      ],
+      "description": "Deploy phishing-resistant MFA methods like FIDO2 security keys that are immune to adversary-in-the-middle (AiTM) attacks.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify phishing links, verify URLs before entering credentials, and be suspicious of unexpected login prompts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DNSAL",
+          "name": "DNS Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:DNSAllowlisting"
+        },
+        {
+          "id": "D3-DNSDL",
+          "name": "DNS Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:DNSDenylisting"
+        },
+        {
+          "id": "D3-FA",
+          "name": "File Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileAnalysis"
+        },
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        },
+        {
+          "id": "D3-NTA",
+          "name": "Network Traffic Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis"
+        },
+        {
+          "id": "D3-OTF",
+          "name": "Outbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:OutboundTrafficFiltering"
+        },
+        {
+          "id": "D3-UA",
+          "name": "URL Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:URLAnalysis"
+        }
+      ],
+      "description": "Use email and web security gateways to analyze and block links to known phishing sites and newly registered domains.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-MFA",
+      "technique_name": "Multi-factor Authentication",
+      "url": "https://d3fend.mitre.org/technique/d3f:Multi-factorAuthentication",
+      "recommendation": "The single most effective technical countermeasure against 'BigBear 2.0' and other AiTM phishing attacks is the adoption of phishing-resistant Multi-Factor Authentication. Organizations must prioritize migrating users away from phishable MFA methods like SMS, voice calls, and simple push notifications. Instead, deploy FIDO2-based authenticators (e.g., YubiKeys, Titan keys) or platform authenticators like Windows Hello for Business. These methods create a cryptographic binding between the user's login, the device they are using, and the true origin of the service (e.g., login.microsoft.com). This makes it impossible for an attacker to capture and replay a session cookie from their proxy server, as the authentication challenge would fail. This mitigation directly neutralizes the core mechanism of the Evilginx2 framework.",
+      "mitre_mitigation_id": "M1032"
+    },
+    {
+      "technique_id": "D3-WSAA",
+      "technique_name": "Web Session Activity Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:WebSessionActivityAnalysis",
+      "recommendation": "To detect compromised sessions, security teams must perform continuous analysis of web session activity within Microsoft 365. Configure SIEM or a tool like Microsoft Sentinel to ingest Entra ID sign-in logs and Unified Audit Logs. Create detection rules that correlate a successful sign-in with its subsequent activity. Specifically, look for sessions where the authentication method is `MFA requirement satisfied by claim in the token` and the sign-in IP address originates from a data center or proxy ASN (like Vultr's AS20473). Also, alert on sessions that exhibit anomalous properties like a mismatched User-Agent string compared to the user's history, or impossible travel scenarios. This detective control is crucial for identifying when a stolen session cookie is being used.",
+      "mitre_mitigation_id": "M1040"
+    },
+    {
+      "technique_id": "D3-DNSDL",
+      "technique_name": "DNS Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:DNSDenylisting",
+      "recommendation": "To prevent users from reaching the initial phishing site, organizations should leverage proactive DNS Denylisting. This can be implemented through an enterprise DNS security solution (like Cisco Umbrella or Quad9) or an email security gateway. Subscribe to high-quality threat intelligence feeds that provide lists of known phishing and malicious domains. These systems will block DNS resolution for any domain on the denylist, preventing the user's browser from ever connecting to the Evilginx2 proxy server. This is a critical preventative control that can stop the attack chain at the earliest possible stage, before the user has a chance to enter their credentials.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "log_source",
+      "value": "Microsoft Entra ID Sign-in logs",
+      "description": "Look for sign-ins with the detail `MFA requirement satisfied by claim in the token`. If this occurs from an unexpected location or IP, it may indicate a stolen session token is being used.",
+      "context": "SIEM, Microsoft Sentinel, Azure Log Analytics",
+      "confidence": "high"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "AS20473",
+      "description": "The campaign's infrastructure was hosted on Vultr (ASN 20473). While not inherently malicious, M365 logins from this ASN for standard user accounts should be considered suspicious.",
+      "context": "Firewall logs, SIEM, Threat Intelligence Platform",
+      "confidence": "medium"
+    },
+    {
+      "type": "url_pattern",
+      "value": "typosquatted domains",
+      "description": "Monitor for DNS requests or web traffic to domains that are slight misspellings or variations of 'microsoft.com', 'office.com', or your own company's domain.",
+      "context": "DNS logs, Proxy logs, Email security gateway logs",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "Phishing",
+    "PhaaS",
+    "MFA Bypass",
+    "Adversary-in-the-Middle",
+    "AiTM",
+    "Evilginx2",
+    "Microsoft 365",
+    "BigBear 2.0"
+  ],
+  "extract_datetime": "2026-09-08T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "countries_affected": [
+      "India",
+      "France",
+      "Saudi Arabia",
+      "New Zealand",
+      "Germany"
+    ],
+    "industries_affected": [
+      "Technology",
+      "Energy",
+      "Healthcare",
+      "Other"
+    ],
+    "other_affected": [
+      "IT Service Providers/MSPs",
+      "SaaS/Technology Companies",
+      "Consulting firms"
+    ],
+    "people_affected_estimate": "5,137 credential records stolen"
+  },
+  "pub_date": "2026-09-08",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-09-08T15:00:00.000Z",
+  "updatedAt": "2026-09-08T15:00:00.000Z"
+}

@@ -1,0 +1,159 @@
+{
+  "id": "fb1bbce6-6207-440f-8635-9231354a1d13",
+  "slug": "critical-sql-injection-flaw-in-oneuptime-platform",
+  "headline": "Critical CVSS 9.9 SQL Injection Flaw (CVE-2026-32306) Hits OneUptime Platform",
+  "title": "OneUptime Hit with Critical SQL Injection Flaw (CVSS 9.9)",
+  "summary": "A critical SQL injection vulnerability, CVE-2026-32306, with a CVSS score of 9.9 has been disclosed in the OneUptime open-source observability platform. The flaw allows a low-privileged authenticated user to execute arbitrary SQL commands against the backend ClickHouse database. This could enable an attacker to read or modify data across all tenants in a shared environment and potentially achieve remote code execution (RCE). The vulnerability, which stems from improper sanitization of API parameters, has been patched in version 10.0.23. This is the fourth critical vulnerability to impact OneUptime in just six weeks, raising serious concerns about the platform's security posture and prompting recommendations for users of self-hosted instances to apply the patch immediately.",
+  "full_report": "## Executive Summary\nOn March 15, 2026, a **critical vulnerability** was disclosed in the **OneUptime** open-source observability platform. Tracked as **[CVE-2026-32306](https://www.cve.org/CVERecord?id=CVE-2026-32306)**, the flaw is an SQL injection with a CVSS 3.1 score of 9.9, indicating its extreme severity. The vulnerability allows an authenticated attacker with low-level privileges (e.g., basic project access) to gain full control over the underlying ClickHouse database. This enables the attacker to bypass multi-tenancy controls to read and modify data belonging to all other users on the platform. More alarmingly, it could lead to full remote code execution (RCE) on the server. This is the fourth critical flaw discovered in OneUptime in a six-week period, signaling a pattern of severe security issues that requires immediate attention from administrators of self-hosted instances.\n\n---\n\n## Vulnerability Details\n*   **CVE ID:** `CVE-2026-32306`\n*   **CVSS Score:** 9.9 (Critical)\n*   **Vulnerability Type:** SQL Injection\n*   **Attack Vector:** The flaw exists in the telemetry API of the OneUptime platform. An attacker with valid, low-privilege credentials can send a crafted request to this API.\n*   **Root Cause:** The `aggregationType`, `aggregateColumnName`, and `aggregationTimestampColumnName` parameters in the API request are not properly sanitized. They are directly interpolated into a SQL query string that is then executed by the ClickHouse database, rather than being treated as data via parameterized queries. This allows an attacker to inject arbitrary SQL commands.\n\nAn example malicious request might look like this:\n```json\n{\n  \"aggregationType\": \"sum\",\n  \"aggregateColumnName\": \"(SELECT groupArray(name) FROM system.tables)\",\n  \"aggregationTimestampColumnName\": \"timestamp\"\n}\n```\nThis would allow an attacker to start enumerating database tables, eventually leading to data theft or RCE.\n\n---\n\n## Affected Systems\n*   **Product:** **OneUptime** open-source observability platform\n*   **Affected Versions:** All versions prior to `10.0.23`.\n*   **Deployment Model:** The vulnerability primarily affects organizations that are self-hosting OneUptime instances. The cloud-hosted version is managed by the vendor.\n\n---\n\n## Impact Assessment\nA successful exploit of **CVE-2026-32306** has severe consequences:\n*   **Multi-Tenancy Bypass:** An attacker in one tenant can read, modify, or delete telemetry data belonging to all other tenants on the same instance.\n*   **Data Breach:** Sensitive operational data, metrics, and logs from all customers can be exfiltrated.\n*   **Remote Code Execution (RCE):** Advanced attackers can leverage ClickHouse's `table` functions, which can read from files or even execute shell commands in some configurations, to gain a shell on the underlying server, leading to a full system compromise.\n\nThe recurring nature of critical vulnerabilities in OneUptime suggests a systemic issue in its secure development lifecycle, and organizations should consider the platform a high-risk asset requiring stringent security controls and monitoring.\n\n---\n\n## Detection Methods\n1.  **Version Scanning:** The most reliable method is to check the version of your OneUptime instance. If it is below `10.0.23`, you are vulnerable.\n2.  **Log Analysis:** Monitor ClickHouse database query logs for suspicious queries. Look for queries originating from the telemetry API that contain nested `SELECT` statements, system table lookups (`system.tables`), or other unexpected SQL syntax within the aggregation parameters.\n3.  **WAF/IPS Signatures:** A Web Application Firewall (WAF) can be configured with rules to detect common SQL injection patterns (e.g., `UNION SELECT`, `--`, `';'`) within the specific API parameters (`aggregationType`, `aggregateColumnName`).\n\n---\n\n## Remediation Steps\n1.  **Patch Immediately:** The primary and most urgent remediation is to upgrade all self-hosted OneUptime instances to version **10.0.23** or later. This version contains the patch that properly sanitizes the vulnerable parameters.\n2.  **Apply Compensating Controls (if patching is delayed):**\n    *   Use a WAF to create a virtual patch that blocks requests to the telemetry API containing SQL-like syntax in the vulnerable parameters.\n    *   Restrict access to the OneUptime platform to trusted IP addresses only.\n    *   Review all user accounts and enforce the principle of least privilege, though this is a weak mitigation as the flaw can be exploited by any authenticated user.\n3.  **Review Logs for Compromise:** After patching, review historical database and application logs for any signs of exploitation to determine if a breach occurred before the patch was applied.\n4.  **D3FEND Mitigation:** The core remediation is a direct application of **[D3-SU: Software Update](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)**.",
+  "twitter_post": "🚨 CRITICAL FLAW: A CVSS 9.9 SQL injection vulnerability (CVE-2026-32306) has been found in the OneUptime platform. The flaw allows for RCE and multi-tenant data access. This is the 4th critical bug in 6 weeks. Patch to version 10.0.23 NOW! #CVE #SQLi",
+  "meta_description": "A critical CVSS 9.9 SQL injection vulnerability (CVE-2026-32306) in the OneUptime platform allows for remote code execution. Users are urged to patch to version 10.0.23 immediately.",
+  "category": [
+    "Vulnerability",
+    "Patch Management"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "OneUptime",
+      "type": "product"
+    },
+    {
+      "name": "ClickHouse",
+      "type": "product"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-32306",
+      "cvss_score": 9.9,
+      "cvss_version": "3.1",
+      "kev": false,
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://anonhaven.org/march-14-15-vulnerability-digest-wordpress-rce-oneuptime-sql-injection-d-link-zero-days/",
+      "title": "March 14-15 vulnerability digest: WordPress RCE, OneUptime SQL injection, D-Link zero-days",
+      "date": "2026-03-15",
+      "friendly_name": "AnonHaven",
+      "website": "anonhaven.org"
+    },
+    {
+      "url": "https://www.e-virtus.com/cyber-attack-statistics/",
+      "title": "Cyber Attack Statistics & Ransomware Attacks List",
+      "date": "2026-03-15",
+      "friendly_name": "e-virtus",
+      "website": "e-virtus.com"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-03-15T00:00:00Z",
+      "summary": "The critical SQL injection vulnerability CVE-2026-32306 in OneUptime is publicly disclosed."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Server Software Component: Web Shell",
+      "tactic": "Persistence"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "description": "The primary mitigation is to update OneUptime to the patched version 10.0.23.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1050",
+      "name": "Exploit Protection",
+      "description": "Using a WAF to filter malicious requests acts as a virtual patch and a form of exploit protection.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "description": "Running the OneUptime application and its database in a containerized or sandboxed environment could limit the impact of a successful RCE.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-SU",
+      "technique_name": "Software Update",
+      "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate",
+      "recommendation": "For critical vulnerabilities like CVE-2026-32306 in OneUptime, the most effective and urgent defensive action is Software Update. Organizations running self-hosted instances must prioritize the immediate deployment of patch 10.0.23. This should be handled by a dedicated patch management team or automated system with an emergency change control process. Before deployment in production, the patch should be quickly validated in a staging environment to ensure it doesn't break functionality. After patching, it's crucial to verify that the update was successful by checking the application's version number. Given OneUptime's recent history of severe flaws, administrators should subscribe to the project's security advisories and establish a rapid response plan specifically for this high-risk asset. Failing to patch promptly leaves the door wide open for trivial exploitation by any low-privileged user.",
+      "mitre_mitigation_id": "M1051"
+    },
+    {
+      "technique_id": "D3-WAF",
+      "technique_name": "Web Application Firewall",
+      "url": "https://d3fend.mitre.org/technique/d3f:WebApplicationFirewall",
+      "recommendation": "As a compensating control or a defense-in-depth layer, a Web Application Firewall (WAF) can be used to virtually patch CVE-2026-32306. A custom rule should be created that specifically targets the vulnerable API endpoint. The rule should inspect the body of POST requests to the OneUptime telemetry API. If the request contains SQL-like syntax (e.g., 'SELECT', 'UNION', '--', ';') within the `aggregateColumnName` or other vulnerable parameters, the request should be blocked and a high-priority alert should be generated. While this is not a substitute for patching the underlying code, it provides a critical layer of protection against exploitation attempts, especially in the window between vulnerability disclosure and patch deployment. This targeted WAF rule hardens the application against this specific attack vector.",
+      "mitre_mitigation_id": "M1050"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/api/telemetry",
+      "description": "The API endpoint that contains the SQL injection vulnerability. Requests to this endpoint with suspicious parameters should be investigated.",
+      "context": "Web server logs, WAF logs.",
+      "confidence": "high"
+    },
+    {
+      "type": "command_line_pattern",
+      "value": "aggregateColumnName\": \"(SELECT",
+      "description": "A pattern in the JSON body of a request to the telemetry API that is highly indicative of an exploitation attempt.",
+      "context": "WAF logs, application logs that record POST bodies.",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "ClickHouse Query Log",
+      "description": "The log file for the ClickHouse database, which would contain the malicious SQL queries executed by the attacker.",
+      "context": "Monitor the database server's log files for queries containing unexpected sub-selects or system table access.",
+      "confidence": "high"
+    }
+  ],
+  "tags": [
+    "SQL Injection",
+    "RCE",
+    "Open Source",
+    "Observability",
+    "Multi-tenancy"
+  ],
+  "extract_datetime": "2026-03-15T15:00:00.000Z",
+  "article_type": "TechArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "companies_affected": [],
+    "countries_affected": [],
+    "governments_affected": [],
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Users of self-hosted OneUptime instances"
+    ],
+    "people_affected_estimate": ""
+  },
+  "pub_date": "2026-03-15",
+  "reading_time_minutes": 4,
+  "createdAt": "2026-03-15T15:00:00.000Z",
+  "updatedAt": "2026-03-15T15:00:00.000Z"
+}

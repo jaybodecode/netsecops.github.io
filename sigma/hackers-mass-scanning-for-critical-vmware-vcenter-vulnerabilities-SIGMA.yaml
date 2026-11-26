@@ -1,0 +1,66 @@
+title: VMware vCenter Scanning Activity
+id: 9b1a6c3d-8e4f-4a1b-9c8d-7e6f5d4c3b2a
+status: experimental
+description: Detects scanning activity targeting VMware vCenter endpoints /sdk/ and /websso, which is a precursor to exploitation of CVE-2026-59309.
+references:
+  - https://cybersecuritynews.com/hackers-scan-vmware-vcenter-vulnerabilities/
+author: cyber.netsecops.io
+date: 2026-08-12
+tags:
+  - attack.t1595
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection:
+    c-uri|contains:
+      - '/sdk/'
+      - '/websso'
+  condition: selection
+---
+title: Anomalous Outbound SSH from VMware vCenter
+id: e3cdf2d6-47ab-42d5-b478-7beaf77fb624
+status: experimental
+description: Detects highly anomalous outbound SSH connections originating from a VMware vCenter appliance. This is a strong indicator of compromise via CVE-2026-59310.
+references:
+  - https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html
+author: cyber.netsecops.io
+date: 2026-08-12
+tags:
+  - attack.t1021.004
+  - attack.command_and_control
+level: high
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image: '/opt/vmware/bin/vpxd'
+    DestinationPort: 22
+    Initiated: 'true'
+  filter_local:
+    DestinationIp|cidr:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+  condition: selection and not filter_local
+---
+title: Suspicious Cron Job Creation on VMware vCenter
+id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects the creation of new files in cron directories on a VMware vCenter appliance, a technique used to establish persistence after exploiting CVE-2026-59310.
+references:
+  - https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html
+author: cyber.netsecops.io
+date: 2026-08-12
+tags:
+  - attack.t1053.003
+  - attack.persistence
+level: high
+logsource:
+  category: file_event
+  product: linux
+detection:
+  selection:
+    TargetFilename|startswith: '/etc/cron.d/'
+  condition: selection

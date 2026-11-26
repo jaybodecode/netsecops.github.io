@@ -1,0 +1,86 @@
+title: Installation of Typosquatted Ruby Gem 'brumdler'
+id: 5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d
+status: experimental
+description: Detects the installation of 'brumdler', a known typosquatted malicious RubyGem from the StubMaker campaign.
+references:
+  - https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1195.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains|all:
+      - 'gem install'
+      - 'brumdler'
+  condition: selection
+---
+title: Ruby Process Spawning Network Utility
+id: 1d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a
+status: experimental
+description: Detects a Ruby process spawning a network utility like powershell.exe or curl.exe, which is suspicious during package installation.
+references:
+  - https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1105
+level: medium
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\ruby.exe'
+      - '\gem.exe'
+    Image|endswith:
+      - '\powershell.exe'
+      - '\curl.exe'
+  condition: selection
+---
+title: Malicious RubyGems Hook File Creation
+id: 2b8c1a9d-f3e4-4b1a-8c9d-1a2b3c4d5e6f
+status: experimental
+description: Detects the creation of extconf.rb, which can be used in malicious RubyGems to execute code during installation.
+references:
+  - https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1195.001
+level: medium
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\extconf.rb'
+  condition: selection
+---
+title: Suspicious Download from GitHub during Gem Installation
+id: 47c15d17-f457-45bc-b630-29a4c1868e99
+status: experimental
+description: Detects network connections from ruby.exe or gem.exe to raw.githubusercontent.com, which can indicate a malicious gem downloading a next-stage payload.
+references:
+  - https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html
+author: cyber.netsecops.io
+date: 2026-08-18
+tags:
+  - attack.t1105
+level: high
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\ruby.exe'
+      - '\gem.exe'
+    DestinationHostname: 'raw.githubusercontent.com'
+    Initiated: true
+  condition: selection

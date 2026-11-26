@@ -1,0 +1,221 @@
+{
+  "id": "e6784bb7-f829-449c-bd06-ac6aefcf881e",
+  "slug": "macos-users-targeted-by-clickfix-campaign-distributing-infiniti-stealer",
+  "headline": "'ClickFix' Campaign Tricks macOS Users into Installing Infiniti Stealer via Fake CAPTCHA",
+  "title": "macOS Users Targeted by \"ClickFix\" Social Engineering Campaign Distributing Infiniti Stealer Malware",
+  "summary": "A social engineering campaign dubbed 'ClickFix' is targeting macOS users with a sophisticated ruse to install the 'Infiniti Stealer' malware. The attack begins with a fake Cloudflare CAPTCHA page that, instead of presenting a puzzle, instructs the user to open their Terminal and run a malicious command to 'prove they are human.' This user-initiated execution triggers a multi-stage infection chain involving a Bash script and a Nuitka loader, which ultimately deploys the Python-based Infiniti Stealer. The malware is designed to harvest a wide array of sensitive data, including browser credentials, macOS Keychain contents, cryptocurrency wallets, and developer secrets, before exfiltrating the stolen information to the attacker's C2 server.",
+  "full_report": "## Executive Summary\n\nA deceptive social engineering campaign known as **ClickFix** is actively targeting **macOS** users to distribute the **Infiniti Stealer** malware. The attack leverages a convincing but fake **[Cloudflare](https://www.cloudflare.com/)** CAPTCHA page that tricks the user into voluntarily executing a malicious command in their own Terminal. This action initiates a multi-stage infection process that results in the deployment of Infiniti Stealer, a potent Python-based malware. The stealer is capable of harvesting a broad range of sensitive information, including browser credentials, secrets from the macOS Keychain, cryptocurrency wallet data, and developer files. The stolen data is then exfiltrated to an attacker-controlled server, with notifications sent via **[Telegram](https://telegram.org/)**.\n\n---\n\n## Threat Overview\n\nThe ClickFix campaign is a clever social engineering attack that preys on user trust in familiar web security mechanisms like Cloudflare's CAPTCHA. The attack flow is as follows:\n\n1.  **Lure:** The user lands on a malicious website that presents a fake Cloudflare \"human verification\" page.\n2.  **The Trick:** Instead of a standard CAPTCHA challenge, the page displays a message instructing the user to prove they are human by copying a command, opening the macOS Terminal application, and pasting/executing the command.\n3.  **User-Assisted Execution:** The user, believing this is a legitimate verification step, executes the malicious Bash script on their own machine, bypassing many traditional security warnings.\n4.  **Infection Chain:** The Bash script downloads and executes a **Nuitka** loader. Nuitka is a tool that compiles Python code into a standalone executable, which in this case is used to decompress and launch the final payload.\n5.  **Payload Deployment:** The final payload, **Infiniti Stealer**, is executed in memory.\n\n## Technical Analysis\n\nThis attack is notable for its reliance on manipulating the user into being an active participant in their own compromise.\n\n**TTPs and Malware Capabilities:**\n- **Social Engineering (`T1204.002 - Malicious File`):** While not a file, the attack relies on the user running malicious code from a command they are tricked into trusting.\n- **User Execution (`T1204.001`):** The entire infection chain is predicated on the user executing the initial command.\n- **Command and Scripting Interpreter (`T1059.004 - Unix Shell`):** The initial payload is a Bash script.\n- **Infiniti Stealer Capabilities:**\n    - **Credential Harvesting (`T1555.003 - Credentials from Web Browsers`):** Steals cookies, passwords, and credit card information from various web browsers.\n    - **Keychain Access (`T1555.001`):** Attempts to dump the contents of the macOS Keychain, which stores passwords and certificates.\n    - **Cryptocurrency Wallet Theft (`T1552.001 - Credentials In Files`):** Searches for files associated with cryptocurrency wallets.\n    - **Screen Capture (`T1113`):** Takes screenshots of the user's desktop during execution.\n    - **Data Exfiltration (`T1041 - Exfiltration Over C2 Channel`):** Bundles all stolen data and sends it via HTTP POST requests to a C2 server.\n- **C2 Communication:** The malware sends a notification to a private **Telegram** channel upon successful data exfiltration, alerting the operator.\n\n> The use of a Nuitka loader is a clever evasion technique. By compiling the Python stealer into a binary, the attackers can obfuscate the source code and make it more difficult for signature-based antivirus tools to detect.\n\n## Impact Assessment\n\nA successful Infiniti Stealer infection can lead to a complete compromise of the victim's digital identity. The theft of browser and Keychain passwords can give attackers access to a wide range of online accounts, including email, banking, and social media. The loss of cryptocurrency wallets can result in direct and irreversible financial loss. For developers, the theft of secrets and credentials from their machine can lead to a broader supply chain attack against their employer or projects. The attack is a powerful reminder that macOS is not immune to malware and that sophisticated threats are actively targeting the platform.\n\n## Cyber Observables for Detection\n\n| Type | Value | Description | Context | Confidence |\n|---|---|---|---|---|\n| url_pattern | Pages mimicking Cloudflare CAPTCHA but asking for Terminal commands | The primary lure of the ClickFix campaign. | User education, web proxy logs. | high |\n| command_line_pattern | `curl -sL [URL] | bash` | A common pattern used in the initial infection, where a script is downloaded from a URL and piped directly into bash. | EDR with command-line logging, shell history analysis. | high |\n| process_name | `Nuitka-Loader.py` or similar | The execution of a Nuitka-compiled binary may be anomalous on many systems. | Process monitoring on endpoints. | medium |\n| network_traffic_pattern | Outbound POST request to unknown URL followed by connection to `api.telegram.org` | This pattern could indicate data exfiltration followed by the C2 notification. | EDR, network security monitoring. | medium |\n\n## Detection & Response\n\n- **User Training:** The most effective defense is to train users to recognize the social engineering trick. **Users should be taught that no legitimate website will ever ask them to run a command in their Terminal to prove they are human.**\n- **EDR Monitoring:** An EDR solution on macOS can detect the suspicious chain of events: a browser spawning a Terminal, which then executes a `curl | bash` command, followed by further network connections and file access. Reference D3FEND technique [`D3-PA - Process Analysis`](https://d3fend.mitre.org/technique/d3f:ProcessAnalysis).\n- **Network Filtering:** Block access to known malicious domains hosting the fake CAPTCHA pages and the C2 servers used by Infiniti Stealer.\n\n## Mitigation\n\n- **Principle of Least Privilege:** Avoid using an administrator account for daily tasks on macOS. While this attack doesn't strictly require admin rights to steal user data, running as a standard user can limit the malware's ability to access system-wide files or persist.\n- **Browser Security:** Use browsers with strong phishing and malicious website protection. Keep browsers and their extensions updated.\n- **Password Manager & MFA:** Using a password manager reduces the value of stolen browser credentials, and having MFA enabled on all critical accounts is the best defense against their misuse.\n- **Application Control:** For corporate environments, consider using application control software for macOS that can prevent the execution of unauthorized scripts or applications, including those initiated by the user.",
+  "twitter_post": "macOS users targeted by 'ClickFix' campaign! 🍎 A fake Cloudflare CAPTCHA tricks users into running a terminal command, installing Infiniti Stealer to harvest passwords, crypto wallets & more. #macOS #Malware #Infostealer #CyberSecurity",
+  "meta_description": "A social engineering campaign called ClickFix is targeting macOS users with a fake Cloudflare CAPTCHA page to trick them into running a malicious command that installs the Infiniti Stealer malware.",
+  "category": [
+    "Malware",
+    "Phishing"
+  ],
+  "severity": "medium",
+  "entities": [
+    {
+      "name": "Infiniti Stealer",
+      "type": "malware"
+    },
+    {
+      "name": "macOS",
+      "type": "product"
+    },
+    {
+      "name": "Cloudflare",
+      "type": "vendor",
+      "url": "https://www.cloudflare.com/"
+    },
+    {
+      "name": "Nuitka",
+      "type": "product"
+    },
+    {
+      "name": "Python",
+      "type": "technology"
+    },
+    {
+      "name": "Telegram",
+      "type": "product",
+      "url": "https://telegram.org/"
+    },
+    {
+      "name": "Malwarebytes",
+      "type": "vendor",
+      "url": "https://www.malwarebytes.com/"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://www.securityweek.com/cloudflare-themed-clickfix-attack-drops-infiniti-stealer-on-macs/",
+      "title": "Cloudflare-Themed ClickFix Attack Drops Infiniti Stealer on Macs",
+      "date": "2026-03-28",
+      "friendly_name": "SecurityWeek",
+      "website": "securityweek.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1059.004",
+      "name": "Unix Shell",
+      "tactic": "Execution"
+    },
+    {
+      "id": "T1555.003",
+      "name": "Credentials from Web Browsers",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1555.001",
+      "name": "Keychain",
+      "tactic": "Credential Access"
+    },
+    {
+      "id": "T1113",
+      "name": "Screen Capture",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1041",
+      "name": "Exfiltration Over C2 Channel",
+      "tactic": "Exfiltration"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "The primary defense is training users to recognize that legitimate websites will never require them to execute terminal commands for verification."
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "d3fend_techniques": [
+        {
+          "id": "D3-DLIC",
+          "name": "Driver Load Integrity Checking",
+          "url": "https://d3fend.mitre.org/technique/d3f:DriverLoadIntegrityChecking"
+        },
+        {
+          "id": "D3-EAL",
+          "name": "Executable Allowlisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting"
+        },
+        {
+          "id": "D3-EDL",
+          "name": "Executable Denylisting",
+          "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting"
+        },
+        {
+          "id": "D3-PSEP",
+          "name": "Process Segment Execution Prevention",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessSegmentExecutionPrevention"
+        }
+      ],
+      "description": "In a corporate setting, use application control or execution prevention tools to block the running of unauthorized scripts and binaries."
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "d3fend_techniques": [
+        {
+          "id": "D3-FCR",
+          "name": "File Content Rules",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileContentRules"
+        },
+        {
+          "id": "D3-FH",
+          "name": "File Hashing",
+          "url": "https://d3fend.mitre.org/technique/d3f:FileHashing"
+        },
+        {
+          "id": "D3-PA",
+          "name": "Process Analysis",
+          "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis"
+        }
+      ],
+      "description": "Deploy a reputable EDR/antimalware solution for macOS that uses behavioral analysis to detect suspicious process chains like `curl | bash`."
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-UBA",
+      "technique_name": "User Behavior Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:UserBehaviorAnalysis",
+      "recommendation": "The most effective defense against the ClickFix campaign is robust user education and awareness. This is a form of User Behavior Analysis where the user is the analyst. Security teams must train macOS users on a simple, unbreakable rule: **No legitimate website, especially a security check like a CAPTCHA, will ever ask you to copy and paste a command into your Terminal.** This action is equivalent to giving a stranger the keys to your house. Training materials should include screenshots of the fake Cloudflare page and explain that this is a social engineering trick to bypass all technical security controls. Empowering users to recognize and report this specific tactic is the most direct way to neutralize the threat, as the entire attack chain depends on the user's cooperation.",
+      "mitre_mitigation_id": "M1017"
+    },
+    {
+      "technique_id": "D3-PA",
+      "technique_name": "Process Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:ProcessAnalysis",
+      "recommendation": "For technical detection, Process Analysis via an EDR solution is key. An EDR agent on the macOS endpoint can monitor for the specific, anomalous process chain created by this attack. A detection rule should be created to alert on the following sequence: a web browser process (e.g., `Safari`, `Google Chrome`) spawning a Terminal process (`Terminal.app`), which in turn spawns a shell (`bash`) that executes `curl`. This is a highly suspicious chain of events that rarely occurs during legitimate activity. By detecting this behavioral pattern, the EDR can alert security analysts or automatically terminate the process tree, preventing the Infiniti Stealer payload from ever being downloaded and executed. This moves the defense from relying solely on the user to having a technical backstop.",
+      "mitre_mitigation_id": "M1049"
+    },
+    {
+      "technique_id": "D3-EAL",
+      "technique_name": "Executable Allowlisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableAllowlisting",
+      "recommendation": "In managed corporate environments, Executable Allowlisting (Application Control) provides a powerful defense. macOS has built-in tools, and third-party solutions are also available, that can be configured to prevent the execution of any unauthorized code. In the context of the ClickFix attack, even though the user initiates the `bash` script, an application control policy could prevent that script from running if it's not signed by a trusted developer or located in an approved path. This 'default-deny' stance ensures that only vetted and approved software can run, effectively blocking the execution of the Nuitka loader and the Infiniti Stealer payload, regardless of how they arrive on the system. This is a high-maturity control but is extremely effective against user-initiated malware execution.",
+      "mitre_mitigation_id": "M1038"
+    }
+  ],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "curl ... | bash",
+      "description": "The core of the initial infection vector. This pattern downloads a script and executes it immediately, bypassing on-disk scanning.",
+      "context": "macOS Endpoint Security framework, EDR, shell command logging.",
+      "confidence": "high"
+    },
+    {
+      "type": "file_path",
+      "value": "~/Library/Application Support/com.apple.backgroundtaskmanagementagent/backgrounditems.btm",
+      "description": "Malware on macOS often adds itself to this file for persistence. Monitoring for unauthorized changes is key.",
+      "context": "File integrity monitoring (FIM).",
+      "confidence": "medium"
+    },
+    {
+      "type": "file_path",
+      "value": "~/Library/Keychains/login.keychain-db",
+      "description": "Infiniti Stealer targets the user's login keychain. Monitor for unusual processes attempting to access this file.",
+      "context": "EDR, macOS Endpoint Security framework event stream.",
+      "confidence": "high"
+    },
+    {
+      "type": "domain",
+      "value": "api.telegram.org",
+      "description": "The malware sends a notification to this domain upon successful exfiltration. While legitimate, an outbound connection from an unexpected process could be suspicious.",
+      "context": "Network proxy logs, DNS logs, EDR network telemetry.",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "macOS",
+    "infostealer",
+    "social engineering",
+    "Cloudflare",
+    "CAPTCHA",
+    "Python"
+  ],
+  "extract_datetime": "2026-03-28T15:00:00.000Z",
+  "article_type": "NewsArticle",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "other_affected": [
+      "macOS users"
+    ]
+  },
+  "pub_date": "2026-03-28",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-03-28T15:00:00.000Z",
+  "updatedAt": "2026-03-28T15:00:00.000Z"
+}

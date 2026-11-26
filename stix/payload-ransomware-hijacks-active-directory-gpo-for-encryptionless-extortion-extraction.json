@@ -1,0 +1,195 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generator": "generate-stix-extraction.ts",
+    "model": "gemini-2.5-pro",
+    "extracted_at": "2026-09-21T14:19:46.772Z",
+    "article_slug": "payload-ransomware-hijacks-active-directory-gpo-for-encryptionless-extortion",
+    "article_date": "2026-09-21",
+    "token_usage": {
+      "input_tokens": 5655,
+      "output_tokens": 2416,
+      "cached_tokens": 141505,
+      "total_tokens": 8071,
+      "cache_hit": true,
+      "estimated_cost_usd": -0.127964
+    }
+  },
+  "report_name": "PAYLOAD Ransomware Abuses GPOs for Encryptionless Extortion",
+  "threat_actors": [
+    {
+      "name": "PAYLOAD",
+      "mitre_id": "",
+      "aliases": [],
+      "description": "A new ransomware group observed using a novel encryptionless extortion technique by hijacking Active Directory Group Policy Objects (GPOs) to change desktop wallpapers to a ransom note, combined with data exfiltration.",
+      "goals": "To extort victims through business disruption and the threat of leaking exfiltrated data.",
+      "primary_motivation": "personal-gain",
+      "sophistication": "intermediate"
+    }
+  ],
+  "attack_patterns": [
+    {
+      "name": "Group Policy Modification",
+      "mitre_id": "T1484.001",
+      "description": "The PAYLOAD group created a malicious Group Policy Object (GPO) named 'PAYLOAD' and linked it to the domain root to modify the desktop wallpaper registry key on all domain-joined machines."
+    },
+    {
+      "name": "Domain Accounts",
+      "mitre_id": "T1078.002",
+      "description": "The attackers escalated privileges to the Domain Administrator level to gain the necessary rights to create and link a GPO at the root of the Active Directory domain."
+    },
+    {
+      "name": "Exfiltration Over Alternative Protocol",
+      "mitre_id": "T1048",
+      "description": "The threat actors exfiltrated sensitive data from the victim's file servers to be used for double-extortion."
+    },
+    {
+      "name": "Internal Defacement",
+      "mitre_id": "T1491.001",
+      "description": "A malicious GPO was used to change the desktop wallpaper on all domain-joined systems to an image containing a ransom demand, serving as a visible defacement of internal systems."
+    }
+  ],
+  "malware": [
+    {
+      "name": "PAYLOAD Ransomware",
+      "mitre_id": "",
+      "type": "ransomware",
+      "is_family": true,
+      "aliases": [],
+      "description": "A ransomware toolset used by the PAYLOAD group. In this incident, it was used for an 'encryptionless extortion' attack, leveraging GPOs for defacement rather than performing file encryption.",
+      "capabilities": []
+    }
+  ],
+  "tools": [],
+  "vulnerabilities": [],
+  "campaigns": [],
+  "identities": [
+    {
+      "name": "Middle Eastern manufacturing firm",
+      "identity_class": "organization",
+      "sectors": [
+        "manufacturing"
+      ],
+      "description": "A manufacturing company in the Middle East targeted by the PAYLOAD ransomware group in April 2026."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Middle East",
+      "region": "western-asia"
+    }
+  ],
+  "infrastructure": [],
+  "observables": [],
+  "indicators": [
+    {
+      "name": "Malicious GPO Creation via PowerShell",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: Malicious GPO Creation via PowerShell\nid: 2b8a1c9e-7d3f-4e6a-9b1c-8d7e6f5a4b3c\nstatus: experimental\ndescription: Detects the creation of a Group Policy Object with a suspicious name, as seen in PAYLOAD ransomware attacks.\nreferences:\n  - https://cypro.co.uk/insights/cyber-bulletins/payload-ransomware-hijacks-active-directory-gpo/\nauthor: cyber.netsecops.io\ndate: 2026-09-21\ntags:\n  - attack.t1484.001\nlevel: high\nlogsource:\n  category: ps_script\n  product: windows\ndetection:\n  selection:\n    ScriptBlockText|contains:\n      - \"New-GPO -Name 'PAYLOAD'\"\n  condition: selection",
+      "description": "Detects the PowerShell command used to create the malicious 'PAYLOAD' GPO."
+    },
+    {
+      "name": "GPO Container Object Modification",
+      "indicator_types": [
+        "malicious-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: GPO Container Object Modification\nid: 9e8d7c6b-5a4f-4e3d-2c1b-0a9f8e7d6c5b\nstatus: experimental\ndescription: Detects the modification of a Group Policy Container object in Active Directory, which could indicate malicious GPO hijacking.\nreferences:\n  - https://cypro.co.uk/insights/cyber-bulletins/payload-ransomware-hijacks-active-directory-gpo/\nauthor: cyber.netsecops.io\ndate: 2026-09-21\ntags:\n  - attack.t1484.001\nlevel: medium\nlogsource:\n  product: windows\n  service: security\ndetection:\n  selection:\n    EventID: 5136\n    ObjectType: '{f30e3bc2-9ff0-11d1-b603-0000f80367c1}' # groupPolicyContainer\n  condition: selection",
+      "description": "Detects Windows Security Event ID 5136, indicating a directory service object was modified, specifically for groupPolicyContainer objects."
+    },
+    {
+      "name": "New GPO Folder Creation in SYSVOL",
+      "indicator_types": [
+        "anomalous-activity"
+      ],
+      "stix_pattern": "",
+      "x_netsecio_sigma_rule": "",
+      "pattern": "title: New GPO Folder Creation in SYSVOL\nid: 7d6c5b4a-3f2e-4d1c-0b9a-8f7e6d5c4b3a\nstatus: experimental\ndescription: Monitors for the creation of new folders within the SYSVOL Policies directory, which occurs when a new GPO is created.\nreferences:\n  - https://cypro.co.uk/insights/cyber-bulletins/payload-ransomware-hijacks-active-directory-gpo/\nauthor: cyber.netsecops.io\ndate: 2026-09-21\ntags:\n  - attack.t1484.001\nlevel: medium\nlogsource:\n  category: file_event\n  product: windows\ndetection:\n  selection:\n    TargetFilename|contains: '\\SYSVOL\\'\n    TargetFilename|endswith: '\\Policies\\'\n  condition: selection",
+      "description": "Detects the creation of new GPO folders in the SYSVOL share, which could be indicative of malicious GPO creation."
+    }
+  ],
+  "relationships": [
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "PAYLOAD Ransomware",
+      "target_type": "malware"
+    },
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Group Policy Modification",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Domain Accounts",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Exfiltration Over Alternative Protocol",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "uses",
+      "target_name": "Internal Defacement",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Middle Eastern manufacturing firm",
+      "target_type": "identity"
+    },
+    {
+      "source_name": "PAYLOAD",
+      "source_type": "threat-actor",
+      "relationship_type": "targets",
+      "target_name": "Middle East",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Middle Eastern manufacturing firm",
+      "source_type": "identity",
+      "relationship_type": "located-at",
+      "target_name": "Middle East",
+      "target_type": "location"
+    },
+    {
+      "source_name": "Malicious GPO Creation via PowerShell",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Group Policy Modification",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "GPO Container Object Modification",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Group Policy Modification",
+      "target_type": "attack-pattern"
+    },
+    {
+      "source_name": "New GPO Folder Creation in SYSVOL",
+      "source_type": "indicator",
+      "relationship_type": "indicates",
+      "target_name": "Group Policy Modification",
+      "target_type": "attack-pattern"
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "id": "8320ebb7-fc5c-4d4b-bd16-4d6d593f1621",
+  "slug": "sidecopy-apt-targets-afghanistans-finance-ministry-with-xenorat",
+  "headline": "SideCopy APT Targets Afghanistan's Finance Ministry in 'XENOFISCAL' Espionage Campaign",
+  "title": "Pakistan-Linked SideCopy APT Deploys XenoRAT in Spear-Phishing Campaign Against Afghanistan's Ministry of Finance",
+  "summary": "The Pakistan-aligned threat group SideCopy, part of the Transparent Tribe (APT36) umbrella, is conducting a targeted cyber-espionage campaign dubbed 'Operation XENOFISCAL' against Afghanistan's Ministry of Finance. The campaign uses spear-phishing emails with Pashto-language lures to trick government officials into executing a malicious LNK file. This initiates a multi-stage infection chain that ultimately deploys the open-source XenoRAT trojan. The malware establishes persistence and provides the attackers with full remote access for data theft and surveillance, highlighting the group's continued focus on government and military targets in South Asia.",
+  "full_report": "## Executive Summary\nThe Pakistan-linked Advanced Persistent Threat (APT) group **[SideCopy](https://attack.mitre.org/groups/G1008/)**, a subgroup of **Transparent Tribe (APT36)**, has been identified as the actor behind a new cyber-espionage campaign named **Operation XENOFISCAL**. This highly targeted operation is aimed at the Afghanistan Ministry of Finance, specifically its provincial directorates and Pashto-speaking officials. The attack employs a classic spear-phishing vector, using a ZIP archive containing a malicious LNK file disguised with a Pashto filename. The infection chain is designed to be evasive, leveraging legitimate Windows processes and a compromised Afghan educational domain to download and execute the final payload: the open-source **XenoRAT** remote access trojan. The campaign's goal is espionage, enabling the attackers to conduct surveillance and exfiltrate sensitive government data.\n\n---\n\n## Threat Overview\n**Operation XENOFISCAL** demonstrates SideCopy's deep understanding of its target environment. The campaign is not a wide-net phishing attack but a carefully crafted operation focused on specific individuals within the Afghan government.\n\n*   **Targeting**: The attack specifically targets all 34 provincial revenue and finance directorates (Mustoufiats) of Afghanistan's Ministry of Finance.\n*   **Social Engineering**: The lure is highly tailored, using the Pashto language and a document listing real provincial finance directors invited to a seminar. This suggests significant pre-operational intelligence gathering.\n*   **Initial Access**: The attack begins with a spear-phishing email containing a ZIP file. Inside is a malicious Windows Shortcut (LNK) file.\n*   **Payload Delivery**: When the victim clicks the LNK file, it executes `mshta.exe` to fetch and run a remote HTML Application (HTA) file from a compromised Afghan education domain (`abimj.edu.af`).\n*   **Final Payload**: The HTA file initiates a multi-stage, in-memory infection process that culminates in the deployment of **XenoRAT** version 1.8.7, a powerful open-source RAT.\n\nThis campaign is consistent with SideCopy's known TTPs, which involve using lures relevant to South Asian politics and military affairs and customizing open-source malware for their operations.\n\n---\n\n## Technical Analysis\nThe infection chain is designed for stealth and persistence:\n\n1.  **Spear-phishing ([`T1566.001`](https://attack.mitre.org/techniques/T1566/001/))**: The user receives a ZIP file via email.\n2.  **Malicious LNK File ([`T1204.002`](https://attack.mitre.org/techniques/T1204/002/))**: The user opens the LNK file within the ZIP.\n3.  **HTA Execution via `mshta.exe` ([`T1218.005`](https://attack.mitre.org/techniques/T1218/005/))**: The LNK file's command line executes `mshta.exe` to download and run an HTA file from a remote, compromised server.\n4.  **In-Memory Loader**: The HTA file contains obfuscated JavaScript that downloads and executes a .NET-based loader DLL in memory.\n5.  **RAT Deployment**: The loader DLL decrypts and deploys the final payload, **XenoRAT**, into memory.\n6.  **Persistence ([`T1547.001`](https://attack.mitre.org/techniques/T1547/001/))**: The malware creates a registry run key, often mimicking a legitimate application like Microsoft Edge, to ensure it runs every time the system starts.\n7.  **Decoy Document**: To avoid suspicion, a benign decoy document (the seminar invitation list) is opened for the victim.\n8.  **C2 Communication ([`T1071.001`](https://attack.mitre.org/techniques/T1071/001/))**: XenoRAT connects to its command-and-control server (e.g., `185.235.137.106`) over TCP to receive commands and exfiltrate data.\n\n**XenoRAT Capabilities**: Once active, XenoRAT provides the attacker with extensive control over the victim's machine, including keylogging, screen capture, file system access, webcam and microphone activation, and the ability to drop additional malware.\n\n---\n\n## Impact Assessment\nThe successful compromise of systems within Afghanistan's Ministry of Finance could have significant geopolitical and security implications. The impact includes:\n*   **Espionage**: Theft of sensitive government financial data, strategic plans, and internal communications.\n*   **Intelligence Gathering**: Gaining insight into the financial stability and operations of the Afghan government.\n*   **Surveillance**: Monitoring the activities and communications of key government officials.\n*   **Further Intrusion**: Using the compromised ministry as a beachhead to launch further attacks against other Afghan government entities.\n\nThe campaign highlights the persistent cyber-threats faced by government institutions in geopolitically sensitive regions.\n\n---\n\n## IOCs — Directly from Articles\n\n| Type | Value | Description |\n| :--- | :--- | :--- |\n| domain | `abimj.edu.af` | Compromised domain used to host the malicious HTA file. |\n| ip_address_v4 | `185.235.137.106` | Command and Control (C2) server for XenoRAT. |\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for this activity using the following clues:\n\n| Type | Value | Description & Context |\n| :--- | :--- | :--- |\n| command_line_pattern | `mshta.exe http://*` or `mshta.exe https://*` | Look for `mshta.exe` making network connections to download remote HTA or JS files, a common TTP for this and other threat actors. |\n| file_name | `*.lnk` in `*.zip` | Monitor email gateway logs for ZIP attachments containing LNK files, especially if the LNK filename uses non-standard character sets. |\n| registry_key | `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run` | Monitor this registry key for the creation of new persistence entries, especially those with suspicious executable paths or names mimicking legitimate software. |\n| network_traffic_pattern | Outbound TCP connections to `185.235.137.106` | Block and alert on any traffic to known SideCopy C2 infrastructure. |\n\n---\n\n## Detection & Response\n1.  **Email Security**: Use email security gateways to block or quarantine emails with ZIP attachments containing LNK files. Scan attachments for known malicious indicators.\n2.  **Endpoint Detection (EDR)**: Monitor for suspicious process chains, such as `outlook.exe` -> `explorer.exe` -> `mshta.exe`. EDR rules can be created to alert on `mshta.exe` spawning from an Office application or a LNK file execution and making a network connection. This is an application of **[Process Lineage Analysis](https://d3fend.mitre.org/technique/d3f:ProcessLineageAnalysis)**.\n3.  **Network Filtering**: Block known malicious domains and IPs at the firewall or web proxy. Use **[DNS Denylisting (D3-DNSDL)](https://d3fend.mitre.org/technique/d3f:DNSDenylisting)** for domains like `abimj.edu.af`.\n4.  **Scripting Protection**: Use tools like Windows Defender Attack Surface Reduction (ASR) rules to block or audit the execution of obfuscated scripts and HTA files.\n\n---\n\n## Mitigation\n1.  **User Training ([`M1017`](https://attack.mitre.org/mitigations/M1017/))**: Train users to be suspicious of unsolicited emails, especially those with attachments. Teach them to recognize the dangers of LNK files and other script-based attachments.\n2.  **Attack Surface Reduction**: Implement ASR rules to block `mshta.exe` from executing potentially malicious code. For example, the rule \"Block all Office applications from creating child processes\" can be highly effective.\n3.  **Application Control**: Use application allow-listing (e.g., AppLocker) to prevent the execution of unauthorized scripts and executables like `mshta.exe` in user directories.\n4.  **Change File Associations**: As a hardening measure, consider changing the default file handler for `.hta` and `.js` files from `mshta.exe`/`wscript.exe` to a benign application like `notepad.exe`. This prevents accidental execution by the user.",
+  "twitter_post": "APT group SideCopy targets Afghanistan's Finance Ministry in 'Operation XENOFISCAL.' The campaign uses Pashto-language spear-phishing lures to deploy the XenoRAT trojan for espionage. 🇵🇰-aligned group continues focus on South Asia. #APT #SideCopy #XenoRAT",
+  "meta_description": "Analysis of 'Operation XENOFISCAL,' a cyber-espionage campaign by the SideCopy APT group targeting Afghanistan's Ministry of Finance with the XenoRAT malware.",
+  "category": [
+    "Threat Actor",
+    "Malware",
+    "Phishing"
+  ],
+  "severity": "high",
+  "entities": [
+    {
+      "name": "SideCopy",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G1008/"
+    },
+    {
+      "name": "Transparent Tribe",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0134/"
+    },
+    {
+      "name": "APT36",
+      "type": "threat_actor",
+      "url": "https://attack.mitre.org/groups/G0134/"
+    },
+    {
+      "name": "XenoRAT",
+      "type": "malware"
+    },
+    {
+      "name": "Afghanistan Ministry of Finance",
+      "type": "government_agency"
+    },
+    {
+      "name": "mshta.exe",
+      "type": "technology"
+    }
+  ],
+  "cves": [],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/06/pakistan-linked-sidecopy-targets.html",
+      "title": "Pakistan-Linked SideCopy Targets Afghanistan Finance Ministry with Xeno RAT",
+      "date": "2026-06-02",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://cybersecuritynews.com/sidecopy-hackers-deploy-persistent-xenorat-malware/",
+      "title": "SideCopy Hackers Deploy Persistent XenoRAT Malware to Target Afghanistan Finance Ministry",
+      "date": "2026-06-01",
+      "friendly_name": "Cybersecurity News",
+      "website": "cybersecuritynews.com"
+    },
+    {
+      "url": "https://gbhackers.com/sidecopy-deploys-persistent-xenorat/",
+      "title": "SideCopy Deploys Persistent XenoRAT Against Afghanistan Finance Ministry",
+      "date": "2026-05-30",
+      "friendly_name": "GBHackers on Security",
+      "website": "gbhackers.com"
+    }
+  ],
+  "events": [],
+  "mitre_techniques": [
+    {
+      "id": "T1566.001",
+      "name": "Spearphishing Attachment"
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File"
+    },
+    {
+      "id": "T1218.005",
+      "name": "HTML Applications"
+    },
+    {
+      "id": "T1547.001",
+      "name": "Registry Run Keys / Startup Folder"
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols"
+    },
+    {
+      "id": "T1588.002",
+      "name": "Tool"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1017",
+      "name": "User Training",
+      "description": "Train users to identify and report spear-phishing emails and to be wary of unexpected attachments, especially ZIP files containing shortcuts.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1037",
+      "name": "Filter Network Traffic",
+      "description": "Block known malicious C2 domains and IPs at the network perimeter.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1038",
+      "name": "Execution Prevention",
+      "description": "Use Attack Surface Reduction (ASR) rules or application control policies to block or restrict the execution of mshta.exe.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1049",
+      "name": "Antivirus/Antimalware",
+      "description": "Ensure endpoint security solutions are up to date to detect known loaders and RATs like XenoRAT.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [
+    {
+      "technique_id": "D3-EDL",
+      "technique_name": "Executable Denylisting",
+      "url": "https://d3fend.mitre.org/technique/d3f:ExecutableDenylisting",
+      "recommendation": "A key part of the SideCopy attack chain is the abuse of the legitimate Windows utility `mshta.exe`. Implement application control policies, such as Windows AppLocker or Defender Application Control, to restrict or block the execution of `mshta.exe`. For most modern enterprise environments, there is no legitimate business need for users to run HTML Applications. By creating a denylist rule for `mshta.exe` or, more effectively, an allowlist that does not include it, you can break the infection chain at a critical point. This preventative control is highly effective against this and many other 'living-off-the-land' attack techniques.",
+      "mitre_mitigation_id": "M1038"
+    },
+    {
+      "technique_id": "D3-NTA",
+      "technique_name": "Network Traffic Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis",
+      "recommendation": "Deploy network traffic analysis to detect the C2 communication of XenoRAT. Specifically, configure your firewall, proxy, and DNS logs to be ingested into a SIEM. Create alerts for any outbound connections from your network to the known C2 IP address `185.235.137.106` or the compromised domain `abimj.edu.af`. Beyond these specific IOCs, use behavioral analysis to look for signs of RAT activity, such as persistent, low-volume 'heartbeat' connections over TCP to a single external IP, or sudden bursts of data transfer from a workstation that is not expected to be uploading large files. This provides a crucial detection layer for when an endpoint is successfully compromised.",
+      "mitre_mitigation_id": "M1031"
+    },
+    {
+      "technique_id": "D3-FA",
+      "technique_name": "File Analysis",
+      "url": "https://d3fend.mitre.org/technique/d3f:FileAnalysis",
+      "recommendation": "Enhance email security gateways with advanced file analysis and sandboxing. Configure policies to specifically analyze ZIP files containing LNK, HTA, or script files. The sandbox should be able to 'detonate' the LNK file and observe the subsequent process chain, including the call to `mshta.exe` and the network connection to the remote server. Any email containing an attachment that exhibits this behavior should be automatically quarantined, and an alert should be sent to the security team. This automated analysis of incoming files is essential for stopping the initial delivery vector before it reaches the user's inbox.",
+      "mitre_mitigation_id": "M1021"
+    }
+  ],
+  "iocs": [
+    {
+      "type": "domain",
+      "value": "abimj.edu.af",
+      "description": "Compromised domain used to host malicious HTA file"
+    },
+    {
+      "type": "ip_address_v4",
+      "value": "185.235.137.106",
+      "description": "XenoRAT Command and Control Server"
+    }
+  ],
+  "cyber_observables": [
+    {
+      "type": "command_line_pattern",
+      "value": "mshta.exe http://abimj.edu.af/*",
+      "description": "Specific command line pattern showing the mshta.exe living-off-the-land binary being used to fetch a payload from the compromised domain.",
+      "context": "EDR, command line logging (Event ID 4688).",
+      "confidence": "high"
+    },
+    {
+      "type": "file_name",
+      "value": "*.zip",
+      "description": "Look for incoming emails with ZIP attachments, a common initial delivery mechanism for SideCopy.",
+      "context": "Email gateway logs.",
+      "confidence": "low"
+    },
+    {
+      "type": "file_name",
+      "value": "*.lnk",
+      "description": "The presence of a .lnk file inside a .zip attachment is a strong indicator of a malicious lure.",
+      "context": "Email sandbox analysis, endpoint forensics.",
+      "confidence": "high"
+    },
+    {
+      "type": "registry_key",
+      "value": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Edge",
+      "description": "SideCopy is known to create persistence by adding entries to this Run key, often masquerading as a legitimate Microsoft Edge process.",
+      "context": "EDR, registry monitoring tools, SIEM.",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "SideCopy",
+    "APT36",
+    "Transparent Tribe",
+    "XenoRAT",
+    "APT",
+    "Espionage",
+    "Afghanistan",
+    "Pakistan",
+    "Phishing"
+  ],
+  "extract_datetime": "2026-06-02T15:00:00.000Z",
+  "article_type": "Analysis",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "Afghanistan"
+    ],
+    "industries_affected": [
+      "Government"
+    ],
+    "other_affected": [
+      "Pashto-speaking government officials"
+    ]
+  },
+  "pub_date": "2026-06-02",
+  "reading_time_minutes": 6,
+  "createdAt": "2026-06-02T15:00:00.000Z",
+  "updatedAt": "2026-06-02T15:00:00.000Z"
+}

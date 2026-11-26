@@ -1,0 +1,86 @@
+title: Outbound Connection to Commercial AI APIs
+id: 2b8a1c3d-f9e0-4b1a-8c7d-6e5f4d3c2b1a
+status: experimental
+description: Detects outbound DNS queries to known commercial AI service APIs (OpenAI, Anthropic), which could indicate AI-assisted attack activity as described in the Adif/Renfe breach.
+references:
+  - https://industrialcyber.co/transport/shieldworkz-finds-adif-web-infrastructure-served-as-entry-point-for-renfe-compromise-in-ai-assisted-cyber-breach/
+author: cyber.netsecops.io
+date: 2026-09-30
+tags:
+  - attack.t1071.001
+  - attack.command_and_control
+  - attack.aml.t0016.002
+level: medium
+logsource:
+  category: dns_query
+detection:
+  selection:
+    QueryName|contains:
+      - 'api.openai.com'
+      - 'api.anthropic.com'
+  condition: selection
+---
+title: CLI Interaction with External AI APIs
+id: bd1d4122-373b-47e2-bb28-c670e6e9a2b5
+status: experimental
+description: Detects command-line usage of curl or wget with patterns suggesting API key usage for commercial AI services like OpenAI or Anthropic.
+references:
+  - https://industrialcyber.co/transport/shieldworkz-finds-adif-web-infrastructure-served-as-entry-point-for-renfe-compromise-in-ai-assisted-cyber-breach/
+author: cyber.netsecops.io
+date: 2026-09-30
+tags:
+  - attack.t1059
+  - attack.execution
+  - attack.aml.t0016.002
+level: high
+logsource:
+  category: process_creation
+detection:
+  selection_img:
+    Image|endswith:
+      - '/curl'
+      - '/wget'
+      - '\curl.exe'
+      - '\wget.exe'
+  selection_api:
+    CommandLine|contains:
+      - 'api.openai.com'
+      - 'api.anthropic.com'
+  selection_key:
+    CommandLine|contains:
+      - 'Authorization: Bearer'
+      - 'x-api-key:'
+  condition: all of selection_*
+---
+title: Anomalous Process Spawned by Web Server
+id: 45c2749f-abbe-43bc-bd70-aff76f2102d5
+status: experimental
+description: Detects suspicious processes (like shells or network utilities) being spawned by a web server process, which can indicate post-exploitation activity after a web vulnerability is compromised.
+references:
+  - https://industrialcyber.co/transport/shieldworkz-finds-adif-web-infrastructure-served-as-entry-point-for-renfe-compromise-in-ai-assisted-cyber-breach/
+author: cyber.netsecops.io
+date: 2026-09-30
+tags:
+  - attack.t1190
+  - attack.initial_access
+level: high
+logsource:
+  category: process_creation
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\w3wp.exe'
+      - '\httpd.exe'
+      - '\apache2.exe'
+      - '\nginx.exe'
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\sh.exe'
+      - '\bash.exe'
+      - '\curl.exe'
+      - '\wget.exe'
+      - '\net.exe'
+      - '\whoami.exe'
+  condition: all of selection_*

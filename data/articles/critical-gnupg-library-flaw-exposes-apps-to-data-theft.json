@@ -1,0 +1,216 @@
+{
+  "id": "1ff932d1-8db0-4677-a412-10dbf2efbfaf",
+  "slug": "critical-gnupg-library-flaw-exposes-apps-to-data-theft",
+  "headline": "Critical GnuPG Library Flaw Could Lead to Data Exfiltration",
+  "title": "Critical GPGME Library Flaw (CVE-2026-129975) Disclosed",
+  "summary": "The GnuPG project has disclosed a critical double-free vulnerability, CVE-2026-129975, in its GnuPG Made Easy (GPGME) library. The flaw, present in all versions before 2.3.0, can be triggered when processing a malicious OpenPGP key. This could lead to memory corruption, potentially allowing data exfiltration from a wide range of popular applications that rely on the library, including email clients, Samba, and Flatpak. Users are urged to update immediately.",
+  "full_report": "## Executive Summary\nOn November 20, 2026, the **[GnuPG Project](https://gnupg.org/)** released a security advisory for a **critical vulnerability** in its GnuPG Made Easy (GPGME) library, a core component used by countless applications to integrate encryption functionalities. The vulnerability, tracked as **CVE-2026-129975**, is a double-free memory corruption flaw that can be triggered by processing a specially crafted OpenPGP key. Successful exploitation could allow an attacker to exfiltrate data from the memory of the affected application, with the potential for remote code execution (RCE) not being ruled out. Due to the library's widespread use in popular software like email clients, Samba, and Flatpak, the vulnerability poses a significant risk across the software ecosystem. Patched versions are available, and users are strongly advised to update as soon as possible.\n\n---\n\n## Vulnerability Details\nThe vulnerability **CVE-2026-129975** is a double-free memory corruption issue affecting all versions of the **[GPGME](https://gnupg.org/software/gpgme/index.html)** library prior to version 2.3.0. A double-free bug occurs when a program calls `free()` twice on the same memory address, which can corrupt memory and lead to unpredictable behavior, including crashes or arbitrary code execution.\n\nAccording to the advisory from GnuPG lead developer Werner Koch, the flaw can be triggered when an application uses GPGME to process a malicious OpenPGP key. The key must contain a specially crafted, unusually long user ID. The vulnerability lies within two internal functions, `read_status()` and `read_colon_line()`, which handle parsing status lines and key data from the GnuPG backend. An error during a buffer reallocation process can cause the functions to retain a stale pointer, which is later freed a second time, triggering the memory corruption.\n\n## Affected Systems\nThe vulnerability is not in GnuPG itself, but in the GPGME library that acts as a wrapper. Therefore, any application that uses this library for OpenPGP operations is potentially vulnerable. The GnuPG project noted this includes:\n- Most email clients with OpenPGP support (e.g., those using GpgOL or other plugins)\n- Many XMPP clients\n- **[Samba](https://www.samba.org/)**\n- **[Flatpak](https://flatpak.org/)**\n- GnuPG's own desktop packages: Gpg4win, GnuPG Desktop, and GnuPG VS-Desktop\n\n## Exploitation Status\nThe GnuPG project stated that it is not aware of any active exploitation of this vulnerability in the wild. The flaw was discovered by researcher Johan Carlsson and responsibly disclosed to the project by **[GitLab](https://about.gitlab.com/)** on November 12, 2026. The public disclosure was accelerated from its original planned date due to other security updates. However, the public nature of the flaw and its severity mean that threat actors will likely begin developing exploits.\n\n## Impact Assessment\nGiven the ubiquity of the GPGME library, the impact of this vulnerability is widespread. An attacker could craft a malicious OpenPGP key and distribute it via email or a public key server. If a user or automated system imports or processes this key with a vulnerable application, the attacker could potentially read sensitive data from the application's memory. This could include private keys, passwords, or the content of encrypted messages. While the GnuPG project notes that RCE is a possibility, data exfiltration is the more immediate and likely outcome.\n\n--- \n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for potential exploitation attempts by looking for the following:\n\n| Type | Value | Description |\n|---|---|---|\n| file_name | `*.asc`, `*.pgp`, `*.gpg` | Monitor for the introduction of new, untrusted OpenPGP key files into the environment, especially via email attachments. |\n| string_pattern | Unusually long User ID fields in OpenPGP keys | While difficult to inspect at scale, analysis of key files being processed by GPGME-dependent applications may reveal keys with abnormally long user IDs. |\n| log_source | `Application crash logs` | Unexplained crashes in applications known to use GPGME (e.g., email clients, file transfer tools) could be an indicator of failed exploitation attempts. |\n\n## Detection Methods\nThe primary method of detection is identifying vulnerable software versions.\n1.  **Version Scanning**: Use package managers (`dpkg`, `rpm`, etc.) and software inventory tools to identify all systems with GPGME library versions earlier than 2.3.0 or 1.24.4 (for the legacy branch).\n2.  **Application Auditing**: Identify all applications in your environment that depend on the GPGME library. Pay special attention to mail servers, file servers (Samba), and containerized applications (Flatpak).\n3.  **Memory Analysis**: In a forensic investigation, if a crash is suspected to be related to this flaw, memory dump analysis might reveal the double-free corruption.\n\n## Remediation Steps\nImmediate patching is the most effective way to mitigate this critical vulnerability.\n1.  **Update GPGME**: Update to the patched versions as soon as possible.\n    - For the stable branch, upgrade to **GPGME 2.3.1** or later.\n    - For the legacy 1.x branch, upgrade to **GPGME 1.24.4** or later.\n2.  **Update Dependent Applications**: Ensure that applications using GPGME are also updated, as they may be bundled with a vulnerable version of the library. This includes updating Gpg4win and other GnuPG desktop packages.\n3.  **Restrict Key Import**: As a temporary measure until patching is complete, organizations could implement policies or technical controls to restrict the automatic import of new, untrusted OpenPGP keys from public key servers or email attachments. This is a form of Application Configuration Hardening ([D3-ACH](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)).",
+  "twitter_post": "Critical double-free flaw (CVE-2026-129975) in GnuPG's GPGME library. A malicious OpenPGP key could trigger memory corruption, leading to data theft from email clients, Samba, Flatpak & more. Patch immediately! #GnuPG #infosec #vulnerability",
+  "meta_description": "A critical double-free vulnerability (CVE-2026-129975) in the GPGME library for GnuPG exposes applications to data exfiltration via malicious OpenPGP keys.",
+  "category": [
+    "Vulnerability",
+    "Patch Management",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "GnuPG Project",
+      "type": "security_organization",
+      "url": "https://gnupg.org/"
+    },
+    {
+      "name": "GnuPG Made Easy (GPGME)",
+      "type": "product",
+      "url": "https://gnupg.org/software/gpgme/index.html"
+    },
+    {
+      "name": "Samba",
+      "type": "product",
+      "url": "https://www.samba.org/"
+    },
+    {
+      "name": "Flatpak",
+      "type": "product",
+      "url": "https://flatpak.org/"
+    },
+    {
+      "name": "Gpg4win",
+      "type": "product"
+    },
+    {
+      "name": "GitLab",
+      "type": "vendor",
+      "url": "https://about.gitlab.com/"
+    },
+    {
+      "name": "Werner Koch",
+      "type": "person"
+    },
+    {
+      "name": "Johan Carlsson",
+      "type": "person"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-129975",
+      "severity": "critical"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://thehackernews.com/2026/11/gnupg-warns-critical-gpgme-flaw-could.html",
+      "title": "GnuPG Warns: Critical GPGME Flaw Could Let Attackers Steal Data from Popular Apps",
+      "friendly_name": "The Hacker News",
+      "website": "thehackernews.com"
+    },
+    {
+      "url": "https://aviatrix.ai/threat-research-center/gnupg-gpgme-critical-flaw-cve-2026-129975-malicious-openpgp-keys/",
+      "title": "GnuPG GPGME Critical Flaw CVE-2026-129975: Malicious OpenPGP Keys",
+      "friendly_name": "Aviatrix",
+      "website": "aviatrix.ai"
+    },
+    {
+      "url": "https://www.phoronix.com/news/GnuPG-GPGME-Critical",
+      "title": "GnuPG Discloses Critical GPGME Vulnerability",
+      "friendly_name": "Phoronix",
+      "website": "phoronix.com"
+    },
+    {
+      "url": "https://finance.biggo.com/news/e2b428f3-54ed-4637-917e-84063732ab7e",
+      "title": "GnuPG Warns: Critical GPGME Flaw Could Let Attackers Steal Data from Popular Apps",
+      "friendly_name": "BIGGO",
+      "website": "finance.biggo.com"
+    },
+    {
+      "url": "https://pasqualepillitteri.it/en/news/36038/gpgme-critical-flaw-cve-2026-129975-malicious-openpgp-keys",
+      "title": "GPGME critical flaw CVE-2026-129975: malicious OpenPGP keys",
+      "friendly_name": "pasqualepillitteri.it",
+      "website": "pasqualepillitteri.it"
+    },
+    {
+      "url": "https://mallory.ai/stories/01a1fac8-62bd-73eb-b434-ce898bca2596",
+      "title": "GnuPG Warns of Critical GPGME Flaw Potentially Exposing Data in Popular Apps",
+      "friendly_name": "Mallory",
+      "website": "mallory.ai"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-11-12T00:00:00Z",
+      "summary": "The vulnerability is responsibly disclosed to the GnuPG project by GitLab."
+    },
+    {
+      "datetime": "2026-11-20T00:00:00Z",
+      "summary": "The GnuPG project publicly discloses CVE-2026-129975 and releases patched versions."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1005",
+      "name": "Data from Local System",
+      "tactic": "Collection"
+    },
+    {
+      "id": "T1068",
+      "name": "Exploitation for Privilege Escalation",
+      "tactic": "Privilege Escalation"
+    },
+    {
+      "id": "T1119",
+      "name": "Automated Collection",
+      "tactic": "Collection"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "The primary and most effective mitigation is to update the GPGME library to a patched version (2.3.1+ or 1.24.4+).",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1050",
+      "name": "Exploit Protection",
+      "d3fend_techniques": [
+        {
+          "id": "D3-AH",
+          "name": "Application Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationHardening"
+        }
+      ],
+      "description": "Modern operating systems and compilers offer exploit protections like ASLR and stack canaries that can make memory corruption vulnerabilities harder to exploit reliably for code execution.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1048",
+      "name": "Application Isolation and Sandboxing",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SCF",
+          "name": "System Call Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:SystemCallFiltering"
+        }
+      ],
+      "description": "Running applications that process untrusted data (like email clients) in a sandbox can limit an attacker's ability to access sensitive data from other processes or the underlying system.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "file_name",
+      "value": "libgpgme.so.*",
+      "description": "Identifying versions of the GPGME shared library on Linux systems. Versions before 2.3.0 (or 1.24.4 for legacy) are vulnerable.",
+      "context": "File system scanning, software inventory management",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Application crash logs",
+      "description": "Unexplained crashes or segmentation faults in applications that use GPGME (e.g., mail clients, Kleopatra) could indicate a failed exploitation attempt of the double-free vulnerability.",
+      "context": "System logs (e.g., /var/log/syslog), Windows Event Viewer",
+      "confidence": "medium"
+    },
+    {
+      "type": "other",
+      "value": "Import of OpenPGP key with abnormally long User ID",
+      "description": "The trigger for the vulnerability is a malicious OpenPGP key with a very long User ID field. Monitoring key import operations for such anomalies could be a detection strategy.",
+      "context": "Application-specific logging, network traffic analysis",
+      "confidence": "low"
+    }
+  ],
+  "tags": [
+    "GnuPG",
+    "GPGME",
+    "Vulnerability",
+    "Memory Corruption",
+    "Double-Free",
+    "OpenPGP",
+    "CVE-2026-129975"
+  ],
+  "extract_datetime": "2026-11-22T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "global",
+    "industries_affected": [
+      "Technology"
+    ],
+    "other_affected": [
+      "Open-source software users",
+      "Users of email encryption"
+    ]
+  },
+  "pub_date": "2026-11-22",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-11-22T15:00:00.000Z",
+  "updatedAt": "2026-11-22T15:00:00.000Z"
+}

@@ -1,0 +1,80 @@
+title: Suspicious Shell Spawning from Python Process
+id: 8c9d0e1f-2a3b-4c5d-8e9f-0a1b2c3d4e5f
+status: experimental
+description: Detects a Python process spawning a command shell, which could indicate arbitrary code execution from a malicious AI model like those exploiting FaceHugger vulnerabilities.
+references:
+  - https://thehackernews.com/2026/08/hugging-face-diffusers-flaws-could-let.html
+author: cyber.netsecops.io
+date: 2026-08-04
+tags:
+  - attack.t1059
+  - attack.execution
+level: high
+logsource:
+  category: process_creation
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\python.exe'
+      - '\pythonw.exe'
+      - '/python'
+      - '/python3'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '/sh'
+      - '/bash'
+  condition: selection
+---
+title: Suspicious Outbound Connection from Python Process
+id: 5a6b7c8d-9e0f-4a1b-8c9d-0e1f2a3b4c5d
+status: experimental
+description: Detects unexpected outbound network connections from a Python process, which could indicate a malicious payload from an AI model communicating with a C2 server after exploiting a vulnerability like FaceHugger.
+references:
+  - https://thehackernews.com/2026/08/hugging-face-diffusers-flaws-could-let.html
+author: cyber.netsecops.io
+date: 2026-08-04
+tags:
+  - attack.t1071
+  - attack.command_and_control
+level: medium
+logsource:
+  category: network_connection
+detection:
+  selection:
+    Image|endswith:
+      - '\python.exe'
+      - '\pythonw.exe'
+      - '/python'
+      - '/python3'
+    Initiated: true
+  filter_local:
+    DestinationIp:
+      - '127.0.0.1'
+      - '::1'
+  filter_known_repo:
+    DestinationHostname|endswith:
+      - '.huggingface.co'
+      - '.python.org'
+      - '.pypi.org'
+  condition: selection and not filter_local and not filter_known_repo
+---
+title: FaceHugger Exploit Artifact None.py
+id: 2f8b1c9a-4e7d-4f6a-8b3c-9d1e0f2a3b4c
+status: experimental
+description: Detects the presence of a file named 'None.py' within a downloaded Hugging Face model repository, which is a strong indicator of an attempt to exploit CVE-2026-44827.
+references:
+  - https://thehackernews.com/2026/08/hugging-face-diffusers-flaws-could-let.html
+author: cyber.netsecops.io
+date: 2026-08-04
+tags:
+  - attack.aml.t0074
+  - attack.defense_evasion
+level: high
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|endswith: '\None.py'
+  condition: selection

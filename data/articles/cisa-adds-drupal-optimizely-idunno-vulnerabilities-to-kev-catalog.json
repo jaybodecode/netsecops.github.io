@@ -1,0 +1,221 @@
+{
+  "id": "665f9fa8-1143-4ff7-a1ee-60cca4d1cb72",
+  "slug": "cisa-adds-drupal-optimizely-idunno-vulnerabilities-to-kev-catalog",
+  "headline": "CISA Adds Actively Exploited Drupal, Optimizely, and AntiCsrf Flaws to KEV",
+  "title": "CISA KEV Catalog Adds Three Actively Exploited Vulnerabilities",
+  "summary": "The U.S. Cybersecurity and Infrastructure Security Agency (CISA) has added three vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog, citing evidence of active exploitation. The flaws include a remote code execution vulnerability in Drupal Core (CVE-2026-132165), a critical deserialization flaw in Idunno.AntiCsrf (CVE-2026-131914), and a state control issue in Optimizely Web Experimentation (CVE-2026-132224). Federal agencies are now under a strict deadline to remediate these high-risk vulnerabilities.",
+  "full_report": "## Executive Summary\nOn November 24, 2026, the **[U.S. Cybersecurity and Infrastructure Security Agency (CISA)](https://www.cisa.gov)** added three significant vulnerabilities to its Known Exploited Vulnerabilities (KEV) catalog, confirming they are under active attack. The flaws affect widely used platforms: **[Drupal](https://www.drupal.org/)** Core, Idunno.AntiCsrf for ASP.NET, and **[Optimizely](https://www.optimizely.com/)** Web Experimentation. The most severe of these, **CVE-2026-132165** in Drupal and **CVE-2026-131914** in Idunno.AntiCsrf, can lead to unauthenticated remote code execution (RCE). Due to the confirmed exploitation and high risk, CISA has mandated that Federal Civilian Executive Branch (FCEB) agencies patch the Drupal flaw by November 27, 2026, underscoring the urgency for all affected organizations to take immediate action.\n\n---\n\n## Vulnerability Details\nThe three vulnerabilities added to the KEV catalog represent diverse but severe threats to web applications and infrastructure.\n\n- **CVE-2026-132165 - Drupal Core Remote Code Execution:** This vulnerability allows a remote, unauthenticated attacker to potentially reinstall a Drupal site by abusing the `install.php` script under specific, non-default configurations. Successful exploitation can lead to a complete site takeover and remote code execution. The flaw was discovered by Anthropic's OSS Scanner and is rated 20/25 on Drupal's risk scale. Exploitation was observed just one day after patches were released.\n\n- **CVE-2026-131914 - Idunno.AntiCsrf Deserialization of Untrusted Data:** This **critical** vulnerability, with a CVSS v4.0 score of 9.3, affects the Idunno.AntiCsrf component for ASP.NET. It allows a remote, unauthenticated attacker to achieve remote code execution through object injection by sending a specially crafted serialized payload. The flaw was disclosed by **[Mandiant](https://www.mandiant.com)**.\n\n- **CVE-2026-132224 - Optimizely Web Experimentation External Control of Critical State Data:** This vulnerability affects Optimizely's A/B testing platform. While specific technical details are less public, its inclusion in the KEV catalog indicates it is being used by attackers to compromise systems, likely by manipulating application state to achieve unauthorized actions or access.\n\n## Affected Systems\nThe following products are confirmed to be affected:\n- **Drupal Core:** Versions prior to the latest patched releases are vulnerable, particularly if the `install.php` file is accessible on a live site.\n- **Idunno.AntiCsrf:** ASP.NET applications utilizing this component are at risk.\n- **Optimizely Web Experimentation:** Systems using this A/B testing and personalization product.\n\n## Exploitation Status\n**[CISA](https://www.cisa.gov)** has confirmed that all three vulnerabilities—`CVE-2026-132165`, `CVE-2026-131914`, and `CVE-2026-132224`—are being actively exploited in the wild. The rapid exploitation of the Drupal flaw, occurring just one day after patch release, highlights the speed at which threat actors weaponize newly disclosed vulnerabilities. Organizations should assume they are being actively targeted.\n\n## Impact Assessment\nThe impact of these vulnerabilities is severe. The two RCE flaws (`CVE-2026-132165` and `CVE-2026-131914`) grant attackers complete control over affected systems, enabling data theft, malware deployment (such as ransomware), and use of the compromised server as a pivot point for further network intrusion. For federal agencies, the risk is deemed significant enough to warrant an emergency directive. For private sector organizations, a compromise could lead to major data breaches, operational disruption, and reputational damage.\n\n---\n\n## Cyber Observables — Hunting Hints\nSecurity teams can hunt for signs of compromise or vulnerable systems using the following patterns:\n\n| Type | Value | Description |\n|---|---|---|\n| URL Pattern | `/install.php` | Look for any requests to the Drupal installer script in web server logs, especially POST requests or requests from unusual IP addresses. |\n| Log Pattern | `re-installed` | Search application logs for messages indicating a Drupal re-installation attempt. |\n| Network Traffic | Suspicious POST requests | For the Idunno.AntiCsrf flaw, monitor for large or unusual POST request bodies to ASP.NET applications, which could contain serialized objects. |\n\n## Detection & Response\nDefenders should prioritize detecting both exploitation attempts and vulnerable instances.\n\n1.  **Vulnerability Scanning:** Use vulnerability scanners and software composition analysis (SCA) tools to identify instances of vulnerable Drupal Core, Idunno.AntiCsrf, and Optimizely versions in your environment.\n2.  **Web Log Analysis:** Actively monitor web server access logs (`nginx`, `Apache`, `IIS`) for requests to `install.php`. Any access to this file on a production server is highly suspicious and should be investigated immediately. This can be implemented as a high-priority SIEM alert.\n3.  **File Integrity Monitoring (FIM):** Deploy FIM on Drupal web servers to detect unauthorized changes to core files, which would occur during a successful re-installation attack.\n4.  **Endpoint Detection and Response (EDR):** Monitor for suspicious child processes spawned by the web server process (e.g., `w3wp.exe`, `httpd`, `nginx`). For `CVE-2026-131914`, an attacker achieving RCE would likely spawn a shell or a PowerShell process from the ASP.NET worker process.\n\nFor D3FEND techniques, `[D3-NTA: Network Traffic Analysis](https://d3fend.mitre.org/technique/d3f:NetworkTrafficAnalysis)` is crucial for spotting anomalous requests, and `[D3-FA: File Analysis](https://d3fend.mitre.org/technique/d3f:FileAnalysis)` can help verify the integrity of application files post-patching.\n\n## Mitigation\nImmediate remediation is critical to prevent exploitation.\n\n1.  **Patch Immediately:** The most effective mitigation is to apply the security updates provided by Drupal, the developers of Idunno.AntiCsrf, and Optimizely. Per CISA's directive, this is a mandatory, time-sensitive action for federal agencies.\n2.  **Remove `install.php`:** As a critical hardening step for Drupal sites, the `install.php` file should be deleted or have its permissions restricted after the initial installation is complete. This directly mitigates `CVE-2026-132165`.\n3.  **Web Application Firewall (WAF):** Implement WAF rules to block requests to `install.php` and inspect POST bodies for patterns associated with deserialization attacks. While not a substitute for patching, this can provide a valuable layer of defense.\n4.  **Network Segmentation:** Restrict outbound network access from web servers to only what is absolutely necessary. This can limit a successful attacker's ability to download further tools or exfiltrate data.\n\nThese actions align with D3FEND countermeasures like `[D3-SU: Software Update](https://d3fend.mitre.org/technique/d3f:SoftwareUpdate)` and `[D3-ACH: Application Configuration Hardening](https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening)`.",
+  "twitter_post": "CISA adds 3 actively exploited vulnerabilities to its KEV catalog: Drupal Core RCE (CVE-2026-132165), Idunno.AntiCsrf RCE (CVE-2026-131914), and an Optimizely flaw (CVE-2026-132224). Federal agencies must patch immediately. #KEV #CISA #PatchNow",
+  "meta_description": "CISA mandates federal agencies patch three actively exploited vulnerabilities added to the KEV catalog, affecting Drupal Core, Optimizely, and Idunno AntiCsrf.",
+  "category": [
+    "Vulnerability",
+    "Patch Management",
+    "Threat Intelligence"
+  ],
+  "severity": "critical",
+  "entities": [
+    {
+      "name": "CISA",
+      "type": "government_agency",
+      "url": "https://www.cisa.gov"
+    },
+    {
+      "name": "Drupal",
+      "type": "product",
+      "url": "https://www.drupal.org/"
+    },
+    {
+      "name": "Optimizely",
+      "type": "vendor",
+      "url": "https://www.optimizely.com/"
+    },
+    {
+      "name": "Idunno.AntiCsrf",
+      "type": "product"
+    },
+    {
+      "name": "Mandiant",
+      "type": "security_organization"
+    },
+    {
+      "name": "Anthropic",
+      "type": "company"
+    },
+    {
+      "name": "ASP.NET",
+      "type": "technology"
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2026-132165",
+      "kev": true
+    },
+    {
+      "id": "CVE-2026-131914",
+      "cvss_score": 9.3,
+      "cvss_version": "4.0",
+      "kev": true,
+      "severity": "critical"
+    },
+    {
+      "id": "CVE-2026-132224",
+      "kev": true
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.cisa.gov/news-events/alerts/2026/11/24/cisa-adds-three-known-exploited-vulnerabilities-catalog",
+      "title": "CISA Adds Three Known Exploited Vulnerabilities to Catalog",
+      "friendly_name": "CISA",
+      "website": "cisa.gov",
+      "date": "2026-11-24"
+    },
+    {
+      "url": "https://cyberrecaps.com/news/cybersecurity-news-november-25-2026",
+      "title": "Daily Cybersecurity News – November 25, 2026",
+      "friendly_name": "CyberRecaps",
+      "website": "cyberrecaps.com",
+      "date": "2026-11-25"
+    },
+    {
+      "url": "https://www.sophos.com/en-us/vulnerability-advisories/tpc_01m87e6g57mfn2seqcbfbtvnt5",
+      "title": "Idunno AntiCsrf vulnerability (CVE-2026-131914) in active exploitation",
+      "friendly_name": "Sophos",
+      "website": "sophos.com",
+      "date": "2026-11-25"
+    }
+  ],
+  "events": [
+    {
+      "datetime": "2026-11-19",
+      "summary": "Active exploitation of CVE-2026-132165 (Drupal) was observed."
+    },
+    {
+      "datetime": "2026-11-19",
+      "summary": "Mandiant discloses CVE-2026-131914 (Idunno.AntiCsrf)."
+    },
+    {
+      "datetime": "2026-11-24",
+      "summary": "CISA adds CVE-2026-132165, CVE-2026-131914, and CVE-2026-132224 to the KEV catalog."
+    },
+    {
+      "datetime": "2026-11-27",
+      "summary": "Deadline for Federal Civilian Executive Branch agencies to remediate CVE-2026-132165."
+    }
+  ],
+  "mitre_techniques": [
+    {
+      "id": "T1190",
+      "name": "Exploit Public-Facing Application",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1210",
+      "name": "Exploitation of Remote Services",
+      "tactic": "Initial Access"
+    },
+    {
+      "id": "T1505.003",
+      "name": "Web Shell",
+      "tactic": "Persistence"
+    },
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "tactic": "Initial Access"
+    }
+  ],
+  "mitre_mitigations": [
+    {
+      "id": "M1051",
+      "name": "Update Software",
+      "d3fend_techniques": [
+        {
+          "id": "D3-SU",
+          "name": "Software Update",
+          "url": "https://d3fend.mitre.org/technique/d3f:SoftwareUpdate"
+        }
+      ],
+      "description": "Applying patches from vendors is the primary and most effective mitigation.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1042",
+      "name": "Disable or Remove Feature or Program",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ACH",
+          "name": "Application Configuration Hardening",
+          "url": "https://d3fend.mitre.org/technique/d3f:ApplicationConfigurationHardening"
+        }
+      ],
+      "description": "Removing the `install.php` file on Drupal sites after installation prevents its abuse.",
+      "domain": "enterprise"
+    },
+    {
+      "id": "M1021",
+      "name": "Restrict Web-Based Content",
+      "d3fend_techniques": [
+        {
+          "id": "D3-ITF",
+          "name": "Inbound Traffic Filtering",
+          "url": "https://d3fend.mitre.org/technique/d3f:InboundTrafficFiltering"
+        }
+      ],
+      "description": "Using a Web Application Firewall (WAF) to filter malicious requests can serve as a compensating control.",
+      "domain": "enterprise"
+    }
+  ],
+  "d3fend_countermeasures": [],
+  "iocs": [],
+  "cyber_observables": [
+    {
+      "type": "url_pattern",
+      "value": "/install.php",
+      "description": "Access to the Drupal installer script on a production server is a strong indicator of an exploitation attempt for CVE-2026-132165.",
+      "context": "Web server access logs (Apache, Nginx, IIS)",
+      "confidence": "high"
+    },
+    {
+      "type": "log_source",
+      "value": "Drupal application logs",
+      "description": "Logs may contain messages indicating a site re-installation has been attempted or completed.",
+      "context": "SIEM, Log Management Platform",
+      "confidence": "medium"
+    },
+    {
+      "type": "network_traffic_pattern",
+      "value": "Anomalous POST requests to ASP.NET applications",
+      "description": "Unusually large or malformed POST request bodies sent to applications using Idunno.AntiCsrf could indicate a deserialization attack (CVE-2026-131914).",
+      "context": "Web Application Firewall (WAF) logs, Network Intrusion Detection System (NIDS)",
+      "confidence": "medium"
+    }
+  ],
+  "tags": [
+    "KEV",
+    "CISA",
+    "Drupal",
+    "RCE",
+    "Deserialization",
+    "Patch Management"
+  ],
+  "extract_datetime": "2026-11-25T15:00:00.000Z",
+  "impact_scope": {
+    "geographic_scope": "national",
+    "countries_affected": [
+      "United States"
+    ],
+    "industries_affected": [
+      "Government",
+      "Technology"
+    ],
+    "other_affected": [
+      "Users of Drupal, Optimizely, and ASP.NET"
+    ]
+  },
+  "pub_date": "2026-11-25",
+  "reading_time_minutes": 5,
+  "createdAt": "2026-11-25T15:00:00.000Z",
+  "updatedAt": "2026-11-25T15:00:00.000Z"
+}

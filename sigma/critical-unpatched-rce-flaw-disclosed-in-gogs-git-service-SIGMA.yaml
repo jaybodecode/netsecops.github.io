@@ -1,0 +1,58 @@
+title: Suspicious Child Process of Gogs Service
+id: 2b1a6c3d-8e4f-4f9a-8d6c-7e5b4a3c2d1e
+status: experimental
+description: Detects suspicious child processes being spawned by the Gogs Git service process. This could indicate exploitation of a remote code execution vulnerability.
+references:
+  - https://the-hacker-news.com/2026/06/weekly-recap-new-linux-flaw-pan-os.html
+author: cyber.netsecops.io
+date: 2026-06-01
+tags:
+  - attack.t1190
+level: high
+logsource:
+  category: process_creation
+  product: linux
+detection:
+  parent:
+    ParentImage|endswith:
+      - '/gogs web'
+      - '/gogs serv'
+      - '/gogs'
+  suspicious_child:
+    Image|endswith:
+      - '/sh'
+      - '/bash'
+      - '/powershell'
+      - '/curl'
+      - '/wget'
+  condition: parent and suspicious_child
+---
+title: Anomalous Outbound Connection from Gogs Server
+id: dfb6d51f-0f69-48c5-9d95-6572b51644ae
+status: experimental
+description: Detects any outbound network connection from the Gogs Git service process to non-local addresses. This could indicate a reverse shell or data exfiltration due to RCE exploitation.
+references:
+  - https://the-hacker-news.com/2026/06/weekly-recap-new-linux-flaw-pan-os.html
+author: cyber.netsecops.io
+date: 2026-06-01
+tags:
+  - attack.t1041
+level: medium
+logsource:
+  category: network_connection
+  product: linux
+detection:
+  selection:
+    Image|endswith:
+      - '/gogs web'
+      - '/gogs serv'
+      - '/gogs'
+    Initiated: true
+  filter:
+    DestinationIp|cidr:
+      - '127.0.0.0/8'
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+      - '::1/128'
+  condition: selection and not filter

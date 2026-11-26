@@ -1,0 +1,84 @@
+title: Potential SharePoint XSS Activity (CVE-2026-32201)
+id: 8f2c1b3a-9e4d-4f8c-a1b2-3d4e5f6a7b8c
+status: experimental
+description: Detects potential Cross-Site Scripting (XSS) attempts against Microsoft SharePoint Server, possibly related to CVE-2026-32201. This rule looks for suspicious script-like syntax in URLs targeting common SharePoint paths.
+references:
+  - https://securityaffairs.com/161986/security/microsoft-patch-tuesday-april-2026.html
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1190
+  - attack.initial_access
+falsepositives:
+  - Legitimate but unusual SharePoint customizations.
+  - Web vulnerability scanners.
+level: medium
+logsource:
+  category: proxy
+detection:
+  selection_path:
+    c-uri|contains:
+      - '/_layouts/'
+      - '/pages/'
+  selection_payload:
+    c-uri|contains:
+      - '<script'
+      - 'onerror='
+      - 'onload='
+      - 'javascript:'
+  condition: all of selection_*
+---
+title: Suspicious Child Process of Microsoft Defender (CVE-2026-33825)
+id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+status: experimental
+description: Detects suspicious child processes spawned by the Microsoft Defender service (MsMpEng.exe or MpOAV.exe), which could indicate exploitation of an elevation of privilege vulnerability like CVE-2026-33825 ('BlueHammer').
+references:
+  - https://securityaffairs.com/161986/security/microsoft-patch-tuesday-april-2026.html
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+falsepositives:
+  - Legitimate administrative scripts or diagnostic tools interacting with Defender.
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_parent:
+    ParentImage|endswith:
+      - '\MsMpEng.exe'
+      - '\MpOAV.exe'
+  selection_child:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\rundll32.exe'
+  condition: all of selection_*
+---
+title: Anomalous IKE Network Traffic
+id: 7d6c5b4a-3e2d-1f0a-9b8c-7a6b5c4d3e2f
+status: experimental
+description: Detects network traffic on UDP ports 500 and 4500, used by the Internet Key Exchange (IKE) protocol. High volume or unusual patterns could indicate scanning or exploitation attempts against vulnerabilities like CVE-2026-33824.
+references:
+  - https://securityaffairs.com/161986/security/microsoft-patch-tuesday-april-2026.html
+author: cyber.netsecops.io
+date: 2026-04-16
+tags:
+  - attack.t1210
+  - attack.lateral_movement
+falsepositives:
+  - Legitimate VPN connections. This rule is likely to be noisy and requires tuning and correlation.
+level: low
+logsource:
+  category: network_connection
+detection:
+  selection:
+    DestinationPort:
+      - 500
+      - 4500
+    Protocol: 'udp'
+  condition: selection
